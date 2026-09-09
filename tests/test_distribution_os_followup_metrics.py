@@ -1,4 +1,4 @@
-"""Distribution OS — follow-up cadence, proof packs, renewal, win/loss, metrics."""
+"""Distribution OS — follow-up cadence, proof, renewal metadata, win/loss, metrics."""
 
 from __future__ import annotations
 
@@ -33,9 +33,6 @@ def _isolate(tmp_path, monkeypatch):
         monkeypatch.setenv(var, str(tmp_path / name))
 
 
-# ── follow-up cadence ────────────────────────────────────────────────────────
-
-
 def test_cadence_schedules_four_touches_in_order() -> None:
     fus = followup.schedule_cadence(
         prospect_id="p1", channel="email", start_date="2026-01-01T00:00:00+00:00"
@@ -51,9 +48,9 @@ def test_cadence_schedules_four_touches_in_order() -> None:
 def test_due_followups_respects_due_date() -> None:
     followup.schedule_cadence(prospect_id="p1", start_date="2026-01-01T00:00:00+00:00")
     due_day0 = followup.due_followups(on_date="2026-01-01T12:00:00+00:00")
-    assert len(due_day0) == 1  # only Day 0
+    assert len(due_day0) == 1
     due_day5 = followup.due_followups(on_date="2026-01-05T12:00:00+00:00")
-    assert len(due_day5) == 3  # Day 0, 2, 4
+    assert len(due_day5) == 3
 
 
 def test_complete_followup_drops_it_from_due() -> None:
@@ -61,9 +58,6 @@ def test_complete_followup_drops_it_from_due() -> None:
     followup.complete_followup(fus[0].id, message_ref="draft_x")
     due = followup.due_followups(on_date="2026-01-01T12:00:00+00:00")
     assert all(f.id != fus[0].id for f in due)
-
-
-# ── proof pack ───────────────────────────────────────────────────────────────
 
 
 def test_proof_pack_validates_evidence_level() -> None:
@@ -74,10 +68,7 @@ def test_proof_pack_validates_evidence_level() -> None:
     assert proof_pack.list_proof_packs(customer_id="c")[0].id == pack.id
 
 
-# ── renewal / upsell ─────────────────────────────────────────────────────────
-
-
-def test_upsell_ladder_from_sprint() -> None:
+def test_upsell_ladder_from_sprint_is_taxonomy_only() -> None:
     ids = [u["id"] for u in renewal.upsell_ladder("prod_sprint_v1")]
     assert ids == ["prod_data_pack_v1", "prod_managed_ops_v1", "prod_custom_ai_v1"]
     assert renewal.next_upsell("prod_sprint_v1")["id"] == "prod_data_pack_v1"
@@ -88,9 +79,6 @@ def test_renewal_scheduler_reused() -> None:
     sched = renewal.schedule_renewal(customer_id="c", plan="managed_ops", amount_sar=2999)
     assert sched.customer_id == "c"
     assert renewal.list_by_customer("c")
-
-
-# ── win/loss ─────────────────────────────────────────────────────────────────
 
 
 def test_win_loss_summary() -> None:
@@ -111,10 +99,7 @@ def test_win_loss_rejects_invalid_outcome() -> None:
         win_loss.record(company="A", outcome="maybe")
 
 
-# ── metrics ──────────────────────────────────────────────────────────────────
-
-
-def test_daily_kpis_reflect_store_state() -> None:
+def test_daily_kpis_reflect_quote_bound_store_state() -> None:
     p = prospect.add_prospect(
         company="Acme",
         sector="marketing_agencies",
@@ -124,10 +109,22 @@ def test_daily_kpis_reflect_store_state() -> None:
         risk="low",
     )
     draft_factory.generate_draft(prospect=p, draft_type="outreach_first")
-    proposal.generate_proposal(prospect_id=p.id, product_id="prod_sprint_v1", out_of_scope=["x"])
+    prop = proposal.generate_proposal(
+        prospect_id=p.id,
+        product_id="prod_sprint_v1",
+        out_of_scope=["x"],
+        discovery_ref="discovery:acme-001",
+        quote_id="quote_acme_001",
+        customer_specific_quote_sar=12500,
+    )
     proof_pack.build_proof_pack(customer_id="Acme", evidence_level=1)
     payment_handoff.prepare_handoff(
-        proposal_id="pr", customer_id="Acme", product_id="prod_sprint_v1", amount_sar=499
+        proposal_id=prop.id,
+        customer_id="Acme",
+        product_id="prod_sprint_v1",
+        discovery_ref="discovery:acme-001",
+        quote_id="quote_acme_001",
+        amount_sar=12500,
     )
     win_loss.record(company="Acme", outcome="won")
 
