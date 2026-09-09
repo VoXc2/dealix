@@ -49,6 +49,17 @@ def test_interactive_home_preserves_current_positioning_and_path():
         assert required in home
 
 
+def test_interactive_home_exposes_founder_office_contact_with_env_override():
+    home = HOME.read_text(encoding="utf-8")
+
+    assert "NEXT_PUBLIC_FOUNDER_EMAIL" in home
+    assert "NEXT_PUBLIC_FOUNDER_PHONE" in home
+    assert "Founder Email" in home
+    assert "Founder Phone" in home
+    assert "mailto:" in home
+    assert "tel:" in home
+
+
 def test_interactive_home_rejects_stale_or_forbidden_claims():
     home = HOME.read_text(encoding="utf-8")
 
@@ -109,3 +120,15 @@ def test_interactive_browser_smoke_targets_next_not_legacy_static_landing():
     assert "http://127.0.0.1:3100" in web
     assert "interactive_home.spec.js" in web
     assert "PLAYWRIGHT_BASE_URL: http://127.0.0.1:3100" in web
+
+
+def test_browser_smokes_are_pr_and_manual_only_to_bound_hosted_minutes():
+    legacy = LEGACY_PLAYWRIGHT.read_text(encoding="utf-8")
+    web = WEB_PLAYWRIGHT.read_text(encoding="utf-8")
+
+    for text in (legacy, web):
+        assert "pull_request:" in text
+        assert "workflow_dispatch:" in text
+        assert "push:" not in text
+        assert "schedule:" not in text
+        assert "cancel-in-progress: true" in text
