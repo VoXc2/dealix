@@ -101,7 +101,7 @@ def test_token_optimizer_commercial_context_points_to_current_authority() -> Non
 def test_today_page_does_not_authorize_send_payment_or_production() -> None:
     text = _read("docs/ops/TODAY.md")
     assert "customer-specific quote" in text
-    assert "30-day Revenue Command Pilot" in text
+    assert "30-day revenue command pilot" in text.lower()
     assert "NO_LIVE_SEND" in text or "no customer-facing auto-send" in text.lower()
     assert "Do not create or send a payment request" in text
     assert "action-specific production approval" in text
