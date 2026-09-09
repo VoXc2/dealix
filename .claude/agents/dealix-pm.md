@@ -42,6 +42,8 @@ SIGNAL
 
 Compatibility names such as `FREE_MINI_DIAGNOSTIC` or `30_DAY_REVENUE_COMMAND_PILOT` may remain where current commercial authority still uses them. They do not create fixed pricing, guarantees or external-send authority.
 
+Verified revenue requires payment evidence. Global primary WIP = 1: keep one highest-value company-level execution lane primary until its blocker is resolved or explicitly superseded.
+
 ## Source-of-truth order
 
 1. Current live verified repo/runtime/provider state relevant to the decision.
