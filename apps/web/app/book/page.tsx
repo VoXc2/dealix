@@ -197,9 +197,9 @@ export default function BookPage() {
           </div>
 
           <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.88rem", lineHeight: 1.55 }}>
-            <input name="followup_requested" type="checkbox" defaultChecked style={{ marginTop: 4 }} />
+            <input name="followup_requested" type="checkbox" style={{ marginTop: 4 }} />
             <span>
-              أطلب من Dealix التواصل معي بخصوص هذا التشخيص. هذا الطلب يخص هذه المحادثة فقط ولا يتحول تلقائيًا إلى
+              أطلب من Dealix التواصل معي بخصوص هذا التشخيص. هذا الطلب اختياري ويخص هذه المحادثة فقط، ولا يتحول تلقائيًا إلى
               موافقة تسويق مباشر أو نشر Proof.
             </span>
           </label>
