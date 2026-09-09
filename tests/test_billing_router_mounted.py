@@ -1,10 +1,10 @@
-"""Future SaaS billing router: keep its tenant/money safety tested without exposing it at launch.
+"""Future SaaS billing router: keep its tenant/money safety tested without exposing self-serve launch actions.
 
 Current first-launch commercial authority is quote-only after qualified discovery,
 with no public/self-serve checkout. ``api.routers.billing`` remains useful future
-SaaS code, but the production ``api.main`` launch app intentionally does not mount
-that router. These tests therefore exercise it in an explicit isolated FastAPI app
-while separately asserting that the launch app does not expose the routes.
+SaaS code. The production launch app intentionally preserves only read-only
+existing-tenant billing views (subscription, invoices, features) while excluding
+public plan discovery and all subscription/payment mutations.
 """
 
 from __future__ import annotations
@@ -102,20 +102,22 @@ async def client(db_session, monkeypatch):
         yield ac
 
 
-BILLING_ROUTES = [
-    ("GET", "/api/v1/billing/plans"),
+READ_ONLY_LAUNCH_ROUTES = [
     ("GET", "/api/v1/billing/subscription"),
-    ("POST", "/api/v1/billing/subscribe"),
-    ("POST", "/api/v1/billing/upgrade"),
-    ("POST", "/api/v1/billing/cancel"),
     ("GET", "/api/v1/billing/invoices"),
-    ("POST", "/api/v1/billing/invoices/{invoice_id}/pay"),
     ("GET", "/api/v1/billing/features"),
 ]
 
+BLOCKED_SELF_SERVE_ROUTES = [
+    ("GET", "/api/v1/billing/plans"),
+    ("POST", "/api/v1/billing/subscribe"),
+    ("POST", "/api/v1/billing/upgrade"),
+    ("POST", "/api/v1/billing/cancel"),
+    ("POST", "/api/v1/billing/invoices/{invoice_id}/pay"),
+]
 
-def test_launch_app_does_not_mount_future_saas_billing() -> None:
-    """A future SaaS billing surface must not bypass the quote-only launch path."""
+
+def test_launch_app_preserves_read_only_existing_tenant_billing_views() -> None:
     from api.main import app
 
     mounted = {
@@ -123,7 +125,20 @@ def test_launch_app_does_not_mount_future_saas_billing() -> None:
         for path, operations in app.openapi()["paths"].items()
         for method in operations
     }
-    for route in BILLING_ROUTES:
+    for route in READ_ONLY_LAUNCH_ROUTES:
+        assert route in mounted
+
+
+def test_launch_app_blocks_self_serve_billing_and_payment_mutations() -> None:
+    """Quote-only launch must not expose public/self-serve billing actions."""
+    from api.main import app
+
+    mounted = {
+        (method.upper(), path)
+        for path, operations in app.openapi()["paths"].items()
+        for method in operations
+    }
+    for route in BLOCKED_SELF_SERVE_ROUTES:
         assert route not in mounted
 
 
