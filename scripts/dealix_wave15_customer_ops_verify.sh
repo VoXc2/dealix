@@ -42,15 +42,15 @@ run_check_sandbox_aware() {
 run_check "COMPILEALL_WAVE15_SCRIPTS" \
   "python3 -m compileall -q scripts/dealix_export_service_catalog_json.py scripts/dealix_bottleneck_radar.py scripts/dealix_founder_daily_brief.py"
 
-# ── Phase B — Service Catalog JSON export ────────────────────────────
+# ── Phase B — Governed public Service Catalog projection ────────────
 run_check "SERVICE_CATALOG_JSON_EXPORTER" \
   "python3 scripts/dealix_export_service_catalog_json.py --check"
 
-run_check "SERVICE_CATALOG_JSON_HAS_7_OFFERINGS" \
-  "python3 -c 'import json; d = json.load(open(\"landing/assets/data/services-catalog.json\")); assert d[\"count\"] == 7'"
+run_check "SERVICE_CATALOG_JSON_HAS_2_PUBLIC_OFFERINGS" \
+  "python3 -c 'import json; d=json.load(open(\"landing/assets/data/services-catalog.json\")); assert [x[\"id\"] for x in d[\"offerings\"]] == [\"free_mini_diagnostic\", \"revenue_command_pilot_30d\"]'"
 
-run_check "SERVICE_CATALOG_JSON_HAS_8_HARD_GATES" \
-  "python3 -c 'import json; d = json.load(open(\"landing/assets/data/services-catalog.json\")); assert len(d[\"constitution\"][\"article_4_hard_gates\"]) == 8'"
+run_check "SERVICE_CATALOG_JSON_QUOTE_ONLY_GOVERNANCE" \
+  "python3 -c 'import json; d=json.load(open(\"landing/assets/data/services-catalog.json\")); assert d[\"schema_version\"] == \"2.0-public\"; assert d[\"public_commercial_truth\"] == \"one_governed_path\"; p=d[\"offerings\"][1]; assert p[\"commercial_status\"] == \"quote_only\" and p[\"public_checkout\"] is False and p[\"customer_result_guarantee\"] is False; assert d[\"claim_policy\"][\"revenue_requires_payment_evidence\"] is True'"
 
 # ── Phase C — Bottleneck Radar CLI ───────────────────────────────────
 run_check "BOTTLENECK_RADAR_CLI_MD" \
@@ -72,7 +72,7 @@ run_check "FOUNDER_DAILY_BRIEF_HARD_GATES_LISTED" \
 run_check "FOUNDER_DAILY_BRIEF_ARTICLE_13_REMAINING_3_WHEN_ZERO_PAID" \
   "python3 scripts/dealix_founder_daily_brief.py --paid-customers 0 --format json | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d[\"article_13_trigger_remaining\"] == 3'"
 
-# ── Phase E — E2E integration test (13 tests, sandbox-safe) ──────────
+# ── Phase E — E2E integration test (sandbox-safe) ───────────────────
 run_check "WAVE15_CUSTOMER_JOURNEY_E2E" \
   "python3 -m pytest tests/test_wave15_customer_journey_e2e.py -q --no-cov"
 
@@ -135,7 +135,7 @@ if $overall_pass; then
   echo "  CUSTOMER_READY=yes"
   echo "  ARTICLE_4_GATES_IMMUTABLE=yes"
   echo "  ARTICLE_8_NO_FAKE_REVENUE=yes"
-  echo "  NEXT_FOUNDER_ACTION=Run scripts/dealix_founder_daily_brief.py each morning at 8AM KSA. Share landing/services.html with prospects."
+  echo "  NEXT_FOUNDER_ACTION=Review the governed launch path and next highest-value evidence-backed action."
   exit 0
 else
   echo "  DEALIX_WAVE15_CUSTOMER_OPS_VERDICT=PARTIAL"
