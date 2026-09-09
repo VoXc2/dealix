@@ -35,3 +35,19 @@ def test_dlq_check_is_manual_only_in_github_actions() -> None:
     assert "scripts/check_dlq_size.py --max 5 --json" in text
     assert "STAGING_REDIS_URL" in text
     assert "PRODUCTION_REDIS_URL" in text
+
+
+def test_watchdog_drift_is_manual_only_in_github_actions() -> None:
+    text = _text("watchdog_drift.yml")
+    assert "workflow_dispatch:" in text
+    assert "schedule:" not in text
+    assert "scripts/watchdog_drift_check.py" in text
+    assert "WATCHDOG_BASE_URL" in text
+
+
+def test_production_smoke_is_manual_only_in_github_actions() -> None:
+    text = _text("production-smoke.yml")
+    assert "workflow_dispatch:" in text
+    assert "schedule:" not in text
+    assert "scripts/production_smoke_auth.py" in text
+    assert "DEALIX_SMOKE_BASE_URL" in text
