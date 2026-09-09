@@ -100,6 +100,16 @@ TARGET_TESTS=(
   tests/test_billing_router_mounted.py
   tests/test_billing_moyasar_safety.py
   tests/test_pricing_plans_endpoint.py
+  tests/test_apps_web_launch_truth.py
+  tests/test_commercial_map.py
+  tests/test_service_catalog.py
+  tests/test_customer_portal_contract_final.py
+  tests/test_customer_portal_empty_states_final.py
+  tests/test_customer_portal_full_ops.py
+  tests/test_frontend_professional_polish.py
+  tests/test_public_launch_truth.py
+  tests/test_railway_canonical_contract.py
+  tests/test_canonical_daily_workflow_contract.py
 )
 run_gate TARGETED_PYTHON "$PY" -m pytest -q "${TARGET_TESTS[@]}"
 
