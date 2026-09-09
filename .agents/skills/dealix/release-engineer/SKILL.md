@@ -29,6 +29,10 @@ Do not use admin merge.
 Do not hide failures.
 Do not expand scope while fixing release blockers.
 
+A required acceptance command is fail-closed. Never convert a non-zero test,
+typecheck, build, security, truth, or verifier exit code into PASS with `|| true`,
+a later unconditional PASS label, or pipeline masking.
+
 ## Files to inspect first
 
 ```text
@@ -53,6 +57,7 @@ api/
 app/
 core/
 db/
+scripts/ops/fail_closed_gate.sh
 scripts/verify_railway_surfaces.py
 scripts/verify_no_auto_external_send.py
 scripts/verify_company_launch_ready.py
@@ -85,23 +90,29 @@ export OUTBOUND_MODE=draft_only
 
 ## Stabilization checklist
 
+Discovery commands may be non-blocking, but required validation must propagate
+its real exit status.
+
 ```bash
 git status --short
 git branch --show-current
 git log --oneline -5
 gh pr list --limit 20
-npm install || true
-npm run check || true
-npm run build || true
-npm --prefix apps/web install || true
-npm --prefix apps/web run verify || true
-python -m compileall -q api app core db dealix scripts 2>/dev/null || true
-python -m pytest -q || true
-python scripts/verify_no_auto_external_send.py || true
-python scripts/verify_company_launch_ready.py || true
-python scripts/verify_railway_surfaces.py || true
-docker compose -f docker-compose.prod.yml config || true
+
+python -m compileall -q api app core db dealix scripts
+scripts/ops/fail_closed_gate.sh PYTHON_TESTS python -m pytest -q
+scripts/ops/fail_closed_gate.sh NO_AUTO_EXTERNAL_SEND python scripts/verify_no_auto_external_send.py
+scripts/ops/fail_closed_gate.sh COMPANY_LAUNCH_TRUTH python scripts/verify_company_launch_ready.py
+scripts/ops/fail_closed_gate.sh RAILWAY_SURFACE_TRUTH python scripts/verify_railway_surfaces.py
+
+npm --prefix apps/web ci
+scripts/ops/fail_closed_gate.sh WEB_ACCEPTANCE npm --prefix apps/web run verify
+
+docker compose -f docker-compose.prod.yml config
 ```
+
+If a tool is unavailable, report `SKIPPED_ENVIRONMENT` or `BLOCKED_ENVIRONMENT`
+explicitly. Do not report PASS for a command that did not run.
 
 ## CI triage policy
 
@@ -116,7 +127,28 @@ Fix in this order:
 7. tests
 8. formatting/lint debt
 
-Do not ignore undefined names, syntax errors, or runtime boot failures.
+Do not ignore undefined names, syntax errors, runtime boot failures, or a non-zero
+required gate.
+
+## False-green prevention
+
+For shell orchestration, either call `scripts/ops/fail_closed_gate.sh` or capture
+and check the real status directly:
+
+```bash
+set +e
+required_command
+rc=$?
+set -e
+if (( rc != 0 )); then
+  echo "REQUIRED_GATE=FAIL rc=$rc" >&2
+  exit "$rc"
+fi
+echo "REQUIRED_GATE=PASS"
+```
+
+When a command is piped through `tee`, preserve the producer status with
+`PIPESTATUS[0]`. A successful `tee` must never hide a failed producer.
 
 ## Required release report
 
@@ -126,17 +158,19 @@ Create or update:
 reports/go_live/RELEASE_STABILIZATION_REPORT.md
 ```
 
-Include branch, scope, changed files, commands run, checks passed/failed, safety status, deploy status, remaining blockers, and merge recommendation.
+Include branch, scope, changed files, commands run, exact exit codes, checks
+passed/failed/skipped, safety status, deploy status, remaining blockers, and
+merge recommendation.
 
 ## Definition of done
 
 A release PR is ready when:
 
 - scope is small and reviewable
-- build/test status is clear
+- build/test status is clear and fail-closed
 - safe outbound defaults remain intact
 - no secrets are committed
-- PR body documents commands run
+- PR body documents commands run and exact outcomes
 - remaining blockers are explicit
 
 ## Final response format
