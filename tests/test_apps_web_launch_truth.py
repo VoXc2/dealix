@@ -11,23 +11,37 @@ def _read(relative: str) -> str:
     return (WEB / relative).read_text(encoding="utf-8")
 
 
-def test_homepage_uses_v3_market_labels_without_public_price_or_proof_drift() -> None:
-    text = _read("app/page.tsx")
+def test_homepage_uses_current_interactive_market_truth_without_price_or_proof_drift() -> None:
+    page = _read("app/page.tsx")
+    home = _read("components/landing/InteractiveHome.tsx")
 
-    assert "منصة التنفيذ الذكي المحكوم للأعمال" in text
-    assert "Signal → Decision → Action → Proof" in text
-    assert "Execution Diagnostic" in text
-    assert "Outcome Sprint" in text
-    assert "Dealix Runtime" in text
-    assert "Qualified Discovery + Quote" in text
-    assert "Proof Review" in text
+    assert "InteractiveHome" in page
+    assert "AI Business Operating System" in page
+    assert "Saudi Arabia" in page
 
-    assert "PREMIUM_OFFERS" not in text
-    assert "شاهد كل العروض السبعة" not in text
-    assert "ابدأ بـ7 أيام" not in text
-    assert "100 شركة تُبحث يوميًا" not in text
-    assert "نضمن ROI" not in text
-    assert "ROI مضمون خلال" not in text
+    assert "Signal" in home
+    assert "Decision" in home
+    assert "Action" in home
+    assert "Proof" in home
+    assert "Execution Diagnostic" in home
+    assert "Qualified Discovery" in home
+    assert "Customer-Specific Outcome Sprint" in home
+    assert "Proof Review" in home
+    assert "Dealix Runtime" in home
+    assert "Free Execution Diagnostic" in home
+    assert "عرض خاص بالعميل" in home
+
+    for retired in (
+        "PREMIUM_OFFERS",
+        "شاهد كل العروض السبعة",
+        "ابدأ بـ7 أيام",
+        "100 شركة تُبحث يوميًا",
+        "ROI مضمون خلال",
+    ):
+        assert retired not in home
+
+    # Explicit negation is allowed and required; a positive guarantee is not.
+    assert "لا نضمن ROI" in home
 
 
 def test_pricing_page_is_customer_specific_quote_only_and_not_self_serve() -> None:
@@ -49,21 +63,27 @@ def test_pricing_page_is_customer_specific_quote_only_and_not_self_serve() -> No
     assert "الاشتراك الشهري قابل للإلغاء" not in text
 
 
-def test_book_page_is_execution_diagnostic_then_quote_only_governed_delivery() -> None:
+def test_book_page_is_inbound_execution_diagnostic_with_evidence_first_truth() -> None:
     text = _read("app/book/page.tsx")
 
-    assert "Execution Diagnostic" in text
-    assert "Qualified Discovery" in text
-    assert "Customer-Specific Quote" in text
-    assert "Outcome Sprint" in text
-    assert "Dealix Runtime" in text
-    assert "لا Checkout" in text
-    assert "mass outreach" in text
-    assert "cold WhatsApp" in text
+    assert "Free Execution Diagnostic" in text
+    assert "/api/v1/public/execution-diagnostic" in text
+    assert "workflow" in text
+    assert "decision_owner" in text
+    assert "tools_data" in text
+    assert "business_impact" in text
+    assert "proof_metric" in text
+    assert "baseline" in text
+    assert "target_outcome" in text
+    assert "followup_requested" in text
 
-    # Market-facing names must not grant public pricing, checkout, or guaranteed results.
-    assert "سعر ثابت" not in text
-    assert "نضمن ROI" not in text
+    assert "لا نعتبر الفرضية مشكلة مثبتة قبل وجود baseline ودليل" in text
+    assert "لا يتم اعتبار المشكلة أو العائد أو Proof مثبتًا من مجرد التسجيل" in text
+    assert "هذه الصفحة قناة inbound" in text
+    assert "لا تعتبر رقمًا أو بريدًا عامًا موافقة على مراسلات تسويقية" in text
+
+    for forbidden in ("سعر ثابت", "نضمن ROI", "public checkout", "auto-send"):
+        assert forbidden not in text
 
 
 def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
@@ -81,7 +101,6 @@ def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
     for redirect in required_redirects:
         assert redirect in text
 
-    # Public legacy URLs must never be routed into founder/RBAC-only surfaces.
     assert '{ source: "/customer-portal.html", destination: "/proof-vault"' not in text
     assert '{ source: "/proof.html", destination: "/proof-vault"' not in text
     assert "Self-serve /signup is intentionally active" not in text
