@@ -5,7 +5,13 @@
 set -Eeuo pipefail
 umask 077
 
-ROOT="$(git rev-parse --show-toplevel)"
+# Resolve repository identity from this script's own location instead of the
+# caller's current working directory. The acceptance runner is invoked from
+# VPS/control-plane wrappers as well as from inside repository worktrees, so
+# requiring the caller to cd into the worktree can create an environment-only
+# false failure (git rc=128) before any repository gate actually executes.
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"
 cd "$ROOT"
 
 EXPECTED_HEAD="${DEALIX_ACCEPT_EXPECTED_HEAD:-}"
