@@ -44,14 +44,10 @@ async def test_journey_sector_research_visible_without_public_price(async_client
 
 
 @pytest.mark.asyncio
-async def test_journey_pricing_waits_for_specific_public_authority(async_client):
+async def test_journey_pricing_surface_is_not_publicly_mounted(async_client):
+    """Quote-only launch must not expose the retired public pricing surface."""
     res = await async_client.get("/api/v1/pricing/plans")
-    assert res.status_code == 200
-    body = res.json()
-    assert body["plans"] == {}
-    assert body["public_pricing_enabled"] is False
-    assert body["status"] == "founder_approval_required"
-    assert body["catalog_status"] in {"registry", "unavailable"}
+    assert res.status_code == 404
 
 
 @pytest.mark.asyncio
