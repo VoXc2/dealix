@@ -5,12 +5,11 @@ import Link from "next/link";
 const links = [
   { href: "/", label: "الرئيسية" },
   { href: "/sales-machine", label: "آلة المبيعات" },
-  { href: "/offers", label: "العروض" },
-  { href: "/pricing", label: "التسعير" },
-  { href: "/book", label: "احجز مراجعة" },
+  { href: "/services", label: "الخدمات" },
+  { href: "/pricing", label: "Engagement Path" },
+  { href: "/book", label: "التشخيص المجاني" },
 ];
 
-// Live operational surfaces (admin- or tenant-authenticated by route).
 const commandLinks = [
   { href: "/founder/command-room", label: "غرفة القيادة" },
   { href: "/commercial-intelligence", label: "الذكاء التجاري" },
@@ -21,28 +20,30 @@ const commandLinks = [
 export default function Nav() {
   return (
     <nav className="navbar" aria-label="Primary navigation">
-      <Link href="/" className="navbar-brand" aria-label="Dealix Home">
-        Dealix
+      <Link href="/" className="navbar-brand brand-logo-link" aria-label="Dealix Home">
+        <img
+          className="brand-logo"
+          src="/dealix-logo-white.svg"
+          alt="Dealix — AI Business Operating System"
+          width="178"
+          height="43"
+        />
       </Link>
       <ul className="navbar-links" role="list">
-        {links.map((l) => (
-          <li key={l.href}>
-            <Link href={l.href}>{l.label}</Link>
-          </li>
+        {links.map((link) => (
+          <li key={link.href}><Link href={link.href}>{link.label}</Link></li>
         ))}
-        <li aria-hidden="true" style={{ opacity: 0.35 }}>·</li>
-        {commandLinks.map((l) => (
-          <li key={l.href}>
-            <Link href={l.href}>{l.label}</Link>
-          </li>
+        <li className="nav-separator" aria-hidden="true">·</li>
+        {commandLinks.map((link) => (
+          <li key={link.href}><Link href={link.href}>{link.label}</Link></li>
         ))}
       </ul>
-      <div className="actions" style={{ marginTop: 0 }}>
-        <Link href="/founder/command-room" className="btn btn-ghost" style={{ minHeight: 38, padding: "0 16px", fontSize: "0.82rem" }}>
+      <div className="actions nav-actions">
+        <Link href="/founder/command-room" className="btn btn-ghost nav-secondary-action">
           غرفة القيادة
         </Link>
-        <Link href="/book" style={{ minHeight: 38, padding: "0 18px", fontSize: "0.82rem" }}>
-          احجز مراجعة تشغيلية
+        <Link href="/book" className="nav-primary-action">
+          ابدأ التشخيص
         </Link>
       </div>
     </nav>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="400" height="96" role="img" aria-label="Dealix — AI Business Operating System">
+  <defs>
+    <linearGradient id="dealix-white-d" x1="8" y1="8" x2="80" y2="88" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="0.30" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#164E63"/>
+    </linearGradient>
+    <linearGradient id="dealix-white-signal" x1="0" y1="30" x2="34" y2="66" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A5F3FC"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(4 4) scale(1.35)">
+    <path fill="url(#dealix-white-d)" fill-rule="evenodd" clip-rule="evenodd" d="M12 8h20c14 0 24 10.75 24 24S46 56 32 56H12V8Zm10 10v28h10c8.2 0 14-6.1 14-14s-5.8-14-14-14H22Z"/>
+    <path d="M6 21.5 24.5 32 6 42.5Z" fill="url(#dealix-white-signal)"/>
+  </g>
+  <g transform="translate(102 13)">
+    <text x="0" y="39" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="750" letter-spacing="-1.5" fill="#F8FAFC">Dealix</text>
+    <text x="1" y="62" font-family="IBM Plex Sans Arabic, Arial, sans-serif" font-size="18" font-weight="600" fill="#A5F3FC">ديليكس</text>
+    <text x="0" y="82" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="650" letter-spacing="2.4" fill="#CBD5E1">AI BUSINESS OPERATING SYSTEM</text>
+  </g>
+</svg>
