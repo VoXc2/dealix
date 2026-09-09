@@ -72,12 +72,18 @@ def test_runner_does_not_mask_required_gate_failures() -> None:
 def test_catalog_repair_runs_python_and_pytest_from_exact_worktree_cwd() -> None:
     text = _catalog_repair_source()
     assert "run_in_wt()" in text
-    assert 'cd "$1"' in text
+    assert 'cd "$WT"' in text
     assert 'PYTHONPATH="$WT"' in text
     assert 'HOME="/home/$RUN_USER"' in text
     assert 'run_in_wt "$PY" scripts/ops/build_verify_catalog.py > "$TMP"' in text
     assert 'run_in_wt "$PY" scripts/ops/build_verify_catalog.py --check' in text
     assert 'run_in_wt "$PY" -m pytest -q tests/test_verify_catalog.py' in text
+
+
+def test_catalog_repair_avoids_shellcheck_sc2016_child_shell_pattern() -> None:
+    text = _catalog_repair_source()
+    assert "bash -c 'set -Eeuo pipefail" not in text
+    assert 'cd "$1"' not in text
 
 
 def test_catalog_repair_does_not_run_repo_pytest_from_inherited_root_cwd() -> None:
