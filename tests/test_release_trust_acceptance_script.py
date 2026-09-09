@@ -55,6 +55,22 @@ def test_actionlint_keeps_warning_and_error_shell_findings_blocking() -> None:
     assert "ACTIONLINT=SKIPPED_ENVIRONMENT" in text
 
 
+def test_canonical_shellcheck_owns_every_pr1600_trust_runner() -> None:
+    text = _text()
+    required_shell_scripts = (
+        "scripts/ops/fail_closed_gate.sh",
+        "scripts/ops/living_fleet_dispatch.sh",
+        "scripts/ops/accept_release_trust_pr.sh",
+        "scripts/ops/repair_verify_catalog_exact_head.sh",
+        "scripts/ops/run_pr1600_exact_focused.sh",
+        "scripts/ops/run_pr1600_live_focused_acceptance.sh",
+        "scripts/ops/run_pr1600_live_full_acceptance.sh",
+    )
+    assert "run_gate SHELLCHECK shellcheck" in text
+    for path in required_shell_scripts:
+        assert path in text
+
+
 def test_docker_web_fallback_is_fail_closed_and_does_not_mutate_host_node() -> None:
     text = _text()
     assert 'run_gate WEB_NPM_CI docker run --rm' in text
