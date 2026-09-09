@@ -3,10 +3,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts" / "ops" / "run_pr1600_exact_focused.sh"
+CATALOG_REPAIR = ROOT / "scripts" / "ops" / "repair_verify_catalog_exact_head.sh"
 
 
 def _source() -> str:
     return RUNNER.read_text(encoding="utf-8")
+
+
+def _catalog_repair_source() -> str:
+    return CATALOG_REPAIR.read_text(encoding="utf-8")
 
 
 def test_runner_avoids_heredocs_after_v11_wrapper_incident() -> None:
@@ -62,3 +67,42 @@ def test_runner_does_not_mask_required_gate_failures() -> None:
     assert "|| true" not in text
     assert "DEALIX_ACCEPT_FULL_PYTEST=0" in text
     assert 'FOCUSED_RC=$?' in text
+
+
+def test_catalog_repair_runs_python_and_pytest_from_exact_worktree_cwd() -> None:
+    text = _catalog_repair_source()
+    assert "run_in_wt()" in text
+    assert 'cd "$1"' in text
+    assert 'PYTHONPATH="$WT"' in text
+    assert 'HOME="/home/$RUN_USER"' in text
+    assert 'run_in_wt "$PY" scripts/ops/build_verify_catalog.py > "$TMP"' in text
+    assert 'run_in_wt "$PY" scripts/ops/build_verify_catalog.py --check' in text
+    assert 'run_in_wt "$PY" -m pytest -q tests/test_verify_catalog.py' in text
+
+
+def test_catalog_repair_does_not_run_repo_pytest_from_inherited_root_cwd() -> None:
+    text = _catalog_repair_source()
+    forbidden = (
+        'as_dealix env PYTHONPATH="$WT" "$PY" -m pytest',
+        'as_dealix "$PY" -m pytest',
+    )
+    for token in forbidden:
+        assert token not in text
+
+
+def test_catalog_repair_remains_l4_only() -> None:
+    text = _catalog_repair_source().lower()
+    forbidden = (
+        "gh pr merge",
+        "railway up",
+        "railway deploy",
+        "vercel --prod",
+        "dns_mutation=1",
+        "db_mutation=1",
+        "secret_mutation=1",
+        "payment_execution=1",
+        "dealix_external_send=1",
+    )
+    for token in forbidden:
+        assert token not in text
+    assert "production_green=false" in text
