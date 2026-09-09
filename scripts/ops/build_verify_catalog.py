@@ -89,7 +89,10 @@ def main() -> None:
         print(f"OK: {CATALOG_PATH} in sync ({len(rows)} scripts)")
         raise SystemExit(0)
 
-    sys.stdout = sys.stdout.reconfigure(encoding="utf-8", errors="strict")
+    # TextIOWrapper.reconfigure mutates the existing stream in place and
+    # returns None. Reassigning sys.stdout to that return value makes the
+    # following print fail. Keep the stream object and only reconfigure it.
+    sys.stdout.reconfigure(encoding="utf-8", errors="strict")
     print(rendered, end="")
 
 
