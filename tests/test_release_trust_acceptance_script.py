@@ -42,6 +42,37 @@ def test_docker_web_fallback_is_fail_closed_and_does_not_mutate_host_node() -> N
     assert "npm install -g" not in text
 
 
+def test_targeted_acceptance_covers_every_high_risk_contract_changed_in_pr() -> None:
+    text = _text()
+    required_targets = (
+        "tests/test_fail_closed_gate.py",
+        "tests/test_release_trust_acceptance_script.py",
+        "tests/test_living_fleet_shell_safety.py",
+        "tests/test_living_fleet_guards.py",
+        "tests/test_wave6_pilot_brief.py",
+        "tests/test_delivery_workspace_created.py",
+        "tests/test_delivery_requires_acceptance_criteria.py",
+        "tests/test_proof_pack_generated.py",
+        "tests/test_ai_workforce_policy.py",
+        "tests/test_active_operator_commercial_authority.py",
+        "tests/test_billing_router_mounted.py",
+        "tests/test_billing_moyasar_safety.py",
+        "tests/test_pricing_plans_endpoint.py",
+        "tests/test_apps_web_launch_truth.py",
+        "tests/test_commercial_map.py",
+        "tests/test_service_catalog.py",
+        "tests/test_customer_portal_contract_final.py",
+        "tests/test_customer_portal_empty_states_final.py",
+        "tests/test_customer_portal_full_ops.py",
+        "tests/test_frontend_professional_polish.py",
+        "tests/test_public_launch_truth.py",
+        "tests/test_railway_canonical_contract.py",
+        "tests/test_canonical_daily_workflow_contract.py",
+    )
+    for target in required_targets:
+        assert target in text
+
+
 def test_acceptance_runner_contains_no_material_execution_verbs() -> None:
     text = _text().lower()
     forbidden_commands = (
