@@ -10,6 +10,7 @@ set -Eeuo pipefail
 # - pinned release archive is verified by the official GitHub SHA-256 checksum
 # - an already-configured but stopped runner is recovered fail-closed instead of
 #   being reported as a successful installation
+# - proof distinguishes the installed runner version from the desired pinned version
 
 REPO="Dealix-sa/dealix"
 REPO_URL="https://github.com/${REPO}"
@@ -55,8 +56,40 @@ fi
 
 mkdir -p "$RUNNER_DIR"
 chown "$RUNNER_USER:$RUNNER_USER" "$RUNNER_DIR"
-
 cd "$RUNNER_DIR"
+
+actual_runner_version() {
+  if [[ -x ./bin/Runner.Listener ]]; then
+    ./bin/Runner.Listener --version 2>/dev/null | tail -n 1 | tr -d '\r' || true
+  else
+    printf 'unknown\n'
+  fi
+}
+
+print_runner_proof() {
+  local recovered="$1"
+  local actual upgrade_required
+  actual="$(actual_runner_version)"
+  [[ -n "$actual" ]] || actual="unknown"
+  if [[ "$actual" == "$RUNNER_VERSION" ]]; then
+    upgrade_required=false
+  else
+    upgrade_required=true
+  fi
+
+  echo
+  echo "===== DEALIX SELF-HOSTED RUNNER PROOF ====="
+  printf 'runner_name=%s\n' "$RUNNER_NAME"
+  printf 'runner_dir=%s\n' "$RUNNER_DIR"
+  printf 'runner_user=%s\n' "$RUNNER_USER"
+  printf 'runner_version_actual=%s\n' "$actual"
+  printf 'runner_version_target=%s\n' "$RUNNER_VERSION"
+  printf 'runner_upgrade_required=%s\n' "$upgrade_required"
+  printf 'repository_private=true\n'
+  printf 'configured_runner_recovered=%s\n' "$recovered"
+  printf 'secret_values_printed=false\n'
+  echo "===== END ====="
+}
 
 if [[ -f .runner ]]; then
   echo "Runner is already configured at $RUNNER_DIR."
@@ -79,16 +112,7 @@ if [[ -f .runner ]]; then
     exit 11
   fi
 
-  echo
-  echo "===== DEALIX SELF-HOSTED RUNNER PROOF ====="
-  printf 'runner_name=%s\n' "$RUNNER_NAME"
-  printf 'runner_dir=%s\n' "$RUNNER_DIR"
-  printf 'runner_user=%s\n' "$RUNNER_USER"
-  printf 'runner_version=%s\n' "$RUNNER_VERSION"
-  printf 'repository_private=true\n'
-  printf 'configured_runner_recovered=true\n'
-  printf 'secret_values_printed=false\n'
-  echo "===== END ====="
+  print_runner_proof true
   exit 0
 fi
 
@@ -106,7 +130,6 @@ echo "${RUNNER_SHA256}  ${TMP_ARCHIVE}" | sha256sum --check --status || {
   echo "BLOCKED: runner archive SHA-256 verification failed."
   exit 8
 }
-
 echo "Runner archive checksum verified."
 tar xzf "$TMP_ARCHIVE" -C "$RUNNER_DIR"
 chown -R "$RUNNER_USER:$RUNNER_USER" "$RUNNER_DIR"
@@ -119,13 +142,11 @@ if getent group docker >/dev/null 2>&1; then
   usermod -aG docker "$RUNNER_USER"
 fi
 
-# Avoid needrestart interrupting an active Actions job on Ubuntu/Debian.
 mkdir -p /etc/needrestart/conf.d
 cat >/etc/needrestart/conf.d/actions_runner_services.conf <<'EOF'
 $nrconf{override_rc}{qr(^actions\.runner\..+\.service$)} = 0;
 EOF
 
-# Ephemeral registration token: fetched locally and never echoed.
 TOKEN="$(sudo -iu "$RUNNER_USER" gh api \
   --method POST \
   "repos/${REPO}/actions/runners/registration-token" \
@@ -148,7 +169,6 @@ sudo -iu "$RUNNER_USER" bash -c '
     --labels "dealix-vps,dealix-command,ollama,n8n" \
     --work "_work"
 ' _ "$RUNNER_DIR" "$REPO_URL" "$TOKEN" "$RUNNER_NAME"
-
 unset TOKEN
 
 cd "$RUNNER_DIR"
@@ -160,13 +180,4 @@ if ! ./svc.sh status; then
   exit 12
 fi
 
-echo
-echo "===== DEALIX SELF-HOSTED RUNNER PROOF ====="
-printf 'runner_name=%s\n' "$RUNNER_NAME"
-printf 'runner_dir=%s\n' "$RUNNER_DIR"
-printf 'runner_user=%s\n' "$RUNNER_USER"
-printf 'runner_version=%s\n' "$RUNNER_VERSION"
-printf 'repository_private=true\n'
-printf 'configured_runner_recovered=false\n'
-printf 'secret_values_printed=false\n'
-echo "===== END ====="
+print_runner_proof false
