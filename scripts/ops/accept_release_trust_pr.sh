@@ -61,8 +61,12 @@ if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
   host_node_major="$(node -p 'Number(process.versions.node.split(".")[0])' 2>/dev/null || printf '0')"
 fi
 
-if [[ "$host_node_major" == "20" ]] || (( host_node_major >= 22 )); then
-  WEB_NODE_MODE="HOST_SUPPORTED_NODE"
+# Web production currently builds/runs on Node 22 (apps/web/Dockerfile). Use
+# host tooling only when it is exactly production-equivalent; newer Current or
+# other LTS majors must not become accidental release authority. Fall back to
+# the isolated Node 22 image instead of mutating the host runtime.
+if [[ "$host_node_major" == "22" ]]; then
+  WEB_NODE_MODE="HOST_PRODUCTION_NODE22"
   printf 'NODE_RUNTIME=PASS mode=%s version=%s\n' "$WEB_NODE_MODE" "$(node -v)"
 elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
   WEB_NODE_MODE="DOCKER_NODE22"
@@ -71,14 +75,14 @@ elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
   fi
   run_gate WEB_NODE22_RUNTIME docker run --rm "$NODE_IMAGE" node -e '
     const major = Number(process.versions.node.split(".")[0]);
-    if (!(major === 20 || major >= 22)) process.exit(13);
+    if (major !== 22) process.exit(13);
     console.log(process.version);
   '
   printf 'NODE_RUNTIME=PASS mode=%s image=%s\n' "$WEB_NODE_MODE" "$NODE_IMAGE"
 else
-  printf 'NODE_RUNTIME=BLOCKED host_version=%s required="20 || >=22" docker_available=false\n' \
+  printf 'NODE_RUNTIME=BLOCKED host_version=%s required="production Node 22 or Docker Node 22" docker_available=false\n' \
     "$(node -v 2>/dev/null || printf 'missing')" >&2
-  fail_env "supported_node_runtime_unavailable"
+  fail_env "production_equivalent_node22_unavailable"
 fi
 
 if [[ -n "$EXPECTED_BASE" ]]; then
@@ -127,7 +131,7 @@ else
   printf 'ACTIONLINT=SKIPPED_ENVIRONMENT reason=not_installed\n'
 fi
 
-if [[ "$WEB_NODE_MODE" == "HOST_SUPPORTED_NODE" ]]; then
+if [[ "$WEB_NODE_MODE" == "HOST_PRODUCTION_NODE22" ]]; then
   (
     cd apps/web
     run_gate WEB_NPM_CI npm ci
