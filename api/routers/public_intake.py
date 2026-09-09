@@ -78,9 +78,9 @@ class ExecutionDiagnosticIntake(BaseModel):
     urgency: str = Field(default="", max_length=500)
 
     preferred_contact: Literal["email", "phone", "whatsapp", "either"] = "email"
-    # This is a customer request for follow-up about THIS diagnostic. It is not
+    # Purpose-specific service follow-up must be explicit. This is not
     # durable/direct-marketing consent and is never promoted to such.
-    followup_requested: bool = True
+    followup_requested: bool = False
     language_preference: Literal["ar", "en", "ar_en"] = "ar_en"
 
 
