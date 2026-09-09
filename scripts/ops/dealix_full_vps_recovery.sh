@@ -525,11 +525,11 @@ curl -sS -o /dev/null --max-time 10 -w '%{http_code}\n' http://127.0.0.1:11434/a
 
 section "11. GITHUB TRUST READ-ONLY"
 sudo -u "$RUN_USER" -H gh pr view "$RUNTIME_PR" --repo "$REPO_SLUG" \
-  --json number,state,isDraft,mergeable,headRefOid,baseRefOid,statusCheckRollup \
-  | jq '{number,state,isDraft,mergeable,headRefOid,baseRefOid,checks:[.statusCheckRollup[]? | {name:(.name // .context),status,conclusion,state}]}' || true
+  --json number,state,isDraft,mergeable,headRefOid,baseRefName,statusCheckRollup \
+  | jq '{number,state,isDraft,mergeable,headRefOid,baseRefName,checks:[.statusCheckRollup[]? | {name:(.name // .context),status,conclusion,state}]}' || true
 sudo -u "$RUN_USER" -H gh pr view "$OPENCLAW_PR" --repo "$REPO_SLUG" \
-  --json number,state,isDraft,mergeable,headRefOid,baseRefOid,statusCheckRollup \
-  | jq '{number,state,isDraft,mergeable,headRefOid,baseRefOid,checks:[.statusCheckRollup[]? | {name:(.name // .context),status,conclusion,state}]}' || true
+  --json number,state,isDraft,mergeable,headRefOid,baseRefName,statusCheckRollup \
+  | jq '{number,state,isDraft,mergeable,headRefOid,baseRefName,checks:[.statusCheckRollup[]? | {name:(.name // .context),status,conclusion,state}]}' || true
 
 echo "github_actions_execution_plane=BLOCKED_QUOTA_ISSUE_1134"
 echo "github_actions_rerun=NOT_ATTEMPTED"
