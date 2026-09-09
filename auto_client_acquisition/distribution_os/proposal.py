@@ -1,9 +1,9 @@
-"""Proposal Factory — proposals bound to a real catalog product + approval gate.
+"""Proposal Factory — evidence-bound, quote-only, approval-first.
 
-Rules (plan section 8): no proposal without a qualified prospect, no final
-price without approval, no open scope, no guarantees. The reference price is
-read from the catalog — never invented. ``approval_status`` starts as
-``pending_approval``; the final/sendable price is gated behind approval.
+A legacy catalog product may identify a capability taxonomy, but it is never
+price authority for a paid proposal. Paid proposals require qualified discovery
+plus a documented customer-specific quote. The Free Mini Diagnostic remains a
+zero-price entry motion and does not require a paid quote.
 """
 
 from __future__ import annotations
@@ -17,12 +17,14 @@ from auto_client_acquisition.distribution_os import catalog
 from auto_client_acquisition.distribution_os._store import JsonlStore, now_iso
 from auto_client_acquisition.distribution_os.draft_quality import check_draft
 
+_PRICE_AUTHORITY = "customer_specific_quote_after_qualified_discovery"
+
 
 class ProposalStatus(StrEnum):
     PENDING_APPROVAL = "pending_approval"
     APPROVED = "approved"
     REJECTED = "rejected"
-    SENT = "sent"  # reserved; set only after manual founder send
+    SENT = "sent"  # reserved; recorded only after a separately authorized send
 
 
 @dataclass
@@ -36,8 +38,14 @@ class Proposal:
     scope: list[str] = field(default_factory=list)
     out_of_scope: list[str] = field(default_factory=list)
     timeline: str = ""
-    price_min_sar: int = 0
-    price_max_sar: int = 0
+    discovery_ref: str = ""
+    quote_id: str = ""
+    customer_specific_quote_sar: float | None = None
+    price_min_sar: float = 0.0
+    price_max_sar: float = 0.0
+    price_authority: str = _PRICE_AUTHORITY
+    public_fixed_price: bool = False
+    external_send_allowed: bool = False
     assumptions: list[str] = field(default_factory=list)
     evidence_level: int = 0
     risks: list[str] = field(default_factory=list)
@@ -66,24 +74,42 @@ def generate_proposal(
     scope: list[str] | None = None,
     out_of_scope: list[str] | None = None,
     timeline: str = "",
+    discovery_ref: str = "",
+    quote_id: str = "",
+    customer_specific_quote_sar: float | None = None,
     assumptions: list[str] | None = None,
     evidence_level: int = 0,
     risks: list[str] | None = None,
     payment_terms: str = "",
     next_step: str = "",
 ) -> Proposal:
-    """Build a proposal. ``product_id`` MUST be a valid catalog id; the price
-    band is pulled from the catalog (no invented price). Requires a non-empty
-    ``out_of_scope`` so scope is never left open.
+    """Build an internal proposal draft under current commercial authority.
+
+    Paid capability taxonomy entries require discovery + quote evidence. The
+    catalog is used only to validate the capability id, never to infer price.
     """
     if not prospect_id:
         raise ValueError("prospect_id is required (no proposal without a prospect)")
-    if not catalog.is_valid_product_id(product_id):
-        raise ValueError(f"unknown_product_id:{product_id} (link to a catalog product)")
+    product = catalog.product_by_id(product_id)
+    if product is None:
+        raise ValueError(f"unknown_product_id:{product_id}")
     out_scope = out_of_scope or []
     if not out_scope:
         raise ValueError("out_of_scope must not be empty (no open scope)")
-    pmin, pmax = catalog.price_band(product_id)
+
+    is_free_entry = product.tier == catalog.ProductTier.FREE_DIAGNOSTIC
+    if is_free_entry:
+        if customer_specific_quote_sar not in (None, 0, 0.0):
+            raise ValueError("free_diagnostic_cannot_carry_paid_quote")
+        quote_amount = 0.0
+    else:
+        if not discovery_ref.strip():
+            raise ValueError("paid_proposal_requires_discovery_ref")
+        if not quote_id.strip():
+            raise ValueError("paid_proposal_requires_quote_id")
+        if customer_specific_quote_sar is None or customer_specific_quote_sar <= 0:
+            raise ValueError("paid_proposal_requires_customer_specific_quote")
+        quote_amount = float(customer_specific_quote_sar)
 
     proposal = Proposal(
         prospect_id=prospect_id,
@@ -94,15 +120,17 @@ def generate_proposal(
         scope=scope or [],
         out_of_scope=out_scope,
         timeline=timeline,
-        price_min_sar=pmin,
-        price_max_sar=pmax,
+        discovery_ref=discovery_ref.strip(),
+        quote_id=quote_id.strip(),
+        customer_specific_quote_sar=(None if is_free_entry else quote_amount),
+        price_min_sar=quote_amount,
+        price_max_sar=quote_amount,
         assumptions=assumptions or [],
         evidence_level=evidence_level,
         risks=risks or [],
         payment_terms=payment_terms,
         next_step=next_step,
     )
-    # Guard the narrative fields against guaranteed-outcome language.
     narrative = " ".join([problem, proposed_solution, next_step, payment_terms])
     quality = check_draft(text=narrative, max_chars=10000)
     if quality.decision == "block":
