@@ -1,9 +1,10 @@
 """Checkout idempotency is a reliability contract, not pricing authority.
 
-These tests use synthetic in-test plans so replay behavior is proven without
-binding the suite to retired public pricing aliases or granting any commercial
-authority. Production/public checkout remains governed independently by the
-canonical pricing registry and founder gates.
+The production app intentionally removes legacy public checkout/pricing routes
+from its launch-safe router view. These tests therefore mount the source pricing
+router in an isolated FastAPI app and use synthetic in-test plans. This proves
+retry/idempotency behavior without resurrecting a public checkout surface or
+binding reliability coverage to retired customer pricing.
 """
 
 from __future__ import annotations
@@ -58,12 +59,21 @@ def approved_plans(monkeypatch):
 
 @pytest.fixture
 def client(monkeypatch, approved_plans):
+    """Exercise the retired checkout implementation without mounting it publicly.
+
+    ``api.main`` deliberately filters ``/api/v1/checkout`` from the launch app.
+    Reliability coverage still matters, so mount the source router only inside
+    this test process. This fixture is not production routing authority.
+    """
+    from fastapi import FastAPI
     from fastapi.testclient import TestClient
 
-    from api.main import app
+    from api.routers import pricing
 
     monkeypatch.setenv("DEALIX_CHECKOUT_ENABLED", "1")
     monkeypatch.setenv("APP_URL", "https://api.dealix.me")
+    app = FastAPI()
+    app.include_router(pricing.router)
     return TestClient(app)
 
 
