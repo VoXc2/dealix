@@ -42,7 +42,7 @@ Real Interaction
 -> Qualified Discovery
 -> Customer-Specific Quote
 -> Verified Payment
--> Governed Delivery
+-> Governed Delivery via the 30-Day Revenue Command Pilot
 -> Customer-Validated Proof
 -> Expansion / Referral
 -> Repeatability
@@ -106,14 +106,14 @@ Prepare internally, in this order:
 6. Prepare a customer-specific quote draft; no public/fixed price is authority.
 7. Review margin, capacity, privacy/tenant/production blockers and finance/payment requirements.
 8. Prepare the exact external-send approval packet if sharing is allowed by current product/channel authority.
-9. Prepare invoicing/payment instructions only after the accountable finance/tax/issuer path is approved.
+9. Do not create or send a payment request until the accountable finance/tax/issuer path and exact payment action are approved.
 10. Start paid delivery only when its explicit start conditions and payment evidence are satisfied.
 
 ## Production / Railway / DNS
 
 Read-only health and evidence checks are allowed.
 
-Any live deploy, provider-config change, DNS/custom-domain mutation, secret change, production DB migration, branch-protection mutation, public publish or merge requires the applicable exact action-specific authority.
+Any live deploy, provider-config change, DNS/custom-domain mutation, secret change, production DB migration, branch-protection mutation, public publish or merge requires the applicable exact action-specific authority. Production changes require action-specific production approval.
 
 Production truth must come from current release identity + health + migration/backend + public front-door evidence, not a stale document.
 
