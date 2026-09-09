@@ -94,6 +94,7 @@ run_gate SHELLCHECK shellcheck \
 TARGET_TESTS=(
   tests/test_fail_closed_gate.py
   tests/test_release_trust_acceptance_script.py
+  tests/test_pr1600_exact_focused_runner.py
 
   tests/test_living_fleet_shell_safety.py
   tests/test_living_fleet_guards.py
