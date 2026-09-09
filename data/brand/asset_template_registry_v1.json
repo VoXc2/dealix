@@ -1,0 +1,216 @@
+{
+  "schema": "dealix.brand-asset-registry.v1",
+  "status": "DRAFT_INTERNAL",
+  "masterbrand": "Dealix",
+  "brand_version": "V2.1_DRAFT",
+  "authority": {
+    "brand": "data/brand/brand_authority.json",
+    "design_tokens": "data/brand/design_tokens_v2_1.json",
+    "asset_system": "docs/brand/DEALIX_ENTERPRISE_ASSET_SYSTEM_V1.md",
+    "claims": "docs/brand/CLAIMS_GUARDRAILS.md"
+  },
+  "required_metadata": [
+    "content_id",
+    "brand_version",
+    "claim_version",
+    "template_version",
+    "asset_family",
+    "buying_group_role",
+    "sector_or_motion",
+    "evidence_references",
+    "proof_class",
+    "cta",
+    "channel",
+    "locale",
+    "lifecycle_state",
+    "owner_agent",
+    "last_verified_at"
+  ],
+  "allowed_owner_agents": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content"
+  ],
+  "proof_classes": [
+    "NONE",
+    "INTERNAL_CAPABILITY_PROOF",
+    "SYNTHETIC_OR_DEMO_PROOF",
+    "RUNTIME_OR_PRODUCTION_PROOF",
+    "CUSTOMER_DELIVERY_PROOF",
+    "CUSTOMER_OUTCOME_PROOF"
+  ],
+  "lifecycle_states": [
+    "DRAFT",
+    "INTERNAL_REVIEW",
+    "APPROVAL_REQUIRED",
+    "APPROVED_FOR_SPECIFIC_USE",
+    "SUPERSEDED",
+    "ARCHIVED"
+  ],
+  "templates": [
+    {
+      "id": "company_profile_v2_1",
+      "family": "FOUNDATION",
+      "owner_agent": "dealix-content",
+      "support_agents": ["dealix-sales", "dealix-delivery", "dealix-engineer"],
+      "buying_groups": ["FOUNDER_GM", "REVENUE_COMMERCIAL", "OPERATIONS", "FINANCE_PROCUREMENT", "IT_SECURITY", "LEGAL_GOVERNANCE"],
+      "channels": ["PDF", "PRESENTATION", "WEBSITE_DOWNLOAD"],
+      "locales": ["ar-SA", "en-SA"],
+      "public_publish_authority": false
+    },
+    {
+      "id": "capability_statement_one_page",
+      "family": "FOUNDATION",
+      "owner_agent": "dealix-content",
+      "support_agents": ["dealix-sales"],
+      "buying_groups": ["FOUNDER_GM", "FINANCE_PROCUREMENT", "IT_SECURITY"],
+      "channels": ["PDF", "EMAIL_ATTACHMENT", "PARTNER_PORTAL_SUPPORT"],
+      "locales": ["ar-SA", "en-SA"],
+      "public_publish_authority": false
+    },
+    {
+      "id": "execution_diagnostic",
+      "family": "COMMERCIAL",
+      "owner_agent": "dealix-sales",
+      "support_agents": ["dealix-delivery", "dealix-engineer"],
+      "buying_groups": ["FOUNDER_GM", "REVENUE_COMMERCIAL", "OPERATIONS"],
+      "channels": ["WEB", "PDF", "MEETING"],
+      "locales": ["ar-SA", "en-SA"],
+      "public_publish_authority": false
+    },
+    {
+      "id": "customer_specific_proposal",
+      "family": "COMMERCIAL",
+      "owner_agent": "dealix-sales",
+      "support_agents": ["dealix-delivery", "dealix-engineer", "dealix-content"],
+      "buying_groups": ["FOUNDER_GM", "FINANCE_PROCUREMENT", "IT_SECURITY", "LEGAL_GOVERNANCE"],
+      "channels": ["PDF", "PRESENTATION"],
+      "locales": ["ar-SA", "en-SA"],
+      "binding_quote_authority": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "weekly_proof_pack",
+      "family": "PROOF",
+      "owner_agent": "dealix-delivery",
+      "support_agents": ["dealix-engineer", "dealix-content"],
+      "buying_groups": ["FOUNDER_GM", "OPERATIONS", "REVENUE_COMMERCIAL"],
+      "channels": ["PDF", "MEETING", "CUSTOMER_REVIEW"],
+      "locales": ["ar-SA", "en-SA"],
+      "customer_proof_auto_grant": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "final_outcome_review",
+      "family": "PROOF",
+      "owner_agent": "dealix-delivery",
+      "support_agents": ["dealix-pm", "dealix-content"],
+      "buying_groups": ["FOUNDER_GM", "FINANCE_PROCUREMENT", "OPERATIONS"],
+      "channels": ["PDF", "CUSTOMER_REVIEW"],
+      "locales": ["ar-SA", "en-SA"],
+      "customer_proof_auto_grant": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "trust_security_appendix",
+      "family": "TRUST",
+      "owner_agent": "dealix-engineer",
+      "support_agents": ["dealix-pm", "dealix-delivery"],
+      "buying_groups": ["IT_SECURITY", "LEGAL_GOVERNANCE", "FINANCE_PROCUREMENT"],
+      "channels": ["PDF", "SECURITY_REVIEW", "PROCUREMENT_SUPPORT"],
+      "locales": ["ar-SA", "en-SA"],
+      "certification_claim_authority": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "supplier_readiness_passport",
+      "family": "MARKET_ACCESS",
+      "owner_agent": "dealix-sales",
+      "support_agents": ["dealix-pm", "dealix-engineer", "dealix-content"],
+      "buying_groups": ["FINANCE_PROCUREMENT", "IT_SECURITY", "LEGAL_GOVERNANCE"],
+      "channels": ["SUPPLIER_PORTAL_SUPPORT", "PDF", "PARTNER_REVIEW"],
+      "locales": ["ar-SA", "en-SA"],
+      "registration_submission_authority": false,
+      "qualification_claim_authority": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "rfp_tender_decision_pack",
+      "family": "B2G_B2B_PROCUREMENT",
+      "owner_agent": "dealix-sales",
+      "support_agents": ["dealix-pm", "dealix-delivery", "dealix-engineer"],
+      "buying_groups": ["FINANCE_PROCUREMENT", "IT_SECURITY", "LEGAL_GOVERNANCE"],
+      "channels": ["INTERNAL_DECISION", "PDF"],
+      "locales": ["ar-SA", "en-SA"],
+      "bid_submission_authority": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "partner_subcontract_pack",
+      "family": "PARTNER",
+      "owner_agent": "dealix-sales",
+      "support_agents": ["dealix-delivery", "dealix-engineer", "dealix-content"],
+      "buying_groups": ["FOUNDER_GM", "FINANCE_PROCUREMENT", "IT_SECURITY"],
+      "channels": ["PDF", "PARTNER_MEETING"],
+      "locales": ["ar-SA", "en-SA"],
+      "partnership_claim_authority": false,
+      "binding_commitment_authority": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "meeting_brief_followup",
+      "family": "RELATIONSHIP",
+      "owner_agent": "dealix-sales",
+      "support_agents": ["dealix-pm", "dealix-content"],
+      "buying_groups": ["FOUNDER_GM", "REVENUE_COMMERCIAL", "OPERATIONS", "FINANCE_PROCUREMENT", "IT_SECURITY", "LEGAL_GOVERNANCE"],
+      "channels": ["INTERNAL_BRIEF", "EMAIL_DRAFT", "WHATSAPP_DRAFT"],
+      "locales": ["ar-SA", "en-SA"],
+      "external_send_authority": false,
+      "public_publish_authority": false
+    },
+    {
+      "id": "founder_linkedin_document",
+      "family": "SOCIAL",
+      "owner_agent": "dealix-content",
+      "support_agents": ["dealix-sales"],
+      "buying_groups": ["FOUNDER_GM", "REVENUE_COMMERCIAL", "OPERATIONS"],
+      "channels": ["LINKEDIN_DRAFT"],
+      "locales": ["ar-SA", "en-SA"],
+      "public_publish_authority": false
+    },
+    {
+      "id": "event_qr_meeting_card",
+      "family": "EVENT",
+      "owner_agent": "dealix-content",
+      "support_agents": ["dealix-sales"],
+      "buying_groups": ["FOUNDER_GM", "REVENUE_COMMERCIAL", "FINANCE_PROCUREMENT"],
+      "channels": ["PRINT", "EVENT", "QR"],
+      "locales": ["ar-SA", "en-SA"],
+      "public_publish_authority": false
+    }
+  ],
+  "truth_firewall": [
+    "Research != Relationship",
+    "Public Contact != Consent",
+    "Supplier Registration != Tender Invitation",
+    "Tender Publication != Dealix Eligibility",
+    "Draft != Sent",
+    "Quote != Invoice",
+    "Invoice != Payment",
+    "Synthetic Proof != Customer Proof",
+    "PR Merge != Production Green"
+  ],
+  "governance": {
+    "second_masterbrand": false,
+    "second_proof_system": false,
+    "second_agent_fleet": false,
+    "auto_publication": false,
+    "auto_external_send": false,
+    "auto_supplier_registration": false,
+    "auto_bid_submission": false,
+    "auto_binding_quote": false,
+    "auto_customer_proof": false
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "schema": "dealix.design-tokens.v2.1",
+  "status": "FOUNDER_DIRECTION_DRAFT",
+  "authority": "docs/brand/DEALIX_MASTERBRAND_EXPANSION_V2_1.md",
+  "extends": "data/brand/dealix_brand_system_v2.json",
+  "principle": "Expand the accepted V2 masterbrand without creating a competing palette or product identity.",
+  "color": {
+    "brand": {
+      "ink_navy": "#0F172A",
+      "deep_teal": "#164E63",
+      "signal_cyan": "#22D3EE",
+      "cloud": "#F8FAFC",
+      "proof_gold": "#D4AF37"
+    },
+    "support": {
+      "signal_sky_50": "#F0FDFF",
+      "signal_sky_100": "#CFFAFE",
+      "signal_sky_300": "#67E8F9",
+      "signal_sky_500": "#06B6D4",
+      "signal_sky_700": "#0E7490",
+      "execution_mint_100": "#D1FAE5",
+      "execution_mint_500": "#10B981",
+      "execution_mint_700": "#047857",
+      "sandstone_50": "#FAF8F5",
+      "sandstone_200": "#E8DFD2",
+      "sandstone_500": "#A58B6C"
+    },
+    "neutral": {
+      "0": "#FFFFFF",
+      "50": "#F8FAFC",
+      "100": "#F1F5F9",
+      "200": "#E2E8F0",
+      "300": "#CBD5E1",
+      "400": "#94A3B8",
+      "500": "#64748B",
+      "600": "#475569",
+      "700": "#334155",
+      "800": "#1E293B",
+      "900": "#0F172A",
+      "950": "#020617"
+    },
+    "semantic": {
+      "success": "#15803D",
+      "warning": "#B45309",
+      "error": "#B91C1C",
+      "info": "#0369A1",
+      "blocked": "#7F1D1D",
+      "unknown": "#64748B"
+    },
+    "surface": {
+      "cloud_canvas": "#F8FAFC",
+      "cloud_elevated": "#FFFFFF",
+      "command_canvas": "#0F172A",
+      "command_elevated": "#172033",
+      "glass_light": "#FFFFFFCC",
+      "glass_dark": "#0F172ACC"
+    }
+  },
+  "typography": {
+    "family": {
+      "latin": "Inter",
+      "arabic": "IBM Plex Sans Arabic",
+      "mono": "IBM Plex Mono"
+    },
+    "weight": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700,
+      "heavy": 800
+    },
+    "size_px": {
+      "display_xl": 72,
+      "display_l": 56,
+      "h1": 44,
+      "h2": 36,
+      "h3": 28,
+      "body_l": 20,
+      "body_m": 16,
+      "body_s": 14,
+      "label": 13,
+      "evidence": 12
+    }
+  },
+  "spacing_px": [4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96, 128],
+  "radius_px": {
+    "control": 10,
+    "card": 18,
+    "frame": 28,
+    "pill": 999
+  },
+  "motion": {
+    "duration_ms": {
+      "instant": 80,
+      "productive_fast": 140,
+      "productive": 220,
+      "expressive": 420,
+      "hero": 700
+    },
+    "easing": {
+      "productive": [0.2, 0.0, 0.2, 1.0],
+      "entrance": [0.0, 0.0, 0.2, 1.0],
+      "exit": [0.4, 0.0, 1.0, 1.0],
+      "expressive": [0.16, 1.0, 0.3, 1.0]
+    },
+    "reduced_motion": "Remove parallax and continuous motion; preserve meaning with text, icon, state and opacity changes."
+  },
+  "layout": {
+    "max_content_px": 1280,
+    "desktop_columns": 12,
+    "tablet_columns": 8,
+    "mobile_columns": 4,
+    "nav_height_px": 72
+  },
+  "iconography": {
+    "sizes_px": [16, 20, 24, 32],
+    "optical_stroke_px": 1.75,
+    "style": "geometric line icons with restrained rounded joins"
+  },
+  "proof": {
+    "internal_capability": "#64748B",
+    "synthetic_demo": "#7C3AED",
+    "runtime_production": "#0369A1",
+    "customer_delivery": "#047857",
+    "customer_outcome": "#D4AF37",
+    "rule": "Proof class must always be stated in text; color alone is never authority."
+  },
+  "data_viz": {
+    "categorical": ["#0E7490", "#7C3AED", "#047857", "#C2410C", "#BE123C", "#1D4ED8"],
+    "sequential_signal": ["#ECFEFF", "#CFFAFE", "#67E8F9", "#22D3EE", "#0891B2", "#164E63"],
+    "rule": "Never use gradients as the only encoding of meaning; pair color with label, shape or position."
+  },
+  "surface_modes": {
+    "cloud_executive": "Primary website, proposal and company-profile mode: bright cloud canvas, ink text, translucent signal surfaces, high whitespace.",
+    "command_room": "Product, trust and executive-analysis mode: Ink Navy canvas, Cloud text, cyan active paths, teal structure, Proof Gold only for verified outcomes."
+  },
+  "governance": {
+    "historical_palettes_are_authority": false,
+    "proof_gold_dominant_brand_color": false,
+    "execution_mint_primary_brand_color": false,
+    "gradients_semantic_authority": false,
+    "public_publish_authorized": false,
+    "trademark_clearance": "LEGAL_CLEARANCE_PENDING"
+  }
+}

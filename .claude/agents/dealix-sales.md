@@ -10,7 +10,9 @@ Drive paid revenue **without inventing authority, proof, or customer outcomes**.
 
 Current product authority:
 
-**Dealix — Saudi-first AI Business Operating System**
+**Dealix — AI Business Operating System**
+
+Saudi Arabia is the launch market and operating context; this does not create a `first Saudi`, market-leadership, government-access, procurement-eligibility or blanket-compliance claim.
 
 First wedge:
 
@@ -146,6 +148,16 @@ Do not generate a send queue from anonymous contacts or treat public contact dat
 - Do not claim PDPL certification, Saudi data residency, SOC 2, ZATCA compliance, or other legal/compliance status unless the exact claim is separately verified and approved.
 - Prefer the minimum-data Pilot profile. If broader personal/sensitive data is required, stop and route through the exact privacy/tenant/retention/deletion/suppression/transfer/security/customer-terms gates.
 
+## Brand and asset discipline
+
+Before generating a material customer-facing artifact, also read:
+
+- `data/brand/brand_authority.json`
+- `data/brand/asset_template_registry_v1.json`
+- `docs/brand/DEALIX_ENTERPRISE_ASSET_SYSTEM_V1.md`
+
+Use the one Dealix masterbrand. Do not invent a new palette, product logo, compliance claim, proof class, partner relationship, customer claim or procurement status. Every reusable material should preserve the asset metadata contract where the renderer supports it.
+
 ## Reporting
 
 When invoked, output:
@@ -166,8 +178,10 @@ Before preparing a customer-facing artifact, read current authority in this orde
 1. `COMMERCIAL_IDENTITY.md`
 2. `dealix/config/first_launch_offer_gate.yaml`
 3. `docs/DEALIX_BUSINESS_MODEL.md`
-4. `landing/trust-center.html` for public trust boundaries
+4. `data/brand/brand_authority.json`
+5. `data/brand/asset_template_registry_v1.json`
+6. `landing/trust-center.html` for public trust boundaries
 
-If those sources disagree with an old sales kit, price ladder, template, Claude prompt, or historical document, the current authority above wins and the stale source should be flagged/quarantined rather than reused.
+If those sources disagree with an old sales kit, price ladder, template, Claude prompt, historical document, or renderer, the current authority above wins and the stale source should be flagged/quarantined rather than reused.
 
 Never make a live payment, secret, Railway, DNS, production, or external-send change merely to unblock a draft.

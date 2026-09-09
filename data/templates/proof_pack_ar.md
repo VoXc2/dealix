@@ -1,6 +1,10 @@
 # قالب طقم الإثبات — Dealix Proof Pack Template
 # Weekly / Final Evidence Format (AR+EN)
 # الاستخدام: يُملأ أثناء أو في نهاية Revenue Command Pilot بعد التحقق من المصادر
+# brand_version: V2.1_DRAFT
+# template_version: proof_pack_ar_v2_1
+# owner_agent: dealix-delivery
+# support_agent: dealix-content
 
 ---
 
@@ -175,10 +179,11 @@ Activity ≠ Delivery ≠ Payment ≠ Revenue ≠ Customer Value ≠ Publication
 - [ ] لا compliance/residency/certification claim غير مثبت.
 - [ ] لا fixed price أو automatic upsell من قالب Proof.
 - [ ] approval المطلوب للمشاركة الخارجية موجود.
+- [ ] `brand_version`, `template_version`, `proof_level`, `source_refs` ونسخة الـClaim محفوظة في سجل الأصل/الـrenderer عند الاستخدام.
 
 ---
 
-*Dealix — Saudi-first AI Business Operating System · Revenue + Proof + Command*
+*Dealix — AI Business Operating System · Revenue + Proof + Command*
 
 *معرّف الطقم: {{pack_id}} | تاريخ الإصدار: {{date}}*
 
