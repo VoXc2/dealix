@@ -1,178 +1,190 @@
 # قائمة التحقق — تدشين Dealix التجاري
 # Go-Live Checklist — Dealix Commercial Launch
-**الإصدار**: 1.0 | **التاريخ**: 2026-05-30 | **المسؤول**: الفاوندر
+
+**الإصدار**: 2.0 | **الحالة**: Quote-only / approval-gated | **المسؤول**: الفاوندر
+
+> هذا المستند تشغيلي ولا يمنح صلاحية تنفيذ مادي. الإطلاق التجاري الحالي لا يستخدم سعرًا عامًا ثابتًا ولا public checkout. المسار المعتمد هو:
+>
+> **Free Mini Diagnostic → Qualified Discovery → Customer-Specific Quote → Verified Payment → Governed Delivery → Customer-Validated Proof**
 
 ---
 
-## المرحلة 1 — إعداد Railway (يوم واحد)
+## 1. Railway — إعداد البيئة بدون أسرار داخل المستودع
 
-### متغيرات البيئة المطلوبة (Railway → Variables)
+ضع القيم السرية فقط في Railway/secret store المناسب. لا تنسخ قيمة سرية إلى Git أو logs أو proof packs.
 
 ```bash
-# ── الدفع (Moyasar) ─────────────────────────────────
-MOYASAR_SECRET_KEY=sk_live_xxxxxxxxxxxxxxxxxx   # من dashboard.moyasar.com
-MOYASAR_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxx   # من Moyasar → Webhooks
-MOYASAR_LIVE_MODE=1                             # تفعيل الدفع الحقيقي
+# أسماء المتغيرات فقط — القيم الحقيقية تحفظ خارج المستودع.
+MOYASAR_SECRET_KEY=<secret-store-value>
+MOYASAR_WEBHOOK_SECRET=<secret-store-value>
+MOYASAR_LIVE_MODE=0
 
-# ── ZATCA (الفوترة الإلكترونية) ──────────────────────
-ZATCA_CSID=xxxxxxxxxxxxxxxxxx                   # من Fatoorah portal
-ZATCA_SECRET=xxxxxxxxxxxxxxxxxx                 # من Fatoorah portal
-ZATCA_SANDBOX=false                             # تغيير للإنتاج
-ZATCA_SELLER_VAT_NUMBER=3000000000000000       # رقم الضريبة السعودي
-ZATCA_SELLER_NAME=Dealix                        # اسم الشركة
-ZATCA_SELLER_CITY=Riyadh                        # مدينة التسجيل
+ZATCA_CSID=<secret-store-value>
+ZATCA_SECRET=<secret-store-value>
+ZATCA_SANDBOX=true
+ZATCA_SELLER_VAT_NUMBER=<registered-vat-number>
+ZATCA_SELLER_NAME=Dealix
+ZATCA_SELLER_CITY=Riyadh
 
-# ── البريد الإلكتروني (Gmail API) ───────────────────
-GMAIL_CREDENTIALS_JSON={"installed":{...}}      # من Google Cloud Console
-GMAIL_SENDER_EMAIL=your@gmail.com               # بريد الإرسال
+GMAIL_CREDENTIALS_JSON=<secret-store-value>
+GMAIL_SENDER_EMAIL=<approved-sender>
 
-# ── WhatsApp للفاوندر ────────────────────────────────
-DEALIX_FOUNDER_PHONE=+966XXXXXXXXX             # بصيغة E.164
-WHATSAPP_ALLOW_LIVE_SEND=true                   # تفعيل التنبيهات
-WHATSAPP_API_TOKEN=EAAxxxxxxxxxxxxxxxxxx        # من Meta Business
+DEALIX_FOUNDER_PHONE=<approved-e164-number>
+WHATSAPP_ALLOW_LIVE_SEND=false
+WHATSAPP_API_TOKEN=<secret-store-value>
 
-# ── الذكاء الاصطناعي ─────────────────────────────────
-ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxx   # للتشخيصات والإيميلات
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx      # (احتياطي)
+ANTHROPIC_API_KEY=<secret-store-value>
+OPENAI_API_KEY=<secret-store-value>
 
-# ── قاعدة البيانات (Railway auto-sets) ───────────────
-DATABASE_URL=postgresql://...                    # Railway يضيفه تلقائياً
-REDIS_URL=redis://...                           # Railway يضيفه تلقائياً
+DATABASE_URL=<managed-database-url>
+REDIS_URL=<managed-redis-url>
 
-# ── الأمان ───────────────────────────────────────────
-DEALIX_ADMIN_API_KEY=your-strong-secret-key     # للـ /api/v1/commercial/* endpoints
-SECRET_KEY=your-32-char-random-key              # لتشفير الجلسات
+DEALIX_ADMIN_API_KEY=<secret-store-value>
+SECRET_KEY=<secret-store-value>
 ```
 
-### خطوات Railway
+### تحقق Railway
 
-- [ ] افتح Railway → مشروعك → Variables
-- [ ] أضف كل المتغيرات أعلاه
-- [ ] تحقق: `GET https://api.dealix.me/health` يرجع `{"status":"ok"}`
-- [ ] تحقق: `GET https://api.dealix.me/health/deep` يرجع `{"status":"ok"}`
-
----
-
-## المرحلة 2 — إعداد Moyasar (ساعتان)
-
-- [ ] سجّل حساباً في dashboard.moyasar.com (أو استخدم الحساب الحالي)
-- [ ] فعّل Live Mode (يتطلب OTP من SAMA)
-- [ ] أنشئ API Key (Live) وضعه في `MOYASAR_SECRET_KEY`
-- [ ] اضبط Webhook URL: `https://api.dealix.me/api/v1/webhooks/moyasar`
-- [ ] اختبر بـ `pilot_1sar` plan (1 ريال):
-  ```bash
-  curl -X POST https://api.dealix.me/api/v1/checkout \
-    -H "Content-Type: application/json" \
-    -d '{"plan":"pilot_1sar","email":"test@yourdomain.com","lead_id":"e2e-test"}'
-  ```
-- [ ] تحقق أن الـ webhook وصل وتم معالجته
+- [ ] افحص staged changes قبل أي apply؛ لا تطبقها جماعيًا دون reconciliation.
+- [ ] أثبت deployment SHA لكل من Web وAPI.
+- [ ] أثبت أن running release يطابق الـSHA المقبول.
+- [ ] تحقق من `/healthz` و`/health/deep` على النسخة الصحيحة، لا على مجرد HTTP 200.
+- [ ] أبقِ `PRODUCTION_GREEN=false` حتى اكتمال release parity + front-door acceptance.
 
 ---
 
-## المرحلة 3 — إعداد ZATCA (يوم واحد)
+## 2. الدفع والفوترة — بعد Customer-Specific Quote فقط
 
-- [ ] سجّل في بوابة Fatoorah (Sandbox → Production)
-- [ ] احصل على CSID + Secret
-- [ ] اختبر sandbox: `ZATCA_SANDBOX=true` (الافتراضي)
-- [ ] عند الجاهزية: غيّر `ZATCA_SANDBOX=false`
-- [ ] تحقق: بعد أي دفعة، يظهر في الـ logs:
-  ```
-  zatca_invoice_issued action=clearance uuid=xxx amount_sar=499.00
-  ```
+- [ ] لا يوجد public fixed-price checkout في launch authority الحالية.
+- [ ] لا تنشئ payment handoff قبل وجود `qualified_discovery` و`quote_id` و`customer_specific_quote_sar` موثقين.
+- [ ] `QUOTE != INVOICE != PAYMENT`.
+- [ ] لا تعتبر invoice أو payment link دليل دفع.
+- [ ] `Verified Payment` يحتاج provider/payment evidence صالحًا.
+- [ ] أبقِ Moyasar live mode معطلًا حتى موافقة تنفيذ مادية محددة.
+- [ ] اختبر ZATCA في sandbox قبل أي انتقال production.
 
 ---
 
-## المرحلة 4 — التحقق من التشين الكامل (ساعة واحدة)
+## 3. الاختبار التجاري الآمن
 
-### الاختبار النهائي (E2E):
+### أ. Diagnostic inbound
+
+اختبر مسار التشخيص والاستقبال بدون إرسال خارجي أو تحصيل:
 
 ```bash
-ADMIN_KEY="your-admin-api-key"
 API="https://api.dealix.me"
+ADMIN_KEY="<runtime-admin-key>"
 
-# 1. تشخيص مجاني
-curl -X POST $API/api/v1/commercial/diagnostic/generate \
+curl -X POST "$API/api/v1/commercial/diagnostic/generate" \
   -H "X-API-Key: $ADMIN_KEY" \
   -H "Content-Type: application/json" \
   -d '{"company_name":"شركة الاختبار","sector":"b2b_services","pain_points":["lead_gen"]}'
-
-# 2. مسودة warm intro
-curl -X POST $API/api/v1/commercial/warm-intro/draft \
-  -H "X-API-Key: $ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"prospect_name":"أحمد","company_name":"شركة الاختبار","sector":"b2b_services"}'
-
-# 3. رابط دفع
-curl -X POST $API/api/v1/commercial/payment/link \
-  -H "X-API-Key: $ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"service_tier":"sprint_499","customer_name":"أحمد"}'
-
-# 4. بدء pilot
-curl -X POST $API/api/v1/commercial/pilot/start \
-  -H "X-API-Key: $ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"account_id":"test-001","company_name":"شركة الاختبار"}'
-
-# 5. ملخص يومي
-curl $API/api/v1/commercial/daily-brief -H "X-API-Key: $ADMIN_KEY"
 ```
 
-### نقاط التحقق:
-- [ ] التشخيص يرجع 10 أقسام AR+EN
-- [ ] Warm intro يرجع 5 واتساب + 3 إيميل
-- [ ] رابط الدفع يرجع Moyasar URL
-- [ ] ريسيبت الإيميل يصل للعميل بعد الدفع
-- [ ] تنبيه واتساب يصل للفاوندر
-- [ ] فاتورة ZATCA تُصدَر
+### ب. Draft-only commercial movement
+
+- [ ] أنشئ draft reply/proposal فقط.
+- [ ] تحقق من WHY THEM / WHY NOW / INSIGHT / PROBLEM / CTA.
+- [ ] تحقق من relationship state وconsent state قبل أي قناة خارجية.
+- [ ] `draft != sent`.
+- [ ] public contact data لا يساوي consent.
+
+### ج. Customer-specific quote
+
+- [ ] Discovery evidence موجود.
+- [ ] Scope وحدود التسليم موثقة.
+- [ ] السعر خاص بالعميل ومربوط بـquote ID.
+- [ ] لا يوجد guarantee أو unsupported ROI claim.
+- [ ] أي handoff للدفع approval-gated.
 
 ---
 
-## المرحلة 5 — الإطلاق التجاري (اليوم الأول)
+## 4. WhatsApp / Gmail / القنوات
 
-### قائمة العملاء المستهدفين الأوائل
-
-استخدم `data/templates/warm_intro_whatsapp_ar.md` للتواصل مع:
-
-| الاسم | الشركة | القطاع | القالب |
-|-------|--------|--------|--------|
-| --- | --- | --- | V1 |
-| --- | --- | --- | V3 |
-| --- | --- | --- | V5 |
-
-### جدول الإطلاق (الأسبوع الأول)
-
-| اليوم | الفعل |
-|-------|-------|
-| **السبت** | إرسال 5 warm intros (V1+V2+V5) → طلب موافقتك |
-| **الأحد** | متابعة الردود + جدولة diagnostic مجاني |
-| **الاثنين** | تسليم أول تشخيص + عرض Sprint 499 ريال |
-| **الثلاثاء** | إغلاق أول صفقة (499 ريال) + بدء البرنامج |
-| **الأربعاء-الخميس** | تنفيذ الأيام 1-3 من pilot |
-| **الجمعة** | تقرير الأسبوع + تخطيط الأسبوع القادم |
+- [ ] WhatsApp inbound-first وconsent-aware.
+- [ ] لا cold WhatsApp blast.
+- [ ] لا mass LinkedIn automation.
+- [ ] البريد الخارجي يبقى draft-only ما لم توجد صلاحية إرسال محددة.
+- [ ] founder LinkedIn يبقى human-operated.
+- [ ] كل opt-out أو سحب موافقة يوقف direct marketing المقابل.
 
 ---
 
-## الحماية والامتثال
+## 5. Governed Delivery
 
-- [ ] تأكد أن PDPL consent موجود في نموذج التشخيص
-- [ ] تأكد أن ZATCA Live قبل إصدار فواتير حقيقية
-- [ ] لا ترسل أي رسالة بدون مراجعتك (NO_LIVE_SEND)
-- [ ] لا تُشغّل Live Moyasar بدون Live ZATCA (الالتزام القانوني)
+لا يبدأ delivery لمجرد وجود lead أو diagnostic أو proposal أو invoice.
 
----
+ابدأ فقط بعد handoff موثق يثبت الحالة المطلوبة، ثم أنشئ:
 
-## مؤشرات النجاح — الأسبوع الأول
+- [ ] Customer workspace
+- [ ] Baseline
+- [ ] Acceptance criteria
+- [ ] 30-day plan
+- [ ] Weekly Proof Pack
+- [ ] Decisions / risks / blockers
+- [ ] Final Outcome Review
+- [ ] Expansion / Stop / Redesign recommendation
 
-| المؤشر | الهدف |
-|---------|-------|
-| warm intros مُرسَلة | ≥5 |
-| ردود مستلمة | ≥2 |
-| تشخيصات مُجدولة | ≥1 |
-| صفقة مُغلقة | ≥1 (499 ريال) |
-| إيميل ريسيبت وصل | ✅ |
-| فاتورة ZATCA صدرت | ✅ |
+`synthetic/demo output != customer proof`.
 
 ---
 
-*Dealix — كل شيء جاهز، ابدأ.*
+## 6. Front-door acceptance
+
+أثبت السلسلة التالية على exact release:
+
+`accepted main SHA → Railway deployment SHA → running release SHA → Web/API health → dealix.me → www.dealix.me → /ar → TLS/redirects → diagnostic path`
+
+### بوابات الفشل المغلق
+
+- [ ] Python required tests = PASS حقيقي، لا wrapper label فقط.
+- [ ] Web typecheck/build = PASS حقيقي.
+- [ ] ShellCheck/actionlint/secret scan = PASS.
+- [ ] Migration graph = single current head.
+- [ ] Brand/public truth verifiers = PASS.
+- [ ] أي hosted job لم يبدأ (`steps=[]` / no runner) يصنف `BLOCKED_EXECUTION_PLANE` وليس code PASS أو code FAIL.
+
+---
+
+## 7. شروط Production Green
+
+لا تغيّر `PRODUCTION_GREEN=true` إلا بعد تحقق جميع الآتي على evidence حديث:
+
+- [ ] exact-main acceptance
+- [ ] exact Web/API release parity
+- [ ] front-door acceptance
+- [ ] no unresolved P0 release-trust defects
+- [ ] no unreviewed staged production mutations
+- [ ] no secret leakage findings
+- [ ] rollback path موثق
+
+حتى ذلك الوقت:
+
+```text
+PRODUCTION_GREEN=false
+MERGE_EXECUTED=false unless specifically authorized
+DEPLOY_EXECUTED=false unless specifically authorized
+PUBLIC_PUBLISH=false
+PAYMENT_EXECUTION=false
+```
+
+---
+
+## 8. مؤشرات أول دورة تجارية حقيقية
+
+لا تستخدم أهداف vanity أو وعود مضمونة. تتبع فقط الأدلة التالية:
+
+| المؤشر | الحقيقة المطلوبة |
+|---|---|
+| Real Interaction | تفاعل موثق، وليس research فقط |
+| Qualified Problem | مشكلة مؤهلة بدليل |
+| Discovery | جلسة/إثبات discovery فعلي |
+| Customer-Specific Quote | quote موثق خاص بالعميل |
+| Verified Payment | دليل provider/payment صالح |
+| Governed Delivery | خطة وتسليم مع acceptance criteria |
+| Customer-Validated Proof | نتيجة مؤكدة من نفس العميل |
+| Repeatability | تكرار موثق، لا افتراض |
+
+---
+
+**Dealix — Signals into Action. Execution with Governance. Measurable Outcomes.**
