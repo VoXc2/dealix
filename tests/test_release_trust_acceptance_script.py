@@ -22,6 +22,14 @@ def test_acceptance_runner_is_fail_closed_and_exact_head_bound() -> None:
     assert "run_gate BRAND_IDENTITY_V2" in text
 
 
+def test_acceptance_runner_resolves_repo_from_script_location_not_caller_cwd() -> None:
+    text = _text()
+    assert 'BASH_SOURCE[0]' in text
+    assert 'SCRIPT_DIR=' in text
+    assert 'git -C "$SCRIPT_DIR" rev-parse --show-toplevel' in text
+    assert 'ROOT="$(git rev-parse --show-toplevel)"' not in text
+
+
 def test_acceptance_runner_supports_only_supported_host_node_or_isolated_node22() -> None:
     text = _text()
     assert 'required="20 || >=22"' in text
