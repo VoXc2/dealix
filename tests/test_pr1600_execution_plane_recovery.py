@@ -50,13 +50,29 @@ def test_recovery_never_bootstraps_or_reinstalls_issue_bridge() -> None:
     assert 'systemctl start "$BRIDGE_SERVICE"' in text
 
 
-def test_recovery_restores_runner_before_exact_head_acceptance() -> None:
+def test_recovery_refreshes_bridge_from_same_source_without_state_reset() -> None:
+    text = _text()
+    assert 'SOURCE_BRIDGE="$SCRIPT_DIR/dealix_vps_issue_bridge.py"' in text
+    assert 'SOURCE_DISPATCHER="$SCRIPT_DIR/dealix_vps_control.sh"' in text
+    assert 'INSTALLED_BRIDGE="$CONTROL_BIN/dealix_vps_issue_bridge.py"' in text
+    assert 'INSTALLED_DISPATCHER="$CONTROL_BIN/dealix_vps_control.sh"' in text
+    assert 'python3 -m py_compile "$SOURCE_BRIDGE"' in text
+    assert 'bash -n "$SOURCE_DISPATCHER"' in text
+    assert "BRIDGE_INSTALL_DIGEST_MISMATCH" in text
+    assert "DISPATCHER_INSTALL_DIGEST_MISMATCH" in text
+    assert "state_preserved=true bootstrap=false" in text
+    assert "BRIDGE_ALREADY_ACTIVE_REVIEW" in text
+
+
+def test_recovery_restores_runner_before_bridge_and_exact_head_acceptance() -> None:
     text = _text()
     runner_pos = text.index('bash "$RUNNER_INSTALLER"')
+    refresh_pos = text.index('install -m 0750 -o "$RUN_USER" -g "$RUN_USER" "$SOURCE_BRIDGE"')
     bridge_pos = text.index('systemctl start "$BRIDGE_SERVICE"')
     acceptance_pos = text.index('bash "$ACCEPTANCE"')
-    assert runner_pos < bridge_pos < acceptance_pos
+    assert runner_pos < refresh_pos < bridge_pos < acceptance_pos
     assert "SELF_HOSTED_RUNNER=PASS" in text
+    assert "BRIDGE_SOURCE_REFRESH=PASS" in text
     assert "ISSUE_BRIDGE=PASS" in text
     assert "PR1600_EXACT_HEAD_ACCEPTANCE=PASS" in text
 
