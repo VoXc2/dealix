@@ -201,3 +201,16 @@ def test_self_hosted_runner_installer_does_not_print_registration_token() -> Non
     assert "secret_values_printed=false" in text
     assert 'RUNNER_USER="dealix"' in text
     assert 'RUNNER_NAME="dealix-vps"' in text
+
+
+def test_self_hosted_runner_installer_recovers_configured_but_stopped_service() -> None:
+    text = _text(RUNNER_INSTALLER)
+    configured = text.split('if [[ -f .runner ]]; then', 1)[1].split('TMP_ARCHIVE=', 1)[0]
+
+    # Existing registration is not enough. The installer must prove service
+    # health, attempt one bounded recovery, and fail closed if it remains down.
+    assert "if ! ./svc.sh status; then" in configured
+    assert "./svc.sh start" in configured
+    assert './svc.sh install "$RUNNER_USER"' in configured
+    assert "configured runner service is still not healthy after recovery" in configured
+    assert "configured_runner_recovered=true" in configured
