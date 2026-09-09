@@ -282,6 +282,11 @@ def _revision_metadata(path: Path) -> tuple[str, tuple[str, ...]]:
 
 
 def test_migration_extends_the_actual_single_alembic_head() -> None:
+    """Approval migration must extend the then-current head and remain in one chain.
+
+    Migration 023 (durable consent) legitimately landed after approval-center 022,
+    so this contract must not freeze 022 as the repository's permanent final head.
+    """
     versions = Path(__file__).resolve().parents[1] / "db/migrations/versions"
     migration_paths = [
         path for path in versions.glob("*.py") if path.name != "__init__.py"
@@ -290,22 +295,30 @@ def test_migration_extends_the_actual_single_alembic_head() -> None:
     metadata = dict(revision_rows)
     assert len(metadata) == len(revision_rows), "duplicate revision id"
 
-    new_revision = "20260905_022_approval_center_snapshots"
+    approval_revision = "20260905_022_approval_center_snapshots"
     previous_head = "20260823_021_collaboration_events"
-    assert metadata[new_revision] == (previous_head,)
+    consent_revision = "20260908_023_consent_events"
 
-    prior_metadata = {
-        revision: downs
-        for revision, downs in metadata.items()
-        if revision != new_revision
-    }
-    prior_referenced = {down for downs in prior_metadata.values() for down in downs}
-    prior_heads = set(prior_metadata) - prior_referenced
-    assert prior_heads == {previous_head}
+    assert metadata[approval_revision] == (previous_head,)
+    assert metadata[consent_revision] == (approval_revision,)
 
     referenced = {down for downs in metadata.values() for down in downs}
     heads = set(metadata) - referenced
-    assert heads == {new_revision}
+    assert heads == {consent_revision}
+
+    # Walk backwards from the current head. The approval migration must be on
+    # the sole ancestry path rather than a detached/parallel Alembic branch.
+    cursor = consent_revision
+    seen: set[str] = set()
+    while cursor in metadata and cursor not in seen:
+        seen.add(cursor)
+        parents = metadata[cursor]
+        if not parents:
+            break
+        assert len(parents) == 1, f"unexpected Alembic merge/branch at {cursor}"
+        cursor = parents[0]
+    assert approval_revision in seen
+    assert previous_head in seen
 
 
 def test_backend_status_is_redacted_and_read_only(monkeypatch, tmp_path: Path) -> None:
