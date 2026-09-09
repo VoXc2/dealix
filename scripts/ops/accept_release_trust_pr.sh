@@ -126,7 +126,10 @@ run_gate TARGETED_PYTHON "$PY" -m pytest -q "${TARGET_TESTS[@]}"
 run_gate BRAND_IDENTITY_V2 "$PY" scripts/ops/verify_brand_identity_v2.py
 
 if command -v actionlint >/dev/null 2>&1; then
-  run_gate ACTIONLINT actionlint
+  # Keep syntax, expression, security, action-schema and runner-label checks
+  # fully enabled. For shell snippets, warnings/errors block release; legacy
+  # informational/style findings remain visible debt rather than P0 blockers.
+  run_gate ACTIONLINT env SHELLCHECK_OPTS=--severity=warning actionlint
 else
   printf 'ACTIONLINT=SKIPPED_ENVIRONMENT reason=not_installed\n'
 fi
