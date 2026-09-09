@@ -84,10 +84,17 @@ else
   run_gate GIT_DIFF_CHECK git diff --check HEAD~1..HEAD
 fi
 
+# The canonical trust gate owns the complete shell surface used to repair and
+# accept PR #1600. Wrapper scripts must not escape ShellCheck simply because a
+# higher-level VPS driver happens to lint them separately.
 run_gate SHELLCHECK shellcheck \
   scripts/ops/fail_closed_gate.sh \
   scripts/ops/living_fleet_dispatch.sh \
-  scripts/ops/accept_release_trust_pr.sh
+  scripts/ops/accept_release_trust_pr.sh \
+  scripts/ops/repair_verify_catalog_exact_head.sh \
+  scripts/ops/run_pr1600_exact_focused.sh \
+  scripts/ops/run_pr1600_live_focused_acceptance.sh \
+  scripts/ops/run_pr1600_live_full_acceptance.sh
 
 # Keep the focused gate broad enough to cover every release-trust root cause
 # changed by this PR, but bounded enough to iterate before the 9k+ full suite.
