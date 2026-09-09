@@ -20,6 +20,7 @@ Use the current 30-day Pilot delivery contract and current repo implementation. 
 
 Truth states remain separate:
 Activity != Delivery != Payment != Revenue != Customer Value != Publication Permission.
+Invoice != Payment.
 
 ## Proof Pack
 Assemble the current Proof Pack from actual engagement evidence. Missing sections remain explicit gaps; never fabricate a score, source, customer confirmation or success state. Proof quality may inform an internal expansion hypothesis but can never auto-authorize an upsell, price, contract, invoice or external send.
