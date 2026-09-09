@@ -1,207 +1,214 @@
-# Brand Press Kit — Dealix
+# Dealix Brand & Press Kit — V2
 
-**Status:** DRAFT — founder personalizes bio + selects 3 launch outlets
-**Owner:** Sami (founder)
-**Last updated:** 2026-05-07
-**Companion docs:** `docs/sales-kit/dealix_brand_guidelines.md` · `landing/founder.html` · Plan §23.5.8
+Status: **DRAFT / TRUTH-GATED / NOT A PUBLICATION AUTHORITY**  
+Last updated: 2026-09-09
 
-> **Why this doc exists:** First Saudi tech-media interview is the brand-credibility flywheel start. Without a press kit, the founder either ad-libs (risk) or declines (lose opportunity). With it, every interview request gets a same-day, professional reply.
+This press kit is a reusable, evidence-first media and partner reference. It does not authorize outreach, publication, trademark claims, customer claims, pricing, payment claims, compliance certification or any other material external action.
 
----
+## 1. Canonical identity
 
-## 1. Founder bio — 3 lengths · bilingual
+**Dealix — AI Business Operating System**
 
-### 1-line (for tweets / introductions)
+**Revenue + Proof + Command**
 
-**EN:** Sami is the founder of Dealix, a Saudi-PDPL-compliant AI Operating Team for B2B SMBs.
-**AR:** سامي مؤسّس Dealix — أوّل AI Operating Team متوافق مع نظام حماية البيانات السعودي للشركات السعوديّة الصغيرة والمتوسّطة.
+**Signals into Action. Execution with Governance. Measurable Outcomes.**
 
-### 50-word version (for podcast intros)
+Short promise:
 
-**EN:**
-> Sami is the founder of Dealix, an AI Operating Team built Arabic-first for Saudi B2B SMBs. Dealix replaces the first 3 hires (sales / growth / support) with 5 AI agents, all gated by founder approval and built on PDPL-compliant Saudi-Arabic UX. Engineering is feature-complete; first paid pilots running May 2026.
+**From Opportunity to Outcome.**
 
-**AR:**
-> سامي هو مؤسّس Dealix — نظام تشغيل ذكاء اصطناعي مبنيّ بالعربيّة السعوديّة للشركات الصغيرة والمتوسّطة. Dealix يحلّ محلّ أوّل ٣ توظيفات (مبيعات / نموّ / دعم) بـ ٥ وكلاء AI، كلّها بموافقة المؤسّس وبامتثال كامل لنظام حماية البيانات السعودي. منتج جاهز، أوّل العملاء يدفعون مايو ٢٠٢٦.
+Dealix helps companies turn fragmented business signals, workflows and operating data into governed execution and measurable outcomes. Saudi Arabia is the launch market and operating context. Do not convert that into unsupported `first Saudi`, `market-leading`, government-access or blanket-compliance claims.
 
-### 200-word version (for press releases)
+## 2. One-line descriptions
 
-**EN:**
-> Sami [last name] is the founder and CEO of Dealix, the first Saudi-built AI Operating Team designed specifically for B2B SMBs in the Kingdom. Built Arabic-first and PDPL-compliant from the ground up, Dealix replaces the first three hires of a growing Saudi SMB — sales, growth, and customer support — with five AI agents that operate exclusively under founder approval, never sending external messages or executing transactions without explicit human consent.
->
-> Dealix's product-engineering is feature-complete after six waves of disciplined development, with eight LIVE services in the registry, ~415 unit tests, and eight constitutional hard gates that prevent cold WhatsApp outreach, scraping, fake testimonials, and unauthorized payment processing. The first paid pilots are running in May 2026, with a 7-Day Revenue Proof Sprint at 499 SAR converting to a Managed Revenue Ops Partner tier at 12,000 SAR/month for founding partners.
->
-> Sami previously [founder fills: prior role / experience]. He holds [credentials / education]. He is based in [Riyadh / Jeddah], and Dealix is registered with [SDAIA registration pending May 2026].
+### English
+Dealix is an AI Business Operating System that turns business signals into governed execution, proof and measurable outcomes.
 
-**AR:**
-> سامي [اسم العائلة] هو مؤسّس ورئيس Dealix — أوّل AI Operating Team سعودي مصمّم خصّيصاً للشركات الصغيرة والمتوسّطة في المملكة. مبنيّ بالعربيّة السعوديّة وبامتثال كامل لنظام حماية البيانات منذ اللحظة الأولى، Dealix يحلّ محلّ أوّل ٣ توظيفات في شركة سعوديّة ناشئة — المبيعات والنموّ والدعم — بـ ٥ وكلاء ذكاء اصطناعي يعملون حصراً بموافقة المؤسّس، ولا يرسلون رسائل خارجيّة أو يجرون أيّ معاملات بدون موافقة صريحة.
->
-> منتج Dealix جاهز كاملاً بعد ٦ موجات تطوير منضبطة، مع ٨ خدمات LIVE في الـ registry، و ~٤١٥ unit test، و ٨ بوّابات أمان دستوريّة تمنع التواصل البارد على واتساب، scraping، الشهادات المزيّفة، والمعاملات المالية غير المُعتمدة. أوّل العملاء المدفوعين يبدؤون مايو ٢٠٢٦، مع 7-Day Revenue Proof Sprint بـ ٤٩٩ ريال يتحوّل إلى Managed Revenue Ops Partner بـ ١٢,٠٠٠ ريال شهريّاً للشركاء المؤسّسين.
->
-> سامي قبل ذلك [يعبّيها المؤسّس: دور / خبرة سابقة]. حاصل على [مؤهّلات]. مقيم في [الرياض / جدّة]، و Dealix مسجّلة في [SDAIA مايو ٢٠٢٦].
+### العربية
+Dealix هو نظام تشغيل أعمال بالذكاء الاصطناعي يحوّل الإشارات والقرارات المتفرقة إلى تنفيذ محكوم ونتائج قابلة للإثبات.
 
----
+## 3. Short company description
 
-## 2. Company description — 3 lengths · bilingual
+### English
+Dealix sits between business signals and outcomes. It helps teams identify high-value operating problems, structure decisions, coordinate action across existing tools, preserve approval and consent boundaries, and produce evidence that can be reviewed. The first market wedge is **Revenue + Proof + Command**, delivered through an evidence-first Diagnostic → Discovery → Customer-Specific Quote → bounded execution → Proof Review path.
 
-### 1-line
+### العربية
+تعمل Dealix بين الإشارة والنتيجة: تكتشف المشكلات التشغيلية ذات القيمة، تنظّم القرار، تنسّق التنفيذ فوق الأدوات الحالية، وتحافظ على حدود الموافقات والموافقة على التواصل، ثم تنتج أدلة قابلة للمراجعة. الباب التجاري الأول هو **Revenue + Proof + Command** من خلال مسار تشخيص مبني على الأدلة → اكتشاف مؤهل → عرض مخصص → تنفيذ محدود → مراجعة إثبات.
 
-**EN:** Dealix — Saudi-PDPL-compliant AI Operating Team for B2B SMBs.
-**AR:** Dealix — نظام تشغيل ذكاء اصطناعي للشركات السعوديّة، متوافق مع PDPL.
+## 4. Founder bio templates
 
-### 50-word version
+Do not invent education, prior companies, awards, customers, fundraising or credentials. Fill only from verified founder evidence.
 
-**EN:**
-> Dealix replaces the first 3 hires of Saudi B2B SMBs with 5 AI agents — Sales, Growth, Support, Operations, Executive — operating under founder approval. Built Arabic-first, WhatsApp-aware, PDPL-compliant by design. Outcome-priced: 499 SAR Sprint → 12,000 SAR/month Partner. 8 hard gates immutable in code (no cold outreach, no live charge, no scraping).
+### 1-line EN
+`[Founder name] is the founder of Dealix, an AI Business Operating System focused on governed business execution and measurable outcomes.`
 
-**AR:**
-> Dealix يحلّ محلّ أوّل ٣ توظيفات في شركة سعوديّة B2B بـ ٥ وكلاء AI — مبيعات، نموّ، دعم، عمليّات، تنفيذ — كلّها بموافقة المؤسّس. مبنيّ بالعربيّة السعوديّة، يتعامل بواتساب، وملتزم بـ PDPL منذ اللحظة الأولى. تسعير قائم على النتائج: ٤٩٩ ريال Sprint → ١٢,٠٠٠ ريال شهريّاً Partner. ٨ بوّابات أمان مفروضة في الكود (لا تواصل بارد، لا خصم حيّ، لا scraping).
+### 1-line AR
+`[اسم المؤسس] هو مؤسس Dealix، نظام تشغيل أعمال بالذكاء الاصطناعي يركز على التنفيذ المحكوم والنتائج القابلة للقياس.`
 
-### 200-word version
+### 50-word EN
+`[Founder name] founded Dealix to reduce the gap between business decisions and verified execution. Dealix combines market intelligence, workflow orchestration, governed AI, delivery discipline and proof into one operating model. The company is founder-led externally and agent-operated internally, with material actions kept behind explicit authority boundaries.`
 
-**EN:**
-> Dealix is a Saudi-built AI Operating Team for B2B SMBs in the Kingdom. Engineered Arabic-first and PDPL-compliant from day one, Dealix gives Saudi business owners a single Executive Command Center showing sales, growth, support, delivery, finance, risks, and the day's three most important decisions — backed by five AI agents that draft replies, build proofs, qualify leads, and prepare reports, but never execute external actions without explicit founder approval.
->
-> Built around 8 constitutional hard gates encoded immutably in software (no cold outreach, no live charge, no scraping, no fake proof, no fake revenue, no LinkedIn automation, no unapproved testimonials, no blast), Dealix is positioned as the antidote to Western SaaS configurability — where compliance is a setting that can be turned off — by making PDPL-safety architecturally non-negotiable.
->
-> Dealix offers two products: a 7-Day Revenue Proof Sprint at 499 SAR (one-time, fully refundable for 14 days) and a Managed Revenue Operations Partner tier at 12,000 SAR/month (4-month commitment with KPI commitment, not guarantee). The first three founding partners keep their pricing for life. Dealix is bootstrapped, founder-led, and operating without outside capital pending first paid pilots' commercial validation.
+### 50-word AR
+`أسس [اسم المؤسس] Dealix لتقليل الفجوة بين القرار التجاري والتنفيذ المثبت. تجمع Dealix بين ذكاء السوق، وتنسيق سير العمل، والذكاء الاصطناعي المحكوم، والانضباط في التسليم والإثبات ضمن نموذج تشغيل واحد، مع بقاء الأفعال المادية خلف صلاحيات واضحة.`
 
-**AR (200 words):** [founder personalizes — translate the EN version with sectoral examples relevant to the prospect's industry]
+## 5. What Dealix is / is not
 
----
+### Dealix is
+- an AI Business Operating System;
+- an execution and proof layer over existing company tools;
+- evidence-first and governance-aware;
+- Saudi-market aware and bilingual;
+- founder-led externally / agent-operated internally;
+- capable of Build / Configure / Integrate / Partner / Subcontract / Refer routes.
 
-## 3. Press release template
+### Dealix is not
+- a generic chatbot;
+- a CRM replacement;
+- a lead scraper;
+- an AI automation agency brand;
+- a guaranteed-revenue service;
+- proof of regulatory certification;
+- proof of government relationship or procurement eligibility.
 
-### Filename: `landing/press/2026_<MM>_<headline_slug>.md`
+## 6. Current commercial path
 
-```markdown
-# [Headline — 8-12 words, Arabic primary]
+Public path:
 
-**For immediate release**
-**[City], Saudi Arabia · [Date]**
+`Free Mini Diagnostic → Qualified Discovery → Customer-Specific Quote → 30-Day Revenue Command Pilot → Proof → Stop / Expand / Redesign`
 
-[Lede — 1 sentence, Arabic, what just happened]
+Do not revive historical public fixed-price offers, public checkout, guarantees, refund promises or old sprint durations from legacy repository documents.
 
-[Paragraph 2 — 50-80 words: context + significance]
+## 7. Proof policy for media and public assets
 
-[Paragraph 3 — 50-80 words: founder quote in Arabic]
+Every claim should identify its evidence class when material:
 
-> "[Quote — Saudi-Arabic, max 30 words]" — Sami [last name], CEO Dealix
+1. `INTERNAL_CAPABILITY_PROOF`
+2. `SYNTHETIC_OR_DEMO_PROOF`
+3. `RUNTIME_OR_PRODUCTION_PROOF`
+4. `CUSTOMER_DELIVERY_PROOF`
+5. `CUSTOMER_OUTCOME_PROOF`
 
-[Paragraph 4 — 30-50 words: market significance + Vision 2030 alignment]
+Classes 4–5 require real same-customer evidence and the appropriate permission for publication.
 
-[Paragraph 5 — boilerplate company description, 50-word version §2]
+Never convert:
+- research into relationship;
+- public contact into consent;
+- event presence into buyer intent;
+- activity into customer outcome;
+- a quote into an invoice;
+- an invoice into payment;
+- synthetic output into customer proof;
+- HTTP 200 into correct-release proof;
+- a merged PR into Production Green.
 
----
+## 8. Approved messaging family
 
-**Media contact:**
-[Name]
-[Email]
-[WhatsApp]
+- `Signals into Action.`
+- `Execution with Governance.`
+- `Measurable Outcomes.`
+- `Revenue + Proof + Command`
+- `From Opportunity to Outcome`
+- `Give Dealix one broken workflow.`
 
-**Press kit:** dealix.me/press
-**Founder bio:** dealix.me/founder.html
-```
+Use exact evidence-backed compliance language such as:
+- `PDPL-aware`
+- `designed around consent, provenance and approval controls`
+- `governed data/action boundaries`
+- `ZATCA-aware where relevant`
 
-### Standing-by headlines (use when triggers fire)
+Do not use blanket `PDPL-compliant`, `certified`, `first Saudi`, `market-leading` or similar statements unless exact current evidence supports them.
 
-| Trigger | Suggested headline (AR) |
-|---|---|
-| First 3 paid pilots | "Dealix يُعلن أوّل ٣ شركاء تأسيس بعد جاهزيّة المنتج الكاملة" |
-| First Partner upsell | "أوّل عميل في طبقة Partner لـ Dealix — منظومة الإيرادات SMB السعوديّة" |
-| First case study | "Dealix يطلق أوّل Proof Pack موثّق لشركة B2B سعوديّة" |
-| 10 paid customers | "Dealix يصل ١٠ عملاء سعوديّين دافعين خلال ٩٠ يوم — صفر cold outreach" |
-| Friendly angel round | "Dealix يغلق جولة استثماريّة ودّيّة بعد التحقّق التجاري" |
+## 9. Visual system
 
----
+Canonical source assets:
+- `apps/web/public/dealix-logo.svg`
+- `apps/web/public/dealix-mark.svg`
+- `apps/web/public/dealix-og.svg`
 
-## 4. Saudi tech / business media — 10 target outlets
+Canonical palette:
+- Ink Navy `#0F172A`
+- Deep Teal `#164E63`
+- Signal Cyan `#22D3EE`
+- Cloud `#F8FAFC`
+- Proof Gold `#D4AF37` — proof/premium accent only
 
-| # | Outlet | Region | Best contact angle | Submission path |
-|---|---|---|---|---|
-| 1 | Wamda | MENA tech | Saudi founder, AI, SME-focus | wamda.com/contact |
-| 2 | MENAbytes | MENA startups | First-time founder, bootstrap | menabytes.com/contact |
-| 3 | Forbes Middle East | Mainstream | Saudi Vision 2030 angle | forbesmiddleeast.com/contact |
-| 4 | Magnitt | MENA VC | Funding-readiness angle (post-paid-pilots) | magnitt.com/contact |
-| 5 | Asharq Business | Arabic business | Saudi-Arabic-first positioning | aawsat.com/contact |
-| 6 | Arab News (Tech) | Mainstream Saudi | PDPL compliance angle | arabnews.com/contact |
-| 7 | Saudi Gazette | Local Saudi | Vision 2030 SME story | saudigazette.com.sa/contact |
-| 8 | Riyadh Daily | Local Saudi | Riyadh-based AI startup | _local Saudi search_ |
-| 9 | Eqtisadi | Arabic finance | Pricing innovation (KPI commitment vs guarantee) | _Saudi finance press_ |
-| 10 | Stepfeed (sister of Anghami media) | MENA youth | Founder-led brand story | stepfeed.com/contact |
+Typography:
+- Latin: `Inter`
+- Arabic: `IBM Plex Sans Arabic`
+- Evidence/technical: `IBM Plex Mono` or `JetBrains Mono`
 
-**Outreach rule:** never spam all 10 at once. Pick 3 most-fit outlets, write personalized 80-word pitch per outlet, send to journalist (not generic editorial inbox), wait 7 days for reply.
+Historical Navy/Gold, Emerald/Gold, Saudi-Green/Gold and diamond-D assets remain provenance only.
 
----
+## 10. Media response template
 
-## 5. Pitch templates (when reaching out to journalist)
+### English
+Subject: Dealix — governed AI execution / [specific angle]
 
-### EN version (~80 words)
+Hi [name],
 
-> Subject: Saudi AI startup hits first paid pilots — story angle for [outlet]
->
-> Hi [name],
->
-> I founded Dealix last year — an AI Operating Team built Arabic-first for Saudi B2B SMBs. We just hit our first paid pilots in May 2026 after disciplined product development (8 services LIVE, 8 hard gates in code, full PDPL compliance baked in).
->
-> The angle I think your readers will care about: how Saudi-built AI products are turning PDPL compliance into a competitive moat that Western SaaS can't replicate.
->
-> Open to a 20-min Zoom or WhatsApp voice call — whichever works.
->
-> [Sami last name]
-> dealix.me/founder.html
+I’m the founder of Dealix, an AI Business Operating System focused on turning fragmented business signals into governed execution and measurable outcomes.
 
-### AR version
+The specific angle that may be useful for your audience is: [one verified, timely insight — not a generic company pitch].
 
-> الموضوع: شركة AI سعوديّة تحقّق أوّل عملاء — زاوية لـ [الجهة]
->
-> سلام [الاسم]،
->
-> أنا مؤسّس Dealix — نظام تشغيل AI مبنيّ بالعربيّة السعوديّة لـ SMB. وصلنا أوّل عملاء مدفوعين مايو ٢٠٢٦ بعد تطوير منضبط (٨ خدمات LIVE، ٨ بوّابات أمان في الكود، التزام كامل بـ PDPL).
->
-> الزاوية اللي أعتقد مهمّة لقرّائك: كيف المنتجات السعوديّة AI تحوّل PDPL لـ moat تنافسي ما تقدر شركات SaaS الغربيّة تكرّره.
->
-> ٢٠ دقيقة Zoom أو WhatsApp voice — أيّهم يناسبك.
->
-> [سامي اسم العائلة]
-> dealix.me/founder.html
+I can share a concise evidence pack covering the operating problem, Dealix’s method, current proof class and what remains unproven.
 
----
+Best,
+[Founder name]
+Dealix
 
-## 6. Voice + tone rules (from `dealix_brand_guidelines.md`)
+### العربية
+الموضوع: Dealix — تنفيذ أعمال محكوم بالذكاء الاصطناعي / [الزاوية المحددة]
 
-- Arabic-Saudi primary, English secondary
-- Founder voice = direct, confident, evidence-based
-- NEVER use: "نضمن" / "guaranteed" / "10x" / "revolutionary" / "disrupting"
-- ALWAYS use: "ملتزم" / "موثّق" / "founding partner" / "approval-first"
-- Quote sources for every benchmark
-- "0 paid customers" is honesty, not weakness — say it directly when asked
+مرحبًا [الاسم]،
 
----
+أنا مؤسس Dealix، نظام تشغيل أعمال بالذكاء الاصطناعي يركز على تحويل الإشارات التجارية المتفرقة إلى تنفيذ محكوم ونتائج قابلة للقياس.
 
-## 7. Public founder page (`landing/founder.html`)
+الزاوية التي قد تكون مفيدة لجمهوركم هي: [معلومة واحدة موثقة وحديثة، وليست عرضًا عامًا للشركة].
 
-Currently access-gated. To support press kit, create public-tier version with:
+يمكنني مشاركة حزمة أدلة مختصرة توضح المشكلة التشغيلية، طريقة Dealix، فئة الإثبات الحالية، وما لم يتم إثباته بعد.
 
-- Founder photo (high-res, professional)
-- 200-word EN bio + 200-word AR bio
-- Career highlights (3-5 bullets)
-- Public credentials (LinkedIn URL, university, prior companies)
-- Direct contact (founder's WhatsApp Business + email)
-- Link to dealix.me/press
+تحياتي،
+[اسم المؤسس]
+Dealix
 
-**Action item for Web/HTML team:** unlock current founder.html OR create `/about.html` with public version (decision: founder picks before first interview).
+## 11. Trigger-based press rules
 
----
+A press story may be prepared only when the trigger is evidenced. Examples:
+- a real customer delivery accepted by the customer;
+- a permissioned customer outcome;
+- a material product/production milestone with current exact-release proof;
+- an externally verifiable partnership or procurement milestone;
+- a public event/session actually confirmed;
+- a financing event actually closed.
 
-## 8. Hard rules
+Drafting is not publication authority.
 
-- ❌ Never claim "we have N customers" until N ≥ 3 paid (`payment_confirmed`)
-- ❌ Never invent benchmark numbers in interviews — say "we don't have data on that yet"
-- ❌ Never make legal / regulatory claims without lawyer review
-- ❌ Never share customer names without `signed_publish_permission` from each customer
-- ❌ Never agree to live TV without 3 days prep
-- ✅ Always send press kit link with every pitch
-- ✅ Always offer EN + AR versions of every quote
-- ✅ Always log press placements in `docs/wave6/live/press_log.jsonl`
-- ✅ Always cc one trusted advisor on first 3 outlet pitches (sanity check)
+## 12. Hard rules
+
+- No fake customer, logo, testimonial, payment, revenue, outcome, relationship or partnership.
+- No unsupported `first Saudi`, `first in Saudi Arabia`, `market-leading` or government-access claim.
+- No guaranteed revenue or ROI.
+- No historical price presented as current.
+- No customer logo, quote or case study without permission evidence.
+- No mass journalist blast; use a specific evidence-backed angle and human review.
+- No cold WhatsApp outreach.
+- No press/publication action without exact external-action authority.
+
+## 13. Authority references
+
+Brand authority:
+- `data/brand/brand_authority.json`
+- `brand/DEALIX_VISUAL_IDENTITY_GUIDE.md`
+- `docs/brand/BRAND_AUTHORITY_MAP.md`
+- `docs/brand/CLAIMS_GUARDRAILS.md`
+
+V2.1 expansion draft:
+- `docs/brand/DEALIX_MASTERBRAND_EXPANSION_V2_1.md`
+- `data/brand/design_tokens_v2_1.json`
+
+Commercial truth remains controlled by the higher-priority business-model and launch-gate files, not this press kit.
+
+`PRESS_KIT_PUBLICATION_AUTHORITY=false`  
+`CUSTOMER_PROOF_AUTO_GRANT=false`  
+`MARKETING_CONSENT_AUTO_GRANT=false`  
+`TRADEMARK_CLEARANCE=LEGAL_CLEARANCE_PENDING`
