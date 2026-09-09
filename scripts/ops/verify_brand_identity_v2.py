@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Verify the Dealix V2 brand authority and canonical source assets.
+"""Verify the Dealix V2 masterbrand authority and active public surfaces.
 
-This verifier is intentionally narrow: it validates source-of-truth and active
-positioning files plus visual invariants. It does not publish assets, infer
-trademark status, or rewrite historical provenance.
+This verifier is intentionally bounded: it validates source-of-truth files,
+machine-readable tokens, active public brand surfaces and visual invariants.
+It does not publish assets, infer trademark status, rewrite historical
+provenance, or grant any commercial/channel authority.
 """
 
 from __future__ import annotations
@@ -15,11 +16,15 @@ ROOT = Path(__file__).resolve().parents[2]
 
 AUTHORITY = ROOT / "data/brand/brand_authority.json"
 SYSTEM = ROOT / "data/brand/dealix_brand_system_v2.json"
+TOKENS_V21 = ROOT / "data/brand/design_tokens_v2_1.json"
 GUIDE = ROOT / "brand/DEALIX_VISUAL_IDENTITY_GUIDE.md"
 LOGO_DOC = ROOT / "business/brand/DEALIX_LOGO_AND_IDENTITY_SYSTEM.md"
+READABLE_SYSTEM = ROOT / "business/brand/DEALIX_BRAND_SYSTEM.md"
 BRAND_OS = ROOT / "docs/brand/DEALIX_BRAND_OS.md"
 POSITIONING = ROOT / "docs/brand/POSITIONING.md"
+MASTERBRAND_EXPANSION = ROOT / "docs/brand/DEALIX_MASTERBRAND_EXPANSION_V2_1.md"
 LLMS = ROOT / "landing/llms.txt"
+WEB_BRAND_PAGE = ROOT / "apps/web/app/brand/page.tsx"
 
 LOGO = ROOT / "apps/web/public/dealix-logo.svg"
 MARK = ROOT / "apps/web/public/dealix-mark.svg"
@@ -32,18 +37,30 @@ REQUIRED_COLORS = {"#0F172A", "#164E63", "#22D3EE", "#F8FAFC"}
 CANONICAL_TEXT_FILES = (
     AUTHORITY,
     SYSTEM,
+    TOKENS_V21,
     GUIDE,
     LOGO_DOC,
+    READABLE_SYSTEM,
     BRAND_OS,
     POSITIONING,
+    MASTERBRAND_EXPANSION,
     LLMS,
+    WEB_BRAND_PAGE,
 )
 ASSET_FILES = (LOGO, MARK, OG, MONO_BLACK, MONO_WHITE, APP_ICON)
-FORBIDDEN_ACTIVE_PHRASES = (
+FORBIDDEN_POSITIONING_PHRASES = (
     "first Saudi AI Business Operating System",
     "Saudi-first AI Business Operating System",
     "first in Saudi Arabia",
 )
+FORBIDDEN_ACTIVE_VISUAL_PHRASES = (
+    "Navy #001F3F",
+    "#0E1A33 + Gold",
+    "Poppins (display)",
+    "Inter + Tajawal",
+    "AI Operating Systems for Companies",
+)
+ACTIVE_PUBLIC_OR_READABLE = (WEB_BRAND_PAGE, READABLE_SYSTEM)
 
 
 def fail(message: str) -> None:
@@ -64,9 +81,14 @@ def main() -> None:
 
     authority = load_json(AUTHORITY)
     system = load_json(SYSTEM)
+    tokens = load_json(TOKENS_V21)
 
     if authority.get("schema") != "dealix.brand-authority.v2":
         fail("brand_authority_schema")
+    if tokens.get("schema") != "dealix.design-tokens.v2.1":
+        fail("design_tokens_schema")
+    if tokens.get("extends") != "data/brand/dealix_brand_system_v2.json":
+        fail("design_tokens_must_extend_v2")
 
     identity = authority.get("canonical_identity", {})
     if identity.get("masterbrand") != "Dealix":
@@ -85,20 +107,51 @@ def main() -> None:
     if system.get("source", {}).get("positioning") != "AI Business Operating System":
         fail("machine_brand_positioning")
 
-    for path in CANONICAL_TEXT_FILES:
-        text = path.read_text(encoding="utf-8")
-        for phrase in FORBIDDEN_ACTIVE_PHRASES:
-            # Explicit guardrail/forbidden-claim examples are allowed only in the
-            # machine authority files and identity documentation where the phrase
-            # is used to forbid it, not to position Dealix.
-            if phrase in text and path not in {AUTHORITY, SYSTEM, GUIDE, LOGO_DOC, POSITIONING, LLMS, BRAND_OS}:
-                fail(f"unsupported_first_claim:{path.relative_to(ROOT)}")
+    token_brand = tokens.get("color", {}).get("brand", {})
+    expected_token_colors = {
+        "ink_navy": "#0F172A",
+        "deep_teal": "#164E63",
+        "signal_cyan": "#22D3EE",
+        "cloud": "#F8FAFC",
+        "proof_gold": "#D4AF37",
+    }
+    if token_brand != expected_token_colors:
+        fail("design_token_master_palette_drift")
 
-    # Active positioning files must positively use the approved category.
-    for path in (BRAND_OS, POSITIONING, LLMS):
+    token_governance = tokens.get("governance", {})
+    if token_governance.get("historical_palettes_are_authority") is not False:
+        fail("historical_palette_authority")
+    if token_governance.get("proof_gold_dominant_brand_color") is not False:
+        fail("proof_gold_must_not_dominate")
+    if token_governance.get("public_publish_authorized") is not False:
+        fail("brand_tokens_must_not_grant_publish_authority")
+
+    # Active positioning must use the approved category. Historical files are not
+    # scanned because provenance is allowed to remain in the repository.
+    for path in (BRAND_OS, POSITIONING, LLMS, READABLE_SYSTEM, WEB_BRAND_PAGE):
         text = path.read_text(encoding="utf-8")
         if "AI Business Operating System" not in text:
             fail(f"missing_active_category:{path.relative_to(ROOT)}")
+
+    for path in ACTIVE_PUBLIC_OR_READABLE:
+        text = path.read_text(encoding="utf-8")
+        for phrase in FORBIDDEN_POSITIONING_PHRASES:
+            if phrase in text:
+                fail(f"unsupported_first_claim:{path.relative_to(ROOT)}")
+        for phrase in FORBIDDEN_ACTIVE_VISUAL_PHRASES:
+            if phrase in text:
+                fail(f"legacy_brand_drift:{path.relative_to(ROOT)}:{phrase}")
+
+    web_brand = WEB_BRAND_PAGE.read_text(encoding="utf-8")
+    for required in (
+        "Revenue + Proof + Command",
+        "Signal → Decision → Action → Proof",
+        "Proof Gold",
+        "IBM Plex Sans Arabic",
+        "Start the Execution Diagnostic",
+    ):
+        if required not in web_brand:
+            fail(f"web_brand_missing:{required}")
 
     asset_blob = "\n".join(path.read_text(encoding="utf-8") for path in (LOGO, MARK, OG, APP_ICON))
     for color in REQUIRED_COLORS:
@@ -120,6 +173,7 @@ def main() -> None:
     print("BRAND_IDENTITY_V2=PASS")
     print("CATEGORY=AI Business Operating System")
     print("MARK=D + Forward Signal")
+    print("MASTERBRAND_EXPANSION=V2.1_DRAFT")
     print("FIRST_IN_MARKET_CLAIM=false")
     print("PUBLIC_PUBLISH_AUTHORIZED=false")
 
