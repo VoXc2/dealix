@@ -5,11 +5,6 @@
 set -Eeuo pipefail
 umask 077
 
-# Resolve repository identity from this script's own location instead of the
-# caller's current working directory. The acceptance runner is invoked from
-# VPS/control-plane wrappers as well as from inside repository worktrees, so
-# requiring the caller to cd into the worktree can create an environment-only
-# false failure (git rc=128) before any repository gate actually executes.
 SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"
 cd "$ROOT"
@@ -52,7 +47,6 @@ fi
 [[ -f "$GATE" ]] || fail_env "missing_fail_closed_gate"
 [[ -x "$PY" ]] || fail_env "missing_accept_python:$PY"
 command -v shellcheck >/dev/null 2>&1 || fail_env "shellcheck_not_installed"
-
 printf 'PYTHON_RUNTIME=PASS path=%s\n' "$PY"
 
 WEB_NODE_MODE=""
@@ -62,9 +56,8 @@ if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
 fi
 
 # Web production currently builds/runs on Node 22 (apps/web/Dockerfile). Use
-# host tooling only when it is exactly production-equivalent; newer Current or
-# other LTS majors must not become accidental release authority. Fall back to
-# the isolated Node 22 image instead of mutating the host runtime.
+# host tooling only when it is production-equivalent; otherwise isolate Node 22
+# in Docker instead of mutating host Node/npm.
 if [[ "$host_node_major" == "22" ]]; then
   WEB_NODE_MODE="HOST_PRODUCTION_NODE22"
   printf 'NODE_RUNTIME=PASS mode=%s version=%s\n' "$WEB_NODE_MODE" "$(node -v)"
@@ -96,23 +89,33 @@ run_gate SHELLCHECK shellcheck \
   scripts/ops/living_fleet_dispatch.sh \
   scripts/ops/accept_release_trust_pr.sh
 
+# Keep the focused gate broad enough to cover every release-trust root cause
+# changed by this PR, but bounded enough to iterate before the 9k+ full suite.
 TARGET_TESTS=(
   tests/test_fail_closed_gate.py
   tests/test_release_trust_acceptance_script.py
+
   tests/test_living_fleet_shell_safety.py
   tests/test_living_fleet_guards.py
+  tests/test_living_fleet_acceptance_v4.py
+  tests/test_living_fleet_concurrency_v1.py
+  tests/test_living_fleet_terminal_crash_recovery_v1.py
+
   tests/test_wave6_pilot_brief.py
   tests/test_delivery_workspace_created.py
   tests/test_delivery_requires_acceptance_criteria.py
   tests/test_proof_pack_generated.py
   tests/test_ai_workforce_policy.py
   tests/test_active_operator_commercial_authority.py
+
   tests/test_billing_router_mounted.py
   tests/test_billing_moyasar_safety.py
   tests/test_pricing_plans_endpoint.py
-  tests/test_apps_web_launch_truth.py
   tests/test_commercial_map.py
   tests/test_service_catalog.py
+  tests/test_wave15_customer_journey_e2e.py
+
+  tests/test_apps_web_launch_truth.py
   tests/test_customer_portal_contract_final.py
   tests/test_customer_portal_empty_states_final.py
   tests/test_customer_portal_full_ops.py
@@ -120,15 +123,28 @@ TARGET_TESTS=(
   tests/test_public_launch_truth.py
   tests/test_railway_canonical_contract.py
   tests/test_canonical_daily_workflow_contract.py
+  tests/test_canonical_ceo_doctrine_v3_truth.py
+
+  tests/test_approval_center_postgres_cutover.py
+  tests/test_durable_consent_migration_graph.py
+  tests/test_market_signal_sources_v3.py
+  tests/test_v7_secret_leakage_guard.py
+  tests/test_openclaw_local_memory_guard.py
+  tests/test_vps_command_control_guards.py
+  tests/test_vps_automation_runtime.py
+  tests/test_verify_catalog.py
 )
 run_gate TARGETED_PYTHON "$PY" -m pytest -q "${TARGET_TESTS[@]}"
 
+# Deterministic source-of-truth projections/verifiers. These are intentionally
+# direct gates as well as pytest coverage so stale generated artifacts cannot be
+# hidden by test selection or import order.
+run_gate PUBLIC_SERVICE_CATALOG "$PY" scripts/dealix_export_service_catalog_json.py --check
+run_gate MARKET_SIGNAL_SOURCES_V3 "$PY" scripts/ops/verify_market_signal_sources_v3.py
+run_gate VERIFY_SCRIPT_CATALOG "$PY" scripts/ops/build_verify_catalog.py --check
 run_gate BRAND_IDENTITY_V2 "$PY" scripts/ops/verify_brand_identity_v2.py
 
 if command -v actionlint >/dev/null 2>&1; then
-  # Keep syntax, expression, security, action-schema and runner-label checks
-  # fully enabled. For shell snippets, warnings/errors block release; legacy
-  # informational/style findings remain visible debt rather than P0 blockers.
   run_gate ACTIONLINT env SHELLCHECK_OPTS=--severity=warning actionlint
 else
   printf 'ACTIONLINT=SKIPPED_ENVIRONMENT reason=not_installed\n'
