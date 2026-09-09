@@ -10,7 +10,7 @@ umask 077
 # VPS/control-plane wrappers as well as from inside repository worktrees, so
 # requiring the caller to cd into the worktree can create an environment-only
 # false failure (git rc=128) before any repository gate actually executes.
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"
 cd "$ROOT"
 
