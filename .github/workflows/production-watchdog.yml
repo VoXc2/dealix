@@ -1,9 +1,12 @@
 name: Production Watchdog
 
+# Manual GitHub diagnostic only.
+# Continuous production polling belongs to the canonical Dealix control plane
+# (VPS scheduler). This preserves the evidence workflow without spending hosted
+# runner minutes every 30 minutes.
+
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/30 * * * *"
 
 permissions:
   contents: read

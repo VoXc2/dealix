@@ -1,17 +1,16 @@
 name: DLQ Size Check
 
-# Watches staging + production DLQ depth. Fails CI / pages on-call if
-# any DLQ exceeds the configured threshold.
+# Manual GitHub diagnostic only.
+# Continuous DLQ monitoring belongs to the canonical Dealix control plane
+# (VPS scheduler), so hosted runner minutes are reserved for CI/release gates.
 #
-# Requires the following GitHub secrets (set per environment):
+# Requires the following GitHub secrets when manually invoked:
 #   STAGING_REDIS_URL       redis://:<pass>@host:6379/0
 #   PRODUCTION_REDIS_URL    redis://:<pass>@host:6379/0
 #
 # Threshold: 5 items per queue (matches docs/ops/WEBHOOK_RETRY_DLQ.md SLO).
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"   # every 30 minutes
   workflow_dispatch:
 
 permissions:
