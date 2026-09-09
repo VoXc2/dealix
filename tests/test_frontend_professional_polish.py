@@ -1,16 +1,16 @@
-"""Phase 10 — Frontend Professional Polish tests."""
+"""Phase 10 — Frontend Professional Polish tests for current public authority."""
 from __future__ import annotations
 
 import re
 from html.parser import HTMLParser
 from pathlib import Path
 
-CUSTOMER_FACING = [
-    "landing/customer-portal.html",
+ACTIVE_CUSTOMER_FACING = [
     "landing/executive-command-center.html",
     "landing/launchpad.html",
     "landing/index.html",
 ]
+RETIRED_CUSTOMER_PORTAL = Path("landing/customer-portal.html")
 
 
 class _VisibleTextExtractor(HTMLParser):
@@ -47,19 +47,19 @@ def _visible_text(html: str) -> str:
     return parser.text()
 
 
-def test_all_customer_facing_have_mobile_meta() -> None:
-    for page in CUSTOMER_FACING:
+def test_all_active_customer_facing_have_mobile_meta() -> None:
+    for page in ACTIVE_CUSTOMER_FACING:
         path = Path(page)
         if not path.exists():
             continue
         html = path.read_text(encoding="utf-8")
-        assert (
-            "viewport" in html and "width=device-width" in html
-        ), f"{page} missing mobile viewport meta"
+        assert "viewport" in html and "width=device-width" in html, (
+            f"{page} missing mobile viewport meta"
+        )
 
 
-def test_all_customer_facing_have_arabic() -> None:
-    for page in CUSTOMER_FACING:
+def test_all_active_customer_facing_have_arabic() -> None:
+    for page in ACTIVE_CUSTOMER_FACING:
         path = Path(page)
         if not path.exists():
             continue
@@ -68,9 +68,9 @@ def test_all_customer_facing_have_arabic() -> None:
         assert 'dir="rtl"' in html, f"{page} missing dir=rtl"
 
 
-def test_all_customer_facing_have_english() -> None:
-    """At least one English word must appear (e.g., 'Dealix' or 'Saudi')."""
-    for page in CUSTOMER_FACING:
+def test_all_active_customer_facing_have_english() -> None:
+    """At least one English word must appear (e.g., Dealix or Saudi)."""
+    for page in ACTIVE_CUSTOMER_FACING:
         path = Path(page)
         if not path.exists():
             continue
@@ -78,11 +78,16 @@ def test_all_customer_facing_have_english() -> None:
         assert re.search(r"\b[A-Za-z]{4,}\b", html), f"{page} missing English text"
 
 
-def test_no_fake_metrics_without_demo_label() -> None:
-    """Customer-portal.html must show DEMO label where it shows numbers."""
-    html = Path("landing/customer-portal.html").read_text(encoding="utf-8")
-    assert "DEMO" in html
-    assert "src-pill" in html
+def test_retired_customer_portal_is_fail_closed_not_fake_live_product() -> None:
+    html = RETIRED_CUSTOMER_PORTAL.read_text(encoding="utf-8")
+    compact = html.replace(" ", "").lower()
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
+    assert "noindex,nofollow" in compact
+    assert "url=/proof.html" in html
+    assert 'rel="canonical" href="https://dealix.me/proof.html"' in html
+    assert "synthetic" in html
+    assert "ليست دليل عميل أو KPI حقيقيًا" in html
+    assert "src-pill" not in html
 
 
 def test_executive_command_center_demo_label_present() -> None:
@@ -92,13 +97,7 @@ def test_executive_command_center_demo_label_present() -> None:
 
 
 def _strip_explicit_negative_claim_language(html_visible: str) -> str:
-    """Remove only explicit negative/disclaimer uses before claim scanning.
-
-    Positive promises must remain detectable. This keeps copy such as
-    "not guaranteed outcomes", "نتائج غير مضمونة", or a first-cohort
-    exclusion like "طلبات guaranteed revenue خارج ..." from being mistaken
-    for a performance promise.
-    """
+    """Remove explicit negative/disclaimer uses before positive-claim scanning."""
     patterns = (
         r"[^\n<]*(?:not guaranteed outcomes|ليست نتائج مضمونة|نتائج غير مضمونة)[^\n>]*",
         r"[^\n<]*طلبات\s+guaranteed\s+revenue\s+خارج[^\n>]*",
@@ -109,31 +108,28 @@ def _strip_explicit_negative_claim_language(html_visible: str) -> str:
     return html_visible
 
 
-def test_no_forbidden_claims_in_customer_pages() -> None:
+def test_no_forbidden_claims_in_active_customer_pages() -> None:
     forbidden = [
         re.compile(r"\bguaranteed?\b", re.IGNORECASE),
         re.compile(r"\bblast\b", re.IGNORECASE),
         re.compile(r"نضمن"),
         re.compile(r"مضمون"),
     ]
-    for page in CUSTOMER_FACING:
+    for page in ACTIVE_CUSTOMER_FACING:
         path = Path(page)
         if not path.exists():
             continue
         html = path.read_text(encoding="utf-8")
-        html_visible = _visible_text(html)
-        html_visible = _strip_explicit_negative_claim_language(html_visible)
+        html_visible = _strip_explicit_negative_claim_language(_visible_text(html))
         for pat in forbidden:
             assert not pat.search(html_visible), f"{page} contains: {pat.pattern}"
 
 
-def test_customer_portal_links_to_legal_pages() -> None:
-    """Customer portal footer must link to privacy + terms."""
-    html = Path("landing/customer-portal.html").read_text(encoding="utf-8")
-    assert "/privacy.html" in html
-    assert "/terms.html" in html
+def test_retired_customer_portal_links_to_current_proof_authority() -> None:
+    html = RETIRED_CUSTOMER_PORTAL.read_text(encoding="utf-8")
+    assert "/proof.html" in html
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
 
 
 def test_polish_doc_exists() -> None:
-    """Phase 10 doc must exist."""
     assert Path("docs/FRONTEND_PROFESSIONAL_POLISH_PLAN.md").exists()
