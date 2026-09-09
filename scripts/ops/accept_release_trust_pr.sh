@@ -106,14 +106,26 @@ TARGET_TESTS=(
   tests/test_delivery_requires_acceptance_criteria.py
   tests/test_proof_pack_generated.py
   tests/test_ai_workforce_policy.py
+  tests/test_ai_workforce_orchestrator.py
   tests/test_active_operator_commercial_authority.py
 
   tests/test_billing_router_mounted.py
   tests/test_billing_moyasar_safety.py
   tests/test_pricing_plans_endpoint.py
+  tests/test_checkout_idempotency.py
   tests/test_commercial_map.py
   tests/test_service_catalog.py
+  tests/test_service_setup.py
+  tests/test_sector_intel.py
+  tests/test_business_strategy.py
   tests/test_wave15_customer_journey_e2e.py
+  tests/integration/test_full_customer_journey.py
+
+  tests/test_distribution_api.py
+  tests/test_distribution_os_doctrine.py
+  tests/test_distribution_os_proposal_payment.py
+  tests/test_distribution_os_followup_metrics.py
+  tests/test_dealix_operating_system.py
 
   tests/test_apps_web_launch_truth.py
   tests/test_customer_portal_contract_final.py
@@ -128,6 +140,7 @@ TARGET_TESTS=(
   tests/test_approval_center_postgres_cutover.py
   tests/test_durable_consent_migration_graph.py
   tests/test_market_signal_sources_v3.py
+  tests/test_capability_frontier_v2_registry.py
   tests/test_v7_secret_leakage_guard.py
   tests/test_openclaw_local_memory_guard.py
   tests/test_vps_command_control_guards.py
