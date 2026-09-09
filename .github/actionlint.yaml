@@ -1,0 +1,8 @@
+# actionlint repository configuration.
+#
+# `dealix-vps` is the intentional custom label used by the Dealix self-hosted
+# runner workflows. Declaring it here only teaches actionlint the static runner
+# contract; it does not prove that a live runner is registered or online.
+self-hosted-runner:
+  labels:
+    - dealix-vps
