@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Compatibility entrypoint for the canonical Dealix Company OS cycle.
 
-This file exists because older VPS orchestration calls this path. It delegates
-one-for-one to ``run_self_operating_company_os.py`` and then runs the bounded
-Strategy Execution Orchestrator. Neither layer owns a parallel state store,
-authority model, target source, scheduler, CRM, approval system, or proof ledger.
-
-Before delegation, it verifies the permanent Dealix operating constitution.
-That makes company-law drift fail closed without creating a second Company OS.
+This file exists because older VPS orchestration calls this path. It verifies
+company law, materializes the real website-diagnostic intake bridge from the
+existing Revenue Ops store, delegates one-for-one to
+``run_self_operating_company_os.py``, then runs the bounded Strategy Execution
+Orchestrator. No layer owns a parallel state store, authority model, target
+source, scheduler, CRM, approval system, or proof ledger.
 """
 from __future__ import annotations
 
@@ -19,6 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CANONICAL = ROOT / "scripts" / "commercial" / "run_self_operating_company_os.py"
 CONSTITUTION_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_operating_constitution.py"
+INBOUND_DIAGNOSTIC_BRIDGE = ROOT / "scripts" / "commercial" / "run_inbound_execution_diagnostic_bridge_v1.py"
 ORCHESTRATOR = ROOT / "scripts" / "commercial" / "run_strategy_execution_orchestrator_v1.py"
 VERIFIER = ROOT / "scripts" / "commercial" / "verify_strategy_execution_orchestrator_v1.py"
 
@@ -41,6 +41,14 @@ def main() -> int:
     if constitution_rc != 0:
         print("COMPANY_OS_DAILY=BLOCKED_CONSTITUTION_INVALID")
         return constitution_rc
+
+    if not INBOUND_DIAGNOSTIC_BRIDGE.is_file():
+        print("COMPANY_OS_DAILY=BLOCKED_INBOUND_DIAGNOSTIC_BRIDGE_MISSING")
+        return 2
+    inbound_rc = run([sys.executable, str(INBOUND_DIAGNOSTIC_BRIDGE)])
+    if inbound_rc != 0:
+        print(f"COMPANY_OS_DAILY=BLOCKED_INBOUND_DIAGNOSTIC_BRIDGE_RC_{inbound_rc}")
+        return inbound_rc
 
     if not CANONICAL.is_file():
         print("COMPANY_OS_DAILY=BLOCKED_CANONICAL_RUNNER_MISSING")
@@ -71,6 +79,7 @@ def main() -> int:
         print(f"COMPANY_OS_DAILY=BLOCKED_STRATEGY_ORCHESTRATOR_RC_{orchestrator_rc}")
         return orchestrator_rc
 
+    print("INBOUND_EXECUTION_DIAGNOSTIC_BRIDGE=PASS")
     print("COMPANY_OS_DAILY=DELEGATED_TO_CANONICAL_COMPANY_OS")
     print("STRATEGY_EXECUTION_ORCHESTRATOR=PASS")
     return 0
