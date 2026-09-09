@@ -289,12 +289,23 @@ registry_row() {
 }
 
 run_owner() {
-  local cmd="$1" out="$2"
+  local owner_cmd="$1" output_path="$2"
+  local -a argv=()
+  read -r -a argv <<<"$owner_cmd"
+
+  # Registry owner commands are fixed repo-controlled argv, never event input.
+  # Require the canonical interpreter token and a concrete script argument so
+  # no arbitrary shell string, eval, or accidental word splitting can execute.
+  [[ "${argv[0]:-}" == ".venv/bin/python" && "${argv[1]:-}" == scripts/*.py ]] || {
+    log "BLOCKED invalid_owner_command"
+    return 64
+  }
+
   (
     cd "$REPO_ROOT"
     set +e
     timeout --kill-after=15 --signal=TERM 300 \
-      ./.venv/bin/python ${cmd#.venv/bin/python } >"$out" 2>&1
+      ./.venv/bin/python "${argv[@]:1}" >"$output_path" 2>&1
     rc=$?
     set -e
     exit "$rc"
@@ -427,7 +438,6 @@ if [[ -z "$WANTED" ]]; then
   exit 0
 fi
 
-COUNCIL_T0="$(date +%s)"
 for role in $WANTED; do
   row="$(registry_row "$role")" || { log "DEGRADED unknown_seat=${role}"; continue; }
   IFS='|' read -r _r ev kind watches owner <<<"$row"
@@ -561,9 +571,11 @@ PY
     atomic_json_set "$sf" "STATUS=FAILED" "BLOCKER=owner_failed_rc_${rc}"
     atomic_json_set "$terminal_marker" "STATE=COMMITTED" "TERMINAL_RESULT=FAILED"
   fi
-  for pj in "$pending_dir/${JOB_ID}.json"; do
-    mkdir -p "$(dirname "$pj")/consumed"; mv "$pj" "$(dirname "$pj")/consumed/$(basename "$pj")"
-  done
+
+  pending_job="$pending_dir/${JOB_ID}.json"
+  consumed_dir="$pending_dir/consumed"
+  mkdir -p "$consumed_dir"
+  mv -- "$pending_job" "$consumed_dir/$(basename "$pending_job")"
   log "OWNER_EXECUTED role=${role} job=${JOB_ID} result=${RESULT} duration=${duration}s"
 done
 
