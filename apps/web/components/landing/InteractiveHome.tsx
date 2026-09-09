@@ -38,6 +38,9 @@ const deferredSectionStyle = {
 export function InteractiveHome() {
   const heroRef = useRef<HTMLDivElement>(null);
   const pointerFrameRef = useRef<number | null>(null);
+  const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "sami.assiri11@gmail.com";
+  const founderPhone = process.env.NEXT_PUBLIC_FOUNDER_PHONE?.trim() || "+966 59 778 8539";
+  const founderPhoneHref = `tel:${founderPhone.replace(/[^+\d]/g, "")}`;
 
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse" || pointerFrameRef.current !== null) return;
@@ -121,7 +124,7 @@ export function InteractiveHome() {
         </section>
       </main>
 
-      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/pricing">Engagement Path</Link><Link href="/services">Services</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link></div><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · AI Business Operating System · Signal → Decision → Action → Proof</small></div></footer>
+      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/pricing">Engagement Path</Link><Link href="/services">Services</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link><a href={`mailto:${founderEmail}`}>Founder Email</a><a href={founderPhoneHref}>Founder Phone</a></div><p>Founder Office: <a href={`mailto:${founderEmail}`}>{founderEmail}</a> · <a href={founderPhoneHref}>{founderPhone}</a></p><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · AI Business Operating System · Signal → Decision → Action → Proof</small></div></footer>
     </div>
   );
 }
