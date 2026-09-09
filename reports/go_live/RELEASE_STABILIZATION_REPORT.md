@@ -6,7 +6,7 @@ Status: **DRAFT / HOLD / NOT PRODUCTION GREEN**
 
 Canonical P0 release-trust repair after the 2026-09-09 acceptance run produced false-green labels despite real Python and Web failures.
 
-Branch: `fix/release-trust-fail-closed-20260909-chatgpt`  
+Branch: `fix/release-trust-fail-closed-20260909-chatgpt`
 Base main: `53d193d505315eea3153719d914112e50865384e`
 
 ## Fresh live evidence at start
