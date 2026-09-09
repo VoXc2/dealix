@@ -22,6 +22,17 @@ def test_book_page_submits_to_canonical_execution_diagnostic_endpoint():
     assert "لا يتم اعتبار المشكلة أو العائد أو Proof مثبتًا" in text
 
 
+def test_diagnostic_followup_is_explicit_and_fail_closed_by_default():
+    page = BOOK.read_text(encoding="utf-8")
+    public_text = PUBLIC_INTAKE.read_text(encoding="utf-8")
+
+    assert 'name="followup_requested"' in page
+    assert "defaultChecked" not in page
+    assert "followup_requested: bool = False" in public_text
+    assert '"marketing_consent": False' in public_text
+    assert '"customer_proof_consent": False' in public_text
+
+
 def test_founder_public_contact_is_explicit_and_environment_overrideable():
     page = BOOK.read_text(encoding="utf-8")
     env = ENV_EXAMPLE.read_text(encoding="utf-8")
