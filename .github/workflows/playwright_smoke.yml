@@ -3,6 +3,7 @@
 # This workflow intentionally serves `landing/` only. The Next.js interactive
 # front door under `apps/web` has a separate browser-smoke workflow so the two
 # render authorities cannot be accidentally tested against the wrong server.
+# PR + manual only: continuous production monitoring belongs to the VPS plane.
 
 name: Playwright Tier-1 smoke
 
@@ -15,15 +16,7 @@ on:
       - "tests/playwright/playwright.config.js"
       - "tests/playwright/package.json"
       - ".github/workflows/playwright_smoke.yml"
-  push:
-    branches: [main]
-    paths:
-      - "landing/**"
-      - "tests/playwright/tier1_smoke.spec.js"
-      - "tests/playwright/market_to_delivery.spec.js"
-      - "tests/playwright/playwright.config.js"
-      - "tests/playwright/package.json"
-      - ".github/workflows/playwright_smoke.yml"
+  workflow_dispatch: {}
 
 permissions:
   contents: read
