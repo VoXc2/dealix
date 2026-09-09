@@ -55,6 +55,19 @@ as_dealix() {
   fi
 }
 
+# Run every repository-aware Python command from the exact worktree itself.
+# Pydantic Settings resolves a relative env_file (for example '.env') against
+# the process current working directory. Running pytest as dealix while the
+# inherited cwd is /root can therefore fail during conftest import before a
+# single test executes. Keep cwd, PYTHONPATH, HOME, and source tree aligned.
+run_in_wt() {
+  as_dealix env \
+    PYTHONPATH="$WT" \
+    HOME="/home/$RUN_USER" \
+    bash -c 'set -Eeuo pipefail; cd "$1"; shift; exec "$@"' \
+    bash "$WT" "$@"
+}
+
 [[ "$(id -u)" -eq 0 ]] || hold ROOT_REQUIRED
 id "$RUN_USER" >/dev/null 2>&1 || hold RUN_USER_MISSING
 [[ -d "$REPO/.git" ]] || hold REPO_MISSING
@@ -99,7 +112,7 @@ as_dealix git -C "$REPO" worktree add --detach "$WT" "$HEAD"
 TARGET="$WT/docs/ops/VERIFY_SCRIPTS_CATALOG.md"
 TMP="$(as_dealix mktemp "$PROOF/catalog.XXXXXX")"
 
-as_dealix "$PY" "$WT/scripts/ops/build_verify_catalog.py" > "$TMP"
+run_in_wt "$PY" scripts/ops/build_verify_catalog.py > "$TMP"
 NEW_COUNT="$(grep '^Total scripts:' "$TMP" | awk '{print $3}')"
 OLD_COUNT="$(grep '^Total scripts:' "$TARGET" 2>/dev/null | awk '{print $3}' || true)"
 echo "OLD_VERIFY_SCRIPT_COUNT=${OLD_COUNT:-missing}"
@@ -107,8 +120,8 @@ echo "NEW_VERIFY_SCRIPT_COUNT=${NEW_COUNT:-missing}"
 
 if cmp -s "$TMP" "$TARGET"; then
   as_dealix rm -f "$TMP"
-  as_dealix env PYTHONPATH="$WT" "$PY" "$WT/scripts/ops/build_verify_catalog.py" --check
-  as_dealix env PYTHONPATH="$WT" "$PY" -m pytest -q "$WT/tests/test_verify_catalog.py"
+  run_in_wt "$PY" scripts/ops/build_verify_catalog.py --check
+  run_in_wt "$PY" -m pytest -q tests/test_verify_catalog.py
   echo "VERIFY_CATALOG_ALREADY_CURRENT=true"
   echo "RESULT=VERIFY_CATALOG_PASS_NO_CHANGE"
   exit 0
@@ -117,8 +130,8 @@ fi
 as_dealix install -m 0644 "$TMP" "$TARGET"
 as_dealix rm -f "$TMP"
 
-as_dealix env PYTHONPATH="$WT" "$PY" "$WT/scripts/ops/build_verify_catalog.py" --check
-as_dealix env PYTHONPATH="$WT" "$PY" -m pytest -q "$WT/tests/test_verify_catalog.py"
+run_in_wt "$PY" scripts/ops/build_verify_catalog.py --check
+run_in_wt "$PY" -m pytest -q tests/test_verify_catalog.py
 as_dealix git -C "$WT" diff --check
 
 CHANGED="$(as_dealix git -C "$WT" status --porcelain)"
