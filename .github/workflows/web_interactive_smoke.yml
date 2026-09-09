@@ -1,6 +1,7 @@
 # Browser smoke for the canonical Next.js front door under apps/web.
 # Kept separate from the legacy static landing workflow so each surface is
-# tested against the server that actually owns it.
+# tested against the server that actually owns it. PR + manual only: post-merge
+# production/front-door monitoring belongs to the canonical VPS/Railway plane.
 
 name: Interactive Web smoke
 
@@ -12,14 +13,7 @@ on:
       - "tests/playwright/playwright.config.js"
       - "tests/playwright/package.json"
       - ".github/workflows/web_interactive_smoke.yml"
-  push:
-    branches: [main]
-    paths:
-      - "apps/web/**"
-      - "tests/playwright/interactive_home.spec.js"
-      - "tests/playwright/playwright.config.js"
-      - "tests/playwright/package.json"
-      - ".github/workflows/web_interactive_smoke.yml"
+  workflow_dispatch: {}
 
 permissions:
   contents: read
