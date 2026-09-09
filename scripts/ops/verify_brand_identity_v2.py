@@ -28,6 +28,9 @@ ENTERPRISE_ASSET_SYSTEM = ROOT / "docs/brand/DEALIX_ENTERPRISE_ASSET_SYSTEM_V1.m
 PRESS_KIT = ROOT / "docs/BRAND_PRESS_KIT.md"
 LLMS = ROOT / "landing/llms.txt"
 WEB_BRAND_PAGE = ROOT / "apps/web/app/brand/page.tsx"
+PUBLIC_TERMS = ROOT / "landing/terms.html"
+SALES_AGENT = ROOT / ".claude/agents/dealix-sales.md"
+PROOF_TEMPLATE = ROOT / "data/templates/proof_pack_ar.md"
 
 LOGO = ROOT / "apps/web/public/dealix-logo.svg"
 MARK = ROOT / "apps/web/public/dealix-mark.svg"
@@ -59,6 +62,9 @@ CANONICAL_TEXT_FILES = (
     PRESS_KIT,
     LLMS,
     WEB_BRAND_PAGE,
+    PUBLIC_TERMS,
+    SALES_AGENT,
+    PROOF_TEMPLATE,
 )
 ASSET_FILES = (LOGO, MARK, OG, MONO_BLACK, MONO_WHITE, APP_ICON)
 FORBIDDEN_POSITIONING_PHRASES = (
@@ -80,7 +86,14 @@ FORBIDDEN_LEGACY_COMMERCIAL_PHRASES = (
     "first three hires",
     "replaces the first 3 hires",
 )
-ACTIVE_PUBLIC_OR_READABLE = (WEB_BRAND_PAGE, READABLE_SYSTEM, PRESS_KIT)
+ACTIVE_PUBLIC_OR_READABLE = (
+    WEB_BRAND_PAGE,
+    READABLE_SYSTEM,
+    PRESS_KIT,
+    PUBLIC_TERMS,
+    SALES_AGENT,
+    PROOF_TEMPLATE,
+)
 
 
 def fail(message: str) -> None:
@@ -193,7 +206,17 @@ def main() -> None:
 
     # Active positioning must use the approved category. Historical files are not
     # scanned because provenance is allowed to remain in the repository.
-    for path in (BRAND_OS, POSITIONING, LLMS, READABLE_SYSTEM, PRESS_KIT, WEB_BRAND_PAGE):
+    for path in (
+        BRAND_OS,
+        POSITIONING,
+        LLMS,
+        READABLE_SYSTEM,
+        PRESS_KIT,
+        WEB_BRAND_PAGE,
+        PUBLIC_TERMS,
+        SALES_AGENT,
+        PROOF_TEMPLATE,
+    ):
         text = path.read_text(encoding="utf-8")
         if "AI Business Operating System" not in text:
             fail(f"missing_active_category:{path.relative_to(ROOT)}")
@@ -242,6 +265,34 @@ def main() -> None:
         if required not in enterprise_assets:
             fail(f"enterprise_asset_system_missing:{required}")
 
+    sales_agent = SALES_AGENT.read_text(encoding="utf-8")
+    for required in (
+        "data/brand/brand_authority.json",
+        "data/brand/asset_template_registry_v1.json",
+        "docs/brand/DEALIX_ENTERPRISE_ASSET_SYSTEM_V1.md",
+        "Public Contact",
+    ):
+        if required not in sales_agent:
+            # 'Public Contact' may remain implicit in older safe phrasing; keep a
+            # specific failure so the authority surface cannot silently weaken.
+            if required == "Public Contact" and "public contact data as consent" in sales_agent:
+                continue
+            fail(f"sales_agent_missing_brand_contract:{required}")
+
+    proof_template = PROOF_TEMPLATE.read_text(encoding="utf-8")
+    for required in (
+        "brand_version: V2.1_DRAFT",
+        "template_version: proof_pack_ar_v2_1",
+        "Dealix — AI Business Operating System · Revenue + Proof + Command",
+        "Publication Permission",
+    ):
+        if required not in proof_template:
+            fail(f"proof_template_missing_brand_contract:{required}")
+
+    public_terms = PUBLIC_TERMS.read_text(encoding="utf-8")
+    if "مبني للتنفيذ المحكوم مع سياق السوق السعودي عند الحاجة" not in public_terms:
+        fail("terms_missing_current_market_context")
+
     asset_blob = "\n".join(path.read_text(encoding="utf-8") for path in (LOGO, MARK, OG, APP_ICON))
     for color in REQUIRED_COLORS:
         if color not in asset_blob:
@@ -265,6 +316,7 @@ def main() -> None:
     print("MASTERBRAND_EXPANSION=V2.1_DRAFT")
     print("ENTERPRISE_ASSET_REGISTRY=PASS")
     print("PERMANENT_AGENT_COUNT=5")
+    print("ACTIVE_BRAND_SURFACE_MIGRATION=PASS")
     print("FIRST_IN_MARKET_CLAIM=false")
     print("PUBLIC_PUBLISH_AUTHORIZED=false")
 
