@@ -4,11 +4,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "ops" / "recover_and_accept_pr1600.sh"
+ACCEPTANCE = ROOT / "scripts" / "ops" / "run_pr1600_live_full_acceptance.sh"
 
 
 def _text() -> str:
     assert SCRIPT.is_file()
     return SCRIPT.read_text(encoding="utf-8")
+
+
+def _acceptance_text() -> str:
+    assert ACCEPTANCE.is_file()
+    return ACCEPTANCE.read_text(encoding="utf-8")
 
 
 def test_recovery_keeps_all_material_actions_disabled() -> None:
@@ -83,3 +89,14 @@ def test_recovery_requires_acceptance_receipt_and_stable_head() -> None:
     assert "EXACT_HEAD_STABILITY=PASS" in text
     assert "RESULT=PR1600_EXECUTION_PLANE_RECOVERED_AND_EXACT_HEAD_ACCEPTED" in text
     assert "PRODUCTION_GREEN=false" in text
+
+
+def test_exact_head_acceptance_uses_nonpersistent_gh_git_credentials() -> None:
+    text = _acceptance_text()
+    assert 'GIT_REMOTE="https://github.com/${REPOSITORY}.git"' in text
+    assert "credential.helper=!gh auth git-credential" in text
+    assert "gh auth setup-git" not in text
+    assert "as_dealix gh auth status" in text
+    assert "GH_FOUNDER_AUTH_MISMATCH" in text
+    assert 'git_repo fetch "$GIT_REMOTE" "+refs/heads/main:refs/remotes/origin/main"' in text
+    assert 'git_repo fetch "$GIT_REMOTE" "+refs/pull/$PR/head:$REF"' in text
