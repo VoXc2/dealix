@@ -33,6 +33,8 @@ Keep these states separate:
 
 **Activity != Delivery != Payment != Revenue != Customer Value != Publication Permission**
 
+**Invoice != Payment**
+
 - Baseline and data-quality evidence precede improvement claims.
 - Governed external effects need matching action/approval receipts.
 - Delivery evidence does not prove payment.
