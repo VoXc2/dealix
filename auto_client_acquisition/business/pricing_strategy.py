@@ -1,94 +1,34 @@
-"""Pricing tiers, plan recommendation, performance fees, ROI estimates."""
+"""Commercial strategy compatibility helpers under current quote-only authority.
 
+Historical fixed monthly tiers and performance-fee ladders are retired as
+commercial authority. This module remains import-compatible for analytics and
+legacy callers, but it cannot publish a price, recommend a fixed plan, or
+calculate a billable fee.
+"""
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any
 
-PlanKey = Literal[
-    "founder_operator",
-    "growth_os",
-    "scale_os",
-    "performance_addon",
-    "enterprise",
-    "agency_partner",
+_CANONICAL_PATH = [
+    "free_mini_diagnostic",
+    "qualified_discovery",
+    "customer_specific_quote",
+    "revenue_command_pilot_30d",
 ]
+_PRICE_AUTHORITY = "customer_specific_quote_after_qualified_discovery"
 
 
 def get_pricing_tiers() -> dict[str, Any]:
-    """Product packaging aligned with docs/PRICING_STRATEGY.md (SAR/month unless noted)."""
+    """Return commercial authority metadata without a public pricing ladder."""
     return {
+        "status": "quote_only",
         "currency": "SAR",
-        "tiers": [
-            {
-                "key": "founder_operator",
-                "name_ar": "مشغّل المؤسس",
-                "target": "solo founders / early B2B startups",
-                "price_monthly_sar_range": [299, 499],
-                "price_future_sar": 999,
-                "includes": [
-                    "Arabic daily brief",
-                    "20 strategic opportunities / month",
-                    "project memory (local + Supabase path)",
-                    "draft messages (approval-first)",
-                    "launch readiness",
-                    "limited market radar",
-                ],
-            },
-            {
-                "key": "growth_os",
-                "name_ar": "نظام النمو",
-                "target": "B2B SMEs",
-                "price_monthly_sar": 2999,
-                "includes": [
-                    "Revenue Command Center",
-                    "Market Radar",
-                    "500 prospects / month (enrichment cap — policy)",
-                    "AI message drafts",
-                    "WhatsApp approval flow",
-                    "Gmail draft",
-                    "meeting schedule drafts",
-                    "weekly proof pack",
-                ],
-            },
-            {
-                "key": "scale_os",
-                "name_ar": "نظام التوسّع",
-                "target": "mature B2B teams",
-                "price_monthly_sar": 7999,
-                "includes": [
-                    "multi-seat",
-                    "team performance",
-                    "customer success signals",
-                    "churn / expansion scoring",
-                    "integrations",
-                    "advanced analytics",
-                    "API / webhooks",
-                ],
-            },
-            {
-                "key": "performance_addon",
-                "name_ar": "طبقة الأداء",
-                "target": "optional add-on",
-                "fee_qualified_lead_sar_range": [25, 75],
-                "fee_booked_meeting_sar_range": [150, 500],
-                "success_fee_pct_range": [3, 10],
-                "notes": ["Strict qualification + dispute logic required before billing."],
-            },
-            {
-                "key": "enterprise",
-                "name_ar": "المؤسسات / نشر خاص",
-                "target": "enterprise",
-                "pricing": "custom",
-                "includes": ["SSO", "advanced PDPL", "custom integrations", "dedicated success", "private data", "SLA"],
-            },
-            {
-                "key": "agency_partner",
-                "name_ar": "شراكة وكالات",
-                "setup_fee_sar_range": [3000, 25000],
-                "revenue_share_pct_range": [15, 30],
-                "notes": ["Dealix keeps platform subscription; agency sells implementation."],
-            },
-        ],
+        "tiers": [],
+        "commercial_path": list(_CANONICAL_PATH),
+        "price_authority": _PRICE_AUTHORITY,
+        "public_fixed_price": False,
+        "live_charge_allowed": False,
+        "legacy_fixed_tiers_retired": True,
     }
 
 
@@ -98,29 +38,22 @@ def recommend_plan(
     monthly_budget_sar: float,
     goal: str,
 ) -> dict[str, Any]:
-    """Heuristic plan recommendation — deterministic rules."""
-    size = company_size.lower().strip()
-    goal_l = goal.lower()
-    recommended: PlanKey = "founder_operator"
-    rationale_ar = "ميزانية محدودة أو مرحلة مبكرة — ابدأ بمشغّل المؤسس للتحقق السريع."
-
-    if monthly_budget_sar >= 6500 or size in ("large", "enterprise", "scale"):
-        recommended = "scale_os"
-        rationale_ar = "فريق ناضج أو ميزانية عالية — Scale OS يلائم التنسيق متعدد المقاعد والتحليلات."
-    elif monthly_budget_sar >= 2000 or size in ("sme", "medium", "growth"):
-        recommended = "growth_os"
-        rationale_ar = "شركة B2B نامية — Growth OS يوازن بين الرادار والتنفيذ الآمن ودليل العائد."
-
-    if "performance" in goal_l or "pay per" in goal_l:
-        rationale_ar += " أضف طبقة الأداء لاحقاً بعد تعريف التأهيل والنزاعات."
-
-    tiers = get_pricing_tiers()
-    tier = next((t for t in tiers["tiers"] if t["key"] == recommended), tiers["tiers"][0])
+    """Route to discovery rather than infer a commercial package from inputs."""
     return {
-        "recommended_plan": recommended,
-        "rationale_ar": rationale_ar,
-        "tier_summary": tier,
-        "inputs": {"company_size": company_size, "monthly_budget_sar": monthly_budget_sar, "goal": goal},
+        "recommended_plan": None,
+        "recommended_next_step": "free_mini_diagnostic_then_qualified_discovery",
+        "price_authority": _PRICE_AUTHORITY,
+        "public_fixed_price": False,
+        "automatic_plan_selection": False,
+        "inputs": {
+            "company_size": company_size,
+            "monthly_budget_sar": monthly_budget_sar,
+            "goal": goal,
+        },
+        "note": (
+            "Company size, budget and goal may inform discovery but do not create "
+            "pricing or package authority."
+        ),
     }
 
 
@@ -129,26 +62,25 @@ def calculate_performance_fee(
     qualified_leads: int,
     booked_meetings: int,
     won_revenue_sar: float,
-    lead_fee_sar: float = 40.0,
-    meeting_fee_sar: float = 250.0,
-    success_fee_pct: float = 5.0,
+    lead_fee_sar: float = 0.0,
+    meeting_fee_sar: float = 0.0,
+    success_fee_pct: float = 0.0,
 ) -> dict[str, Any]:
-    """Demo calculation — real contracts need legal + qualification definitions."""
-    lead_component = max(0, qualified_leads) * lead_fee_sar
-    meeting_component = max(0, booked_meetings) * meeting_fee_sar
-    success_component = max(0.0, won_revenue_sar) * (success_fee_pct / 100.0)
-    total = round(lead_component + meeting_component + success_component, 2)
+    """Compatibility surface: never calculate an invoiceable performance fee."""
+    del lead_fee_sar, meeting_fee_sar, success_fee_pct
     return {
-        "qualified_leads": qualified_leads,
-        "booked_meetings": booked_meetings,
-        "won_revenue_sar": won_revenue_sar,
-        "components_sar": {
-            "leads": round(lead_component, 2),
-            "meetings": round(meeting_component, 2),
-            "success": round(success_component, 2),
-        },
-        "total_performance_fees_sar": total,
-        "disclaimer_ar": "يجب ربط أي رسوم أداء بعقود وتأهيل واضح وتتبع نزاعات قبل الفوترة.",
+        "status": "retired_commercial_authority",
+        "qualified_leads": max(0, qualified_leads),
+        "booked_meetings": max(0, booked_meetings),
+        "won_revenue_sar": max(0.0, won_revenue_sar),
+        "total_performance_fees_sar": None,
+        "price_authority": _PRICE_AUTHORITY,
+        "automatic_billing_allowed": False,
+        "live_charge_allowed": False,
+        "note": (
+            "Performance economics may be analyzed internally, but any fee requires "
+            "an explicit customer-specific commercial agreement and billing authority."
+        ),
     }
 
 
@@ -158,16 +90,24 @@ def estimate_roi(
     expected_pipeline_sar: float,
     expected_revenue_sar: float,
 ) -> dict[str, Any]:
-    """Simple ROI framing — not financial advice."""
+    """Internal scenario analysis using a caller-supplied quote amount.
+
+    This does not generate a price, guarantee pipeline/revenue, or constitute a
+    customer value claim.
+    """
     if plan_price_sar <= 0:
-        return {"error": "plan_price_must_be_positive"}
-    pipeline_multiple = round(expected_pipeline_sar / plan_price_sar, 2) if plan_price_sar else 0.0
-    revenue_multiple = round(expected_revenue_sar / plan_price_sar, 2) if plan_price_sar else 0.0
+        return {"error": "customer_specific_quote_amount_must_be_positive"}
+    pipeline_multiple = round(expected_pipeline_sar / plan_price_sar, 2)
+    revenue_multiple = round(expected_revenue_sar / plan_price_sar, 2)
     return {
+        "status": "internal_estimate_only",
+        "customer_value_claim": False,
+        "guarantee": False,
+        "quote_amount_source": "caller_supplied_customer_specific_quote",
         "plan_price_sar": plan_price_sar,
         "expected_pipeline_sar": expected_pipeline_sar,
         "expected_revenue_sar": expected_revenue_sar,
         "pipeline_to_subscription_multiple": pipeline_multiple,
         "revenue_to_subscription_multiple": revenue_multiple,
-        "verdict_ar": "إذا تعدت المضاعفات 3–5x على الأنابيب المتوقع، يصير الاشتراك منطقياً مع تتبع أسبوعي.",
+        "price_authority": _PRICE_AUTHORITY,
     }
