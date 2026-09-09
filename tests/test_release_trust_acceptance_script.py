@@ -47,6 +47,14 @@ def test_acceptance_runner_requires_production_equivalent_node22_or_isolated_nod
     assert 'host_node_major" == "20"' not in text
 
 
+def test_actionlint_keeps_warning_and_error_shell_findings_blocking() -> None:
+    text = _text()
+    assert "run_gate ACTIONLINT" in text
+    assert "SHELLCHECK_OPTS=--severity=warning" in text
+    assert "actionlint -shellcheck=" not in text
+    assert "ACTIONLINT=SKIPPED_ENVIRONMENT" in text
+
+
 def test_docker_web_fallback_is_fail_closed_and_does_not_mutate_host_node() -> None:
     text = _text()
     assert 'run_gate WEB_NPM_CI docker run --rm' in text
