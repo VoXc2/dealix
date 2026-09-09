@@ -56,7 +56,9 @@ def test_ubuntu_workflows_do_not_use_windows_python_launcher() -> None:
 def test_cryptography_and_cffi_constraints_are_compatible() -> None:
     requirements = _text(ROOT / "requirements.txt")
     project = _text(ROOT / "pyproject.toml")
-    assert "cryptography>=49.0.0,<50" in requirements
+    # Current security pin moved cryptography to the 50.x line. Keep cffi on
+    # the compatible >=2,<3 contract in both dependency authorities.
+    assert "cryptography>=50.0.1,<51" in requirements
     assert "cffi>=2.0.0,<3" in requirements
     assert '"cffi>=2.0.0,<3"' in project
 
