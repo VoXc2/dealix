@@ -30,18 +30,40 @@ const systemFlow = [
   { label: "PROOF", title: "إثبات قابل للمراجعة", text: "Baseline → Evidence → Outcome → Acceptance" },
 ];
 
+const deferredSectionStyle = {
+  contentVisibility: "auto",
+  containIntrinsicSize: "auto 720px",
+} as CSSProperties;
+
 export function InteractiveHome() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const pointerFrameRef = useRef<number | null>(null);
+  const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "sami.assiri11@gmail.com";
+  const founderPhone = process.env.NEXT_PUBLIC_FOUNDER_PHONE?.trim() || "+966 59 778 8539";
+  const founderPhoneHref = `tel:${founderPhone.replace(/[^+\d]/g, "")}`;
 
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const rect = hero.getBoundingClientRect();
-    hero.style.setProperty("--dx-pointer-x", `${event.clientX - rect.left}px`);
-    hero.style.setProperty("--dx-pointer-y", `${event.clientY - rect.top}px`);
+    if (event.pointerType !== "mouse" || pointerFrameRef.current !== null) return;
+
+    const clientX = event.clientX;
+    const clientY = event.clientY;
+
+    pointerFrameRef.current = window.requestAnimationFrame(() => {
+      pointerFrameRef.current = null;
+      const hero = heroRef.current;
+      if (!hero) return;
+      const rect = hero.getBoundingClientRect();
+      hero.style.setProperty("--dx-pointer-x", `${clientX - rect.left}px`);
+      hero.style.setProperty("--dx-pointer-y", `${clientY - rect.top}px`);
+    });
   }
 
   function handlePointerLeave() {
+    if (pointerFrameRef.current !== null) {
+      window.cancelAnimationFrame(pointerFrameRef.current);
+      pointerFrameRef.current = null;
+    }
+
     const hero = heroRef.current;
     if (!hero) return;
     hero.style.setProperty("--dx-pointer-x", "72%");
@@ -52,7 +74,7 @@ export function InteractiveHome() {
     <div className="dx-home">
       <header className="dx-nav-wrap">
         <nav className="dx-nav" aria-label="التنقل الرئيسي">
-          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-logo" /></Link>
+          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-logo" width={400} height={96} loading="eager" decoding="async" fetchPriority="high" /></Link>
           <div className="dx-nav-links" role="list"><Link href="/services">القدرات</Link><Link href="/cases">الاستخدامات</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">الحوكمة</Link></div>
           <Link href="/book" className="dx-nav-cta">التشخيص المجاني <span aria-hidden="true">↗</span></Link>
         </nav>
@@ -70,7 +92,7 @@ export function InteractiveHome() {
           </div>
 
           <div className="dx-command-card" aria-label="Dealix execution loop">
-            <div className="dx-command-head"><span>DEALIX EXECUTION LOOP</span><span className="dx-command-status"><i /> LIVE MODEL</span></div>
+            <div className="dx-command-head"><span>DEALIX EXECUTION LOOP</span><span className="dx-command-status"><i /> GOVERNED MODEL</span></div>
             <div className="dx-flow">{systemFlow.map((item, index) => (
               <div className="dx-flow-row" key={item.label} style={{ "--dx-delay": `${index * 0.14}s` } as CSSProperties}>
                 <div className="dx-flow-index">0{index + 1}</div><div><span>{item.label}</span><strong>{item.title}</strong><p>{item.text}</p></div><div className="dx-flow-pulse" aria-hidden="true" />
@@ -82,27 +104,27 @@ export function InteractiveHome() {
 
         <section className="dx-strip" aria-label="Dealix value system"><p>Revenue + Proof + Command</p><div className="dx-strip-line" aria-hidden="true"><span /></div><p>From Opportunity to Outcome</p></section>
 
-        <section className="dx-section" aria-labelledby="dx-value-title">
+        <section className="dx-section" style={deferredSectionStyle} aria-labelledby="dx-value-title">
           <div className="dx-section-head"><div><span className="dx-kicker">THE EXECUTION GAP</span><h2 id="dx-value-title">المشكلة ليست نقص أدوات. المشكلة أن القرار لا يتحول دائمًا إلى نتيجة.</h2></div><p>Dealix لا تستبدل CRM أو ERP أو WhatsApp أو فريقك. تعمل فوقها كطبقة تنفيذ تربط السياق الاقتصادي بالـnext action والدليل.</p></div>
           <div className="dx-value-grid">{valueBlocks.map((item, index) => <article className="dx-value-card" key={item.label}><div className="dx-card-number">0{index + 1}</div><span className="dx-card-label">{item.label}</span><h3>{item.title}</h3><p>{item.text}</p><div className="dx-card-signal" aria-hidden="true"><span /></div></article>)}</div>
         </section>
 
-        <section className="dx-system" aria-labelledby="dx-system-title">
+        <section className="dx-system" style={deferredSectionStyle} aria-labelledby="dx-system-title">
           <div className="dx-system-copy"><span className="dx-kicker dx-kicker-light">ONE GOVERNED PATH</span><h2 id="dx-system-title">واجهة بسيطة للعميل. آلة تنفيذ عميقة خلفها.</h2><p>لا نعرض عشرات الخدمات كقائمة مربكة. نبدأ بمشكلة تنفيذ واحدة ثم نختار أفضل طريق للحل والقياس.</p><Link href="/services" className="dx-text-link">استكشف قدرات Dealix <span aria-hidden="true">↗</span></Link></div>
           <div className="dx-path" role="list">{executionPath.map((item) => <article className="dx-path-item" key={item.step} role="listitem"><span>{item.step}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
         </section>
 
-        <section className="dx-section dx-proof-section" aria-labelledby="dx-proof-title">
+        <section className="dx-section dx-proof-section" style={deferredSectionStyle} aria-labelledby="dx-proof-title">
           <div className="dx-section-head"><div><span className="dx-kicker">TRUTH FIREWALL</span><h2 id="dx-proof-title">النظام لا يرقّي الحقيقة بلا دليل.</h2></div><p>أي score أو AI recommendation أو public signal يبقى أقل سلطة من consent، suppression، evidence وaction authority.</p></div>
           <div className="dx-truth-grid">{truthRules.map(([left, right]) => <article className="dx-truth-card" key={left}><span>{left}</span><b aria-hidden="true">≠</b><strong>{right}</strong></article>)}</div>
         </section>
 
-        <section className="dx-final-cta" aria-labelledby="dx-final-title">
+        <section className="dx-final-cta" style={deferredSectionStyle} aria-labelledby="dx-final-title">
           <div className="dx-final-mark" aria-hidden="true"><img src="/dealix-mark.svg" alt="" /></div><span className="dx-kicker">START WITH ONE EXECUTABLE PROBLEM</span><h2 id="dx-final-title">عندك workflow مهم لا يتحول اليوم إلى تنفيذ وProof واضح؟</h2><p>ابدأ بـFree Execution Diagnostic. إذا لم توجد حالة قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Discovery وعرض خاص بالعميل.</p><div className="dx-actions dx-actions-center"><Link href="/book" className="dx-btn dx-btn-primary">ابدأ التشخيص المجاني</Link><Link href="/proof-vault" className="dx-btn dx-btn-ghost">شاهد منهج الإثبات</Link></div>
         </section>
       </main>
 
-      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix" className="dx-footer-logo" /><div className="dx-footer-links"><Link href="/pricing">Engagement Path</Link><Link href="/services">Services</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link></div><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · AI Business Operating System · Signal → Decision → Action → Proof</small></div></footer>
+      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/pricing">Engagement Path</Link><Link href="/services">Services</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link><a href={`mailto:${founderEmail}`}>Founder Email</a><a href={founderPhoneHref}>Founder Phone</a></div><p>Founder Office: <a href={`mailto:${founderEmail}`}>{founderEmail}</a> · <a href={founderPhoneHref}>{founderPhone}</a></p><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · AI Business Operating System · Signal → Decision → Action → Proof</small></div></footer>
     </div>
   );
 }
