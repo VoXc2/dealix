@@ -32,15 +32,19 @@ def test_acceptance_runner_resolves_repo_from_script_location_not_caller_cwd() -
     assert 'ROOT="$(git rev-parse --show-toplevel)"' not in text
 
 
-def test_acceptance_runner_supports_only_supported_host_node_or_isolated_node22() -> None:
+def test_acceptance_runner_requires_production_equivalent_node22_or_isolated_node22() -> None:
     text = _text()
-    assert 'required="20 || >=22"' in text
-    assert 'WEB_NODE_MODE="HOST_SUPPORTED_NODE"' in text
+    assert 'required="production Node 22 or Docker Node 22"' in text
+    assert 'host_node_major" == "22"' in text
+    assert 'WEB_NODE_MODE="HOST_PRODUCTION_NODE22"' in text
     assert 'WEB_NODE_MODE="DOCKER_NODE22"' in text
     assert 'DEALIX_ACCEPT_NODE_IMAGE' in text
     assert 'node:22-bookworm' in text
+    assert 'if (major !== 22) process.exit(13);' in text
     assert 'run_gate WEB_NODE22_RUNTIME docker run --rm' in text
-    assert 'fail_env "supported_node_runtime_unavailable"' in text
+    assert 'fail_env "production_equivalent_node22_unavailable"' in text
+    assert 'host_node_major >= 22' not in text
+    assert 'host_node_major" == "20"' not in text
 
 
 def test_docker_web_fallback_is_fail_closed_and_does_not_mutate_host_node() -> None:
