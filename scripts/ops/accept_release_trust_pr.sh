@@ -16,6 +16,7 @@ PY="$ROOT/.venv/bin/python"
 
 log() { printf '[release-trust] %s\n' "$*"; }
 fail_env() { printf 'BLOCKED_ENVIRONMENT=%s\n' "$1" >&2; exit 3; }
+run_gate() { bash "$GATE" "$@"; }
 
 START_HEAD="$(git rev-parse HEAD)"
 START_BRANCH="$(git branch --show-current || true)"
@@ -41,7 +42,6 @@ if [[ -n "$EXPECTED_BASE" ]]; then
   printf 'EXPECTED_BASE_ANCESTRY=PASS sha=%s\n' "$EXPECTED_BASE"
 fi
 
-[[ -x "$GATE" ]] || chmod +x "$GATE" 2>/dev/null || true
 [[ -f "$GATE" ]] || fail_env "missing_fail_closed_gate"
 [[ -x "$PY" ]] || fail_env "missing_repo_venv_python"
 command -v shellcheck >/dev/null 2>&1 || fail_env "shellcheck_not_installed"
@@ -55,16 +55,13 @@ if [[ "$node_major" != "20" && "$node_major" -lt 22 ]]; then
 fi
 printf 'NODE_RUNTIME=PASS version=%s\n' "$(node -v)"
 
-"$GATE" GIT_DIFF_CHECK git diff --check "$EXPECTED_BASE"...HEAD 2>/dev/null || {
-  # If no base was supplied, validate the current commit/worktree instead.
-  if [[ -z "$EXPECTED_BASE" ]]; then
-    "$GATE" GIT_DIFF_CHECK git diff --check HEAD~1..HEAD
-  else
-    exit $?
-  fi
-}
+if [[ -n "$EXPECTED_BASE" ]]; then
+  run_gate GIT_DIFF_CHECK git diff --check "$EXPECTED_BASE"...HEAD
+else
+  run_gate GIT_DIFF_CHECK git diff --check HEAD~1..HEAD
+fi
 
-"$GATE" SHELLCHECK shellcheck \
+run_gate SHELLCHECK shellcheck \
   scripts/ops/fail_closed_gate.sh \
   scripts/ops/living_fleet_dispatch.sh \
   scripts/ops/accept_release_trust_pr.sh
@@ -83,24 +80,24 @@ TARGET_TESTS=(
   tests/test_billing_moyasar_safety.py
   tests/test_pricing_plans_endpoint.py
 )
-"$GATE" TARGETED_PYTHON "$PY" -m pytest -q "${TARGET_TESTS[@]}"
+run_gate TARGETED_PYTHON "$PY" -m pytest -q "${TARGET_TESTS[@]}"
 
-"$GATE" BRAND_IDENTITY_V2 "$PY" scripts/ops/verify_brand_identity_v2.py
+run_gate BRAND_IDENTITY_V2 "$PY" scripts/ops/verify_brand_identity_v2.py
 
 if command -v actionlint >/dev/null 2>&1; then
-  "$GATE" ACTIONLINT actionlint
+  run_gate ACTIONLINT actionlint
 else
   printf 'ACTIONLINT=SKIPPED_ENVIRONMENT reason=not_installed\n'
 fi
 
 (
   cd apps/web
-  "$GATE" WEB_NPM_CI npm ci
-  "$GATE" WEB_ACCEPTANCE npm run verify
+  run_gate WEB_NPM_CI npm ci
+  run_gate WEB_ACCEPTANCE npm run verify
 )
 
 if [[ "$FULL_PYTEST" == "1" ]]; then
-  "$GATE" PYTHON_FULL "$PY" -m pytest -q
+  run_gate PYTHON_FULL "$PY" -m pytest -q
 else
   printf 'PYTHON_FULL=SKIPPED_BY_MODE set_DEALIX_ACCEPT_FULL_PYTEST=1_for_full_suite\n'
 fi
