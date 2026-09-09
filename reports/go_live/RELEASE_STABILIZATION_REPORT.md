@@ -116,6 +116,64 @@ Required exact-head validation remains:
 
 Any skipped gate must be reported as `SKIPPED_ENVIRONMENT` or `BLOCKED_ENVIRONMENT`, never PASS.
 
+## Live delta — 2026-09-09 18:xx Asia/Riyadh
+
+Founder-supplied VPS evidence and fresh connected reads supersede earlier copied PR SHAs.
+
+### Exact PR / main truth
+
+- `main` remained `53d193d505315eea3153719d914112e50865384e`.
+- PR #1600 was still `OPEN`, `DRAFT`, `merged=false`, `mergeable=true` when observed.
+- The observed live PR head before this report update was `416966b0a807b3cac89c6c4aee6fcfa03c37d52a`.
+- Compare state at that head was `ahead=41`, `behind=0`; merge base remained exact current main.
+- Earlier VPS runs against `e704e64...` or any other copied SHA are stale evidence once the PR head moves.
+
+### VPS acceptance learning
+
+The latest founder-supplied VPS cycle improved trust semantics even though the candidate was not accepted:
+
+- Web used isolated Node 22 and reported `WEB_TYPECHECK_GATE=PASS` plus `WEB_BUILD_GATE=PASS` on the local repair candidate.
+- Python now reported `PYTHON_TESTS=FAIL rc=1` instead of falsely relabelling failures as PASS.
+- JUnit output failed to write because the proof directory was not writable by the pytest execution user; future exact-head wrappers must create/chown the proof directory before invoking `--junitxml`.
+- The local repair candidate also reported ShellCheck, actionlint, brand, and security red gates. Those results belong to that local candidate, not automatically to the moving remote PR #1600 head.
+- The local orchestration refused an automatic commit when its diff-scope guard found unexpected generated/tracked changes. This fail-closed behavior is correct.
+
+### Hosted GitHub Actions execution plane
+
+At live head `416966b...`, the main CI run (`34371271867`) completed with three required jobs marked `failure`, but all three had `steps=[]`, `runner_id=0`, and an empty runner name:
+
+- Railway Docker image builds
+- Web verify (typecheck + build)
+- Python quality, tests, readiness
+
+The optional Railway smoke was skipped. This is not evidence that repository commands ran and failed; classify it as `BLOCKED_EXECUTION_PLANE` until the account/runner cause is resolved.
+
+Current GitHub Status showed Actions operational and no matching active public incident. GitHub documentation identifies billing/budget state and organization Actions policies as account-level troubleshooting areas for private-repository hosted runners. Therefore the next hosted-runner recovery checks are:
+
+1. GitHub Actions billing/minutes/budget/payment state for the repository owner/organization.
+2. Organization/repository Actions enablement and allowed-actions policy.
+3. Hosted runner availability/policy for `ubuntu-latest`.
+4. Only after account/policy recovery, rerun one bounded workflow and require real steps + nonzero runner id before using its conclusion as code evidence.
+
+Do not alter application code to make pre-run provider failures green.
+
+### Railway production truth
+
+Fresh read-only Railway status remained:
+
+- project: `Dealix`
+- environment: `production`
+- staged patch: `STAGED`, **62 changes**, not applied
+- Web latest actual deployment: `SUCCESS`, created 2026-09-08T04:32:43Z, older than current main
+- API (`dealix`) latest actual deployment: `FAILED`, created 2026-09-08T04:32:51Z, older than current main
+- current-main Web deployment `53d193d...`: `SKIPPED`
+
+Railway documentation states that with **Wait for CI** enabled, a failing GitHub workflow causes the deployment to become `SKIPPED`. Railway also documents watch paths as another skip mechanism. Given the observed pre-run GitHub workflow failures, Wait-for-CI is the leading explanation for the current-main skips, but provider settings still need direct reconciliation before declaring root cause proven.
+
+### Repository governance
+
+Visible repository rulesets remained disabled. Do not enable required-check enforcement until the required checks can actually execute reliably; first recover the Actions execution plane and prove representative green runs.
+
 ## Production safety
 
 No merge, Railway deploy, staged-patch apply, DNS mutation, DB mutation, secret mutation, payment, publish, or customer send was performed.
@@ -124,8 +182,8 @@ No merge, Railway deploy, staged-patch apply, DNS mutation, DB mutation, secret 
 
 ## Merge recommendation
 
-**HOLD** until exact-head validation demonstrates the branch is clean. After that, merge still requires action-bound founder authority. Railway parity must be established only after merge/current-main acceptance and after the 62 staged production changes are inspected/reconciled rather than applied blindly.
+**HOLD** until current live PR head exact-head validation demonstrates the branch is clean. After that, merge still requires action-bound founder authority. Railway parity must be established only after merge/current-main acceptance and after the 62 staged production changes are inspected/reconciled rather than applied blindly.
 
-## Next evidence sequence
+## Canonical next evidence sequence
 
-`branch exact-head tests -> PR checks -> exact-head acceptance receipt -> action-bound merge -> fresh main -> inspect Railway staged diff -> governed current-main deploy -> release SHA parity -> front-door/API acceptance -> only then reconsider PRODUCTION_GREEN`
+`freeze PR mutation -> fetch live #1600 head -> exact-head diff/shell/actionlint/brand/security/targeted tests -> supported Node verify -> one clean full pytest + machine receipt -> current-head stability check -> Ready for Review candidate -> action-bound merge -> exact new-main acceptance -> recover GitHub Actions account/runner execution plane -> inspect/reconcile Railway staged 62-change patch -> authorized exact-SHA Web/API release -> release identity + health + front-door/diagnostic acceptance -> PRODUCTION_GREEN=true only if every required gate is proven -> MONEY NOW / Company OS execution`
