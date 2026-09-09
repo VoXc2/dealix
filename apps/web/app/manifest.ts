@@ -20,7 +20,13 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/dealix-mark.svg",
         sizes: "64x64",
         type: "image/svg+xml",
-        purpose: "any maskable",
+        purpose: "any",
+      },
+      {
+        src: "/dealix-mark.svg",
+        sizes: "64x64",
+        type: "image/svg+xml",
+        purpose: "maskable",
       },
       {
         src: "/dealix-logo.svg",
