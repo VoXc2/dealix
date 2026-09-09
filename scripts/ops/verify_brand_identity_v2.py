@@ -23,6 +23,7 @@ READABLE_SYSTEM = ROOT / "business/brand/DEALIX_BRAND_SYSTEM.md"
 BRAND_OS = ROOT / "docs/brand/DEALIX_BRAND_OS.md"
 POSITIONING = ROOT / "docs/brand/POSITIONING.md"
 MASTERBRAND_EXPANSION = ROOT / "docs/brand/DEALIX_MASTERBRAND_EXPANSION_V2_1.md"
+PRESS_KIT = ROOT / "docs/BRAND_PRESS_KIT.md"
 LLMS = ROOT / "landing/llms.txt"
 WEB_BRAND_PAGE = ROOT / "apps/web/app/brand/page.tsx"
 
@@ -44,6 +45,7 @@ CANONICAL_TEXT_FILES = (
     BRAND_OS,
     POSITIONING,
     MASTERBRAND_EXPANSION,
+    PRESS_KIT,
     LLMS,
     WEB_BRAND_PAGE,
 )
@@ -60,7 +62,14 @@ FORBIDDEN_ACTIVE_VISUAL_PHRASES = (
     "Inter + Tajawal",
     "AI Operating Systems for Companies",
 )
-ACTIVE_PUBLIC_OR_READABLE = (WEB_BRAND_PAGE, READABLE_SYSTEM)
+FORBIDDEN_LEGACY_COMMERCIAL_PHRASES = (
+    "499 SAR Sprint",
+    "12,000 SAR/month",
+    "first paid pilots are running",
+    "first three hires",
+    "replaces the first 3 hires",
+)
+ACTIVE_PUBLIC_OR_READABLE = (WEB_BRAND_PAGE, READABLE_SYSTEM, PRESS_KIT)
 
 
 def fail(message: str) -> None:
@@ -128,7 +137,7 @@ def main() -> None:
 
     # Active positioning must use the approved category. Historical files are not
     # scanned because provenance is allowed to remain in the repository.
-    for path in (BRAND_OS, POSITIONING, LLMS, READABLE_SYSTEM, WEB_BRAND_PAGE):
+    for path in (BRAND_OS, POSITIONING, LLMS, READABLE_SYSTEM, PRESS_KIT, WEB_BRAND_PAGE):
         text = path.read_text(encoding="utf-8")
         if "AI Business Operating System" not in text:
             fail(f"missing_active_category:{path.relative_to(ROOT)}")
@@ -141,6 +150,9 @@ def main() -> None:
         for phrase in FORBIDDEN_ACTIVE_VISUAL_PHRASES:
             if phrase in text:
                 fail(f"legacy_brand_drift:{path.relative_to(ROOT)}:{phrase}")
+        for phrase in FORBIDDEN_LEGACY_COMMERCIAL_PHRASES:
+            if phrase in text:
+                fail(f"legacy_commercial_drift:{path.relative_to(ROOT)}:{phrase}")
 
     web_brand = WEB_BRAND_PAGE.read_text(encoding="utf-8")
     for required in (
@@ -152,6 +164,16 @@ def main() -> None:
     ):
         if required not in web_brand:
             fail(f"web_brand_missing:{required}")
+
+    press = PRESS_KIT.read_text(encoding="utf-8")
+    for required in (
+        "PRESS_KIT_PUBLICATION_AUTHORITY=false",
+        "CUSTOMER_PROOF_AUTO_GRANT=false",
+        "MARKETING_CONSENT_AUTO_GRANT=false",
+        "LEGAL_CLEARANCE_PENDING",
+    ):
+        if required not in press:
+            fail(f"press_kit_missing_guardrail:{required}")
 
     asset_blob = "\n".join(path.read_text(encoding="utf-8") for path in (LOGO, MARK, OG, APP_ICON))
     for color in REQUIRED_COLORS:
