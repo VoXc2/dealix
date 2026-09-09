@@ -281,11 +281,13 @@ def _revision_metadata(path: Path) -> tuple[str, tuple[str, ...]]:
     return revision, downs
 
 
-def test_migration_extends_the_actual_single_alembic_head() -> None:
-    """Approval migration must extend the then-current head and remain in one chain.
+def test_migration_has_one_current_head_and_contains_approval_ancestry() -> None:
+    """Approval migration must be reachable from the repository's single head.
 
-    Migration 023 (durable consent) legitimately landed after approval-center 022,
-    so this contract must not freeze 022 as the repository's permanent final head.
+    Alembic history is a DAG: legitimate merge revisions can have more than one
+    ``down_revision`` parent. The invariant we need is one current head plus
+    reachability of approval-center 022 and its predecessor from that head, not
+    an artificial ban on historical merge points.
     """
     versions = Path(__file__).resolve().parents[1] / "db/migrations/versions"
     migration_paths = [
@@ -306,17 +308,18 @@ def test_migration_extends_the_actual_single_alembic_head() -> None:
     heads = set(metadata) - referenced
     assert heads == {consent_revision}
 
-    # Walk backwards from the current head. The approval migration must be on
-    # the sole ancestry path rather than a detached/parallel Alembic branch.
-    cursor = consent_revision
+    # Walk the full Alembic DAG backwards. Merge revisions are valid and all
+    # parents must resolve to tracked migration revisions.
+    pending = [consent_revision]
     seen: set[str] = set()
-    while cursor in metadata and cursor not in seen:
+    while pending:
+        cursor = pending.pop()
+        if cursor in seen:
+            continue
+        assert cursor in metadata, f"dangling Alembic revision reference: {cursor}"
         seen.add(cursor)
-        parents = metadata[cursor]
-        if not parents:
-            break
-        assert len(parents) == 1, f"unexpected Alembic merge/branch at {cursor}"
-        cursor = parents[0]
+        pending.extend(metadata[cursor])
+
     assert approval_revision in seen
     assert previous_head in seen
 
