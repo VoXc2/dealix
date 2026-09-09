@@ -15,6 +15,7 @@ STAMP="$(date +%Y%m%dT%H%M%S)"
 WT="$CONTROL/worktrees/pr1600-full-$STAMP"
 PROOF="$CONTROL/proof/pr1600-full-$STAMP"
 REF="refs/dealix/pr1600-full-$STAMP"
+GIT_REMOTE="https://github.com/${REPOSITORY}.git"
 
 export TZ=Asia/Riyadh
 export LC_ALL=C.UTF-8
@@ -57,6 +58,13 @@ as_dealix() {
   fi
 }
 
+# Use the already-authenticated GitHub CLI as a one-command credential helper.
+# This does not mutate ~/.gitconfig, does not print the token, and does not rely
+# on the repository's origin URL being HTTPS rather than SSH.
+git_repo() {
+  as_dealix git -C "$REPO" -c 'credential.helper=!gh auth git-credential' "$@"
+}
+
 [[ "$(id -u)" -eq 0 ]] || hold ROOT_REQUIRED
 id "$RUN_USER" >/dev/null 2>&1 || hold RUN_USER_MISSING
 [[ -d "$REPO/.git" ]] || hold REPO_MISSING
@@ -64,6 +72,11 @@ command -v gh >/dev/null 2>&1 || hold GH_MISSING
 command -v shellcheck >/dev/null 2>&1 || hold SHELLCHECK_MISSING
 PY="$REPO/.venv/bin/python"
 [[ -x "$PY" ]] || hold VERIFIED_PYTHON_MISSING
+as_dealix gh auth status >/dev/null 2>&1 || hold GH_AUTH_MISSING
+LOGIN="$(as_dealix gh api user --jq '.login' 2>/dev/null || true)"
+[[ "$LOGIN" == "VoXc2" ]] || hold GH_FOUNDER_AUTH_MISMATCH
+PRIVATE="$(as_dealix gh api "repos/$REPOSITORY" --jq '.private' 2>/dev/null || true)"
+[[ "$PRIVATE" == "true" ]] || hold REPOSITORY_NOT_PRIVATE
 
 RUN_GROUP="$(id -gn "$RUN_USER")"
 install -d -m 0750 -o "$RUN_USER" -g "$RUN_GROUP" \
@@ -82,8 +95,8 @@ cleanup() {
 trap cleanup EXIT
 
 echo "=== LIVE EXACT TRUTH ==="
-as_dealix git -C "$REPO" fetch origin main --quiet
-as_dealix git -C "$REPO" fetch origin "+refs/pull/$PR/head:$REF" --force --quiet
+git_repo fetch "$GIT_REMOTE" "+refs/heads/main:refs/remotes/origin/main" --force --quiet
+git_repo fetch "$GIT_REMOTE" "+refs/pull/$PR/head:$REF" --force --quiet
 MAIN="$(as_dealix git -C "$REPO" rev-parse origin/main)"
 HEAD="$(as_dealix git -C "$REPO" rev-parse "$REF")"
 API_HEAD="$(as_dealix gh api "repos/$REPOSITORY/pulls/$PR" --jq '.head.sha')"
@@ -145,8 +158,8 @@ if (( RC != 0 )); then
 fi
 
 END_HEAD="$(as_dealix git -C "$WT" rev-parse HEAD)"
-as_dealix git -C "$REPO" fetch origin main --quiet
-as_dealix git -C "$REPO" fetch origin "+refs/pull/$PR/head:$REF" --force --quiet
+git_repo fetch "$GIT_REMOTE" "+refs/heads/main:refs/remotes/origin/main" --force --quiet
+git_repo fetch "$GIT_REMOTE" "+refs/pull/$PR/head:$REF" --force --quiet
 END_MAIN="$(as_dealix git -C "$REPO" rev-parse origin/main)"
 END_PR="$(as_dealix git -C "$REPO" rev-parse "$REF")"
 [[ "$END_HEAD" == "$HEAD" ]] || hold LOCAL_HEAD_MOVED
