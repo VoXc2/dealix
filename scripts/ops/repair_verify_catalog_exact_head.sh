@@ -61,11 +61,13 @@ as_dealix() {
 # inherited cwd is /root can therefore fail during conftest import before a
 # single test executes. Keep cwd, PYTHONPATH, HOME, and source tree aligned.
 run_in_wt() {
-  as_dealix env \
-    PYTHONPATH="$WT" \
-    HOME="/home/$RUN_USER" \
-    bash -c 'set -Eeuo pipefail; cd "$1"; shift; exec "$@"' \
-    bash "$WT" "$@"
+  (
+    cd "$WT"
+    as_dealix env \
+      PYTHONPATH="$WT" \
+      HOME="/home/$RUN_USER" \
+      "$@"
+  )
 }
 
 [[ "$(id -u)" -eq 0 ]] || hold ROOT_REQUIRED
