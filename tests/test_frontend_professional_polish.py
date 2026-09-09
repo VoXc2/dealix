@@ -97,11 +97,13 @@ def test_executive_command_center_demo_label_present() -> None:
 
 
 def _strip_explicit_negative_claim_language(html_visible: str) -> str:
-    """Remove explicit negative/disclaimer uses before positive-claim scanning."""
+    """Remove explicit disclaimer/negation contexts before positive-claim scanning."""
     patterns = (
         r"[^\n<]*(?:not guaranteed outcomes|ليست نتائج مضمونة|نتائج غير مضمونة)[^\n>]*",
         r"[^\n<]*طلبات\s+guaranteed\s+revenue\s+خارج[^\n>]*",
         r"[^\n<]*guaranteed\s+revenue\s+request[^\n>]*",
+        r"[^\n<]*لا\s+وعد[^\n<]*(?:نتيجة\s+مضمونة|نتائج\s+مضمونة)[^\n>]*",
+        r"[^\n<]*لا\s+نضمن[^\n>]*",
     )
     for pattern in patterns:
         html_visible = re.sub(pattern, "", html_visible, flags=re.IGNORECASE)
