@@ -13,6 +13,7 @@ EXPECTED_BASE="${DEALIX_ACCEPT_EXPECTED_BASE:-}"
 FULL_PYTEST="${DEALIX_ACCEPT_FULL_PYTEST:-0}"
 GATE="$ROOT/scripts/ops/fail_closed_gate.sh"
 PY="${DEALIX_ACCEPT_PYTHON:-$ROOT/.venv/bin/python}"
+NODE_IMAGE="${DEALIX_ACCEPT_NODE_IMAGE:-node:22-bookworm}"
 
 log() { printf '[release-trust] %s\n' "$*"; }
 fail_env() { printf 'BLOCKED_ENVIRONMENT=%s\n' "$1" >&2; exit 3; }
@@ -45,16 +46,34 @@ fi
 [[ -f "$GATE" ]] || fail_env "missing_fail_closed_gate"
 [[ -x "$PY" ]] || fail_env "missing_accept_python:$PY"
 command -v shellcheck >/dev/null 2>&1 || fail_env "shellcheck_not_installed"
-command -v node >/dev/null 2>&1 || fail_env "node_not_installed"
-command -v npm >/dev/null 2>&1 || fail_env "npm_not_installed"
 
 printf 'PYTHON_RUNTIME=PASS path=%s\n' "$PY"
-node_major="$(node -p 'Number(process.versions.node.split(".")[0])')"
-if [[ "$node_major" != "20" && "$node_major" -lt 22 ]]; then
-  printf 'NODE_RUNTIME=FAIL version=%s required="20 || >=22"\n' "$(node -v)" >&2
-  exit 13
+
+WEB_NODE_MODE=""
+host_node_major=0
+if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
+  host_node_major="$(node -p 'Number(process.versions.node.split(".")[0])' 2>/dev/null || printf '0')"
 fi
-printf 'NODE_RUNTIME=PASS version=%s\n' "$(node -v)"
+
+if [[ "$host_node_major" == "20" ]] || (( host_node_major >= 22 )); then
+  WEB_NODE_MODE="HOST_SUPPORTED_NODE"
+  printf 'NODE_RUNTIME=PASS mode=%s version=%s\n' "$WEB_NODE_MODE" "$(node -v)"
+elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+  WEB_NODE_MODE="DOCKER_NODE22"
+  if ! docker image inspect "$NODE_IMAGE" >/dev/null 2>&1; then
+    run_gate WEB_NODE22_PULL docker pull "$NODE_IMAGE"
+  fi
+  run_gate WEB_NODE22_RUNTIME docker run --rm "$NODE_IMAGE" node -e '
+    const major = Number(process.versions.node.split(".")[0]);
+    if (!(major === 20 || major >= 22)) process.exit(13);
+    console.log(process.version);
+  '
+  printf 'NODE_RUNTIME=PASS mode=%s image=%s\n' "$WEB_NODE_MODE" "$NODE_IMAGE"
+else
+  printf 'NODE_RUNTIME=BLOCKED host_version=%s required="20 || >=22" docker_available=false\n' \
+    "$(node -v 2>/dev/null || printf 'missing')" >&2
+  fail_env "supported_node_runtime_unavailable"
+fi
 
 if [[ -n "$EXPECTED_BASE" ]]; then
   run_gate GIT_DIFF_CHECK git diff --check "$EXPECTED_BASE"...HEAD
@@ -69,6 +88,7 @@ run_gate SHELLCHECK shellcheck \
 
 TARGET_TESTS=(
   tests/test_fail_closed_gate.py
+  tests/test_release_trust_acceptance_script.py
   tests/test_living_fleet_shell_safety.py
   tests/test_living_fleet_guards.py
   tests/test_wave6_pilot_brief.py
@@ -91,11 +111,31 @@ else
   printf 'ACTIONLINT=SKIPPED_ENVIRONMENT reason=not_installed\n'
 fi
 
-(
-  cd apps/web
-  run_gate WEB_NPM_CI npm ci
-  run_gate WEB_ACCEPTANCE npm run verify
-)
+if [[ "$WEB_NODE_MODE" == "HOST_SUPPORTED_NODE" ]]; then
+  (
+    cd apps/web
+    run_gate WEB_NPM_CI npm ci
+    run_gate WEB_ACCEPTANCE npm run verify
+  )
+else
+  run_gate WEB_NPM_CI docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    -e HOME=/tmp \
+    -e npm_config_cache=/tmp/.npm \
+    -v "$ROOT:/work" \
+    -w /work/apps/web \
+    "$NODE_IMAGE" \
+    bash -lc 'npm ci'
+
+  run_gate WEB_ACCEPTANCE docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    -e HOME=/tmp \
+    -e npm_config_cache=/tmp/.npm \
+    -v "$ROOT:/work" \
+    -w /work/apps/web \
+    "$NODE_IMAGE" \
+    bash -lc 'npm run verify'
+fi
 
 if [[ "$FULL_PYTEST" == "1" ]]; then
   run_gate PYTHON_FULL "$PY" -m pytest -q
