@@ -26,6 +26,8 @@ def test_acceptance_runner_resolves_repo_from_script_location_not_caller_cwd() -
     text = _text()
     assert 'BASH_SOURCE[0]' in text
     assert 'SCRIPT_DIR=' in text
+    assert "CDPATH='' cd --" in text
+    assert 'CDPATH= cd --' not in text
     assert 'git -C "$SCRIPT_DIR" rev-parse --show-toplevel' in text
     assert 'ROOT="$(git rev-parse --show-toplevel)"' not in text
 
