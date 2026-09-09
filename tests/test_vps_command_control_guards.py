@@ -139,9 +139,6 @@ def test_private_issue_bridge_requires_private_repo_and_founder() -> None:
     assert 'PREFIX = "!dealix "' in text
     assert 'repo.get("private") is not True' in text
 
-    # The current bridge rejects every non-founder author before returning an
-    # event command. This fail-closed negative check is equivalent to a later
-    # positive equality assertion, and is safer to pin directly.
     assert "if author != FOUNDER:" in text
     assert "return None" in text
     assert "author != FOUNDER or command is None" in text
@@ -207,10 +204,19 @@ def test_self_hosted_runner_installer_recovers_configured_but_stopped_service() 
     text = _text(RUNNER_INSTALLER)
     configured = text.split('if [[ -f .runner ]]; then', 1)[1].split('TMP_ARCHIVE=', 1)[0]
 
-    # Existing registration is not enough. The installer must prove service
-    # health, attempt one bounded recovery, and fail closed if it remains down.
     assert "if ! ./svc.sh status; then" in configured
     assert "./svc.sh start" in configured
     assert './svc.sh install "$RUNNER_USER"' in configured
     assert "configured runner service is still not healthy after recovery" in configured
-    assert "configured_runner_recovered=true" in configured
+    assert "print_runner_proof true" in configured
+
+
+def test_self_hosted_runner_proof_distinguishes_actual_from_target_version() -> None:
+    text = _text(RUNNER_INSTALLER)
+    assert "actual_runner_version()" in text
+    assert "./bin/Runner.Listener --version" in text
+    assert "runner_version_actual=%s" in text
+    assert "runner_version_target=%s" in text
+    assert "runner_upgrade_required=%s" in text
+    assert 'RUNNER_VERSION="2.337.0"' in text
+    assert 'RUNNER_SHA256="70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613"' in text
