@@ -17,12 +17,14 @@ ROOT = Path(__file__).resolve().parents[2]
 AUTHORITY = ROOT / "data/brand/brand_authority.json"
 SYSTEM = ROOT / "data/brand/dealix_brand_system_v2.json"
 TOKENS_V21 = ROOT / "data/brand/design_tokens_v2_1.json"
+ASSET_REGISTRY = ROOT / "data/brand/asset_template_registry_v1.json"
 GUIDE = ROOT / "brand/DEALIX_VISUAL_IDENTITY_GUIDE.md"
 LOGO_DOC = ROOT / "business/brand/DEALIX_LOGO_AND_IDENTITY_SYSTEM.md"
 READABLE_SYSTEM = ROOT / "business/brand/DEALIX_BRAND_SYSTEM.md"
 BRAND_OS = ROOT / "docs/brand/DEALIX_BRAND_OS.md"
 POSITIONING = ROOT / "docs/brand/POSITIONING.md"
 MASTERBRAND_EXPANSION = ROOT / "docs/brand/DEALIX_MASTERBRAND_EXPANSION_V2_1.md"
+ENTERPRISE_ASSET_SYSTEM = ROOT / "docs/brand/DEALIX_ENTERPRISE_ASSET_SYSTEM_V1.md"
 PRESS_KIT = ROOT / "docs/BRAND_PRESS_KIT.md"
 LLMS = ROOT / "landing/llms.txt"
 WEB_BRAND_PAGE = ROOT / "apps/web/app/brand/page.tsx"
@@ -35,16 +37,25 @@ MONO_WHITE = ROOT / "brand/marks/dealix-mark-white.svg"
 APP_ICON = ROOT / "brand/marks/dealix-app-icon.svg"
 
 REQUIRED_COLORS = {"#0F172A", "#164E63", "#22D3EE", "#F8FAFC"}
+EXACT_AGENTS = {
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content",
+}
 CANONICAL_TEXT_FILES = (
     AUTHORITY,
     SYSTEM,
     TOKENS_V21,
+    ASSET_REGISTRY,
     GUIDE,
     LOGO_DOC,
     READABLE_SYSTEM,
     BRAND_OS,
     POSITIONING,
     MASTERBRAND_EXPANSION,
+    ENTERPRISE_ASSET_SYSTEM,
     PRESS_KIT,
     LLMS,
     WEB_BRAND_PAGE,
@@ -91,6 +102,7 @@ def main() -> None:
     authority = load_json(AUTHORITY)
     system = load_json(SYSTEM)
     tokens = load_json(TOKENS_V21)
+    asset_registry = load_json(ASSET_REGISTRY)
 
     if authority.get("schema") != "dealix.brand-authority.v2":
         fail("brand_authority_schema")
@@ -98,6 +110,50 @@ def main() -> None:
         fail("design_tokens_schema")
     if tokens.get("extends") != "data/brand/dealix_brand_system_v2.json":
         fail("design_tokens_must_extend_v2")
+    if asset_registry.get("schema") != "dealix.brand-asset-registry.v1":
+        fail("brand_asset_registry_schema")
+    if asset_registry.get("masterbrand") != "Dealix":
+        fail("brand_asset_registry_masterbrand")
+    if set(asset_registry.get("allowed_owner_agents", [])) != EXACT_AGENTS:
+        fail("brand_asset_registry_agent_set")
+
+    registry_governance = asset_registry.get("governance", {})
+    for flag in (
+        "second_masterbrand",
+        "second_proof_system",
+        "second_agent_fleet",
+        "auto_publication",
+        "auto_external_send",
+        "auto_supplier_registration",
+        "auto_bid_submission",
+        "auto_binding_quote",
+        "auto_customer_proof",
+    ):
+        if registry_governance.get(flag) is not False:
+            fail(f"brand_asset_registry_governance:{flag}")
+
+    template_ids = {item.get("id") for item in asset_registry.get("templates", [])}
+    required_templates = {
+        "company_profile_v2_1",
+        "execution_diagnostic",
+        "customer_specific_proposal",
+        "weekly_proof_pack",
+        "trust_security_appendix",
+        "supplier_readiness_passport",
+        "rfp_tender_decision_pack",
+        "partner_subcontract_pack",
+    }
+    if not required_templates.issubset(template_ids):
+        fail("brand_asset_registry_required_templates")
+
+    for template in asset_registry.get("templates", []):
+        if template.get("owner_agent") not in EXACT_AGENTS:
+            fail(f"brand_asset_registry_unknown_owner:{template.get('id')}")
+        if not set(template.get("support_agents", [])).issubset(EXACT_AGENTS):
+            fail(f"brand_asset_registry_unknown_support_agent:{template.get('id')}")
+        for key, value in template.items():
+            if key.endswith("_authority") and value is not False:
+                fail(f"brand_asset_registry_authority_escalation:{template.get('id')}:{key}")
 
     identity = authority.get("canonical_identity", {})
     if identity.get("masterbrand") != "Dealix":
@@ -175,6 +231,17 @@ def main() -> None:
         if required not in press:
             fail(f"press_kit_missing_guardrail:{required}")
 
+    enterprise_assets = ENTERPRISE_ASSET_SYSTEM.read_text(encoding="utf-8")
+    for required in (
+        "Dealix Supplier Readiness Passport",
+        "Supplier Registration != Tender Invitation",
+        "Tender Publication != Dealix Eligibility",
+        "No sixth permanent brand/marketing agent is created.",
+        "L5_EXECUTED=NONE",
+    ):
+        if required not in enterprise_assets:
+            fail(f"enterprise_asset_system_missing:{required}")
+
     asset_blob = "\n".join(path.read_text(encoding="utf-8") for path in (LOGO, MARK, OG, APP_ICON))
     for color in REQUIRED_COLORS:
         if color not in asset_blob:
@@ -196,6 +263,8 @@ def main() -> None:
     print("CATEGORY=AI Business Operating System")
     print("MARK=D + Forward Signal")
     print("MASTERBRAND_EXPANSION=V2.1_DRAFT")
+    print("ENTERPRISE_ASSET_REGISTRY=PASS")
+    print("PERMANENT_AGENT_COUNT=5")
     print("FIRST_IN_MARKET_CLAIM=false")
     print("PUBLIC_PUBLISH_AUTHORIZED=false")
 
