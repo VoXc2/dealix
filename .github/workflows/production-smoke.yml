@@ -7,8 +7,6 @@ on:
         description: Production or staging API base URL
         required: false
         default: https://api.dealix.me
-  schedule:
-    - cron: '0 */6 * * *'
 
 permissions:
   contents: read
