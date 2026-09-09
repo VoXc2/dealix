@@ -1,11 +1,12 @@
-"""Phase 3 — Customer Portal contract finalization tests.
+"""Customer portal contract tests for the current fail-closed public posture.
 
-Asserts:
-- 8-section invariant still holds (constitutional)
-- All 6 Wave 3 enriched_view keys preserved
-- All 8 Wave 4 enriched_view keys preserved
-- Phase 3 changes are purely additive (new degraded banner element +
-  empty-state CSS classes — no breaking change)
+The historical static customer demo at ``landing/customer-portal.html`` is a
+retired public surface. It must redirect to the current proof methodology and
+must not resurrect synthetic KPI/demo UI as if it were live customer proof.
+
+The API contract remains independently tested for its eight-section/enriched
+shape so internal compatibility is preserved without making the retired HTML
+publicly authoritative again.
 """
 from __future__ import annotations
 
@@ -31,10 +32,11 @@ async def test_wave3_enriched_keys_preserved() -> None:
     async with AsyncClient(transport=transport, base_url="http://test") as c:
         r = await c.get("/api/v1/customer-portal/p3-final-2")
     enriched = r.json()["enriched_view"]
-    for key in ["ops_summary", "sequences", "radar_today",
-                 "digest_weekly", "digest_monthly",
-                 "service_status_for_customer"]:
-        assert key in enriched, f"Wave 3 key removed: {key}"
+    for key in [
+        "ops_summary", "sequences", "radar_today", "digest_weekly",
+        "digest_monthly", "service_status_for_customer",
+    ]:
+        assert key in enriched, f"compatibility key removed: {key}"
 
 
 @pytest.mark.asyncio
@@ -44,37 +46,36 @@ async def test_wave4_enriched_keys_preserved() -> None:
     async with AsyncClient(transport=transport, base_url="http://test") as c:
         r = await c.get("/api/v1/customer-portal/p3-final-3")
     enriched = r.json()["enriched_view"]
-    for key in ["full_ops_score", "weaknesses_summary", "next_3_decisions",
-                 "support_summary", "payment_state", "proof_summary",
-                 "approval_summary", "executive_command_link"]:
-        assert key in enriched, f"Wave 4 key removed: {key}"
+    for key in [
+        "full_ops_score", "weaknesses_summary", "next_3_decisions",
+        "support_summary", "payment_state", "proof_summary",
+        "approval_summary", "executive_command_link",
+    ]:
+        assert key in enriched, f"compatibility key removed: {key}"
 
 
-def test_html_has_degraded_banner_element() -> None:
-    """Phase 3 added a degraded banner — assert HTML contains it."""
+def test_retired_customer_demo_redirects_to_proof_methodology() -> None:
     html = Path("landing/customer-portal.html").read_text(encoding="utf-8")
-    assert 'id="cp-degraded-banner"' in html
-    assert 'id="cp-degraded-list"' in html
-    assert "cp-degraded-banner__sub" in html
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
+    assert 'http-equiv="refresh" content="0; url=/proof.html"' in html
+    assert 'rel="canonical" href="https://dealix.me/proof.html"' in html
+    assert 'name="robots" content="noindex,nofollow"' in html
 
 
-def test_html_has_empty_state_css() -> None:
-    """Phase 3 added .cp-empty-state CSS class."""
+def test_retired_customer_demo_labels_synthetic_truth() -> None:
     html = Path("landing/customer-portal.html").read_text(encoding="utf-8")
-    assert ".cp-empty-state" in html
-    assert ".cp-degraded-banner" in html
+    low = html.lower()
+    assert "synthetic" in low
+    assert "ليست دليل عميل" in html
+    assert "kpi" in low
 
 
-def test_js_has_degraded_banner_logic() -> None:
-    """customer-dashboard.js must implement maybeShowDegradedBanner."""
-    js = Path("landing/assets/js/customer-dashboard.js").read_text(encoding="utf-8")
-    assert "maybeShowDegradedBanner" in js
-    assert "insufficient_data" in js
-    assert "cp-degraded-banner" in js
-
-
-def test_html_arabic_empty_state_copy() -> None:
-    """The degraded banner Arabic copy must be present."""
+def test_retired_customer_demo_does_not_reintroduce_live_dashboard_contract() -> None:
     html = Path("landing/customer-portal.html").read_text(encoding="utf-8")
-    assert "عرض جزئي" in html
-    assert "بيانات DEMO" in html
+    for marker in (
+        'id="cp-degraded-banner"',
+        'class="w13-fourcards"',
+        'data-test="w13-card-current-status"',
+        "renderW13FourCards",
+    ):
+        assert marker not in html
