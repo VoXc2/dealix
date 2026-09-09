@@ -3,8 +3,9 @@ set -Eeuo pipefail
 umask 077
 
 # Dealix PR #1600 execution-plane closure.
-# Scope: recover the existing self-hosted Actions runner and existing private
-# Issue bridge, then execute the existing exact-head PR #1600 acceptance.
+# Scope: recover the existing self-hosted Actions runner, refresh the existing
+# private Issue bridge from this exact source without resetting durable state,
+# drain the queue, then execute exact-head PR #1600 acceptance.
 # Explicitly NOT in scope: merge, deploy/redeploy, Railway staged apply,
 # DNS/DB/secret mutation, external send, publish, payment/refund, or contracts.
 
@@ -37,11 +38,16 @@ REPOSITORY="Dealix-sa/dealix"
 FOUNDER="VoXc2"
 RUN_USER="dealix"
 CONTROL="/opt/dealix/control"
+CONTROL_BIN="$CONTROL/bin"
 RUNNER_DIR="/opt/dealix/actions-runner"
 BRIDGE_TIMER="dealix-vps-issue-bridge.timer"
 BRIDGE_SERVICE="dealix-vps-issue-bridge.service"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 RUNNER_INSTALLER="$SCRIPT_DIR/install_dealix_self_hosted_runner.sh"
+SOURCE_BRIDGE="$SCRIPT_DIR/dealix_vps_issue_bridge.py"
+SOURCE_DISPATCHER="$SCRIPT_DIR/dealix_vps_control.sh"
+INSTALLED_BRIDGE="$CONTROL_BIN/dealix_vps_issue_bridge.py"
+INSTALLED_DISPATCHER="$CONTROL_BIN/dealix_vps_control.sh"
 ACCEPTANCE="$SCRIPT_DIR/run_pr1600_live_full_acceptance.sh"
 LOCK="/run/lock/dealix-pr1600-execution-plane.lock"
 STAMP="$(date +%Y%m%dT%H%M%S)"
@@ -61,12 +67,13 @@ hold() {
 command -v flock >/dev/null 2>&1 || { echo "BLOCKED: flock missing"; exit 3; }
 id "$RUN_USER" >/dev/null 2>&1 || { echo "BLOCKED: missing user $RUN_USER"; exit 4; }
 [[ -x "$RUNNER_INSTALLER" ]] || { echo "BLOCKED: runner installer missing"; exit 5; }
-[[ -x "$ACCEPTANCE" || -f "$ACCEPTANCE" ]] || { echo "BLOCKED: PR1600 acceptance runner missing"; exit 6; }
+[[ -f "$SOURCE_BRIDGE" && -f "$SOURCE_DISPATCHER" ]] || { echo "BLOCKED: bridge source missing"; exit 6; }
+[[ -x "$ACCEPTANCE" || -f "$ACCEPTANCE" ]] || { echo "BLOCKED: PR1600 acceptance runner missing"; exit 7; }
 
 exec 9>"$LOCK"
 flock -n 9 || { echo "RESULT=HOLD_ALREADY_RUNNING"; exit 75; }
 
-install -d -m 0750 -o root -g root "$CONTROL/proof"
+mkdir -p "$CONTROL/proof"
 install -d -m 0700 -o root -g root "$PROOF"
 exec > >(tee -a "$PROOF/run.log") 2>&1
 
@@ -90,21 +97,45 @@ bash "$RUNNER_INSTALLER" | tee "$PROOF/runner-recovery.log"
 "$RUNNER_DIR/svc.sh" status | tee "$PROOF/runner-status.log" || hold RUNNER_SERVICE_UNHEALTHY
 printf 'SELF_HOSTED_RUNNER=PASS\n'
 
-printf '\n=== 3. PRIVATE ISSUE BRIDGE ===\n'
-# Never call the bridge installer here. Its explicit bootstrap intentionally
-# advances past history and would discard the current pending founder commands.
+printf '\n=== 3. PRIVATE ISSUE BRIDGE SOURCE REFRESH ===\n'
 systemctl cat "$BRIDGE_TIMER" >/dev/null 2>&1 || hold BRIDGE_TIMER_UNIT_MISSING
 systemctl cat "$BRIDGE_SERVICE" >/dev/null 2>&1 || hold BRIDGE_SERVICE_UNIT_MISSING
 
-systemctl reset-failed "$BRIDGE_SERVICE" >/dev/null 2>&1 || true
-if ! systemctl is-active --quiet "$BRIDGE_TIMER"; then
-  systemctl start "$BRIDGE_TIMER" || hold BRIDGE_TIMER_START_FAILED
+# Never interrupt a command that may already be executing: an interrupted
+# STARTED command is intentionally ambiguous and must be reviewed, not replayed.
+if systemctl is-active --quiet "$BRIDGE_SERVICE"; then
+  hold BRIDGE_ALREADY_ACTIVE_REVIEW
 fi
+
+python3 -m py_compile "$SOURCE_BRIDGE" || hold BRIDGE_SOURCE_COMPILE
+bash -n "$SOURCE_DISPATCHER" || hold DISPATCHER_SOURCE_SYNTAX
+
+systemctl stop "$BRIDGE_TIMER" >/dev/null 2>&1 || true
+install -d -m 0750 -o "$RUN_USER" -g "$RUN_USER" "$CONTROL_BIN"
+if [[ -f "$INSTALLED_BRIDGE" ]]; then
+  cp -a "$INSTALLED_BRIDGE" "$PROOF/dealix_vps_issue_bridge.py.before"
+fi
+if [[ -f "$INSTALLED_DISPATCHER" ]]; then
+  cp -a "$INSTALLED_DISPATCHER" "$PROOF/dealix_vps_control.sh.before"
+fi
+install -m 0750 -o "$RUN_USER" -g "$RUN_USER" "$SOURCE_BRIDGE" "$INSTALLED_BRIDGE"
+install -m 0750 -o "$RUN_USER" -g "$RUN_USER" "$SOURCE_DISPATCHER" "$INSTALLED_DISPATCHER"
+sha256sum "$SOURCE_BRIDGE" "$INSTALLED_BRIDGE" | tee "$PROOF/bridge-sha256.txt"
+sha256sum "$SOURCE_DISPATCHER" "$INSTALLED_DISPATCHER" | tee "$PROOF/dispatcher-sha256.txt"
+[[ "$(sha256sum "$SOURCE_BRIDGE" | awk '{print $1}')" == "$(sha256sum "$INSTALLED_BRIDGE" | awk '{print $1}')" ]] \
+  || hold BRIDGE_INSTALL_DIGEST_MISMATCH
+[[ "$(sha256sum "$SOURCE_DISPATCHER" | awk '{print $1}')" == "$(sha256sum "$INSTALLED_DISPATCHER" | awk '{print $1}')" ]] \
+  || hold DISPATCHER_INSTALL_DIGEST_MISMATCH
+printf 'BRIDGE_SOURCE_REFRESH=PASS state_preserved=true bootstrap=false\n'
+
+printf '\n=== 4. PRIVATE ISSUE BRIDGE QUEUE ===\n'
+systemctl reset-failed "$BRIDGE_SERVICE" >/dev/null 2>&1 || true
+systemctl start "$BRIDGE_TIMER" || hold BRIDGE_TIMER_START_FAILED
 systemctl is-active --quiet "$BRIDGE_TIMER" || hold BRIDGE_TIMER_INACTIVE
 
-# One synchronous poll cycle drains the durable queue in order. Existing bridge
-# state decides whether a command is safe to execute/resume; missing/corrupt or
-# ambiguous state fails closed inside the bridge.
+# One synchronous poll cycle drains the durable queue in order. The bridge's
+# existing state decides whether pending work is safe to resume; missing,
+# corrupt, or ambiguous state fails closed. No bootstrap is executed here.
 if ! systemctl start "$BRIDGE_SERVICE"; then
   systemctl --no-pager --full status "$BRIDGE_SERVICE" | sed -n '1,80p' || true
   hold BRIDGE_POLL_FAILED
@@ -115,7 +146,7 @@ printf 'bridge_timer=active\nbridge_result=%s\nbridge_exec_status=%s\n' "${BRIDG
 [[ "$BRIDGE_RESULT" == "success" && "${BRIDGE_STATUS:-1}" == "0" ]] || hold BRIDGE_RESULT_NOT_SUCCESS
 printf 'ISSUE_BRIDGE=PASS\n'
 
-printf '\n=== 4. CURRENT EXACT-HEAD ACCEPTANCE ===\n'
+printf '\n=== 5. CURRENT EXACT-HEAD ACCEPTANCE ===\n'
 # The acceptance wrapper re-resolves main + PR head at start and end, creates a
 # detached worktree, runs the full trust surface, and fails if either ref moves.
 bash "$ACCEPTANCE" | tee "$PROOF/pr1600-acceptance.log"
@@ -128,6 +159,7 @@ grep -qx 'EXACT_HEAD_STABILITY=PASS' "$PROOF/pr1600-acceptance.log" \
 
 printf '\n=== FINAL ===\n'
 printf 'SELF_HOSTED_RUNNER=PASS\n'
+printf 'BRIDGE_SOURCE_REFRESH=PASS\n'
 printf 'ISSUE_BRIDGE=PASS\n'
 printf 'PR1600_EXACT_HEAD_ACCEPTANCE=PASS\n'
 printf 'MERGE_EXECUTED=false\nDEPLOY_EXECUTED=false\nRAILWAY_STAGED_APPLY=false\n'
