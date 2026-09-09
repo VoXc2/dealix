@@ -63,7 +63,8 @@ PY="$REPO/.venv/bin/python"
 [[ -x "$PY" ]] || hold VERIFIED_PYTHON_MISSING
 
 RUN_GROUP="$(id -gn "$RUN_USER")"
-install -d -m 0750 -o "$RUN_USER" -g "$RUN_GROUP" "$CONTROL/worktrees" "$CONTROL/proof" "$PROOF"
+install -d -m 0750 -o "$RUN_USER" -g "$RUN_GROUP" \
+  "$CONTROL/worktrees" "$CONTROL/proof" "$PROOF"
 exec > >(tee -a "$PROOF/run.log") 2>&1
 
 cleanup() {
@@ -95,42 +96,43 @@ echo "PR_STATE=$STATE"
 as_dealix git -C "$REPO" worktree add --detach "$WT" "$HEAD"
 [[ -z "$(as_dealix git -C "$WT" status --porcelain)" ]] || hold FRESH_WORKTREE_DIRTY
 
-cd "$WT"
-TARGET="docs/ops/VERIFY_SCRIPTS_CATALOG.md"
-TMP="$(mktemp "$PROOF/catalog.XXXXXX")"
+TARGET="$WT/docs/ops/VERIFY_SCRIPTS_CATALOG.md"
+TMP="$(as_dealix mktemp "$PROOF/catalog.XXXXXX")"
 
-"$PY" scripts/ops/build_verify_catalog.py > "$TMP"
+as_dealix "$PY" "$WT/scripts/ops/build_verify_catalog.py" > "$TMP"
 NEW_COUNT="$(grep '^Total scripts:' "$TMP" | awk '{print $3}')"
 OLD_COUNT="$(grep '^Total scripts:' "$TARGET" 2>/dev/null | awk '{print $3}' || true)"
 echo "OLD_VERIFY_SCRIPT_COUNT=${OLD_COUNT:-missing}"
 echo "NEW_VERIFY_SCRIPT_COUNT=${NEW_COUNT:-missing}"
 
 if cmp -s "$TMP" "$TARGET"; then
-  rm -f "$TMP"
-  "$PY" scripts/ops/build_verify_catalog.py --check
-  "$PY" -m pytest -q tests/test_verify_catalog.py
+  as_dealix rm -f "$TMP"
+  as_dealix env PYTHONPATH="$WT" "$PY" "$WT/scripts/ops/build_verify_catalog.py" --check
+  as_dealix env PYTHONPATH="$WT" "$PY" -m pytest -q "$WT/tests/test_verify_catalog.py"
   echo "VERIFY_CATALOG_ALREADY_CURRENT=true"
   echo "RESULT=VERIFY_CATALOG_PASS_NO_CHANGE"
   exit 0
 fi
 
-install -m 0644 "$TMP" "$TARGET"
-rm -f "$TMP"
+as_dealix install -m 0644 "$TMP" "$TARGET"
+as_dealix rm -f "$TMP"
 
-"$PY" scripts/ops/build_verify_catalog.py --check
-"$PY" -m pytest -q tests/test_verify_catalog.py
-git diff --check
+as_dealix env PYTHONPATH="$WT" "$PY" "$WT/scripts/ops/build_verify_catalog.py" --check
+as_dealix env PYTHONPATH="$WT" "$PY" -m pytest -q "$WT/tests/test_verify_catalog.py"
+as_dealix git -C "$WT" diff --check
 
-CHANGED="$(git status --porcelain)"
+CHANGED="$(as_dealix git -C "$WT" status --porcelain)"
 printf 'CHANGED_FILES_BEGIN\n%s\nCHANGED_FILES_END\n' "$CHANGED"
-[[ "$CHANGED" == " M $TARGET" ]] || hold UNEXPECTED_WORKTREE_CHANGE
+[[ "$CHANGED" == " M docs/ops/VERIFY_SCRIPTS_CATALOG.md" ]] || hold UNEXPECTED_WORKTREE_CHANGE
 
-git diff -- "$TARGET" > "$PROOF/catalog.diff"
+as_dealix git -C "$WT" diff -- docs/ops/VERIFY_SCRIPTS_CATALOG.md > "$PROOF/catalog.diff"
 
-git add "$TARGET"
-git -c user.name='Dealix Release Trust' -c user.email='release-trust@dealix.local' \
+as_dealix git -C "$WT" add docs/ops/VERIFY_SCRIPTS_CATALOG.md
+as_dealix git -C "$WT" \
+  -c user.name='Dealix Release Trust' \
+  -c user.email='release-trust@dealix.local' \
   commit -m 'fix(trust): regenerate verify script catalog'
-NEW_HEAD="$(git rev-parse HEAD)"
+NEW_HEAD="$(as_dealix git -C "$WT" rev-parse HEAD)"
 
 LIVE_BEFORE_PUSH="$(as_dealix gh api "repos/$REPOSITORY/pulls/$PR" --jq '.head.sha')"
 echo "LIVE_BEFORE_PUSH=$LIVE_BEFORE_PUSH"
