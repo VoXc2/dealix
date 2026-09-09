@@ -8,6 +8,8 @@ set -Eeuo pipefail
 # - registration token is fetched locally, used once, never printed, and unset
 # - runner service executes as the non-root `dealix` user
 # - pinned release archive is verified by the official GitHub SHA-256 checksum
+# - an already-configured but stopped runner is recovered fail-closed instead of
+#   being reported as a successful installation
 
 REPO="Dealix-sa/dealix"
 REPO_URL="https://github.com/${REPO}"
@@ -58,9 +60,35 @@ cd "$RUNNER_DIR"
 
 if [[ -f .runner ]]; then
   echo "Runner is already configured at $RUNNER_DIR."
-  if [[ -x ./svc.sh ]]; then
-    ./svc.sh status || true
+  if [[ ! -x ./svc.sh ]]; then
+    echo "BLOCKED: configured runner is missing executable svc.sh."
+    exit 10
   fi
+
+  if ! ./svc.sh status; then
+    echo "Runner service is not healthy; attempting bounded recovery."
+    if ! ./svc.sh start; then
+      echo "Runner service start failed; attempting one service install + start."
+      ./svc.sh install "$RUNNER_USER"
+      ./svc.sh start
+    fi
+  fi
+
+  if ! ./svc.sh status; then
+    echo "BLOCKED: configured runner service is still not healthy after recovery."
+    exit 11
+  fi
+
+  echo
+  echo "===== DEALIX SELF-HOSTED RUNNER PROOF ====="
+  printf 'runner_name=%s\n' "$RUNNER_NAME"
+  printf 'runner_dir=%s\n' "$RUNNER_DIR"
+  printf 'runner_user=%s\n' "$RUNNER_USER"
+  printf 'runner_version=%s\n' "$RUNNER_VERSION"
+  printf 'repository_private=true\n'
+  printf 'configured_runner_recovered=true\n'
+  printf 'secret_values_printed=false\n'
+  echo "===== END ====="
   exit 0
 fi
 
@@ -127,13 +155,18 @@ cd "$RUNNER_DIR"
 ./svc.sh install "$RUNNER_USER"
 ./svc.sh start
 
+if ! ./svc.sh status; then
+  echo "BLOCKED: newly installed runner service is not healthy."
+  exit 12
+fi
+
 echo
 echo "===== DEALIX SELF-HOSTED RUNNER PROOF ====="
-./svc.sh status || true
 printf 'runner_name=%s\n' "$RUNNER_NAME"
 printf 'runner_dir=%s\n' "$RUNNER_DIR"
 printf 'runner_user=%s\n' "$RUNNER_USER"
 printf 'runner_version=%s\n' "$RUNNER_VERSION"
 printf 'repository_private=true\n'
+printf 'configured_runner_recovered=false\n'
 printf 'secret_values_printed=false\n'
 echo "===== END ====="
