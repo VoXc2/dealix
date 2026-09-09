@@ -99,7 +99,29 @@ def test_material_execution_stays_exact_l5_and_sources_stay_research_safe():
         assert source["allowed_outputs"]
         assert source["agent_route"]
         assert set(source["agent_route"]).issubset(module.PERMANENT_AGENTS)
-        assert set(source["forbidden_inference"]) & module.FORBIDDEN_AUTHORITY_TERMS
+
+        forbidden = set(source["forbidden_inference"])
+        required = module.required_inference_guards_for_lane(source["lane"])
+        assert forbidden & required, (
+            f"{source['id']} lacks a lane-appropriate inference guard"
+        )
+
+
+def test_trust_provider_sources_block_trust_overclaims_not_just_buyer_inference():
+    module = _load_module()
+    data = _registry()
+    providers = [
+        source
+        for source in data["sources"]
+        if source["lane"] == "TRUST_PROVIDER_AUTHORITY"
+    ]
+    assert {source["id"] for source in providers} == {
+        "nca_ai_cybersecurity",
+        "railway_docs",
+    }
+    for source in providers:
+        forbidden = set(source["forbidden_inference"])
+        assert forbidden & module.TRUST_PROVIDER_FORBIDDEN_INFERENCE_TERMS
 
 
 def test_explicit_demand_sources_remain_narrow_and_governed():
