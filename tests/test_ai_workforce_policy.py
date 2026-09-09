@@ -28,6 +28,7 @@ from auto_client_acquisition.ai_workforce import (
 def _draft_task(agent_id: str = "SaudiCopyAgent", **overrides) -> AgentTask:
     base = dict(
         agent_id=agent_id,
+        canonical_owner="dealix-sales",
         role_ar="ar",
         role_en="en",
         action_summary_ar="مسوّدة",
@@ -77,6 +78,7 @@ def test_compliance_guard_exempt_from_tool_token_scan():
     """ComplianceGuardAgent legitimately surfaces the tool list as DATA."""
     task = _draft_task(
         agent_id="ComplianceGuardAgent",
+        canonical_owner="dealix-pm",
         output={"vetoed_tools": ["cold_whatsapp", "send_email_live"]},
         action_mode="approval_required",
     )
@@ -87,13 +89,12 @@ def test_compliance_guard_exempt_from_tool_token_scan():
 def test_enforce_budget_rejects_runs_over_5_usd():
     """Sum strictly above 5.0 USD must be rejected."""
     assert enforce_budget([1.0, 1.0, 1.0]) is True
-    assert enforce_budget([2.5, 2.5]) is True  # equal to limit, allowed
+    assert enforce_budget([2.5, 2.5]) is True
     assert enforce_budget([3.0, 3.0]) is False
     assert enforce_budget([5.5]) is False
 
 
 def test_estimate_cost_returns_agent_budget():
-    """estimate_cost must return the agent's static budget."""
     cost = estimate_cost("CompanyBrainAgent")
     assert cost > 0
     assert cost < 5.0
@@ -101,26 +102,22 @@ def test_estimate_cost_returns_agent_budget():
 
 
 def test_route_for_goal_starts_with_company_brain():
-    """First two agents must be CompanyBrainAgent + MarketRadarAgent."""
     plan = route_for_goal(WorkforceGoal(company_handle="ACME"))
     assert plan[0] == "CompanyBrainAgent"
     assert plan[1] == "MarketRadarAgent"
 
 
 def test_route_for_goal_ends_with_compliance_guard():
-    """Last agent must always be ComplianceGuardAgent."""
     plan = route_for_goal(WorkforceGoal(company_handle="ACME"))
     assert plan[-1] == "ComplianceGuardAgent"
 
 
 def test_workforce_goal_rejects_empty_company_handle_via_pydantic():
-    """Direct schema construction with an empty company_handle must raise."""
     with pytest.raises(ValidationError):
         WorkforceGoal(company_handle="")
 
 
 def test_workforce_goal_router_rejects_empty_company_handle_with_422():
-    """API path must surface the same rejection as a 422."""
     client = TestClient(create_app())
     resp = client.post(
         "/api/v1/ai-workforce/run",
@@ -130,7 +127,6 @@ def test_workforce_goal_router_rejects_empty_company_handle_with_422():
 
 
 def test_workforce_goal_extra_field_returns_422():
-    """WorkforceGoal is extra='forbid'; rogue fields must 422."""
     client = TestClient(create_app())
     resp = client.post(
         "/api/v1/ai-workforce/run",
