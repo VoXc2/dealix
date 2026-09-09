@@ -16,10 +16,10 @@ REPO_URL="https://github.com/${REPO}"
 RUNNER_USER="dealix"
 RUNNER_NAME="dealix-vps"
 RUNNER_DIR="/opt/dealix/actions-runner"
-RUNNER_VERSION="2.336.0"
+RUNNER_VERSION="2.337.0"
 RUNNER_ARCHIVE="actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
 RUNNER_URL="https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/${RUNNER_ARCHIVE}"
-RUNNER_SHA256="04cf0be1aff4c3ec3554466c39124ca250e3effd8873bb7e8d68535aa9505d5d"
+RUNNER_SHA256="70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613"
 
 if [[ "$(id -u)" -ne 0 ]]; then
   echo "BLOCKED: run this installer as root."
