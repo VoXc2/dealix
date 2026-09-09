@@ -24,8 +24,10 @@ LEGACY_LAUNCH_PATHS = (
 @pytest.mark.asyncio
 @pytest.mark.parametrize("path", LEGACY_LAUNCH_PATHS)
 async def test_legacy_pricing_and_checkout_paths_are_not_mounted(async_client, path):
-    method = "post" if path in {"/api/v1/checkout", "/api/v1/pricing/usage"} else "get"
-    response = await getattr(async_client, method)(path, json={} if method == "post" else None)
+    if path in {"/api/v1/checkout", "/api/v1/pricing/usage"}:
+        response = await async_client.post(path, json={})
+    else:
+        response = await async_client.get(path)
     assert response.status_code == 404
 
 
