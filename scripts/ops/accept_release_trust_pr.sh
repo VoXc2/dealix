@@ -12,7 +12,7 @@ EXPECTED_HEAD="${DEALIX_ACCEPT_EXPECTED_HEAD:-}"
 EXPECTED_BASE="${DEALIX_ACCEPT_EXPECTED_BASE:-}"
 FULL_PYTEST="${DEALIX_ACCEPT_FULL_PYTEST:-0}"
 GATE="$ROOT/scripts/ops/fail_closed_gate.sh"
-PY="$ROOT/.venv/bin/python"
+PY="${DEALIX_ACCEPT_PYTHON:-$ROOT/.venv/bin/python}"
 
 log() { printf '[release-trust] %s\n' "$*"; }
 fail_env() { printf 'BLOCKED_ENVIRONMENT=%s\n' "$1" >&2; exit 3; }
@@ -43,11 +43,12 @@ if [[ -n "$EXPECTED_BASE" ]]; then
 fi
 
 [[ -f "$GATE" ]] || fail_env "missing_fail_closed_gate"
-[[ -x "$PY" ]] || fail_env "missing_repo_venv_python"
+[[ -x "$PY" ]] || fail_env "missing_accept_python:$PY"
 command -v shellcheck >/dev/null 2>&1 || fail_env "shellcheck_not_installed"
 command -v node >/dev/null 2>&1 || fail_env "node_not_installed"
 command -v npm >/dev/null 2>&1 || fail_env "npm_not_installed"
 
+printf 'PYTHON_RUNTIME=PASS path=%s\n' "$PY"
 node_major="$(node -p 'Number(process.versions.node.split(".")[0])')"
 if [[ "$node_major" != "20" && "$node_major" -lt 22 ]]; then
   printf 'NODE_RUNTIME=FAIL version=%s required="20 || >=22"\n' "$(node -v)" >&2
