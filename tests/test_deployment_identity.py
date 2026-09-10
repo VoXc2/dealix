@@ -36,6 +36,26 @@ def test_vercel_identity_wins_if_multiple_platform_markers_exist() -> None:
     assert resolve_deployment_git_sha(environ=env) == "vercel-exact-sha"
 
 
+def test_railway_context_without_system_git_sha_fails_closed() -> None:
+    env = {
+        "RAILWAY_PROJECT_ID": "project-1",
+        "RAILWAY_DEPLOYMENT_ID": "deployment-1",
+        "GIT_SHA": "8099b00",
+    }
+
+    assert resolve_deployment_git_sha("8099b00", environ=env) == "unknown"
+
+
+def test_vercel_context_without_system_git_sha_fails_closed() -> None:
+    env = {
+        "VERCEL": "1",
+        "VERCEL_ENV": "production",
+        "GIT_SHA": "stale-generic-sha",
+    }
+
+    assert resolve_deployment_git_sha("stale-generic-sha", environ=env) == "unknown"
+
+
 def test_configured_sha_remains_valid_for_container_builds() -> None:
     assert resolve_deployment_git_sha("docker-build-sha", environ={}) == "docker-build-sha"
 
