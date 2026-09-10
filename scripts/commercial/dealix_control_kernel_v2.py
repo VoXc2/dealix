@@ -2,10 +2,9 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 ROOT = Path(__file__).resolve().parents[2]
 KERNEL_PATH = ROOT / "config" / "company" / "dealix_control_kernel_v2.json"
@@ -23,8 +22,7 @@ class BudgetBlocked(ControlKernelError):
     pass
 
 
-@dataclass(frozen=True)
-class PriorityResult:
+class PriorityResult(NamedTuple):
     value_vector: float
     execution_drag: float
     confidence_factor: float
