@@ -26,7 +26,7 @@ def test_bridge_is_read_only_over_canonical_revenue_store_and_material_authority
     assert '"payment_execution": False' in text
     assert '"production_mutation": False' in text
     assert '"binding_commercial_commitment": False' in text
-    assert "INBOUND_NO_FOLLOWUP" in text
+    assert "followup_request_is_not_direct_marketing_consent" in text
     assert "customer_reported_context_is_not_verified_customer_proof" in text
 
 

@@ -47,7 +47,7 @@ def test_diagnostic_requests_only_business_operating_context() -> None:
         'name="minimum_data_ack"',
     ):
         assert field in DIAGNOSTIC, field
-    assert "لا تضع بيانات شخصية" in DIAGNOSTIC
+    assert "لا أضع بيانات شخصية" in DIAGNOSTIC
     assert "لا تضع رابطًا خاصًا أو يحمل token" in DIAGNOSTIC
 
 

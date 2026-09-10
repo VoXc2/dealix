@@ -57,7 +57,9 @@ def test_diagnostic_page_has_no_paid_or_qualification_shortcut() -> None:
     )
     assert not [fragment for fragment in forbidden if fragment.lower() in html.lower()]
     assert "free_mini_diagnostic" in html
-    assert "[free_diagnostic]" in html
+    assert "NO_PII_CAPTURE" in html
+    assert "NO_LEAD_PERSISTENCE" in html
+    assert "HUMAN_REVIEW_REQUIRED" in html
 
 
 def test_diagnostic_page_separates_honeypot_and_company_url() -> None:
@@ -98,13 +100,12 @@ def test_non_diagnostic_intake_retains_only_optional_booking() -> None:
 def test_growth_diagnostic_source_is_preliminary_and_approval_gated() -> None:
     source = GROWTH_ENGINE.read_text(encoding="utf-8")
     required = (
-        '"status": "preliminary_diagnostic"',
-        '"funnel_stage": "free_diagnostic"',
+        '"status": "preliminary_free_mini_diagnostic"',
         '"requires_human_review": True',
         '"requires_source_validation": True',
         '"payment_required": False',
         '"external_action_allowed": False',
-        '"next_step": "human_review_fit_before_any_paid_scope"',
+        '"next_step": "human_review_then_qualified_discovery_if_evidence_supports_fit"',
     )
     assert not [fragment for fragment in required if fragment not in source]
 
