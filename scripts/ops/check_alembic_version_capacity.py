@@ -129,8 +129,8 @@ def main() -> int:
         )
         return 2
     except Exception as exc:
-        # Provider/driver exception text can contain connection details. Never
-        # emit str(exc), repr(exc), DATABASE_URL, or connection arguments here.
+        # Provider/driver exception details can contain connection material.
+        # Emit only the exception type; never emit exception payloads, URLs, or arguments.
         print(
             f"ALEMBIC_VERSION_CAPACITY=ERROR error_type={type(exc).__name__}",
             file=sys.stderr,
