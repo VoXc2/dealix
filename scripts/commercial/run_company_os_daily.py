@@ -2,12 +2,13 @@
 """Compatibility entrypoint for the canonical Dealix Company OS cycle.
 
 This file exists because older VPS orchestration calls this path. It verifies
-company law, the governed business-arm registry, and the arm execution
-playbooks; materializes the real website-diagnostic intake bridge from the
-existing Revenue Ops store; delegates one-for-one to
-``run_self_operating_company_os.py``; then runs the bounded Strategy Execution
-Orchestrator. No layer owns a parallel state store, authority model, target
-source, scheduler, CRM, approval system, proof ledger, or permanent agent fleet.
+the Meta-Operating System V2 Control Kernel first, then company law, the
+governed business-arm registry, and the arm execution playbooks; materializes
+the real website-diagnostic intake bridge from the existing Revenue Ops store;
+delegates one-for-one to ``run_self_operating_company_os.py``; then runs the
+bounded Strategy Execution Orchestrator. No layer owns a parallel state store,
+authority model, target source, scheduler, CRM, approval system, proof ledger,
+or permanent agent fleet.
 """
 from __future__ import annotations
 
@@ -18,6 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CANONICAL = ROOT / "scripts" / "commercial" / "run_self_operating_company_os.py"
+CONTROL_KERNEL_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_control_kernel_v2.py"
 CONSTITUTION_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_operating_constitution.py"
 ARM_REGISTRY_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_arm_registry.py"
 ARM_EXECUTION_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_arm_execution_playbooks.py"
@@ -36,6 +38,15 @@ def main() -> int:
     parser.add_argument("--mode", default="draft-only", choices=["draft-only"])
     parser.add_argument("--limit", type=int, default=50)
     args = parser.parse_args()
+
+    # Constitutional superlayer: evaluate before all lower-level operating logic.
+    if not CONTROL_KERNEL_VERIFY.is_file():
+        print("COMPANY_OS_DAILY=BLOCKED_CONTROL_KERNEL_VERIFIER_MISSING")
+        return 2
+    control_kernel_rc = run([sys.executable, str(CONTROL_KERNEL_VERIFY)])
+    if control_kernel_rc != 0:
+        print("COMPANY_OS_DAILY=BLOCKED_CONTROL_KERNEL_INVALID")
+        return control_kernel_rc
 
     if not CONSTITUTION_VERIFY.is_file():
         print("COMPANY_OS_DAILY=BLOCKED_CONSTITUTION_VERIFIER_MISSING")
@@ -98,6 +109,7 @@ def main() -> int:
         print(f"COMPANY_OS_DAILY=BLOCKED_STRATEGY_ORCHESTRATOR_RC_{orchestrator_rc}")
         return orchestrator_rc
 
+    print("CONTROL_KERNEL_V2=PASS")
     print("OPERATING_CONSTITUTION=PASS")
     print("ARM_REGISTRY=PASS")
     print("ARM_EXECUTION_PLAYBOOKS=PASS")
