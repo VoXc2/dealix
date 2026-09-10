@@ -59,6 +59,7 @@ def test_actionlint_is_required_and_keeps_warning_shell_findings_blocking() -> N
 def test_pytest_is_forced_into_isolated_test_environment() -> None:
     text = _text()
     for token in (
+        'DEALIX_PYTHON_BIN="$PY"',
         "APP_ENV=test",
         "ENVIRONMENT=test",
         "DATABASE_URL=sqlite+aiosqlite:///:memory:",

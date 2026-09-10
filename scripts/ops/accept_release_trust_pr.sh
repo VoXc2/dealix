@@ -21,6 +21,7 @@ NODE_IMAGE="${DEALIX_ACCEPT_NODE_IMAGE:-node:22-bookworm}"
 # with monkeypatch, but the process-level baseline is always isolated test mode.
 PYTEST_ENV=(
   env
+  DEALIX_PYTHON_BIN="$PY"
   APP_ENV=test
   ENVIRONMENT=test
   APP_DEBUG=false
