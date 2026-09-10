@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+from auto_client_acquisition.approval_center import get_default_approval_store
+from auto_client_acquisition.approval_center.schemas import ApprovalRequest
 from auto_client_acquisition.distribution_os import (
     draft_factory,
     followup,
@@ -31,6 +33,36 @@ def _isolate(tmp_path, monkeypatch):
         ("DEALIX_RENEWAL_SCHEDULE_PATH", "renewal.jsonl"),
     ):
         monkeypatch.setenv(var, str(tmp_path / name))
+    approvals = get_default_approval_store()
+    approvals.clear()
+    yield
+    approvals.clear()
+
+
+def _approve_quote_authority(*, lead_id: str, amount: float, discovery: str, scope: str) -> str:
+    fingerprint = payment_handoff._quote_authority_fingerprint(
+        lead_id=lead_id,
+        amount_sar=amount,
+        discovery_ref=discovery,
+        customer_specific_scope_ref=scope,
+    )
+    approvals = get_default_approval_store()
+    req = ApprovalRequest(
+        object_type="customer_specific_quote",
+        object_id=fingerprint,
+        action_type="customer_specific_quote",
+        action_mode="approval_required",
+        channel="finance_manual",
+        risk_level="high",
+        proof_impact=f"customer_specific_quote:{fingerprint}",
+        action_id=f"quote:{fingerprint}",
+        lead_id=lead_id,
+        audit_ref=discovery,
+        proof_target=f"invoice_authority:{fingerprint}",
+    )
+    stored = approvals.create(req)
+    approvals.approve(stored.approval_id, "founder-test")
+    return stored.approval_id
 
 
 def test_cadence_schedules_four_touches_in_order() -> None:
@@ -117,13 +149,23 @@ def test_daily_kpis_reflect_quote_bound_store_state() -> None:
         quote_id="quote_acme_001",
         customer_specific_quote_sar=12500,
     )
+    proposal.approve_proposal(prop.id)
     proof_pack.build_proof_pack(customer_id="Acme", evidence_level=1)
+    scope_ref = "scope:acme-001"
+    authority_ref = _approve_quote_authority(
+        lead_id=p.id,
+        amount=12500,
+        discovery="discovery:acme-001",
+        scope=scope_ref,
+    )
     payment_handoff.prepare_handoff(
         proposal_id=prop.id,
-        customer_id="Acme",
+        customer_id=p.id,
         product_id="prod_sprint_v1",
         discovery_ref="discovery:acme-001",
         quote_id="quote_acme_001",
+        quote_authority_ref=authority_ref,
+        customer_specific_scope_ref=scope_ref,
         amount_sar=12500,
     )
     win_loss.record(company="Acme", outcome="won")
