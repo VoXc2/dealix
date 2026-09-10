@@ -26,6 +26,7 @@ class Candidate:
     company:str; email:str; contact_name:str; language:str; source:str; evidence_refs:list[str]; relationship_state:str; consent_state:str; suppression_state:str; channel_eligibility_state:str; pain_hypothesis:str; why_now:str; offer:str; evidence_score:int; draft_eligible:bool; dispatch_eligible:bool; blocker:str; probability_rank:int|None
 def today(): return datetime.now(RIYADH).strftime('%Y-%m-%d')
 def utc_now(): return datetime.now(UTC).isoformat(timespec='seconds')
+def probability_day(): return datetime.now(UTC).strftime('%Y-%m-%d')
 def to_list(v:Any)->list[str]:
     if isinstance(v,list): return [str(x).strip() for x in v if str(x).strip()]
     if isinstance(v,str) and v.strip(): return [x.strip() for x in v.split('|') if x.strip()]
@@ -37,7 +38,7 @@ def evidence_score(item:dict[str,Any])->int:
     raw=bounded_int(item.get('fit_score'),55)*.30+bounded_int(item.get('urgency_score'),50)*.25+bounded_int(item.get('evidence_score'),40)*.25+bounded_int(item.get('access_score'),25)*.20-bounded_int(item.get('risk_score'),25)*.15
     return max(0,min(100,round(raw)))
 def probability_ranks()->dict[str,int]:
-    path=PROBABILITY_REPORT/f'{today()}.json'
+    path=PROBABILITY_REPORT/f'{probability_day()}.json'
     try: data=json.loads(path.read_text(encoding='utf-8'))
     except (OSError,json.JSONDecodeError): return {}
     result={}
