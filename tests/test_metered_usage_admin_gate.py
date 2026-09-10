@@ -22,11 +22,17 @@ ADMIN_KEY = "admin-key-under-test"
 
 @pytest.fixture
 def client():
+    from fastapi import FastAPI
     from fastapi.testclient import TestClient
 
-    from api.main import app
+    from api.routers import pricing
 
-    return TestClient(app)
+    # The launch app intentionally quarantines these legacy commercial routes.
+    # Mount the router in isolation so its defense-in-depth contracts remain tested
+    # without accidentally requiring public/runtime exposure.
+    isolated = FastAPI()
+    isolated.include_router(pricing.router)
+    return TestClient(isolated)
 
 
 @pytest.fixture(autouse=True)

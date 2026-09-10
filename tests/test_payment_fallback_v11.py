@@ -46,9 +46,12 @@ def test_dry_run_no_api_key_required() -> None:
     assert "DRY_RUN=true" in r.stdout
     assert "AMOUNT_SAR=499" in r.stdout
     assert "AMOUNT_HALALAH=49900" in r.stdout
-    assert "MODE=manual_only" in r.stdout
-    assert "REFUND_NOTE_REQUIRED=true" in r.stdout
-    assert "MANUAL_FALLBACK_STEPS:" in r.stdout
+    assert "MODE=preview_only" in r.stdout
+    assert "COMMERCIAL_AUTHORITY=NONE_PREVIEW_ONLY" in r.stdout
+    assert "LIVE_INVOICE_ALLOWED=false" in r.stdout
+    assert "REFUND_OR_REMEDY_AUTHORIZED=false" in r.stdout
+    assert "PAYMENT_PROOF_CREATED=false" in r.stdout
+    assert "REVENUE_CREATED=false" in r.stdout
 
 
 def test_dry_run_with_test_key_reports_test_mode() -> None:
@@ -86,11 +89,12 @@ def test_dry_run_with_live_key_reports_rejected_live_mode() -> None:
     )
     assert r.returncode == 0
     # In dry-run, the script reports the mode without contacting Moyasar
-    assert "MODE=rejected_live" in r.stdout
+    assert "MODE=blocked_live" in r.stdout
+    assert "LIVE_INVOICE_ALLOWED=false" in r.stdout
 
 
-def test_dry_run_with_live_key_and_allow_live_reports_live_mode() -> None:
-    """Even with --allow-live, dry-run does NOT actually charge."""
+def test_dry_run_with_live_key_and_allow_live_remains_blocked() -> None:
+    """The compatibility flag cannot manufacture payment execution authority."""
     r = _run(
         "--email", "test@example.sa",
         "--amount-sar", "499",
@@ -100,8 +104,10 @@ def test_dry_run_with_live_key_and_allow_live_reports_live_mode() -> None:
         env_extra={"MOYASAR_SECRET_KEY": "sk_" + "live_" + "TEST-FIXTURE_never-real"},
     )
     assert r.returncode == 0
-    assert "MODE=live" in r.stdout
-    # Sanity: dry-run still doesn't actually charge
+    assert "MODE=blocked_live" in r.stdout
+    assert "LIVE_INVOICE_ALLOWED=false" in r.stdout
+    assert "PAYMENT_PROOF_CREATED=false" in r.stdout
+    assert "REVENUE_CREATED=false" in r.stdout
     assert "DRY_RUN=true" in r.stdout
 
 

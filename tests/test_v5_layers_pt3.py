@@ -344,19 +344,23 @@ async def test_redact_endpoint():
 
 
 @pytest.mark.asyncio
-async def test_finance_pricing_endpoint():
+async def test_legacy_finance_pricing_endpoint_is_quarantined():
     from api.main import app
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        r = await client.get("/api/v1/finance/pricing")
-    assert r.status_code == 200
-    payload = r.json()
-    assert payload["count"] == 5
+        retired = await client.get("/api/v1/finance/pricing")
+        safe = await client.get("/api/v1/business/pricing")
+    assert retired.status_code == 404
+    assert safe.status_code == 200
+    payload = safe.json()
+    assert payload["public_fixed_price"] is False
+    assert payload["live_charge_allowed"] is False
+    assert payload["price_authority"] == "customer_specific_quote_after_qualified_discovery"
 
 
 @pytest.mark.asyncio
-async def test_finance_invoice_draft_rejects_retired_fixed_price_tier():
+async def test_legacy_finance_invoice_draft_is_quarantined_for_retired_tier():
     from api.main import app
 
     transport = ASGITransport(app=app)
@@ -370,11 +374,11 @@ async def test_finance_invoice_draft_rejects_retired_fixed_price_tier():
             },
         )
     assert r.status_code == 404
-    assert "growth_starter_pilot" in r.json()["detail"]
+    assert r.json()["detail"] == "Not Found"
 
 
 @pytest.mark.asyncio
-async def test_finance_invoice_draft_400_on_free_tier():
+async def test_legacy_finance_invoice_draft_is_quarantined_for_free_tier():
     from api.main import app
 
     transport = ASGITransport(app=app)
@@ -383,7 +387,8 @@ async def test_finance_invoice_draft_400_on_free_tier():
             "/api/v1/finance/invoice/draft",
             json={"tier_id": "diagnostic", "customer_email": "x@y.sa"},
         )
-    assert r.status_code == 400
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Not Found"
 
 
 @pytest.mark.asyncio

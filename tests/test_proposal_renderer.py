@@ -59,6 +59,7 @@ def test_proposal_endpoint_returns_bilingual_markdown():
             "sector": "b2b_services",
             "city": "Riyadh",
             "engagement_id": "eng_001",
+            "discovery_ref": "discovery_001",
             "quote_id": "quote_after_discovery_001",
             "price_sar": 1234,
         },
@@ -80,6 +81,9 @@ def test_proposal_endpoint_rejects_mismatched_handle():
             "sector": "b2b_services",
             "city": "Riyadh",
             "engagement_id": "eng_002",
+            "discovery_ref": "discovery_002",
+            "quote_id": "quote_after_discovery_002",
+            "price_sar": 1234,
         },
     )
     assert resp.status_code == 400
@@ -92,9 +96,12 @@ def test_proposal_endpoint_requires_documented_quote():
             "customer_name": "Alwaha Consulting",
             "customer_handle": "alwaha",
             "engagement_id": "eng_003",
+            "discovery_ref": "discovery_003",
+            "price_sar": 1234,
         },
     )
-    assert resp.status_code == 409
+    assert resp.status_code == 422
+    assert any(item.get("loc", [])[-1:] == ["quote_id"] for item in resp.json()["detail"])
 
 
 def test_qualify_endpoint_rejects_cold_whatsapp():
