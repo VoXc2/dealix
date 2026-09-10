@@ -81,3 +81,27 @@ def test_real_interaction_can_prepare_draft_but_not_send(tmp_path) -> None:
     assert len(queue) == 1
     assert queue[0]["status"] == "pending_action_bound_approval"
     assert "no_auto_send" in queue[0]["risk_flags"]
+
+
+def test_executive_focus_is_state_driven_not_retired_ticket_authority(tmp_path) -> None:
+    text = RUNNER.read_text(encoding="utf-8")
+    for retired in ("#1494", "#1476", "#1121"):
+        assert retired not in text
+    for required in (
+        "Production Trust: current exact-head acceptance + current-main Web/API release parity.",
+        "Revenue/Customer: real interaction -> qualified problem -> Diagnostic -> customer-specific quote -> verified payment.",
+        "Company/Scale: Deep-WIP <= 3",
+        "Delivery/Proof: predefine acceptance and a customer-validated Proof Pack for paid work.",
+        "Learning: convert root causes into bounded regression and evidence rules.",
+    ):
+        assert required in text
+
+    module = load_runner()
+    module.OUT_ROOT = tmp_path
+    (tmp_path / "daily").mkdir(parents=True, exist_ok=True)
+    report = module.write_daily_report([], [], [], [])
+    rendered = report.read_text(encoding="utf-8")
+    assert "SAFE_INTERNAL_AUTONOMY" in rendered
+    assert "Production Trust: current exact-head acceptance" in rendered
+    for retired in ("#1494", "#1476", "#1121"):
+        assert retired not in rendered
