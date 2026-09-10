@@ -33,7 +33,7 @@ BAD_UI_PREDEPLOY_SNIPPETS = (
 
 
 def _has_canonical_predeploy(text: str) -> bool:
-    return CANONICAL_PREDEPLOY_MARKER in text and "railway_predeploy" in text
+    return CANONICAL_PREDEPLOY in text
 
 
 def check_repo_railway_config() -> dict[str, Any]:
@@ -180,10 +180,8 @@ def parse_railway_ui_predeploy_drift(predeploy: str) -> str | None:
                 "(أو اتركه فارغاً ليأخذ railway.toml). "
                 "للترحيل التلقائي: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1"
             )
-    if "railway_predeploy" in lower and "/app/scripts" not in lower:
-        return f"استخدم مسار الحاوية: {CANONICAL_PREDEPLOY}"
     if "railway_predeploy" in lower:
-        return None
+        return f"Pre-deploy must invoke Bash exactly: {CANONICAL_PREDEPLOY}"
     return f"Pre-deploy يجب أن يطابق railway.toml: {CANONICAL_PREDEPLOY}"
 
 

@@ -13,6 +13,8 @@ from dealix.commercial_ops.railway_production import (
     parse_railway_ui_restart_retries_drift,
 )
 
+from dealix.commercial_ops.railway_production import _has_canonical_predeploy
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -82,3 +84,18 @@ def test_verify_cli_ui_drift_cannot_report_false_pass() -> None:
     assert proc.returncode == 0, proc.stderr
     assert "FOUNDER_ACTION (restart)" in proc.stdout
     assert "RAILWAY_PRODUCTION_CONFIG_VERDICT=WARN" in proc.stdout
+
+
+def test_predeploy_predicate_requires_canonical_bash() -> None:
+    assert _has_canonical_predeploy("bash /app/scripts/railway_predeploy.sh")
+    assert not _has_canonical_predeploy("sh /app/scripts/railway_predeploy.sh")
+
+
+def test_ui_predeploy_legacy_sh_is_drift() -> None:
+    hint = parse_railway_ui_predeploy_drift("sh /app/scripts/railway_predeploy.sh")
+    assert hint is not None
+    assert "bash /app/scripts/railway_predeploy.sh" in hint
+
+
+def test_ui_predeploy_canonical_bash_has_no_drift() -> None:
+    assert parse_railway_ui_predeploy_drift("bash /app/scripts/railway_predeploy.sh") is None
