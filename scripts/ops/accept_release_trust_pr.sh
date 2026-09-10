@@ -33,6 +33,7 @@ PYTEST_ENV=(
 log() { printf '[release-trust] %s\n' "$*"; }
 fail_env() { printf 'BLOCKED_ENVIRONMENT=%s\n' "$1" >&2; exit 3; }
 run_gate() { bash "$GATE" "$@"; }
+run_pytest_gate() { ( umask 027; run_gate "$@" ); }
 
 START_HEAD="$(git rev-parse HEAD)"
 START_BRANCH="$(git branch --show-current || true)"
@@ -172,7 +173,7 @@ TARGET_TESTS=(
   tests/test_vps_automation_runtime.py
   tests/test_verify_catalog.py
 )
-run_gate TARGETED_PYTHON "${PYTEST_ENV[@]}" "$PY" -m pytest -q "${TARGET_TESTS[@]}"
+run_pytest_gate TARGETED_PYTHON "${PYTEST_ENV[@]}" "$PY" -m pytest -q "${TARGET_TESTS[@]}"
 
 # Deterministic source-of-truth projections/verifiers. These are intentionally
 # direct gates as well as pytest coverage so stale generated artifacts cannot be
@@ -210,7 +211,7 @@ else
 fi
 
 if [[ "$FULL_PYTEST" == "1" ]]; then
-  run_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q
+  run_pytest_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q
 else
   printf 'PYTHON_FULL=SKIPPED_BY_MODE set_DEALIX_ACCEPT_FULL_PYTEST=1_for_full_suite\n'
 fi
