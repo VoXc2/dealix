@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "effective_date": "2026-09-10",
+  "effective_date": "2026-09-11",
   "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
   "prompt_ref": "prompts/company/DEALIX_OMEGA_FOUNDER_COMMAND_ROOM_MASTER_PROMPT.md",
   "runtime_prompt_path": "/opt/dealix/control/autonomous-company/prompts/DEALIX_OMEGA_FOUNDER_COMMAND_ROOM_MASTER_PROMPT.md",
@@ -9,6 +9,12 @@
   "prompt_sha_env": "DEALIX_COMPANY_MASTER_PROMPT_SHA256",
   "hash_algorithm": "sha256",
   "mode": "AGENT_FIRST_FOUNDER_EXCEPTION_ONLY",
+  "meta_control_ref": "config/company/dealix_meta_operating_system_v2.json",
+  "meta_control_verifier_ref": "scripts/commercial/verify_dealix_meta_operating_system_v2.py",
+  "meta_control_runtime_ref": "scripts/commercial/run_dealix_meta_control_v2.py",
+  "meta_control_precedence": "OVERRIDES_CONFLICTING_LOWER_LEVEL_OPERATING_LOGIC",
+  "meta_control_env": "DEALIX_META_CONTROL_PATH",
+  "meta_control_sha_env": "DEALIX_META_CONTROL_SHA256",
   "permanent_agents": [
     "dealix-pm",
     "dealix-sales",
