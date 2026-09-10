@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.distribution_os import (
     catalog,
@@ -85,13 +85,22 @@ class GenerateProofPackBody(BaseModel):
 
 
 class PaymentHandoffBody(BaseModel):
+    """Public/internal API input for a payment handoff request.
+
+    Approval truth is intentionally NOT an input. An API caller may describe a
+    quote-bound handoff, but cannot manufacture governance authority by posting
+    ``founder_approved=true`` (or any other approval flag). Approval mutation is
+    a separate trusted control-plane concern.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
     proposal_id: str = Field(..., min_length=1)
     customer_id: str = ""
     product_id: str = Field(..., min_length=1)
     discovery_ref: str = Field(..., min_length=1)
     quote_id: str = Field(..., min_length=1)
     amount_sar: float = Field(..., gt=0)
-    approvals: dict[str, bool] = Field(default_factory=dict)
     notes: str = ""
 
 
@@ -237,7 +246,6 @@ async def prepare_payment_handoff(body: PaymentHandoffBody) -> dict[str, Any]:
             discovery_ref=body.discovery_ref,
             quote_id=body.quote_id,
             amount_sar=body.amount_sar,
-            approvals=body.approvals,
             notes=body.notes,
         )
     except ValueError as e:
