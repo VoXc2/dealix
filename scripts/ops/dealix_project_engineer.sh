@@ -129,7 +129,8 @@ priority_score() {
 }
 
 review_pr() {
-  local pr="$1" packet="${RUN_DIR}/PR_${pr}_MERGE_PACKET.md"
+  local pr="$1"
+  local packet="${RUN_DIR}/PR_${pr}_MERGE_PACKET.md"
   local meta checks threads failing pending check_count recommendation reason title head mergeable draft changed additions deletions base
   local triage executed_failed prestep_failed triage_unknown behind
   meta="$(pr_json "$pr")" || { log "PR #$pr unavailable"; return 1; }
