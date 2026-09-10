@@ -12,6 +12,8 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_ex
 
 from core.llm.base import LLMClient, LLMResponse, Message
 
+LOCAL_OLLAMA_TIMEOUT_SECONDS = 180
+
 
 def _is_local_ollama_base_url(base_url: str) -> bool:
     """Return True only for the loopback Ollama OpenAI-compatible endpoint."""
@@ -49,7 +51,21 @@ class OpenAICompatClient(LLMClient):
         base_url: str = "https://api.openai.com/v1",
         timeout: int = 60,
     ) -> None:
-        super().__init__(api_key=api_key, model=model, base_url=base_url, timeout=timeout)
+        # CPU-only loopback inference can legitimately exceed the remote-API
+        # default while still being healthy. Keep the larger budget scoped only
+        # to the exact local Ollama endpoints and only when the caller left the
+        # generic 60-second default unchanged. Explicit caller timeouts win.
+        effective_timeout = (
+            LOCAL_OLLAMA_TIMEOUT_SECONDS
+            if timeout == 60 and _is_local_ollama_base_url(base_url)
+            else timeout
+        )
+        super().__init__(
+            api_key=api_key,
+            model=model,
+            base_url=base_url,
+            timeout=effective_timeout,
+        )
 
     @retry(
         stop=stop_after_attempt(3),
