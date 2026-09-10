@@ -55,22 +55,50 @@ cd "$ROOT"
 
 "$PY" -m py_compile \
   scripts/commercial/verify_dealix_operating_constitution.py \
+  scripts/commercial/verify_dealix_arm_registry.py \
   scripts/ops/dealix_north_star_status.py
 
 "$PY" scripts/commercial/verify_dealix_operating_constitution.py
+"$PY" scripts/commercial/verify_dealix_arm_registry.py
 "$PY" scripts/ops/dealix_north_star_status.py
-"$PY" -m pytest -q tests/test_dealix_operating_constitution.py
+"$PY" -m pytest -q \
+  tests/test_dealix_operating_constitution.py \
+  tests/test_dealix_arm_registry.py
 
 # The compatibility entrypoint must delegate to exactly one canonical runner
-# and must enforce constitution verification before delegation.
+# and must enforce both constitution and arm-registry verification before delegation.
 "$PY" - <<'PY'
 from pathlib import Path
 root = Path.cwd()
 text = (root / "scripts/commercial/run_company_os_daily.py").read_text(encoding="utf-8")
-assert "verify_dealix_operating_constitution.py" in text
-assert "run_self_operating_company_os.py" in text
-assert "BLOCKED_CONSTITUTION_INVALID" in text
-assert "DELEGATED_TO_CANONICAL_COMPANY_OS" in text
+for needle in (
+    "verify_dealix_operating_constitution.py",
+    "verify_dealix_arm_registry.py",
+    "run_self_operating_company_os.py",
+    "BLOCKED_CONSTITUTION_INVALID",
+    "BLOCKED_ARM_REGISTRY_INVALID",
+    "DELEGATED_TO_CANONICAL_COMPANY_OS",
+):
+    assert needle in text
+
+constitution = (root / "config/company/dealix_operating_constitution.json").read_text(encoding="utf-8")
+registry = (root / "config/company/dealix_arm_registry.json").read_text(encoding="utf-8")
+for needle in (
+    '"constitution_version": "2.0-fast-compression"',
+    '"compress_time": true',
+    '"compress_truth": false',
+    '"deep_wip_max": 3',
+    '"path": "config/company/dealix_arm_registry.json"',
+):
+    assert needle in constitution
+for needle in (
+    '"id": "ARM-001"',
+    '"id": "ARM-044"',
+    '"state": "ACTIVE_DEEP"',
+    '"engine": "VENTURE_AND_ASSET_ENGINE"',
+):
+    assert needle in registry
+
 scorecard = root / "docs/ops/DEALIX_PERMANENT_NORTH_STAR_SCORECARD.md"
 assert scorecard.is_file()
 score_text = scorecard.read_text(encoding="utf-8")
@@ -82,6 +110,7 @@ for needle in (
 ):
     assert needle in score_text
 print("COMPANY_OS_CONSTITUTION_PREFLIGHT=PASS")
+print("ARM_REGISTRY_PREFLIGHT=PASS")
 print("NORTH_STAR_SCORECARD_CONTRACT=PASS")
 PY
 
@@ -99,14 +128,19 @@ fi
 
 cat <<EOF
 EXACT_SHA=$EXPECTED
+CONSTITUTION_VERSION=2.0-fast-compression
 CONSTITUTION_VERIFIER=PASS
+ARM_REGISTRY_VERIFIER=PASS
 NORTH_STAR_STATUS=PASS
 NORTH_STAR_SCORECARD_CONTRACT=PASS
 FOCUSED_TESTS=PASS
 COMPANY_OS_CONSTITUTION_PREFLIGHT=PASS
+ARM_REGISTRY_PREFLIGHT=PASS
 PERMANENT_AGENTS=5
 PORTFOLIOS=TRUST,MONEY_NOW,COMPOUNDING
+STRATEGIC_ENGINES=9
 ACTIVE_GTM_WEDGE_LIMIT=3
+DEEP_WIP_MAX=3
 MATERIAL_AUTHORITY=FAIL_CLOSED
 MERGE=false
 DEPLOY=false

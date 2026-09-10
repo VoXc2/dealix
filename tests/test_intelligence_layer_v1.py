@@ -44,6 +44,7 @@ from auto_client_acquisition.intelligence.local_model_client import (
     _detect_provider,
     is_local_configured,
     ping_local,
+    generate,
 )
 from auto_client_acquisition.llm_gateway_v10.schemas import ModelTier
 
@@ -262,3 +263,12 @@ def test_router_status_summary_returns_dict_with_hard_gates() -> None:
 # ─────────────────────────────────────────────────────────────────────
 # Total: 20 tests
 # ─────────────────────────────────────────────────────────────────────
+
+
+def test_vllm_model_alias_can_force_canonical_local_router() -> None:
+    target = "auto_client_acquisition.intelligence.local_model_client._generate_vllm"
+    unavailable = LocalModelUnavailable(reason="test", backend_attempted="vllm", base_url="http://127.0.0.1:11999/v1")
+    with mock.patch.dict(os.environ, {"LOCAL_LLM_PROVIDER": "vllm", "VLLM_BASE_URL": "http://127.0.0.1:11999/v1", "VLLM_MODEL": "dealix-local"}, clear=True):
+        with mock.patch(target, return_value=unavailable) as mocked:
+            generate(prompt="test")
+    assert mocked.call_args.kwargs["model"] == "dealix-local"

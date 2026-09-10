@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-09-10",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "prompt_ref": "prompts/company/DEALIX_OMEGA_FOUNDER_COMMAND_ROOM_MASTER_PROMPT.md",
+  "runtime_prompt_path": "/opt/dealix/control/autonomous-company/prompts/DEALIX_OMEGA_FOUNDER_COMMAND_ROOM_MASTER_PROMPT.md",
+  "runtime_launcher_path": "/opt/dealix/control/autonomous-company/bin/dealix-master-company-cycle",
+  "prompt_env": "DEALIX_COMPANY_MASTER_PROMPT",
+  "prompt_sha_env": "DEALIX_COMPANY_MASTER_PROMPT_SHA256",
+  "hash_algorithm": "sha256",
+  "mode": "AGENT_FIRST_FOUNDER_EXCEPTION_ONLY",
+  "permanent_agents": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content"
+  ],
+  "deep_wip_max": 3,
+  "l0_l4_autonomous": true,
+  "l5_exact_action_bound": true,
+  "external_send_default": false,
+  "public_publish_default": false,
+  "payment_execution_default": false,
+  "production_mutation_default": false,
+  "scheduler_created": false,
+  "canonical_scheduler_reused": true,
+  "required_prompt_markers": [
+    "COMPRESS_TIME_NOT_TRUTH",
+    "ONE-COMPANY LAW",
+    "PERMANENT AGENT ROSTER — EXACTLY FIVE",
+    "FOUNDER DELEGATION SESSIONS",
+    "OMNICHANNEL OPERATING MODEL",
+    "PRODUCTION TRUST LAW",
+    "CONTINUOUS COMPANY LOOP",
+    "The server agents do the company work. The founder governs the exceptions."
+  ]
+}

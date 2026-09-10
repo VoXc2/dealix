@@ -2,11 +2,12 @@
 """Compatibility entrypoint for the canonical Dealix Company OS cycle.
 
 This file exists because older VPS orchestration calls this path. It verifies
-company law, materializes the real website-diagnostic intake bridge from the
-existing Revenue Ops store, delegates one-for-one to
-``run_self_operating_company_os.py``, then runs the bounded Strategy Execution
+company law, the governed business-arm registry, and the arm execution
+playbooks; materializes the real website-diagnostic intake bridge from the
+existing Revenue Ops store; delegates one-for-one to
+``run_self_operating_company_os.py``; then runs the bounded Strategy Execution
 Orchestrator. No layer owns a parallel state store, authority model, target
-source, scheduler, CRM, approval system, or proof ledger.
+source, scheduler, CRM, approval system, proof ledger, or permanent agent fleet.
 """
 from __future__ import annotations
 
@@ -18,6 +19,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CANONICAL = ROOT / "scripts" / "commercial" / "run_self_operating_company_os.py"
 CONSTITUTION_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_operating_constitution.py"
+ARM_REGISTRY_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_arm_registry.py"
+ARM_EXECUTION_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_arm_execution_playbooks.py"
 INBOUND_DIAGNOSTIC_BRIDGE = ROOT / "scripts" / "commercial" / "run_inbound_execution_diagnostic_bridge_v1.py"
 ORCHESTRATOR = ROOT / "scripts" / "commercial" / "run_strategy_execution_orchestrator_v1.py"
 VERIFIER = ROOT / "scripts" / "commercial" / "verify_strategy_execution_orchestrator_v1.py"
@@ -41,6 +44,22 @@ def main() -> int:
     if constitution_rc != 0:
         print("COMPANY_OS_DAILY=BLOCKED_CONSTITUTION_INVALID")
         return constitution_rc
+
+    if not ARM_REGISTRY_VERIFY.is_file():
+        print("COMPANY_OS_DAILY=BLOCKED_ARM_REGISTRY_VERIFIER_MISSING")
+        return 2
+    arm_registry_rc = run([sys.executable, str(ARM_REGISTRY_VERIFY)])
+    if arm_registry_rc != 0:
+        print("COMPANY_OS_DAILY=BLOCKED_ARM_REGISTRY_INVALID")
+        return arm_registry_rc
+
+    if not ARM_EXECUTION_VERIFY.is_file():
+        print("COMPANY_OS_DAILY=BLOCKED_ARM_EXECUTION_VERIFIER_MISSING")
+        return 2
+    arm_execution_rc = run([sys.executable, str(ARM_EXECUTION_VERIFY)])
+    if arm_execution_rc != 0:
+        print("COMPANY_OS_DAILY=BLOCKED_ARM_EXECUTION_INVALID")
+        return arm_execution_rc
 
     if not INBOUND_DIAGNOSTIC_BRIDGE.is_file():
         print("COMPANY_OS_DAILY=BLOCKED_INBOUND_DIAGNOSTIC_BRIDGE_MISSING")
@@ -79,6 +98,9 @@ def main() -> int:
         print(f"COMPANY_OS_DAILY=BLOCKED_STRATEGY_ORCHESTRATOR_RC_{orchestrator_rc}")
         return orchestrator_rc
 
+    print("OPERATING_CONSTITUTION=PASS")
+    print("ARM_REGISTRY=PASS")
+    print("ARM_EXECUTION_PLAYBOOKS=PASS")
     print("INBOUND_EXECUTION_DIAGNOSTIC_BRIDGE=PASS")
     print("COMPANY_OS_DAILY=DELEGATED_TO_CANONICAL_COMPANY_OS")
     print("STRATEGY_EXECUTION_ORCHESTRATOR=PASS")

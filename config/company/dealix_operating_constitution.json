@@ -1,19 +1,28 @@
 {
   "status": "CANONICAL_PERMANENT_OPERATING_CONSTITUTION",
-  "effective_date": "2026-09-08",
+  "constitution_version": "2.0-fast-compression",
+  "effective_date": "2026-09-10",
+  "annual_horizon": "2026-09-10_to_2027-09-10",
   "supremacy": [
     "LIVE_VERIFIED_STATE",
     "CURRENT_PROVIDER_STATE",
     "CURRENT_EXACT_HEAD_RECEIPTS",
     "OPERATING_CONSTITUTION",
+    "CURRENT_STRATEGY_AND_ARM_REGISTRY",
     "HISTORICAL_RECEIPTS",
     "MEMORY"
+  ],
+  "constitutional_documents": [
+    "docs/company/DEALIX_PERMANENT_OPERATING_CONSTITUTION.md",
+    "docs/strategy/DEALIX_ONE_YEAR_AUTONOMOUS_COMPANY_MASTER_2026_2027.md",
+    "docs/strategy/DEALIX_FAST_COMPRESSION_REVENUE_ARMS_2026-09-10.md",
+    "docs/strategy/DEALIX_SAUDI_MARKET_EVIDENCE_LEDGER_2026-09-10.md"
   ],
   "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
   "optimize_for": "Verified Economic Movement / Founder Minutes / Cost / Risk",
   "identity": {
     "company": "Dealix",
-    "category": "Saudi B2B technology execution company + governed AI operating layer",
+    "category": "Saudi B2B AI Business Operating System and governed technology execution company",
     "public_wedge": "Revenue + Proof + Command",
     "public_mechanism": "Signal -> Decision -> Action -> Proof",
     "market_promise": "Turn fragmented business signals into governed execution, measurable economic movement and proof",
@@ -22,21 +31,27 @@
       "CRM clone",
       "lead scraper",
       "content farm",
-      "feature factory"
+      "feature factory",
+      "unbounded consulting conglomerate"
     ]
   },
   "one_company_law": [
     "ONE_COMPANY_MACHINE",
     "ONE_COMPANY_BRAIN",
+    "ONE_PORTFOLIO",
     "ONE_OPPORTUNITY_GRAPH",
+    "ONE_PROCESS_GRAPH",
     "ONE_APPROVAL_AUTHORITY",
     "ONE_CONSENT_AUTHORITY",
+    "ONE_POLICY_MODEL",
     "ONE_PROOF_LEDGER",
     "ONE_ECONOMIC_MODEL",
     "ONE_CANONICAL_SCHEDULER",
     "ONE_MODEL_ROUTER",
     "ONE_DEV_FACTORY",
-    "ONE_LEARNING_FACTORY"
+    "ONE_LEARNING_FACTORY",
+    "ONE_OBSERVABILITY_MODEL",
+    "ONE_AGENT_IDENTITY_MODEL"
   ],
   "permanent_agents": [
     "dealix-pm",
@@ -50,6 +65,67 @@
     "MONEY_NOW",
     "COMPOUNDING"
   ],
+  "compression_law": {
+    "compress_time": true,
+    "compress_truth": false,
+    "principle": "Explore broadly; validate cheaply; sell before build; deliver governed; prove; productize; scale",
+    "parallel_lanes_allowed": true,
+    "prerequisite_gates_may_not_be_bypassed": true,
+    "deep_wip_max": 3,
+    "deep_wip_slots": [
+      "PRODUCTION_OR_PRODUCT",
+      "REVENUE_OR_CUSTOMER",
+      "SCALE_OR_STRATEGIC"
+    ],
+    "blocked_lane_does_not_freeze_independent_safe_lanes": true
+  },
+  "strategic_engines": [
+    "CORE_CASH_ENGINE",
+    "RECURRING_REVENUE_ENGINE",
+    "PRODUCTIZED_SERVICE_ENGINE",
+    "DATA_AND_INTELLIGENCE_ENGINE",
+    "SOFTWARE_AND_API_ENGINE",
+    "PARTNER_AND_CHANNEL_ENGINE",
+    "EDUCATION_MEDIA_AND_IP_ENGINE",
+    "B2G_AND_REGULATED_ENTERPRISE_ENGINE",
+    "VENTURE_AND_ASSET_ENGINE"
+  ],
+  "arm_registry": {
+    "path": "config/company/dealix_arm_registry.json",
+    "research_breadth": "unbounded by count but bounded by cost, provenance and lawful access",
+    "deep_wip_max": 3,
+    "lifecycle": [
+      "IDEA",
+      "RESEARCHED",
+      "SIGNAL_FOUND",
+      "VALIDATED_PROBLEM",
+      "BUYER_ACCESS",
+      "DISCOVERY",
+      "COMMERCIAL_TEST",
+      "PAID",
+      "DELIVERED",
+      "PROOF",
+      "REPEATABLE",
+      "PRODUCTIZED",
+      "SCALE"
+    ],
+    "terminal_states": [
+      "NO_SIGNAL",
+      "NO_BUYER",
+      "BAD_ECONOMICS",
+      "DELIVERY_RISK",
+      "COMPLIANCE_BLOCK",
+      "DUPLICATE",
+      "STRATEGIC_MISMATCH",
+      "STOPPED"
+    ],
+    "promotion_law": "Signal -> Evidence -> Buyer/Problem -> Commercial Test -> Verified Payment -> Governed Delivery -> Customer Proof -> Repeatability -> Productization",
+    "sell_before_build": true,
+    "customer_pull_before_saas": true,
+    "kill_weak_arms_quickly": true,
+    "no_new_permanent_agent_per_arm": true,
+    "no_duplicate_company_system_per_arm": true
+  },
   "truth_firewall": [
     "Research != Relationship",
     "Public Contact != Consent",
@@ -58,10 +134,15 @@
     "Draft != Sent",
     "Quote != Invoice",
     "Invoice != Payment",
+    "Payment Request != Verified Cash",
+    "Meeting Booked != Meeting Held",
     "HTTP 200 != Correct Release",
     "PR Merge != Production Green",
     "Internal Proof != Customer-Validated Proof",
     "Synthetic Proof != Customer-Validated Proof",
+    "Customer Outcome != Public Case-Study Permission",
+    "Partnership Discussion != Partnership",
+    "Supplier Registration != Tender Invitation",
     "Historical PASS != Current Exact-Head PASS",
     "Model Output != Authority",
     "Unknown = UNKNOWN_NOT_EVIDENCE_BACKED"
@@ -105,18 +186,25 @@
     "DECLINE_OR_DEFER"
   ],
   "active_gtm_wedges": [
-    "SI_MSP_ERP_CRM_AI_IMPLEMENTERS",
-    "FATOORA_INTEGRATION_OPERATIONS",
-    "CONSTRUCTION_FM_COMMERCIAL_EXECUTION"
+    "REVENUE_COMMAND_AND_AI_COMPANY_OS",
+    "GOVERNED_AI_EXECUTION",
+    "SAUDI_MARKET_ACCESS_PARTNER_AND_B2G_INTELLIGENCE"
   ],
   "active_gtm_wedge_limit": 3,
   "market_radar_sources": [
     "Etimad",
     "Muqawil",
-    "PIF Musahama",
+    "PIF Musahama and Private Sector Hub",
     "Invest Saudi Matchmaking",
     "SIDF / Tanafusiya / Future Factories",
     "ZATCA Fatoora",
+    "SAMA Open Banking",
+    "SDAIA National Data Governance Platform and AI Service Provider Accreditation",
+    "NCA AI Cybersecurity and cybersecurity controls",
+    "CST Cloud Computing Market Maturity Index",
+    "Ministry of Commerce Business Sector Bulletins",
+    "Monsha'at SME and Franchise signals",
+    "SVC private capital reports",
     "project awards",
     "facility openings and expansions",
     "hiring and ERP/CRM migration signals",
@@ -133,7 +221,22 @@
     "diagnostic_wip_limit": 3,
     "live_project_cell_limit": 2,
     "venture_experiment_limit": 2,
-    "capability_benchmark_limit": 1
+    "capability_benchmark_limit": 1,
+    "arm_scoring_dimensions": [
+      "PROXIMITY_TO_CASH",
+      "PROBLEM_URGENCY",
+      "BUYER_BUDGET",
+      "DEALIX_UNFAIR_ADVANTAGE",
+      "REPEATABILITY",
+      "SOFTWARE_LEVERAGE",
+      "DATA_MOAT",
+      "PARTNER_LEVERAGE",
+      "SAUDI_FIT",
+      "GROSS_MARGIN_POTENTIAL",
+      "FOUNDER_MINUTES_EFFICIENCY",
+      "COMPLIANCE_COMPLEXITY",
+      "DELIVERY_RISK"
+    ]
   },
   "diagnostic_first_gtm": {
     "cta": "Give Dealix one broken workflow",
@@ -171,8 +274,60 @@
     "Delivery and Proof Plan",
     "Weekly Proof Pack",
     "Final Outcome Review",
-    "Partner Capability Pack"
+    "Partner Capability Pack",
+    "Saudi Market Intelligence Brief",
+    "Bid/No-Bid Decision Pack",
+    "Agent Governance and Control Pack"
   ],
+  "low_touch_recurring_law": {
+    "target": "Low-touch recurring revenue, not zero-work passive-income claims",
+    "progression": "Service Cash -> Productized Service -> Managed Retainer -> Intelligence Subscription -> Benchmark/Data Product -> SaaS/API -> Licensing/White Label -> Academy/IP -> Partner Revenue -> Acquisitions when cash and integration capability are proven",
+    "permission_safe_data_only": true,
+    "no_customer_data_reuse_without_authority": true
+  },
+  "data_moat": {
+    "principle": "The moat is governed proprietary operating knowledge with provenance, not an LLM model name",
+    "graphs": [
+      "COMPANY_GRAPH",
+      "OPPORTUNITY_GRAPH",
+      "PROCESS_GRAPH",
+      "PROOF_GRAPH",
+      "POLICY_GRAPH",
+      "ECONOMIC_GRAPH",
+      "LEARNING_GRAPH"
+    ],
+    "required_provenance": [
+      "source",
+      "source_type",
+      "date",
+      "owner",
+      "confidence",
+      "evidence_class",
+      "scope",
+      "review_date",
+      "customer_permission_if_relevant"
+    ]
+  },
+  "regulated_and_partner_first_law": {
+    "principle": "Expand economic surface through qualified partners where Dealix lacks regulated, licensed, safety-critical or specialist authority",
+    "partner_first_domains": [
+      "regulated_financial_services",
+      "clinical_decisioning",
+      "safety_critical_industrial_OT",
+      "formal_cybersecurity_certification_or_audit",
+      "legal_or_tax_opinion",
+      "government_prime_contracting_when_eligibility_is_unproven"
+    ],
+    "no_certification_claim_without_evidence": true,
+    "no_government_access_claim_without_evidence": true
+  },
+  "interoperability_and_agent_control": {
+    "mcp": "Selective interoperability interface only; target a currently supported specification after live verification; never expose all tools or bypass authority",
+    "a2a": "Use only for real cross-boundary agent interoperability, not ordinary internal function calls",
+    "agent_control": "Agent identity, owner, tenant, tool/data scope, authority, risk, model, budget, expiry, runtime policy hooks, traces, evals and kill switches are first-class",
+    "external_tool_default": "DENY_OR_REQUIRE_APPROVAL_UNLESS_ALLOWLISTED",
+    "no_unbounded_shell_or_prod_admin": true
+  },
   "channel_policy": {
     "email": {
       "personal_founder_email": "warm/inbound/high-value one-to-one only",
@@ -241,7 +396,7 @@
     "service_first": true,
     "build_requires_paid_pain_or_evidence": true,
     "repeatability_precedes_saas": true,
-    "progression": "Service -> Managed Service -> Repeatable Delivery -> Reusable Module -> Productized System -> SaaS where justified"
+    "progression": "Service -> Managed Service -> Repeatable Delivery -> Reusable Module -> Productized System -> SaaS/API where justified"
   },
   "engineering_allocation_after_trust": [
     "customer blocker",
@@ -253,6 +408,14 @@
     "material cost reduction"
   ],
   "oss_admission_law": "Measured Gap -> Canonical Owner -> Duplication Check -> License/Security/Data Boundary -> Isolated Pilot -> Benchmark -> Receipt -> Admit/Reject",
+  "tool_admission_states": [
+    "ADOPT",
+    "INTEGRATE",
+    "HARVEST",
+    "WATCH",
+    "REJECT_DUPLICATE",
+    "BLOCKED"
+  ],
   "founder_role": {
     "owns": [
       "identity and legal/account setup",
@@ -286,7 +449,10 @@
     "government endorsement/access claims without evidence",
     "secret printing",
     "parallel Company OS / Brain / CRM / scheduler / permanent agent fleet",
+    "one permanent agent per business arm",
     "bulk OSS installation without measured gap",
-    "fixed public pricing as universal authority without current policy evidence"
+    "fixed public pricing as universal authority without current policy evidence",
+    "deep-build every researched arm before buyer evidence",
+    "regulated or certification claims without qualified authority"
   ]
 }

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import copy
 import importlib.util
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 VERIFY_PATH = ROOT / "scripts" / "commercial" / "verify_dealix_operating_constitution.py"
+CANONICAL_PATH = ROOT / "config" / "company" / "dealix_operating_constitution.json"
 SPEC = importlib.util.spec_from_file_location("constitution_verify", VERIFY_PATH)
 assert SPEC and SPEC.loader
 MOD = importlib.util.module_from_spec(SPEC)
@@ -12,54 +15,20 @@ SPEC.loader.exec_module(MOD)
 
 
 def valid_payload() -> dict:
-    return {
-        "status": "CANONICAL_PERMANENT_OPERATING_CONSTITUTION",
-        "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
-        "optimize_for": "Verified Economic Movement / Founder Minutes / Cost / Risk",
-        "permanent_agents": MOD.EXPECTED_AGENTS,
-        "portfolios": MOD.EXPECTED_PORTFOLIOS,
-        "one_company_law": sorted(MOD.REQUIRED_ONE_COMPANY),
-        "truth_firewall": sorted(MOD.REQUIRED_TRUTH),
-        "canonical_commercial_loop": sorted(MOD.REQUIRED_COMMERCIAL_STAGES),
-        "active_gtm_wedges": MOD.CURRENT_SEED_WEDGES,
-        "active_gtm_wedge_limit": 3,
-        "opportunity_allocation": {
-            "top_active_actions_per_cycle": 3,
-            "capability_benchmark_limit": 1,
-            "live_project_cell_limit": 2,
-        },
-        "channel_policy": {
-            "email": {"bulk_unsolicited_allowed": False},
-            "whatsapp": {
-                "cold_blending_or_blasts_allowed": False,
-                "discovered_number_is_permission": False,
-                "requires_number_provided_and_opt_in": True,
-            },
-            "linkedin": {"mass_automation_allowed": False},
-        },
-        "autonomy": {"L4": "repository execute", "L5": "material/external exact-action-bound only"},
-        "material_actions_requiring_exact_current_authority": sorted(MOD.REQUIRED_MATERIAL),
-        "proof_law": {
-            "activity_is_not_revenue": True,
-            "quote_is_not_payment": True,
-            "internal_or_synthetic_proof_is_not_customer_proof": True,
-        },
-        "productization_law": {
-            "service_first": True,
-            "build_requires_paid_pain_or_evidence": True,
-            "repeatability_precedes_saas": True,
-        },
-        "forbidden_shortcuts": [
-            "cold WhatsApp blasting",
-            "mass LinkedIn automation",
-            "fake customer proof",
-            "parallel Company OS / Brain / CRM / scheduler / permanent agent fleet",
-        ],
-    }
+    return copy.deepcopy(json.loads(CANONICAL_PATH.read_text(encoding="utf-8")))
 
 
 def test_valid_contract_passes():
     assert MOD.verify(valid_payload()) == []
+
+
+def test_v2_fast_compression_is_canonical():
+    payload = valid_payload()
+    assert payload["constitution_version"] == "2.0-fast-compression"
+    assert payload["compression_law"]["compress_time"] is True
+    assert payload["compression_law"]["compress_truth"] is False
+    assert payload["compression_law"]["deep_wip_max"] == 3
+    assert payload["arm_registry"]["path"] == "config/company/dealix_arm_registry.json"
 
 
 def test_sixth_permanent_agent_fails():
@@ -80,6 +49,24 @@ def test_alternative_three_wedge_policy_is_allowed():
     assert MOD.verify(payload) == []
 
 
+def test_compressing_truth_fails():
+    payload = valid_payload()
+    payload["compression_law"]["compress_truth"] = True
+    assert "NEVER_COMPRESS_TRUTH" in MOD.verify(payload)
+
+
+def test_deep_wip_above_three_fails():
+    payload = valid_payload()
+    payload["compression_law"]["deep_wip_max"] = 4
+    assert "DEEP_WIP_MAX" in MOD.verify(payload)
+
+
+def test_missing_arm_registry_link_fails():
+    payload = valid_payload()
+    payload["arm_registry"]["path"] = "config/company/other.json"
+    assert "ARM_REGISTRY_PATH" in MOD.verify(payload)
+
+
 def test_whatsapp_permission_shortcut_fails():
     payload = valid_payload()
     payload["channel_policy"]["whatsapp"]["discovered_number_is_permission"] = True
@@ -90,3 +77,25 @@ def test_l5_self_authority_fails():
     payload = valid_payload()
     payload["autonomy"]["L5"] = "automatic"
     assert "L5" in MOD.verify(payload)
+
+
+def test_customer_data_reuse_without_authority_fails():
+    payload = valid_payload()
+    payload["low_touch_recurring_law"]["no_customer_data_reuse_without_authority"] = False
+    assert "NO_DATA_REUSE_WITHOUT_AUTHORITY" in MOD.verify(payload)
+
+
+def test_unbounded_agent_admin_fails():
+    payload = valid_payload()
+    payload["interoperability_and_agent_control"]["no_unbounded_shell_or_prod_admin"] = False
+    assert "NO_UNBOUNDED_AGENT_ADMIN" in MOD.verify(payload)
+
+
+def test_deep_build_every_researched_arm_shortcut_is_required():
+    payload = valid_payload()
+    payload["forbidden_shortcuts"] = [
+        item
+        for item in payload["forbidden_shortcuts"]
+        if "deep-build every researched arm" not in item.lower()
+    ]
+    assert "FORBID_UNBOUNDED_ARM_BUILD" in MOD.verify(payload)

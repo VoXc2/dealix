@@ -171,7 +171,7 @@ def generate(
         )
     if chosen == "vllm":
         return _generate_vllm(
-            prompt=prompt, model=model or "default",
+            prompt=prompt, model=model or os.environ.get("VLLM_MODEL") or "default",
             base_url=base_url, timeout_seconds=timeout_seconds,
             json_mode=json_mode, max_tokens=max_tokens,
             temperature=temperature,

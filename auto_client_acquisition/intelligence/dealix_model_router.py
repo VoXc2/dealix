@@ -106,6 +106,8 @@ def route_task(
     json_mode: bool = False,
     customer_handle: str = "",
     cloud_fallback_enabled: bool = True,
+    local_timeout_seconds: float = 10.0,
+    local_max_tokens: int = 2048,
 ) -> RouterDecision:
     """Route a Dealix task through the intelligence stack.
 
@@ -161,8 +163,8 @@ def route_task(
         local_result = local_generate(
             prompt=prompt,
             json_mode=json_mode,
-            timeout_seconds=10.0,
-            max_tokens=2048,
+            timeout_seconds=max(1.0, min(float(local_timeout_seconds), 60.0)),
+            max_tokens=max(16, min(int(local_max_tokens), 2048)),
             temperature=0.2,
         )
     else:

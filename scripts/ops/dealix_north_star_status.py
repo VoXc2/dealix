@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CONSTITUTION = ROOT / "config/company/dealix_operating_constitution.json"
+ARM_REGISTRY = ROOT / "config/company/dealix_arm_registry.json"
 SCORECARD = ROOT / "docs/ops/DEALIX_PERMANENT_NORTH_STAR_SCORECARD.md"
 AGENTS = (
     "dealix-pm",
@@ -17,6 +18,17 @@ AGENTS = (
     "dealix-content",
 )
 PORTFOLIOS = ("TRUST", "MONEY_NOW", "COMPOUNDING")
+ENGINES = {
+    "CORE_CASH_ENGINE",
+    "RECURRING_REVENUE_ENGINE",
+    "PRODUCTIZED_SERVICE_ENGINE",
+    "DATA_AND_INTELLIGENCE_ENGINE",
+    "SOFTWARE_AND_API_ENGINE",
+    "PARTNER_AND_CHANNEL_ENGINE",
+    "EDUCATION_MEDIA_AND_IP_ENGINE",
+    "B2G_AND_REGULATED_ENTERPRISE_ENGINE",
+    "VENTURE_AND_ASSET_ENGINE",
+}
 
 
 def git_value(*args: str) -> str:
@@ -35,12 +47,17 @@ def fail(reason: str) -> None:
 def main() -> int:
     if not CONSTITUTION.is_file():
         fail("missing_constitution")
+    if not ARM_REGISTRY.is_file():
+        fail("missing_arm_registry")
     if not SCORECARD.is_file():
         fail("missing_scorecard")
 
     data = json.loads(CONSTITUTION.read_text(encoding="utf-8"))
+    registry = json.loads(ARM_REGISTRY.read_text(encoding="utf-8"))
     scorecard = SCORECARD.read_text(encoding="utf-8")
 
+    if data.get("constitution_version") != "2.0-fast-compression":
+        fail("constitution_version")
     if data.get("north_star") != "CASH_READY_AUTONOMOUS_DEALIX_COMPANY":
         fail("north_star")
     if data.get("optimize_for") != "Verified Economic Movement / Founder Minutes / Cost / Risk":
@@ -49,6 +66,12 @@ def main() -> int:
         fail("permanent_agents")
     if tuple(data.get("portfolios", [])) != PORTFOLIOS:
         fail("portfolios")
+
+    compression = data.get("compression_law", {})
+    if compression.get("compress_time") is not True or compression.get("compress_truth") is not False:
+        fail("compression_law")
+    if compression.get("deep_wip_max") != 3:
+        fail("deep_wip")
 
     allocation = data.get("opportunity_allocation", {})
     if allocation.get("top_active_actions_per_cycle") != 3:
@@ -63,6 +86,19 @@ def main() -> int:
         fail("capability_benchmarks")
     if data.get("active_gtm_wedge_limit") != 3:
         fail("gtm_wedges")
+
+    arms = registry.get("arms", [])
+    if not isinstance(arms, list) or not arms:
+        fail("arm_registry_empty")
+    if registry.get("deep_wip_max") != 3:
+        fail("arm_registry_deep_wip")
+    active_deep = [arm for arm in arms if isinstance(arm, dict) and arm.get("state") == "ACTIVE_DEEP"]
+    if len(active_deep) != 3:
+        fail("active_deep_count")
+    if {arm.get("owner") for arm in arms if isinstance(arm, dict)} - set(AGENTS):
+        fail("arm_owner")
+    if ENGINES - {arm.get("engine") for arm in arms if isinstance(arm, dict)}:
+        fail("engine_coverage")
 
     whatsapp = data.get("channel_policy", {}).get("whatsapp", {})
     if whatsapp.get("cold_blending_or_blasts_allowed") is not False:
@@ -98,12 +134,16 @@ def main() -> int:
             fail(f"scorecard::{needle}")
 
     print("NORTH_STAR=CASH_READY_AUTONOMOUS_DEALIX_COMPANY")
+    print("CONSTITUTION_VERSION=2.0-fast-compression")
     print("OPTIMIZE_FOR=Verified Economic Movement / Founder Minutes / Cost / Risk")
     print(f"SOURCE_HEAD={git_value('rev-parse', 'HEAD')}")
     print(f"SOURCE_BRANCH={git_value('branch', '--show-current')}")
     print("PERMANENT_AGENT_COUNT=5")
     print("PERMANENT_AGENTS=" + ",".join(AGENTS))
     print("PORTFOLIOS=" + ",".join(PORTFOLIOS))
+    print(f"ARM_COUNT={len(arms)}")
+    print("ACTIVE_DEEP_ARMS=3")
+    print("STRATEGIC_ENGINES=9")
     print("EXECUTIVE_TOP_ACTIONS_MAX=3")
     print("MATERIAL_APPROVAL_PACKETS_MAX=1")
     print("PUBLIC_PHONE_IS_CONSENT=false")
