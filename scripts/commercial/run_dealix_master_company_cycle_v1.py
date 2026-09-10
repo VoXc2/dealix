@@ -27,12 +27,18 @@ def main() -> int:
 
     binding = json.loads(BINDING.read_text(encoding="utf-8"))
     prompt = ROOT / str(binding["prompt_ref"])
+    meta_control = ROOT / str(binding["meta_control_ref"])
     digest = hashlib.sha256(prompt.read_bytes()).hexdigest()
+    meta_digest = hashlib.sha256(meta_control.read_bytes()).hexdigest()
 
     env = dict(os.environ)
     env[str(binding["prompt_env"])] = str(prompt)
     env[str(binding["prompt_sha_env"])] = digest
+    env[str(binding["meta_control_env"])] = str(meta_control)
+    env[str(binding["meta_control_sha_env"])] = meta_digest
     env["DEALIX_MASTER_PROMPT_BOUND"] = "1"
+    env["DEALIX_META_CONTROL_BOUND"] = "1"
+    env["DEALIX_UNIVERSAL_L5"] = "0"
     env["DEALIX_EXTERNAL_SEND"] = "0"
     env["EMAIL_LIVE_SEND"] = "0"
     env["WHATSAPP_ALLOW_LIVE_SEND"] = "0"
@@ -44,7 +50,10 @@ def main() -> int:
     result = subprocess.run(command, cwd=ROOT, env=env, check=False)
     print(f"MASTER_COMPANY_CYCLE_RC={result.returncode}")
     print(f"MASTER_PROMPT_SHA256={digest}")
+    print(f"META_CONTROL_SHA256={meta_digest}")
     print("MASTER_PROMPT_BOUND=true")
+    print("META_CONTROL_BOUND=true")
+    print("UNIVERSAL_L5=false")
     print("MATERIAL_EXTERNAL_EFFECTS=DISABLED_BY_ENTRYPOINT")
     return result.returncode
 
