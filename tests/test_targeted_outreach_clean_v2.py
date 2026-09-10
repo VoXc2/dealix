@@ -1,6 +1,7 @@
 import json
 import importlib.util
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 RUNNER=ROOT/'scripts/commercial/run_targeted_outreach_clean_v2.py'
@@ -32,6 +33,22 @@ def test_wrapper_is_current_main_and_l4_only():
 
 def test_runner_uses_riyadh_operating_date():
     m=module(); assert m.RIYADH.key == 'Asia/Riyadh'
+
+
+def test_probability_consumer_uses_producer_utc_report_date(tmp_path, monkeypatch):
+    m=module()
+    real_datetime=datetime
+    class FixedDateTime:
+        @classmethod
+        def now(cls, tz=None):
+            instant=real_datetime(2026,9,10,22,30,tzinfo=UTC)
+            return instant if tz is None else instant.astimezone(tz)
+    monkeypatch.setattr(m,'datetime',FixedDateTime)
+    monkeypatch.setattr(m,'PROBABILITY_REPORT',tmp_path)
+    (tmp_path/'2026-09-10.json').write_text(json.dumps({'ranked_targets':[{'company_name':'Acme','rank':1,'deep_wip_candidate':True}]}),encoding='utf-8')
+    assert m.today() == '2026-09-11'
+    assert m.probability_day() == '2026-09-10'
+    assert m.probability_ranks() == {'acme':1}
 
 def test_missing_profile_does_not_block_internal_draft_preparation(tmp_path, monkeypatch):
     m=module(); targets=tmp_path/'targets.json'; targets.write_text(json.dumps([base()]), encoding='utf-8')
