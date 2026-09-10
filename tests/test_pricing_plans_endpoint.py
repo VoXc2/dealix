@@ -1,141 +1,75 @@
-"""Commercial trust tests for public pricing, checkout, and usage recording.
+"""Launch commercial-truth tests for pricing and checkout quarantine.
 
-The launch surfaces fail closed until the founder approves #917. No real
-database, Redis, or payment-provider call is required.
+The current launch app intentionally filters legacy fixed-plan pricing/checkout
+routes out of the Sales domain. Customer-facing authority is the quote-only
+``commercial_runtime_truth`` surface. Legacy pricing helpers remain unit-tested
+as future/internal machinery but cannot become public merely by existing.
 """
 from __future__ import annotations
 
 import pytest
 
-from api.routers.pricing import ALLOWED_PLANS
+from api.routers import pricing
+
+
+LEGACY_LAUNCH_PATHS = (
+    "/api/v1/pricing/plans",
+    "/api/v1/pricing/usage",
+    "/api/v1/pricing/menu",
+    "/api/v1/checkout",
+    "/api/v1/pricing/outcome-simulate",
+)
 
 
 @pytest.mark.asyncio
-async def test_public_pricing_fails_closed_by_default(async_client):
-    res = await async_client.get("/api/v1/pricing/plans")
-    assert res.status_code == 200
-    body = res.json()
-    # Exact equality on purpose: a new key here would be a new fact leaking to
-    # an unauthenticated caller, so adding one should have to be deliberate.
-    # `catalog_status` distinguishes "no plans approved for display" from "the
-    # price catalogue failed to load" — without it the second reads as the
-    # first, which is how a pricing outage becomes an invisible one.
-    assert body == {
-        "currency": "SAR",
-        "plans": {},
-        "public_pricing_enabled": False,
-        "status": "founder_approval_required",
-        "catalog_status": "registry",
-    }
+@pytest.mark.parametrize("path", LEGACY_LAUNCH_PATHS)
+async def test_legacy_pricing_and_checkout_paths_are_not_mounted(async_client, path):
+    if path in {"/api/v1/checkout", "/api/v1/pricing/usage"}:
+        response = await async_client.post(path, json={})
+    else:
+        response = await async_client.get(path)
+    assert response.status_code == 404
 
 
 @pytest.mark.asyncio
-async def test_public_pricing_requires_explicit_approved_ids(
-    async_client, monkeypatch: pytest.MonkeyPatch
-):
-    monkeypatch.setenv("DEALIX_PUBLIC_PRICING_ENABLED", "true")
-    monkeypatch.setenv(
-        "DEALIX_PUBLIC_PLAN_IDS",
-        "starter,pilot_1sar,unknown_plan",
-    )
-    res = await async_client.get("/api/v1/pricing/plans")
-    body = res.json()
+async def test_canonical_public_commercial_map_is_quote_only(async_client):
+    response = await async_client.get("/api/v1/public/services")
+    assert response.status_code == 200, response.text
+    body = response.json()
+    primary = body["primary_offer"]
+    guardrails = body["guardrails"]
+    assert primary["id"] == "revenue_command_pilot_30d"
+    assert primary["duration_days"] == 30
+    assert primary["price_model"] == "customer_specific_quote_only"
+    assert primary["public_fixed_pricing"] is False
+    assert primary["public_checkout"] is False
+    assert guardrails["no_public_fixed_price"] is True
+    assert guardrails["no_public_checkout"] is True
+    assert guardrails["invoice_is_not_payment"] is True
+
+
+@pytest.mark.asyncio
+async def test_legacy_module_public_plan_helper_fails_closed_by_default(monkeypatch):
+    monkeypatch.delenv("DEALIX_PUBLIC_PRICING_ENABLED", raising=False)
+    monkeypatch.delenv("DEALIX_PUBLIC_PLAN_IDS", raising=False)
+    body = await pricing.list_plans()
+    assert body["currency"] == "SAR"
+    assert body["plans"] == {}
     assert body["public_pricing_enabled"] is False
     assert body["status"] == "founder_approval_required"
-    assert body["plans"] == {}
-    assert "pilot_1sar" not in body["plans"]
 
 
 def test_test_plan_is_never_a_normal_checkout_plan():
-    assert "pilot_1sar" not in ALLOWED_PLANS
-    assert frozenset() == ALLOWED_PLANS
+    assert "pilot_1sar" not in pricing.ALLOWED_PLANS
+    assert pricing.ALLOWED_PLANS == frozenset()
 
 
-@pytest.mark.asyncio
-async def test_checkout_fails_closed_before_provider_call(async_client):
-    res = await async_client.post(
-        "/api/v1/checkout",
-        json={"plan": "starter", "email": "founder@example.com"},
-    )
-    assert res.status_code == 503
-    assert res.json()["detail"] == "checkout_not_founder_approved"
+def test_legacy_checkout_flag_fails_closed(monkeypatch):
+    monkeypatch.delenv("DEALIX_CHECKOUT_ENABLED", raising=False)
+    assert pricing._checkout_enabled() is False
 
 
-@pytest.mark.asyncio
-async def test_1sar_plan_requires_separate_nonproduction_gate(
-    async_client, monkeypatch: pytest.MonkeyPatch
-):
-    monkeypatch.setenv("DEALIX_CHECKOUT_ENABLED", "true")
-    monkeypatch.delenv("DEALIX_ENABLE_1SAR_CHECKOUT", raising=False)
-    res = await async_client.post(
-        "/api/v1/checkout",
-        json={"plan": "pilot_1sar", "email": "founder@example.com"},
-    )
-    assert res.status_code == 400
-    assert res.json()["detail"] == "test_plan_disabled"
-
-
-@pytest.mark.asyncio
-async def test_1sar_plan_is_impossible_in_production(
-    async_client, monkeypatch: pytest.MonkeyPatch
-):
-    monkeypatch.setenv("DEALIX_CHECKOUT_ENABLED", "true")
+def test_1sar_gate_is_impossible_in_production(monkeypatch):
     monkeypatch.setenv("DEALIX_ENABLE_1SAR_CHECKOUT", "true")
     monkeypatch.setenv("APP_ENV", "production")
-    monkeypatch.setenv("API_KEYS", "test-production-api-key")
-    res = await async_client.post(
-        "/api/v1/checkout",
-        json={"plan": "pilot_1sar", "email": "founder@example.com"},
-        headers={"X-API-Key": "test-production-api-key"},
-    )
-    assert res.status_code == 400
-    assert res.json()["detail"] == "test_plan_disabled"
-
-
-@pytest.mark.asyncio
-async def test_pricing_menu_reports_not_sales_ready_by_default(async_client):
-    res = await async_client.get("/api/v1/pricing/menu")
-    assert res.status_code == 200
-    body = res.json()
-    assert body["currency"] == "SAR"
-    assert body["sales_ready"] is False
-    assert body["checkout_status"] == "founder_approval_required"
-    assert "pilot_1sar" not in body["plans"]
-    assert isinstance(body["service_catalog"], list)
-    assert body["service_catalog"]
-
-
-@pytest.mark.asyncio
-async def test_usage_record_requires_metered_plan(async_client):
-    res = await async_client.post(
-        "/api/v1/pricing/usage",
-        json={"plan": "growth", "customer_handle": "acme", "event_id": "x1"},
-    )
-    assert res.status_code == 400
-    assert "metered" in res.json()["detail"].lower()
-
-
-@pytest.mark.asyncio
-async def test_usage_record_requires_event_id(async_client):
-    res = await async_client.post(
-        "/api/v1/pricing/usage",
-        json={"plan": "laas_per_reply", "customer_handle": "acme"},
-    )
-    assert res.status_code == 400
-    assert "event_id" in res.json()["detail"]
-
-
-@pytest.mark.asyncio
-async def test_usage_record_idempotent(async_client):
-    payload = {
-        "plan": "laas_per_reply",
-        "customer_handle": "test_handle_idem",
-        "event_id": "test_msg_001",
-    }
-    res1 = await async_client.post("/api/v1/pricing/usage", json=payload)
-    assert res1.status_code == 200
-    assert res1.json()["status"] == "recorded"
-    res2 = await async_client.post("/api/v1/pricing/usage", json=payload)
-    assert res2.status_code == 200
-    assert res2.json()["status"] == "duplicate"
-    assert res1.json()["amount_halalas"] == res2.json()["amount_halalas"]
+    assert pricing._test_checkout_enabled() is False

@@ -102,7 +102,8 @@ def test_browser_api_calls_stay_same_origin_behind_rewrite() -> None:
     assert 'source: "/api/v1/:path*"' in config
     assert "destination: `${dealixApiBase}/api/v1/:path*`" in config
     assert "NEXT_PUBLIC_DEALIX_API_BASE" in config
-    assert 'source: "/signup"' not in config
+    assert 'source: "/signup"' in config
+    assert 'destination: "/book"' in config
 
 
 def test_runtime_helper_preserves_session_compatibility() -> None:

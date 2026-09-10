@@ -19,8 +19,10 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
     py.symlink_to(Path(sys.executable))
     (repo / "docs" / "ops").mkdir(parents=True)
     (repo / "docs" / "ops" / "DAILY_BUILDER_CONTRACT.md").write_text("race-v1\n")
+    scripts = repo / "scripts"
+    scripts.mkdir(parents=True)
     counter = tmp_path / "owner-count.txt"
-    (repo / "fake_owner.py").write_text(
+    (scripts / "fake_owner.py").write_text(
         "from pathlib import Path\n"
         "import os\n"
         "p=Path(os.environ['FAKE_OWNER_COUNTER'])\n"
@@ -30,7 +32,7 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path, Path, Path]:
 
     text = DISPATCH.read_text(encoding="utf-8")
     old = '"DAILY_BUILDER_RND|new_oss_candidate|llm|file:docs/ops/DAILY_BUILDER_CONTRACT.md|NONE"'
-    new = '"DAILY_BUILDER_RND|new_oss_candidate|llm|file:docs/ops/DAILY_BUILDER_CONTRACT.md|.venv/bin/python fake_owner.py"'
+    new = '"DAILY_BUILDER_RND|new_oss_candidate|llm|file:docs/ops/DAILY_BUILDER_CONTRACT.md|.venv/bin/python scripts/fake_owner.py"'
     assert old in text
     text = text.replace(old, new, 1)
     marker = '  chmod 0640 "$RECEIPT"\n'

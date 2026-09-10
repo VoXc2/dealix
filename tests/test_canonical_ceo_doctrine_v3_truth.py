@@ -10,12 +10,12 @@ def _read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
 
 
-def test_platform_source_of_truth_uses_ceo_doctrine_v3_market_identity() -> None:
+def test_platform_source_of_truth_uses_current_founder_market_identity() -> None:
     text = _read("docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md")
 
-    assert "Dealix — Governed AI Execution Platform for Saudi Business" in text
-    assert "Turn company signals into governed execution and measurable proof." in text
-    assert "Signal -> Decision -> Action -> Proof" in text
+    assert "Dealix — AI Business Operating System" in text
+    assert "Signals into Action. Execution with Governance. Measurable Outcomes." in text
+    assert "Signal -> Evidence -> Decision -> Approval -> Action -> Outcome -> Proof -> Learning" in text
     assert "Execution Diagnostic" in text
     assert "Outcome Sprint" in text
     assert "Dealix Runtime" in text
@@ -23,6 +23,8 @@ def test_platform_source_of_truth_uses_ceo_doctrine_v3_market_identity() -> None
     assert "twelve Operating Systems" in text
     assert "customer-specific quote" in text.lower()
     assert "no public fixed-price" in text.lower()
+    assert "current founder-approved category is **AI Business Operating System**" in text
+    assert "Governed AI Execution` remains a core mechanism and differentiator" in text
 
 
 def test_top_level_readmes_do_not_restore_v2_as_market_headline() -> None:
@@ -38,15 +40,17 @@ def test_top_level_readmes_do_not_restore_v2_as_market_headline() -> None:
     assert "# 🏢 Dealix — نظام تشغيل أعمال بالذكاء الاصطناعي للشركات السعودية" not in readme_ar
 
 
-def test_brand_positioning_matches_canonical_market_identity() -> None:
+def test_brand_positioning_matches_current_founder_market_identity() -> None:
     text = _read("docs/brand/POSITIONING.md")
 
-    assert "Dealix — Governed AI Execution Platform for Saudi Business" in text
+    assert "Dealix — AI Business Operating System" in text
+    assert "Signals into Action. Execution with Governance. Measurable Outcomes." in text
     assert "Execution Diagnostic" in text
     assert "Outcome Sprint" in text
     assert "Dealix Runtime" in text
     assert "Revenue + Proof + Command" in text
-    assert "current generic category headline" in text
+    assert "Governed execution" in text
+    assert "No public fixed price, public checkout or guaranteed result is implied." in text
 
 
 def test_v3_market_labels_do_not_grant_new_runtime_pricing_authority() -> None:

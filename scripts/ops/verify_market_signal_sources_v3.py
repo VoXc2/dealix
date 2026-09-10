@@ -108,11 +108,24 @@ REQUIRED_SIGNAL_FIELDS = {
     "confidence",
     "next_safe_action",
 }
-FORBIDDEN_AUTHORITY_TERMS = {
+MARKET_FORBIDDEN_INFERENCE_TERMS = {
     "buyer_intent",
     "relationship",
     "consent",
 }
+TRUST_PROVIDER_FORBIDDEN_INFERENCE_TERMS = {
+    "certification",
+    "compliance_status",
+    "government_endorsement",
+    "current_deployment_state",
+    "current_service_config",
+    "buyer_intent",
+    "relationship",
+}
+# Backwards-compatible aggregate used by older callers/tests.
+FORBIDDEN_AUTHORITY_TERMS = (
+    MARKET_FORBIDDEN_INFERENCE_TERMS | TRUST_PROVIDER_FORBIDDEN_INFERENCE_TERMS
+)
 REQUIRED_MATERIAL_ACTIONS = {
     "tender_submission",
     "external_send",
@@ -122,6 +135,12 @@ REQUIRED_MATERIAL_ACTIONS = {
     "production_mutation",
     "customer_system_release",
 }
+
+
+def required_inference_guards_for_lane(lane: str) -> set[str]:
+    if lane == "TRUST_PROVIDER_AUTHORITY":
+        return TRUST_PROVIDER_FORBIDDEN_INFERENCE_TERMS
+    return MARKET_FORBIDDEN_INFERENCE_TERMS
 
 
 def _fail(message: str) -> None:
@@ -234,9 +253,11 @@ def main() -> None:
             _fail(f"source {source_id} allowed_outputs must be non-empty")
 
         forbidden = set(source.get("forbidden_inference") or [])
-        if not (forbidden & FORBIDDEN_AUTHORITY_TERMS):
+        required_guards = required_inference_guards_for_lane(str(lane))
+        if not (forbidden & required_guards):
+            kind = "trust/provider" if lane == "TRUST_PROVIDER_AUTHORITY" else "commercial"
             _fail(
-                f"source {source_id} must explicitly forbid at least one commercial-authority inference"
+                f"source {source_id} must explicitly forbid at least one {kind}-authority inference"
             )
 
         routes = source.get("agent_route") or []

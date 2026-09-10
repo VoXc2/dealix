@@ -1,4 +1,4 @@
-"""Tests for bespoke AI service setup endpoints (W8.1 / R5 productization)."""
+"""Tests for bespoke service intake under current quote-only commercial authority."""
 from __future__ import annotations
 
 import pytest
@@ -7,9 +7,10 @@ VALID_REQUEST = {
     "company_name": "ACME Saudi Co",
     "contact_name": "Ahmed Al-Saudi",
     "contact_email": "ahmed@acme.sa",
-    "use_case_summary": "We need a custom AI agent that triages incoming RFP "
-                        "documents from government tenders and routes them by "
-                        "ministry, deadline, and category.",
+    "use_case_summary": (
+        "We need a custom AI agent that triages incoming RFP documents from "
+        "government tenders and routes them by ministry, deadline, and category."
+    ),
     "use_case_category": "ops",
     "complexity": "moderate",
     "integrations_count": 2,
@@ -20,61 +21,45 @@ VALID_REQUEST = {
 
 
 @pytest.mark.asyncio
-async def test_submit_returns_request_id_and_estimate(async_client):
-    res = await async_client.post(
-        "/api/v1/service-setup/requests", json=VALID_REQUEST,
-    )
+async def test_submit_returns_request_id_without_automatic_price(async_client):
+    res = await async_client.post("/api/v1/service-setup/requests", json=VALID_REQUEST)
     assert res.status_code == 201
     body = res.json()
-    assert body["status"] == "received"
+    assert body["status"] == "intake_received"
     assert body["request_id"].startswith("ssr_")
-    assert len(body["request_id"]) == len("ssr_") + 20  # sha256 prefix
-    est = body["estimate"]
-    assert est["currency"] == "SAR"
-    assert est["setup_sar"] >= 5000  # base floor
-    assert est["setup_sar"] <= 25000  # MAX_SETUP cap
-    assert est["monthly_sar"] >= 1000
+    assert len(body["request_id"]) == len("ssr_") + 20
+    assert body["public_fixed_price"] is False
+    assert body["automatic_price_estimate"] is False
+    assert body["price_authority"] == "customer_specific_quote_after_qualified_discovery"
+    assert body["next_step"] == "free_mini_diagnostic_then_qualified_discovery"
+    assert "estimate" not in body
 
 
 @pytest.mark.asyncio
-async def test_submit_estimate_scales_with_complexity(async_client):
-    """Complex use cases cost more than simple ones — pricing formula."""
-    simple = {**VALID_REQUEST, "complexity": "simple"}
-    complex_ = {**VALID_REQUEST, "complexity": "complex"}
-
-    res_simple = await async_client.post("/api/v1/service-setup/requests", json=simple)
-    res_complex = await async_client.post("/api/v1/service-setup/requests", json=complex_)
-
-    assert res_simple.status_code == 201
-    assert res_complex.status_code == 201
-    assert res_complex.json()["estimate"]["setup_sar"] > res_simple.json()["estimate"]["setup_sar"]
-
-
-@pytest.mark.asyncio
-async def test_submit_regulated_industry_adds_premium(async_client):
-    """30% premium when regulated_industry=True."""
-    standard = {**VALID_REQUEST, "regulated_industry": False}
-    regulated = {**VALID_REQUEST, "regulated_industry": True}
-
-    res_standard = await async_client.post("/api/v1/service-setup/requests", json=standard)
-    res_regulated = await async_client.post("/api/v1/service-setup/requests", json=regulated)
-
-    assert res_regulated.json()["estimate"]["setup_sar"] > res_standard.json()["estimate"]["setup_sar"]
-
-
-@pytest.mark.asyncio
-async def test_submit_caps_setup_at_25k(async_client):
-    """Setup price hard-capped at 25,000 SAR per v4 §3 R5."""
-    extreme = {
-        **VALID_REQUEST,
-        "complexity": "complex",
-        "data_volume_band": "high",
-        "integrations_count": 10,
-        "regulated_industry": True,
-    }
-    res = await async_client.post("/api/v1/service-setup/requests", json=extreme)
-    assert res.status_code == 201
-    assert res.json()["estimate"]["setup_sar"] <= 25000
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"complexity": "simple"},
+        {"complexity": "complex"},
+        {"regulated_industry": True},
+        {
+            "complexity": "complex",
+            "data_volume_band": "high",
+            "integrations_count": 10,
+            "regulated_industry": True,
+        },
+    ],
+)
+async def test_public_intake_fields_never_generate_price_authority(async_client, overrides):
+    payload = {**VALID_REQUEST, **overrides}
+    res = await async_client.post("/api/v1/service-setup/requests", json=payload)
+    assert res.status_code == 201, res.text
+    body = res.json()
+    assert body["automatic_price_estimate"] is False
+    assert body["public_fixed_price"] is False
+    assert "estimate" not in body
+    assert "setup_sar" not in body
+    assert "monthly_sar" not in body
 
 
 @pytest.mark.asyncio
@@ -96,12 +81,11 @@ async def test_submit_validates_complexity(async_client):
 async def test_submit_validates_email(async_client):
     bad = {**VALID_REQUEST, "contact_email": "not-an-email"}
     res = await async_client.post("/api/v1/service-setup/requests", json=bad)
-    assert res.status_code == 422  # Pydantic EmailStr enforcement
+    assert res.status_code == 422
 
 
 @pytest.mark.asyncio
 async def test_submit_requires_min_use_case_length(async_client):
-    """Forces customer to describe the use case in at least 20 chars."""
     short = {**VALID_REQUEST, "use_case_summary": "too short"}
     res = await async_client.post("/api/v1/service-setup/requests", json=short)
     assert res.status_code == 422
@@ -109,7 +93,6 @@ async def test_submit_requires_min_use_case_length(async_client):
 
 @pytest.mark.asyncio
 async def test_submit_validates_existing_handle_format(async_client):
-    """Bad handle format → 400 (not 422 — we validate after Pydantic)."""
     bad = {**VALID_REQUEST, "existing_customer_handle": "BAD-HANDLE"}
     res = await async_client.post("/api/v1/service-setup/requests", json=bad)
     assert res.status_code == 400
@@ -117,7 +100,6 @@ async def test_submit_validates_existing_handle_format(async_client):
 
 @pytest.mark.asyncio
 async def test_submit_idempotency_same_hour(async_client):
-    """Same company within same hour returns the same request_id."""
     res1 = await async_client.post("/api/v1/service-setup/requests", json=VALID_REQUEST)
     res2 = await async_client.post("/api/v1/service-setup/requests", json=VALID_REQUEST)
     assert res1.json()["request_id"] == res2.json()["request_id"]
@@ -125,7 +107,6 @@ async def test_submit_idempotency_same_hour(async_client):
 
 @pytest.mark.asyncio
 async def test_get_status_returns_404_until_persisted(async_client):
-    """Per v4 §7, persistence deferred until customer #5."""
     res = await async_client.get("/api/v1/service-setup/requests/ssr_aaaaaaaaaaaaaaaaaaaa")
     assert res.status_code == 404
     assert res.json()["detail"]["error"] == "request_not_persisted"
@@ -135,7 +116,12 @@ async def test_get_status_returns_404_until_persisted(async_client):
 async def test_decision_requires_admin(async_client):
     res = await async_client.post(
         "/api/v1/admin/service-setup/requests/ssr_aaaaaaaaaaaaaaaaaaaa/decision",
-        json={"decision": "approved", "quoted_setup_halalas": 1_000_000},
+        json={
+            "decision": "approved",
+            "discovery_ref": "discovery:test",
+            "quote_id": "quote_test",
+            "customer_specific_quote_sar": 10000,
+        },
     )
     assert res.status_code in (401, 403)
 
@@ -152,13 +138,36 @@ async def test_decision_validates_decision_field(async_client, monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_decision_approved_requires_setup_price(async_client, monkeypatch):
-    """Approving without a price is operator error — block it."""
-    monkeypatch.setenv("ADMIN_API_KEYS", "test_admin_approved_no_price")
+async def test_approved_decision_requires_discovery_and_customer_specific_quote(
+    async_client, monkeypatch
+):
+    monkeypatch.setenv("ADMIN_API_KEYS", "test_admin_approved_no_quote")
     res = await async_client.post(
         "/api/v1/admin/service-setup/requests/ssr_aaaaaaaaaaaaaaaaaaaa/decision",
         json={"decision": "approved"},
-        headers={"X-Admin-API-Key": "test_admin_approved_no_price"},
+        headers={"X-Admin-API-Key": "test_admin_approved_no_quote"},
     )
-    assert res.status_code == 400
-    assert "quoted_setup_halalas" in res.json()["detail"]
+    assert res.status_code == 409
+    assert res.json()["detail"] == "approved_requires_discovery_ref_and_customer_specific_quote"
+
+
+@pytest.mark.asyncio
+async def test_approved_decision_remains_internal_and_not_sent(async_client, monkeypatch):
+    monkeypatch.setenv("ADMIN_API_KEYS", "test_admin_approved_quote")
+    res = await async_client.post(
+        "/api/v1/admin/service-setup/requests/ssr_aaaaaaaaaaaaaaaaaaaa/decision",
+        json={
+            "decision": "approved",
+            "discovery_ref": "discovery:test-001",
+            "quote_id": "quote_test_001",
+            "customer_specific_quote_sar": 12500,
+        },
+        headers={"X-Admin-API-Key": "test_admin_approved_quote"},
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["status"] == "reviewed_not_customer_sent"
+    assert body["public_fixed_price"] is False
+    assert body["external_send_allowed"] is False
+    assert body["quote_id"] == "quote_test_001"
+    assert body["customer_specific_quote_sar"] == 12500

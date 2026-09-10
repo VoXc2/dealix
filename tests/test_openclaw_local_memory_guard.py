@@ -23,7 +23,15 @@ def test_openclaw_invalid_memory_schema_is_removed_before_config_writes() -> Non
     sanitize_pos = text.index("sanitize_known_memory_keys\n")
     reassert_pos = text.index("set_required gateway.mode local")
     assert sanitize_pos < reassert_pos
-    assert "doctor --fix" not in text
+
+    # A comment may document why broad doctor mutation is forbidden. Guard the
+    # executable shell surface rather than treating policy prose as execution.
+    executable = "\n".join(
+        line.strip()
+        for line in text.splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    )
+    assert "doctor --fix" not in executable
 
 
 def test_openclaw_pre_memory_mutations_restore_full_backup_on_error() -> None:

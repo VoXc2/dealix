@@ -1,7 +1,8 @@
 """Regression tests for the Railway config-as-code contract.
 
 These tests are intentionally stdlib-only. They protect the repo's canonical
-Railway settings from drifting back to a duplicate direct uvicorn command.
+Railway settings from drifting back to a duplicate direct uvicorn command while
+allowing the JSON config to carry the canonical source watch-path contract.
 """
 
 from __future__ import annotations
@@ -31,10 +32,25 @@ def test_railway_config_matches_canonical_runtime_contract() -> None:
     assert railway_json["deploy"]["startCommand"] is None
 
     assert 'builder = "DOCKERFILE"' in toml
-    assert railway_json["build"] == {
-        "builder": "DOCKERFILE",
-        "dockerfilePath": "Dockerfile",
-    }
+    assert railway_json["build"]["builder"] == "DOCKERFILE"
+    assert railway_json["build"]["dockerfilePath"] == "Dockerfile"
+
+    watch_patterns = set(railway_json["build"].get("watchPatterns", []))
+    assert {
+        "/*.py",
+        "/**/*.py",
+        "/Dockerfile",
+        "/railway.json",
+        "/pyproject.toml",
+        "/requirements*.txt",
+        "/scripts/railway_predeploy.sh",
+        "/api/**",
+        "/app/**",
+        "/db/**",
+        "/config/**",
+        "/templates/**",
+        "/prompts/**",
+    } <= watch_patterns
 
     assert 'healthcheckPath = "/healthz"' in toml
     assert railway_json["deploy"]["healthcheckPath"] == "/healthz"
@@ -59,3 +75,12 @@ def test_forbidden_direct_uvicorn_start_command_is_absent() -> None:
 
     assert "uvicorn api.main:app" not in toml
     assert railway_json["deploy"]["startCommand"] is None
+
+
+def test_health_contract_is_healthz_not_retired_health_alias() -> None:
+    """Railway's production readiness contract is the explicit /healthz path."""
+    toml = _read("railway.toml")
+    railway_json = json.loads(_read("railway.json"))
+
+    assert 'healthcheckPath = "/healthz"' in toml
+    assert railway_json["deploy"]["healthcheckPath"] == "/healthz"

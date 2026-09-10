@@ -17,7 +17,7 @@ Short promise:
 
 **From Opportunity to Outcome.**
 
-Dealix helps companies turn fragmented business signals, workflows and operating data into governed execution and measurable outcomes. Saudi Arabia is the launch market and operating context. Do not convert that into unsupported `first Saudi`, `market-leading`, government-access or blanket-compliance claims.
+Dealix helps companies turn fragmented business signals, workflows and operating data into governed execution and measurable outcomes. Saudi Arabia is the launch market and operating context. Do not convert that into unsupported first-in-market, market-leading, government-access or blanket-compliance claims.
 
 ## 2. One-line descriptions
 
@@ -116,7 +116,7 @@ Use exact evidence-backed compliance language such as:
 - `governed data/action boundaries`
 - `ZATCA-aware where relevant`
 
-Do not use blanket `PDPL-compliant`, `certified`, `first Saudi`, `market-leading` or similar statements unless exact current evidence supports them.
+Do not use blanket `PDPL-compliant`, `certified`, unsupported first-in-market, `market-leading` or similar statements unless exact current evidence supports them.
 
 ## 9. Visual system
 
@@ -186,7 +186,7 @@ Drafting is not publication authority.
 ## 12. Hard rules
 
 - No fake customer, logo, testimonial, payment, revenue, outcome, relationship or partnership.
-- No unsupported `first Saudi`, `first in Saudi Arabia`, `market-leading` or government-access claim.
+- No unsupported first-in-market, market-leading or government-access claim.
 - No guaranteed revenue or ROI.
 - No historical price presented as current.
 - No customer logo, quote or case study without permission evidence.

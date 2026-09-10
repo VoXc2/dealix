@@ -26,7 +26,7 @@ export MOYASAR_LIVE_MODE=0
 mkdir -p "$LOG_DIR" "$STATE_DIR" "$REPORT_DIR" "$SIGNAL_INBOX_DIR"
 chmod 0750 "$AUTOPILOT_ROOT" "$LOG_DIR" "$STATE_DIR" "$REPORT_DIR" "$SIGNAL_INBOX_DIR" 2>/dev/null || true
 
-if [[ ! -d "$ROOT/.git" ]]; then
+if ! git -C "$ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "BLOCKED: canonical Dealix repository missing at $ROOT"
   exit 2
 fi
@@ -533,7 +533,7 @@ payload = {
     "messages": [{"role": "user", "content": prompt}],
     "stream": False,
     "keep_alive": "10m",
-    "options": {"num_ctx": 16384, "num_predict": 900, "temperature": 0.2},
+    "options": {"num_ctx": 8192, "num_predict": 900, "temperature": 0.2},
 }
 Path(sys.argv[3]).write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 PY

@@ -281,7 +281,14 @@ def _revision_metadata(path: Path) -> tuple[str, tuple[str, ...]]:
     return revision, downs
 
 
-def test_migration_extends_the_actual_single_alembic_head() -> None:
+def test_migration_has_one_current_head_and_contains_approval_ancestry() -> None:
+    """Approval migration must be reachable from the repository's single head.
+
+    Alembic history is a DAG: legitimate merge revisions can have more than one
+    ``down_revision`` parent. The invariant we need is one current head plus
+    reachability of approval-center 022 and its predecessor from that head, not
+    an artificial ban on historical merge points.
+    """
     versions = Path(__file__).resolve().parents[1] / "db/migrations/versions"
     migration_paths = [
         path for path in versions.glob("*.py") if path.name != "__init__.py"
@@ -290,22 +297,31 @@ def test_migration_extends_the_actual_single_alembic_head() -> None:
     metadata = dict(revision_rows)
     assert len(metadata) == len(revision_rows), "duplicate revision id"
 
-    new_revision = "20260905_022_approval_center_snapshots"
+    approval_revision = "20260905_022_approval_center_snapshots"
     previous_head = "20260823_021_collaboration_events"
-    assert metadata[new_revision] == (previous_head,)
+    consent_revision = "20260908_023_consent_events"
 
-    prior_metadata = {
-        revision: downs
-        for revision, downs in metadata.items()
-        if revision != new_revision
-    }
-    prior_referenced = {down for downs in prior_metadata.values() for down in downs}
-    prior_heads = set(prior_metadata) - prior_referenced
-    assert prior_heads == {previous_head}
+    assert metadata[approval_revision] == (previous_head,)
+    assert metadata[consent_revision] == (approval_revision,)
 
     referenced = {down for downs in metadata.values() for down in downs}
     heads = set(metadata) - referenced
-    assert heads == {new_revision}
+    assert heads == {consent_revision}
+
+    # Walk the full Alembic DAG backwards. Merge revisions are valid and all
+    # parents must resolve to tracked migration revisions.
+    pending = [consent_revision]
+    seen: set[str] = set()
+    while pending:
+        cursor = pending.pop()
+        if cursor in seen:
+            continue
+        assert cursor in metadata, f"dangling Alembic revision reference: {cursor}"
+        seen.add(cursor)
+        pending.extend(metadata[cursor])
+
+    assert approval_revision in seen
+    assert previous_head in seen
 
 
 def test_backend_status_is_redacted_and_read_only(monkeypatch, tmp_path: Path) -> None:

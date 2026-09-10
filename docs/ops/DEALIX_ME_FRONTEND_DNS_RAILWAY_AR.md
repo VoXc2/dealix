@@ -184,6 +184,19 @@ HTTP 200 أو Config File الصحيح وحدهما لا يثبت هذا receipt
 
 ممنوع وضع أي Admin/API private key داخل `NEXT_PUBLIC_*`.
 
+ممنوع:
+
+```text
+NEXT_PUBLIC_DEALIX_ADMIN_API_KEY=...
+```
+
+المفتاح الإداري يبقى على السيرفر فقط:
+
+```text
+DEALIX_ADMIN_API_KEY=<server-side only>
+NEXT_PUBLIC_USE_DEALIX_OPS_PROXY=1
+```
+
 الحد الأدنى:
 
 ```text

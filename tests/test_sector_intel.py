@@ -1,23 +1,25 @@
-"""Tests for sector intelligence report endpoints (W7.2)."""
+"""Tests for sector intelligence as research/delivery capability, not price authority."""
 from __future__ import annotations
 
 import pytest
 
 
 @pytest.mark.asyncio
-async def test_list_sectors_returns_pricing(async_client):
+async def test_list_sectors_exposes_research_scope_not_pricing(async_client):
     res = await async_client.get("/api/v1/sector-intel/sectors")
     assert res.status_code == 200
     body = res.json()
-    assert body["currency"] == "SAR"
     keys = {s["key"] for s in body["sectors"]}
-    # Core sectors that map to v4 §3 R4 must be present
-    assert "saudi_saas" in keys
-    assert "real_estate" in keys
-    assert "logistics" in keys
-    # Each has a positive price
+    assert {"saudi_saas", "real_estate", "logistics"}.issubset(keys)
+    assert "currency" not in body
     for sector in body["sectors"]:
-        assert sector["price_sar"] > 0
+        assert "price_sar" not in sector
+        assert sector["data_maturity"] in {"partial", "placeholder"}
+    authority = body["commercial_authority"]
+    assert authority["mode"] == "internal_research_delivery_capability"
+    assert authority["price_authority"] == "customer_specific_quote_after_qualified_discovery"
+    assert authority["public_fixed_price"] is False
+    assert authority["live_charge_allowed"] is False
 
 
 @pytest.mark.asyncio
@@ -41,33 +43,35 @@ async def test_generate_rejects_unknown_sector(async_client, monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_generate_valid_sector_returns_report(async_client, monkeypatch):
+async def test_generate_valid_sector_returns_source_bound_report(async_client, monkeypatch):
     monkeypatch.setenv("ADMIN_API_KEYS", "test_admin_valid_sector")
     res = await async_client.post(
         "/api/v1/sector-intel/generate",
         json={"sector": "real_estate"},
         headers={"Authorization": "Bearer test_admin_valid_sector"},
     )
-    assert res.status_code == 200
+    assert res.status_code == 200, res.text
     body = res.json()
     assert body["status"] == "generated"
     report = body["report"]
     assert report["sector"] == "real_estate"
-    assert report["price_sar"] == 5000
-    # All 6 sections present
+    assert "price_sar" not in report
+    authority = report["commercial_authority"]
+    assert authority["public_fixed_price"] is False
+    assert authority["live_charge_allowed"] is False
     assert "executive_summary" in report["sections"]
     assert "account_landscape" in report["sections"]
     assert "market_signals_30d" in report["sections"]
     assert "compliance_notes" in report["sections"]
-    # Each section labels its status honestly
     for section_name, section in report["sections"].items():
         assert "status" in section, f"section {section_name} missing status"
         assert section["status"] in ("real", "empty", "placeholder")
 
 
 @pytest.mark.asyncio
-async def test_generate_includes_compliance_notes(async_client, monkeypatch):
-    """Compliance notes must NEVER be a placeholder — they document our PDPL stance."""
+async def test_generate_includes_real_compliance_and_commercial_boundaries(
+    async_client, monkeypatch
+):
     monkeypatch.setenv("ADMIN_API_KEYS", "test_admin_compliance")
     res = await async_client.post(
         "/api/v1/sector-intel/generate",
@@ -77,13 +81,14 @@ async def test_generate_includes_compliance_notes(async_client, monkeypatch):
     assert res.status_code == 200
     compliance = res.json()["report"]["sections"]["compliance_notes"]
     assert compliance["status"] == "real"
-    assert "PDPL" in compliance["pdpl"]
-    assert "ZATCA" in compliance["zatca"]
+    assert "lawful/public/first-party" in compliance["pdpl"]
+    assert "public business data does not imply consent or relationship" in compliance["pdpl"]
+    assert "No standalone report price" in compliance["commercial"]
+    assert "customer-specific quote" in compliance["commercial"]
 
 
 @pytest.mark.asyncio
 async def test_fetch_report_returns_404_until_persisted(async_client):
-    """Persistence is deferred per v4 §7 — until then /reports returns 404."""
     res = await async_client.get("/api/v1/sector-intel/reports/sr_aaaaaaaaaaaaaaaaaaaa")
     assert res.status_code == 404
     detail = res.json()["detail"]
@@ -92,6 +97,5 @@ async def test_fetch_report_returns_404_until_persisted(async_client):
 
 @pytest.mark.asyncio
 async def test_fetch_report_validates_id_format(async_client):
-    """Bad report_id format → 422 (regex pattern enforcement)."""
     res = await async_client.get("/api/v1/sector-intel/reports/bad-format")
     assert res.status_code == 422

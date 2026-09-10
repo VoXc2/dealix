@@ -15,12 +15,13 @@ CONSOLE_JS = REPO / "landing" / "assets" / "js" / "service-console.js"
 DATA_JSON = REPO / "landing" / "assets" / "data" / "service-readiness.json"
 
 
-def test_status_html_mounts_console():
+def test_status_html_is_retired_fail_closed_surface():
     html = STATUS_HTML.read_text(encoding="utf-8")
-    assert 'id="services-mount"' in html
-    assert 'id="services-counts-mount"' in html
-    assert 'id="services-filter-mount"' in html
-    assert "assets/js/service-console.js" in html
+    compact = html.replace(" ", "").lower()
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
+    assert "noindex,nofollow" in compact
+    assert "url=/" in html
+    assert "assets/js/service-console.js" not in html
 
 
 def test_status_html_no_hardcoded_service_rows():
@@ -33,10 +34,11 @@ def test_status_html_no_hardcoded_service_rows():
     )
 
 
-def test_status_html_bilingual_titles():
+def test_status_html_does_not_claim_live_service_readiness():
     html = STATUS_HTML.read_text(encoding="utf-8")
-    assert "حالة خدمات Dealix" in html
-    assert "Dealix Service Readiness" in html
+    assert "صفحة قديمة" in html
+    assert "Dealix Service Readiness" not in html
+    assert "حالة خدمات Dealix" not in html
 
 
 def test_console_js_exists_and_exports_renderer():

@@ -54,7 +54,7 @@ jobs:
         run: |
           npm run dev > /tmp/dealix-interactive-web.log 2>&1 &
           echo "WEB_PID=$!" >> "$GITHUB_ENV"
-          for attempt in $(seq 1 60); do
+          for _ in {1..60}; do
             if curl --fail --silent --show-error http://127.0.0.1:3100/ >/dev/null; then
               exit 0
             fi
@@ -74,7 +74,7 @@ jobs:
 
       - name: Stop Next.js server
         if: always()
-        run: kill ${WEB_PID:-0} || true
+        run: kill "${WEB_PID:-0}" || true
 
       - name: Upload interactive-web diagnostics
         if: always()

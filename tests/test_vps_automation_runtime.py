@@ -147,12 +147,22 @@ def test_founder_weekly_verification_never_falls_back_to_system_python() -> None
 def test_vps_control_is_noninteractive_and_uses_verified_python() -> None:
     script = read("scripts/ops/dealix_vps_control.sh")
     assert "ensure_founder_automation_python.sh" in script
-    assert "gh auth setup-git" in script
+
+    # Git auth is read-only. The control surface must never mutate the local
+    # credential helper merely to inspect or verify the repository.
+    assert "gh auth setup-git" not in script
+    assert "ensure_github_api_auth" in script
+    assert "gh auth status" in script
+    assert "gh api user --jq '.login'" in script
     assert "GIT_TERMINAL_PROMPT=0 git fetch origin main --quiet" in script
-    assert '"$PY" scripts/verify_full_autonomous_ops_stack.py' in script
-    assert '"$PY" scripts/run_dealix_complete_autonomous_day.py' in script
+
+    # The canonical trust verifier supersedes the older broad autonomous-stack
+    # verifier while daily/sales execution remains bound to the verified venv.
+    assert "bin/dealix verify trust --worktree" in script
+    assert '"$PY" scripts/run_dealix_complete_autonomous_day.py --dry-run' in script
     assert '"$PY" scripts/ops/dealix_daily_self_runner.py' in script
     assert '"$PY" scripts/commercial/run_sales_arena.py' in script
+    assert "require_runtime_state" in script
 
 
 def test_runtime_compat_pins_company_services_to_repo_venv() -> None:

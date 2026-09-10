@@ -6,25 +6,40 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from functools import lru_cache
 
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from core.config.settings import get_settings
 
 
+def _engine_options(database_url: str, *, echo: bool) -> dict[str, object]:
+    """Return backend-compatible SQLAlchemy engine options.
+
+    QueuePool sizing is production tuning for PostgreSQL. SQLite memory/test
+    engines use StaticPool and reject QueuePool-only arguments such as
+    pool_size, max_overflow, and pool_timeout.
+    """
+    options: dict[str, object] = {
+        "echo": echo,
+        "pool_pre_ping": True,
+        "pool_recycle": 1800,
+    }
+    if make_url(database_url).get_backend_name() != "sqlite":
+        options.update(
+            pool_size=20,
+            max_overflow=30,
+            pool_timeout=30,
+        )
+    return options
+
+
 @lru_cache(maxsize=1)
 def _engine():
-    """Lazy-create async engine with production-grade pool settings."""
+    """Lazy-create an async engine with backend-compatible pool settings."""
     settings = get_settings()
     return create_async_engine(
         settings.database_url,
-        echo=settings.is_development,
-        pool_pre_ping=True,
-        # Pool sizing: 20 workers × ~1 connection + 30 burst capacity.
-        # For PgBouncer deployments these can be lowered to 2/5.
-        pool_size=20,
-        max_overflow=30,
-        pool_timeout=30,      # seconds to wait for a connection from pool
-        pool_recycle=1800,    # recycle connections every 30 min to avoid stale TCP
+        **_engine_options(settings.database_url, echo=settings.is_development),
     )
 
 

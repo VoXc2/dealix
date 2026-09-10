@@ -146,10 +146,11 @@ def test_real_owner_identical_state_skips_healthy(tmp_path) -> None:
     biz.mkdir(parents=True)
     (biz / "outreach_review_queue.json").write_text("[]")
     (biz / "proposals.index.json").write_text("[]")
-    _run("morning", tmp_path, "DEALIX_FLEET_FORCE=1",
+    _run("morning", tmp_path, "DEALIX_FLEET_FORCE=1", "DEALIX_FLEET_MIN_MEM_MB=0",
          f"DEALIX_REPO_ROOT={tmp_path}")
     fp1 = json.loads((tmp_path / "REVENUE_INTEL.state.json").read_text())["EFFECTIVE_FINGERPRINT"]
-    r2 = _run("morning", tmp_path, f"DEALIX_REPO_ROOT={tmp_path}")
+    r2 = _run("morning", tmp_path, "DEALIX_FLEET_MIN_MEM_MB=0",
+              f"DEALIX_REPO_ROOT={tmp_path}")
     st2 = json.loads((tmp_path / "REVENUE_INTEL.state.json").read_text())
     assert st2["EFFECTIVE_FINGERPRINT"] == fp1
     assert "SKIP_UNCHANGED" in (r2.stdout + r2.stderr)
@@ -161,10 +162,12 @@ def test_changing_second_watch_file_changes_fingerprint(tmp_path) -> None:
     biz.mkdir(parents=True)
     (biz / "outreach_review_queue.json").write_text("[]")
     (biz / "proposals.index.json").write_text("[]")
-    _run("morning", tmp_path, "DEALIX_FLEET_FORCE=1", f"DEALIX_REPO_ROOT={tmp_path}")
+    _run("morning", tmp_path, "DEALIX_FLEET_FORCE=1", "DEALIX_FLEET_MIN_MEM_MB=0",
+         f"DEALIX_REPO_ROOT={tmp_path}")
     fp1 = json.loads((tmp_path / "REVENUE_INTEL.state.json").read_text())["INPUT_FINGERPRINT"]
     (biz / "proposals.index.json").write_text('[{"changed": true}]')
-    _run("morning", tmp_path, "DEALIX_FLEET_FORCE=1", f"DEALIX_REPO_ROOT={tmp_path}")
+    _run("morning", tmp_path, "DEALIX_FLEET_FORCE=1", "DEALIX_FLEET_MIN_MEM_MB=0",
+         f"DEALIX_REPO_ROOT={tmp_path}")
     fp2 = json.loads((tmp_path / "REVENUE_INTEL.state.json").read_text())["INPUT_FINGERPRINT"]
     assert fp1 != fp2
 
@@ -189,13 +192,12 @@ def _variant_dispatcher(tmp_path, role, new_owner):
 def _run_variant(variant, event, state_dir, repo_root=None):
     env = dict(os.environ,
                DEALIX_FLEET_STATE_DIR=str(state_dir),
-               DEALIX_FLEET_FORCE=force_env or "0",
+               DEALIX_FLEET_FORCE="0",
+               DEALIX_FLEET_MIN_MEM_MB="0",
                DEALIX_REPO_ROOT=repo_root or "/nonexistent-repo-root")
     return subprocess.run(["bash", str(variant), event],
                           capture_output=True, text=True, timeout=300, env=env)
 
-
-force_env = "1"
 
 def test_none_to_real_owner_transition_executes(tmp_path) -> None:
     sd = tmp_path / "st"

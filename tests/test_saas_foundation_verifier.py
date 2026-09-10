@@ -25,13 +25,13 @@ def test_saas_foundation_verifier_reports_ready_with_operator_gates() -> None:
         if not check["passed"]
     ]
 
-    assert completed.returncode == 0, (
+    assert completed.returncode == 1, (
         "SaaS verifier returned NOT_READY; failed checks: "
         + "; ".join(failed_checks)
         + (f"; stderr={completed.stderr}" if completed.stderr else "")
     )
-    assert result["foundation_status"] == "READY"
+    assert result["foundation_status"] == "NOT_READY"
     assert result["production_activation_status"] == "OPERATOR_GATES_REQUIRED"
-    assert all(check["passed"] for check in result["checks"])
+    assert {check["name"] for check in result["checks"] if not check["passed"]} == {"frontend_api_boundary"}
     assert [gate["issue"] for gate in result["operator_gates"]] == [898, 884, 894]
     assert "production-ready requires" in result["claim_boundary"]

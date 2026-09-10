@@ -5,6 +5,9 @@
 # Article 4: this script never makes external network calls.
 # Article 8: explicit PASS/FAIL only — no "OK" without artifacts.
 # Article 11: chains existing per-phase test files; no new business logic.
+#
+# This verifier proves technical Wave13 contracts only. It does NOT prove
+# customer readiness, paid pilots, sellability, payment, or Production Green.
 
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -27,7 +30,7 @@ overall_pass=true
 
 run_check() {
   local name="$1"; local cmd="$2"
-  if eval "$cmd" >/dev/null 2>&1; then
+  if bash -o pipefail -c "$cmd" >/dev/null 2>&1; then
     results+=("$name=PASS")
   else
     results+=("$name=FAIL")
@@ -60,23 +63,21 @@ run_check "NO_LIVE_SEND_IN_WAVE13" "! grep -RE '(send_text|whatsapp_send|send_me
 run_check "NO_LIVE_CHARGE_IN_WAVE13" "! grep -RE '(\\.charge\\s*\\(|charge_card\\s*\\(|capture_payment\\s*\\()' auto_client_acquisition/service_catalog/ auto_client_acquisition/deliverables/ auto_client_acquisition/bottleneck_radar/ auto_client_acquisition/integration_capability/ auto_client_acquisition/business_metrics_board/ 2>/dev/null"
 
 # Article 8 invariant: confirmed_revenue_sar must NOT be assigned from invoice_intent.
-# The grep checks for assignment patterns where intent value flows into revenue.
 run_check "NO_FAKE_REVENUE" "! grep -RE 'confirmed_revenue_sar\\s*=\\s*.*invoice_intent' auto_client_acquisition/business_metrics_board/ 2>/dev/null"
 
 # ── Phase D — Forbidden-claim scrub ──────────────────────────────────
 run_check "FORBIDDEN_CLAIMS" "\"$PYTHON_BIN\" -m pytest tests/test_landing_forbidden_claims.py -q --no-cov"
 
-# ── Phase E — Hard-gate IMMUTABLE check ──────────────────────────────
-# Article 6 invariant: customer-portal still has at least 9 <section> blocks
-# (8 original + Wave 13's additive w13-fourcards = 10+). This bypasses the
-# sandbox _cffi_backend cascade in test_constitution_closure.py.
-run_check "PORTAL_SECTIONS_INVARIANT" "\"$PYTHON_BIN\" -c \"import re; html=open('landing/customer-portal.html').read(); n=len(re.findall(r'<section[\\s>]', html)); assert n >= 10, f'sections regressed: {n}'\""
+# ── Phase E — Current retired portal truth ───────────────────────────
+# The old static customer dashboard is intentionally retired. Preserve the
+# noindex + proof redirect + synthetic-not-customer-proof boundary instead of
+# resurrecting historical Wave13 section-count markup.
+run_check "PORTAL_RETIREMENT_INVARIANT" "\"$PYTHON_BIN\" -c \"from pathlib import Path; h=Path('landing/customer-portal.html').read_text(encoding='utf-8'); assert 'noindex,nofollow' in h; assert 'url=/proof.html' in h; assert 'DEALIX_RETIRED_PUBLIC_SURFACE' in h; assert 'synthetic' in h; assert 'دليل عميل' in h\""
 
 # ── Phase F — Wave 11 + 12 regression ────────────────────────────────
-# Best-effort: just check key tests still PASS (catches schema-extension breakage)
 run_check "FULL_OPS_CONTRACTS_REGRESSION" "\"$PYTHON_BIN\" -m pytest tests/test_full_ops_contracts.py -q --no-cov"
 
-# ── Final verdict ───────────────────────────────────────────────────
+# ── Final verdict ────────────────────────────────────────────────────
 echo
 echo "════════════════════════════════════════════════════════════"
 echo "  DEALIX WAVE 13 — FULL OPS PRODUCTIZATION VERIFIER"
@@ -84,7 +85,6 @@ echo "════════════════════════�
 for r in "${results[@]}"; do printf "  %s\n" "$r"; done
 echo
 
-# Counts
 pass_count=$(printf "%s\n" "${results[@]}" | grep -c "=PASS$" 2>/dev/null)
 fail_count=$(printf "%s\n" "${results[@]}" | grep -c "=FAIL$" 2>/dev/null)
 pass_count=${pass_count:-0}
@@ -93,7 +93,6 @@ total=$((pass_count + fail_count))
 echo "Total checks: $total · PASS: $pass_count · FAIL: $fail_count"
 echo
 
-# Hard gates summary (all immutable across Wave 13)
 echo "Hard gates (all 8 IMMUTABLE):"
 echo "  NO_LIVE_SEND=immutable"
 echo "  NO_LIVE_CHARGE=immutable"
@@ -111,15 +110,17 @@ echo "BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'unknown')"
 
 if $overall_pass; then
   echo "DEALIX_WAVE13_FULL_OPS_PRODUCTIZATION_VERDICT=PASS"
-  echo "CUSTOMER_READY=yes"
-  echo "FIRST_3_PAID_PILOTS_READY=yes"
-  echo "SELLABLE_NOW=yes"
-  echo "NEXT_FOUNDER_ACTION=Send first warm-intro WhatsApp message OR run dealix_first_warm_intros.py to seed pipeline."
+  echo "TECHNICAL_WAVE13_CONTRACT=PASS"
+  echo "CUSTOMER_READY=NOT_PROVEN_BY_THIS_VERIFIER"
+  echo "FIRST_3_PAID_PILOTS_READY=NOT_PROVEN_BY_THIS_VERIFIER"
+  echo "SELLABLE_NOW=NOT_PROVEN_BY_THIS_VERIFIER"
+  echo "NEXT_FOUNDER_ACTION=Use current commercial and production evidence before any customer-facing action."
   exit 0
 else
   echo "DEALIX_WAVE13_FULL_OPS_PRODUCTIZATION_VERDICT=PARTIAL_OR_FAIL"
-  echo "CUSTOMER_READY=no"
-  echo "FIRST_3_PAID_PILOTS_READY=no"
+  echo "TECHNICAL_WAVE13_CONTRACT=FAIL"
+  echo "CUSTOMER_READY=NOT_PROVEN"
+  echo "FIRST_3_PAID_PILOTS_READY=NOT_PROVEN"
   echo "NEXT_FOUNDER_ACTION=Review FAIL lines above; re-run failing test with -v for details."
   exit 1
 fi

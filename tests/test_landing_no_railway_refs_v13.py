@@ -46,15 +46,18 @@ def test_landing_script_js_has_no_railway_or_healthz() -> None:
     assert not violations, "script.js regression:\n  " + "\n  ".join(violations)
 
 
-def test_dealix_live_demo_html_exists() -> None:
-    """V13 ships a live-demo page consuming the V12 OS status APIs."""
+def test_dealix_live_demo_is_retired_to_proof() -> None:
     page = LANDING_DIR / "dealix-live-demo.html"
-    assert page.exists(), "landing/dealix-live-demo.html missing"
+    assert page.exists()
     text = page.read_text(encoding="utf-8")
-    assert "api.dealix.me" in text
-    assert "support-os" in text
-    assert "growth-os" in text
-    assert "full-ops" in text
+    compact = text.replace(" ", "").lower()
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in text
+    assert "noindex,nofollow" in compact
+    assert "url=/proof.html" in text
+    assert "api.dealix.me" not in text
+    assert "support-os" not in text
+    assert "growth-os" not in text
+    assert "full-ops" not in text
 
 
 def test_deploy_pages_workflow_exists() -> None:

@@ -28,26 +28,10 @@ def test_script_runs_and_passes() -> None:
     assert result.returncode == 0
 
 
-def test_script_checks_required_pages() -> None:
+def test_script_checks_current_launch_surfaces() -> None:
     content = SCRIPT.read_text(encoding="utf-8")
     assert "customer-portal.html" in content
     assert "executive-command-center.html" in content
-    assert "customer-dashboard.js" in content
-    assert "executive-command-center.js" in content
-
-
-def test_script_checks_internal_terms() -> None:
-    content = SCRIPT.read_text(encoding="utf-8")
-    assert "v11" in content
-    assert "v12" in content
-    assert "growth_beast" in content
-    assert "stacktrace" in content
-
-
-def test_script_checks_forbidden_claims() -> None:
-    content = SCRIPT.read_text(encoding="utf-8")
-    assert "guaranteed" in content.lower() or "guaranteed" in content
-    assert "blast" in content
-    assert "scraping" in content
-    assert "نضمن" in content
-    assert "cold" in content.lower()
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in content
+    assert "url=/proof.html" in content
+    assert "enriched_view" in content

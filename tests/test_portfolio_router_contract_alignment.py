@@ -15,6 +15,7 @@ def _signal(**overrides: object) -> DemandSignal:
         "company_name": "Example Co",
         "observed_at": "2026-08-29T10:00:00+00:00",
         "source_ref": "source://1",
+        "real_interaction_state": "REAL_INTERACTION",
         "real_interaction_ref": "interaction://1",
         "relationship_state": UNKNOWN,
         "consent_state": "CONSENTED",
@@ -53,7 +54,7 @@ def test_interaction_reference_is_evidence_presence_not_relationship_truth() -> 
     decision = PortfolioPackageRouter().route(_signal())
     assert decision.recommended_package == EntryPackage.REVENUE_COMMAND
     assert decision.relationship_state == INTERACTION_EVIDENCE_PRESENT
-    assert "INTERACTION_REFERENCE_IS_NOT_VERIFIED_RELATIONSHIP" in decision.reason_codes
+    assert "INTERACTION_EVIDENCE_IS_NOT_VERIFIED_RELATIONSHIP" in decision.reason_codes
     assert "canonical verified relationship state" in decision.missing_evidence
     assert decision.authority_class == "PACKAGE_HYPOTHESIS_ONLY"
     _assert_no_authority(decision)

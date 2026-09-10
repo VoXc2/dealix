@@ -60,3 +60,8 @@ Disallow: /ai-team.html
 
 Sitemap: https://dealix.me/sitemap.xml
 Sitemap: https://dealix.me/sitemap_dealix.xml
+Disallow: /autopilot.html
+Disallow: /bespoke-ai.html
+Disallow: /roadmap.html
+Disallow: /sector-report-b2b-services.html
+Disallow: /sector-report-realestate-sample.html

@@ -32,13 +32,13 @@ def test_script_calls_wave4_sub_audit() -> None:
     assert "scripts/customer_experience_audit.sh" in content
 
 
-def test_script_checks_8_wave5_items() -> None:
-    """The script must perform at least 8 distinct Wave 5 checks."""
+def test_script_checks_current_public_surface_contracts() -> None:
     content = SCRIPT.read_text(encoding="utf-8")
-    # Heuristic: count `ok_msg` calls in the Wave 5 section
-    wave5_section = content.split("Wave 5 Final CX Audit")[-1]
-    pass_count = wave5_section.count("ok_msg")
-    assert pass_count >= 8
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in content
+    assert "index.html" in content
+    assert "diagnostic.html" in content
+    assert "pricing.html" in content
+    assert "proof.html" in content
 
 
 def test_script_checks_revenue_playbook() -> None:

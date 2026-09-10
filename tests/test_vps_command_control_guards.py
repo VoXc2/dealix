@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +14,25 @@ RUNNER_INSTALLER = ROOT / "scripts" / "ops" / "install_dealix_self_hosted_runner
 def _text(path: Path) -> str:
     assert path.is_file(), f"missing {path.relative_to(ROOT)}"
     return path.read_text(encoding="utf-8")
+
+
+def _dispatcher_case_labels(text: str) -> set[str]:
+    """Return exact command labels from the dispatcher's case arms.
+
+    Parse labels rather than searching the whole shell file for fragments such
+    as ``secrets)``. The latter can false-positive on harmless prose like
+    ``environment/secrets):`` and says nothing about executable authority.
+    """
+    labels: set[str] = set()
+    for match in re.finditer(r"^\s{2}([^#\n][^\n]*?)\)\s*$", text, re.MULTILINE):
+        raw = match.group(1).strip()
+        if raw == "*":
+            continue
+        for label in raw.split("|"):
+            label = label.strip()
+            if re.fullmatch(r"[A-Za-z0-9_-]+", label):
+                labels.add(label)
+    return labels
 
 
 def test_dispatcher_has_no_arbitrary_shell_execution() -> None:
@@ -35,7 +55,9 @@ def test_dispatcher_has_no_arbitrary_shell_execution() -> None:
 
 def test_dispatcher_allowlist_excludes_l5_actions() -> None:
     text = _text(DISPATCHER)
-    allowed = {
+    case_labels = _dispatcher_case_labels(text)
+
+    required_safe = {
         "status",
         "repo-inspect",
         "verify",
@@ -46,20 +68,23 @@ def test_dispatcher_allowlist_excludes_l5_actions() -> None:
         "n8n-status",
         "security-status",
     }
-    for command in allowed:
-        assert f"{command})" in text
+    assert required_safe.issubset(case_labels), (
+        f"missing expected safe VPS commands: {sorted(required_safe - case_labels)}"
+    )
 
-    for forbidden_command in (
-        "merge)",
-        "deploy)",
-        "send)",
-        "publish)",
-        "pay)",
-        "refund)",
-        "delete)",
-        "secrets)",
-    ):
-        assert forbidden_command not in text
+    forbidden_l5 = {
+        "merge",
+        "deploy",
+        "send",
+        "publish",
+        "pay",
+        "refund",
+        "delete",
+        "secrets",
+    }
+    assert case_labels.isdisjoint(forbidden_l5), (
+        f"L5 command exposed by dispatcher: {sorted(case_labels & forbidden_l5)}"
+    )
 
 
 def test_repo_inspect_uses_read_only_github_api_auth() -> None:
@@ -113,7 +138,10 @@ def test_private_issue_bridge_requires_private_repo_and_founder() -> None:
     assert 'FOUNDER = "VoXc2"' in text
     assert 'PREFIX = "!dealix "' in text
     assert 'repo.get("private") is not True' in text
-    assert "author == FOUNDER" in text
+
+    assert "if author != FOUNDER:" in text
+    assert "return None" in text
+    assert "author != FOUNDER or command is None" in text
     assert "--bootstrap" in text
 
 
@@ -170,3 +198,25 @@ def test_self_hosted_runner_installer_does_not_print_registration_token() -> Non
     assert "secret_values_printed=false" in text
     assert 'RUNNER_USER="dealix"' in text
     assert 'RUNNER_NAME="dealix-vps"' in text
+
+
+def test_self_hosted_runner_installer_recovers_configured_but_stopped_service() -> None:
+    text = _text(RUNNER_INSTALLER)
+    configured = text.split('if [[ -f .runner ]]; then', 1)[1].split('TMP_ARCHIVE=', 1)[0]
+
+    assert "if ! ./svc.sh status; then" in configured
+    assert "./svc.sh start" in configured
+    assert './svc.sh install "$RUNNER_USER"' in configured
+    assert "configured runner service is still not healthy after recovery" in configured
+    assert "print_runner_proof true" in configured
+
+
+def test_self_hosted_runner_proof_distinguishes_actual_from_target_version() -> None:
+    text = _text(RUNNER_INSTALLER)
+    assert "actual_runner_version()" in text
+    assert "./bin/Runner.Listener --version" in text
+    assert "runner_version_actual=%s" in text
+    assert "runner_version_target=%s" in text
+    assert "runner_upgrade_required=%s" in text
+    assert 'RUNNER_VERSION="2.337.0"' in text
+    assert 'RUNNER_SHA256="70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613"' in text

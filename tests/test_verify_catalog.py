@@ -7,6 +7,8 @@ Pure stdlib — does not need the async pytest stack, so it can run standalone:
 from __future__ import annotations
 
 import importlib.util
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +25,23 @@ def test_catalog_covers_every_verify_script() -> None:
     rows = catalog.collect_rows()
     cataloged = {name for name, _purpose in rows}
     assert cataloged == scripts
+
+
+def test_catalog_cli_renders_to_stdout() -> None:
+    """The generation path must keep stdout usable and emit the full catalog."""
+    proc = subprocess.run(
+        [sys.executable, str(MODULE_PATH)],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stderr == ""
+    assert proc.stdout.startswith("# Dealix verify_*.py Catalog\n")
+    assert f"Total scripts: {len(catalog.collect_rows())}" in proc.stdout
+    assert proc.stdout == catalog.render(catalog.collect_rows())
 
 
 def test_committed_catalog_is_in_sync() -> None:

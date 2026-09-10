@@ -2,9 +2,8 @@
 
 Every response carries a ``governance_decision``. There is deliberately NO
 endpoint that sends an external message or charges a customer: drafts are
-approved/copied manually, and ``payments/handoff`` only records a
-founder-controlled step. Mirrors the autonomous_distribution router's posture:
-nothing leaves the building without an explicit human action.
+approved/copied manually, proposals are quote-evidence-bound, and
+``payments/handoff`` only records a founder-controlled step.
 """
 
 from __future__ import annotations
@@ -12,7 +11,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.distribution_os import (
     catalog,
@@ -36,9 +35,6 @@ _ALLOW = GovernanceDecision.ALLOW.value
 def _ok(payload: dict[str, Any], decision: str = _ALLOW) -> dict[str, Any]:
     payload["governance_decision"] = decision
     return payload
-
-
-# ── Request models ───────────────────────────────────────────────────────────
 
 
 class ProspectBody(BaseModel):
@@ -71,6 +67,9 @@ class GenerateProposalBody(BaseModel):
     scope: list[str] = Field(default_factory=list)
     out_of_scope: list[str] = Field(..., min_length=1)
     timeline: str = ""
+    discovery_ref: str = ""
+    quote_id: str = ""
+    customer_specific_quote_sar: float | None = Field(default=None, gt=0)
     evidence_level: int = 0
 
 
@@ -86,15 +85,25 @@ class GenerateProofPackBody(BaseModel):
 
 
 class PaymentHandoffBody(BaseModel):
+    """Public/internal API input for a payment handoff request.
+
+    Approval truth is intentionally NOT an input. The caller must reference an
+    existing approved proposal and the Approval Center quote authority that
+    commits to the exact customer, amount, discovery, and scope fingerprint.
+    Caller-supplied approval flags remain forbidden.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
     proposal_id: str = Field(..., min_length=1)
     customer_id: str = ""
     product_id: str = Field(..., min_length=1)
-    amount_sar: int = Field(..., ge=0)
-    approvals: dict[str, bool] = Field(default_factory=dict)
+    discovery_ref: str = Field(..., min_length=1)
+    quote_id: str = Field(..., min_length=1)
+    quote_authority_ref: str = Field(..., min_length=1)
+    customer_specific_scope_ref: str = Field(..., min_length=1)
+    amount_sar: float = Field(..., gt=0)
     notes: str = ""
-
-
-# ── Overview / catalog / metrics ──────────────────────────────────────────────
 
 
 @router.get("/overview")
@@ -112,9 +121,6 @@ async def get_metrics() -> dict[str, Any]:
     return _ok({"snapshot": metrics.snapshot()})
 
 
-# ── Prospects ─────────────────────────────────────────────────────────────────
-
-
 @router.get("/prospects")
 async def list_prospects(status: str | None = Query(None)) -> dict[str, Any]:
     rows = prospect.list_prospects(status=status)
@@ -129,9 +135,6 @@ async def add_prospect(body: ProspectBody) -> dict[str, Any]:
         raise HTTPException(status_code=422, detail=str(e)) from e
     q = prospect.qualify(p)
     return _ok({"prospect": p.to_dict(), "qualified": q.qualified, "reasons": list(q.reasons)})
-
-
-# ── Drafts ────────────────────────────────────────────────────────────────────
 
 
 @router.get("/drafts")
@@ -185,9 +188,6 @@ async def mark_copied(draft_id: str) -> dict[str, Any]:
     return _ok({"draft": d.to_dict()})
 
 
-# ── Follow-ups ────────────────────────────────────────────────────────────────
-
-
 @router.get("/followups")
 async def list_followups() -> dict[str, Any]:
     rows = followup.due_followups()
@@ -200,9 +200,6 @@ async def complete_followup(followup_id: str, message_ref: str = Query("")) -> d
     if f is None:
         raise HTTPException(status_code=404, detail=f"unknown followup {followup_id}")
     return _ok({"followup": f.to_dict()})
-
-
-# ── Proposals ─────────────────────────────────────────────────────────────────
 
 
 @router.get("/proposals")
@@ -220,9 +217,6 @@ async def generate_proposal(body: GenerateProposalBody) -> dict[str, Any]:
     return _ok({"proposal": p.to_dict()})
 
 
-# ── Proof packs ───────────────────────────────────────────────────────────────
-
-
 @router.get("/proof-packs")
 async def list_proof_packs(customer_id: str | None = Query(None)) -> dict[str, Any]:
     rows = proof_pack.list_proof_packs(customer_id=customer_id)
@@ -238,9 +232,6 @@ async def generate_proof_pack(body: GenerateProofPackBody) -> dict[str, Any]:
     return _ok({"proof_pack": p.to_dict()})
 
 
-# ── Payments (handoff only — never charges) ──────────────────────────────────
-
-
 @router.get("/payments")
 async def list_payments(status: str | None = Query(None)) -> dict[str, Any]:
     rows = payment_handoff.list_handoffs(status=status)
@@ -254,8 +245,11 @@ async def prepare_payment_handoff(body: PaymentHandoffBody) -> dict[str, Any]:
             proposal_id=body.proposal_id,
             customer_id=body.customer_id,
             product_id=body.product_id,
+            discovery_ref=body.discovery_ref,
+            quote_id=body.quote_id,
+            quote_authority_ref=body.quote_authority_ref,
+            customer_specific_scope_ref=body.customer_specific_scope_ref,
             amount_sar=body.amount_sar,
-            approvals=body.approvals,
             notes=body.notes,
         )
     except ValueError as e:
@@ -264,9 +258,6 @@ async def prepare_payment_handoff(body: PaymentHandoffBody) -> dict[str, Any]:
         _ALLOW if h.governance_status == "approved" else GovernanceDecision.REQUIRE_APPROVAL.value
     )
     return _ok({"payment_handoff": h.to_dict()}, decision)
-
-
-# ── Renewals / win-loss ───────────────────────────────────────────────────────
 
 
 @router.get("/renewals")

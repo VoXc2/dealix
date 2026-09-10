@@ -7,35 +7,53 @@ regenerate with:
 python3 scripts/ops/build_verify_catalog.py > docs/ops/VERIFY_SCRIPTS_CATALOG.md
 ```
 
-Total scripts: 63
+Total scripts: 106
 
 | Script | Purpose |
 |---|---|
 | `scripts/verify_ai_output_quality.py` | Smoke checks for AI output / draft guardrails (deterministic). |
+| `scripts/verify_approval_center_backend.py` | Emit a redacted read-only receipt for Approval Center backend readiness. |
+| `scripts/verify_autonomous_commercial_activation_v1.py` | (no docstring — needs one) |
+| `scripts/verify_autonomous_portfolio.py` | (no docstring — needs one) |
 | `scripts/verify_backup.py` | Backup verification script (W5.3). |
+| `scripts/verify_brand_authority.py` | (no docstring — needs one) |
+| `scripts/verify_brand_distribution_wave2.py` | (no docstring — needs one) |
+| `scripts/verify_brand_growth_portfolio_runtime_v1.py` | Fail-closed smoke verifier for the Brand & Growth Portfolio runtime. |
+| `scripts/verify_brand_growth_portfolio_v2.py` | Fail-closed verifier for Dealix Brand & Growth Portfolio V2. |
 | `scripts/verify_brand_pitch_conversion_layer.py` | (no docstring — needs one) |
+| `scripts/verify_capability_intake_contract.py` | (no docstring — needs one) |
 | `scripts/verify_client_acquisition_delivery_os.py` | Verify Stage 1 — Client Acquisition & Delivery OS files exist. |
+| `scripts/verify_commercial_authority_source_map_v1.py` | (no docstring — needs one) |
+| `scripts/verify_commercial_diagnostic_evidence.py` | Fail-closed runtime verifier for the evidence-bound commercial diagnostic. |
+| `scripts/verify_commercial_execution_fabric_v2.py` | (no docstring — needs one) |
 | `scripts/verify_commercial_fe_be.py` | Commercial FE/BE readiness — env matrix, import smoke, optional frontend build. |
 | `scripts/verify_commercial_launch_ready.py` | Soft commercial launch readiness — config, digest tests, smoke imports (no Moyasar claim). |
 | `scripts/verify_commercial_os_ready.py` | (no docstring — needs one) |
+| `scripts/verify_company_agent_operating_registry.py` | Fail-closed verifier for the Dealix company agent operating registry. |
+| `scripts/verify_company_brain_sprint_assessment.py` | (no docstring — needs one) |
 | `scripts/verify_company_intelligence_adapters.py` | Validate that every Company Intelligence adapter produces valid canonical entities. |
 | `scripts/verify_company_intelligence_entity_ownership.py` | Validate the canonical Company Intelligence entity ownership registry. |
 | `scripts/verify_company_launch_ready.py` | Conservative company launch readiness gate for Dealix test matrix. |
 | `scripts/verify_company_os.py` | Verify Company OS files exist. |
 | `scripts/verify_company_ready.py` | Aggregate company readiness checks (fast, no pytest unless requested). |
+| `scripts/verify_continuous_company_operations_v1.py` | Fail-closed verifier for Dealix bounded 24x7 Company Operations contract. |
 | `scripts/verify_crm_pipeline.py` | Verify CRM pipeline files exist. |
 | `scripts/verify_cutover_pr_body.py` | Validate PR body contains engineering cutover markers when cutover env vars mentioned. |
+| `scripts/verify_daily_market_advantage_v1.py` | Offline source verifier for Daily Market Advantage V1. |
 | `scripts/verify_data_flow_register.py` | Verify data flow register seed against JSON schema — PDPA readiness gate. |
 | `scripts/verify_dealix_growth_assets.py` | Verify Dealix growth assets exist (P2 launch-readiness inputs). |
-| `scripts/verify_dealix_launch_readiness.py` | Private Launch Readiness scorer for Dealix. |
+| `scripts/verify_dealix_launch_readiness.py` | Repository-side private launch readiness scorer for Dealix. |
 | `scripts/verify_dealix_module_status.py` | Verify Dealix module/service status truth: nothing unbuilt presented as live. |
 | `scripts/verify_dealix_positioning.py` | Verify Dealix positioning assets exist and carry no unsafe claims. |
 | `scripts/verify_dealix_ready.py` | Dealix stage gates — files, readiness scores, demo packs, sell gate. |
 | `scripts/verify_dealix_ultimate_os.py` | Master verification for Dealix Ultimate Commercial OS. |
 | `scripts/verify_delivery_os.py` | Verify Delivery OS files exist. |
+| `scripts/verify_deterministic_buyer_outputs_contract.py` | Fail-closed static verification for Dealix deterministic buyer outputs contract. |
+| `scripts/verify_deterministic_buyer_outputs_runtime.py` | Runtime verification for the deterministic buyer outputs engine. |
 | `scripts/verify_enterprise_ascension.py` | Validate docs/registry/ENTERPRISE_ASCENSION_MATRIX.yaml. |
 | `scripts/verify_enterprise_layer_readiness.py` | Enterprise layer readiness verification runner. |
 | `scripts/verify_enterprise_operating_layer.py` | (no docstring — needs one) |
+| `scripts/verify_event_to_cash_priority_contract.py` | (no docstring — needs one) |
 | `scripts/verify_first_paid_diagnostic_tracker.py` | Track first paid Diagnostic DoD from evidence CSV + KPI import (no invented revenue). |
 | `scripts/verify_founder_operating_system.py` | Verify the founder operating system files that keep Dealix production-ready. |
 | `scripts/verify_founder_pdpl_pass.py` | Verify founder PDPL pass checklist — doc refs + privacy route in frontend. |
@@ -46,22 +64,45 @@ Total scripts: 63
 | `scripts/verify_global_ai_transformation.py` | Verify global AI transformation program artifacts and core modules. |
 | `scripts/verify_governance.py` | Entry point alias: run governance documentation verification. |
 | `scripts/verify_governance_rules.py` | Verify governance docs exist under docs/governance/. |
+| `scripts/verify_governed_channel_runtime_v1.py` | Fail-closed verifier for Dealix governed omnichannel runtime v1. |
+| `scripts/verify_growth_channel_governance_v1.py` | Fail-closed verifier for Dealix search/AI-search and direct-marketing policy. |
+| `scripts/verify_growth_council_morning_command.py` | Side-effect-free verifier for Dealix Growth Council + company delegation + Morning Command. |
 | `scripts/verify_gtm_public_surfaces.py` | Verify GTM public surfaces registry + API trust endpoints (repo + optional live). |
 | `scripts/verify_gtm_stack.py` | Verify GTM stack docs, config, and snapshot. |
+| `scripts/verify_hubspot_mirror_contract.py` | Verify that HubSpot remains a CRM mirror, never a commercial truth owner. |
+| `scripts/verify_human_review_opt_in.py` | Fail-closed verifier for Dealix Human Review opt-in semantics. |
+| `scripts/verify_inbound_event_signal_truth.py` | (no docstring — needs one) |
 | `scripts/verify_integrations_activation.py` | Verify external integration env + suggest founder_integration_truth.yaml updates. |
+| `scripts/verify_leap_founder_network.py` | Deterministic verifier for the Dealix LEAP Founder Network contract. |
+| `scripts/verify_legacy_commercial_execution_quarantine.py` | Verify retired/synthetic CEO Top50 actions cannot be treated as current execution. |
+| `scripts/verify_marketing_attribution_contract.py` | (no docstring — needs one) |
+| `scripts/verify_marketing_distribution_os.py` | Deterministically verify the Dealix Marketing & Distribution OS contract. |
+| `scripts/verify_metricool_distribution_adapter_v1.py` | (no docstring — needs one) |
 | `scripts/verify_minimum_data_pilot_profile.py` | Fail-closed verifier for Dealix's minimum-data first-pilot profile. |
 | `scripts/verify_mobile_control_room.py` | (no docstring — needs one) |
+| `scripts/verify_morning_revenue_authority_scope.py` | Regression proof that Founder/personal data cannot pollute Dealix company truth. |
 | `scripts/verify_moyasar_e2e.py` | Moyasar sandbox E2E checklist — webhook route + side-effects (no live charge). |
 | `scripts/verify_no_auto_external_send.py` | Verify Dealix does not enable uncontrolled external sending in test/release gates. |
+| `scripts/verify_operating_company_commercial_state.py` | Deterministically verify the canonical Dealix commercial state contract. |
 | `scripts/verify_outreach_compliance.py` | Gate: outreach compliance — draft-only defaults and approval gates exist. |
+| `scripts/verify_p0_trust_remediation_v1.py` | Static fail-closed verifier for Dealix trust incident #1440 remediation. |
+| `scripts/verify_package_routing_contract.py` | (no docstring — needs one) |
 | `scripts/verify_paid_launch_readiness.py` | Paid launch readiness — env + integration matrix (no Moyasar claim until configured). |
+| `scripts/verify_president_approval_digest.py` | Standalone invariant verifier for the Dealix President approval digest. |
 | `scripts/verify_project_done.py` | Verify repo-level project closure artifacts exist (templates + Definition of Done). |
+| `scripts/verify_proof_builder_evidence_bound.py` | Fail-closed verifier for the evidence-bound commercial Proof Builder. |
+| `scripts/verify_proof_builder_reference_only_truth.py` | Fail-closed verifier for Proof Builder reference-only evidence semantics. |
 | `scripts/verify_proof_pack.py` | Verify proof pack templates exist for blueprint services. |
+| `scripts/verify_public_marketing_surface.py` | (no docstring — needs one) |
+| `scripts/verify_public_pricing_authority.py` | (no docstring — needs one) |
 | `scripts/verify_quality_score.py` | Verify core quality documentation exists for scored delivery. |
 | `scripts/verify_railway_production_config.py` | Verify Railway config-as-code + optional live /healthz on api.dealix.me. |
-| `scripts/verify_railway_surfaces.py` | Verify Railway deploy surfaces for API and canonical web services. |
+| `scripts/verify_railway_surfaces.py` | Verify canonical Railway deploy surfaces and production authority. |
 | `scripts/verify_reference_library_70.py` | Verify the v10 Reference Library YAML. |
 | `scripts/verify_repo_large_files.py` | Gate: no large binary files committed to the repo. |
+| `scripts/verify_revenue_growth_autopilot.py` | (no docstring — needs one) |
+| `scripts/verify_revenue_growth_economics_overlay.py` | (no docstring — needs one) |
+| `scripts/verify_revenue_lab_truth_and_determinism.py` | Fail-closed verifier for Revenue Lab identity and proof truth. |
 | `scripts/verify_reviewed_execution_gate.py` | Verify Dealix reviewed-execution agent and skill acceptance invariants. |
 | `scripts/verify_saas_foundation.py` | Verify Dealix SaaS foundation contracts without external services. |
 | `scripts/verify_sales_machine.py` | Verify Stage 2 — Automated Sales Machine files exist. |
@@ -73,4 +114,6 @@ Total scripts: 63
 | `scripts/verify_service_readiness_matrix.py` | Validate docs/registry/SERVICE_READINESS_MATRIX.yaml. |
 | `scripts/verify_strategic_command_layer.py` | (no docstring — needs one) |
 | `scripts/verify_ultimate_sales_os.py` | Verify the Ultimate Sales OS pack files exist. |
+| `scripts/verify_universal_market_radar.py` | Fail-closed verifier for the Dealix Universal Market Radar. |
 | `scripts/verify_value_plan_stack.py` | Run all Value Plan verification gates (soft + modules + pytest slice). |
+| `scripts/verify_workload_economics_attribution.py` | Fail-closed runtime verifier for workload economics attribution. |

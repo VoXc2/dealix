@@ -257,12 +257,21 @@ def main() -> None:
     enterprise_assets = ENTERPRISE_ASSET_SYSTEM.read_text(encoding="utf-8")
     for required in (
         "Dealix Supplier Readiness Passport",
-        "Supplier Registration != Tender Invitation",
-        "Tender Publication != Dealix Eligibility",
         "No sixth permanent brand/marketing agent is created.",
         "L5_EXECUTED=NONE",
     ):
         if required not in enterprise_assets:
+            fail(f"enterprise_asset_system_missing:{required}")
+
+    # Procurement truth rules are semantic policy, not typography. Keep the
+    # rules mandatory while avoiding false failures caused only by heading/case
+    # differences in a Markdown document.
+    enterprise_assets_semantic = enterprise_assets.casefold()
+    for required in (
+        "supplier registration != tender invitation",
+        "tender publication != dealix eligibility",
+    ):
+        if required not in enterprise_assets_semantic:
             fail(f"enterprise_asset_system_missing:{required}")
 
     sales_agent = SALES_AGENT.read_text(encoding="utf-8")

@@ -1,8 +1,12 @@
 """Tests for the AI Workforce orchestrator end-to-end pipeline.
 
 Pure local composition — these tests verify the orchestrator wires
-the registry + policy + risk_guard + cost_guard correctly without
-ever calling an LLM or making an external request.
+registry + canonical delegation + policy + risk/cost guards correctly without
+calling an LLM or making an external request.
+
+The historical 12 specialist roles remain compatibility workloads under the
+five canonical Dealix agents. They do not create a second permanent fleet and
+may not resurrect retired fixed-price customer bundles as commercial authority.
 """
 from __future__ import annotations
 
@@ -14,9 +18,7 @@ from auto_client_acquisition.ai_workforce import (
     WorkforceRun,
     run_workforce_goal,
 )
-from auto_client_acquisition.company_brain_v6.service_matcher import (
-    CUSTOMER_FACING_BUNDLES,
-)
+from auto_client_acquisition.ai_workforce.orchestrator import CANONICAL_ENTRY_OFFER
 
 
 def _goal(**overrides) -> WorkforceGoal:
@@ -54,18 +56,20 @@ def test_run_workforce_goal_returns_populated_workforce_run():
 
 
 def test_task_plan_includes_every_assigned_agent():
-    """No agent assigned by the router may be silently skipped."""
+    """No specialist role assigned by the router may be silently skipped."""
     run = run_workforce_goal(_goal())
     task_ids = [t.agent_id for t in run.task_plan]
     assert task_ids == run.assigned_agents
-    assert len(task_ids) == len(set(task_ids)), "duplicate agent in task_plan"
+    assert len(task_ids) == len(set(task_ids)), "duplicate specialist role in task_plan"
 
 
-def test_recommended_service_is_one_of_five_customer_bundles():
-    """The recommended service must be one of the 5 customer-facing bundles."""
+def test_recommended_service_is_current_canonical_entry_offer():
+    """Legacy workforce cannot restore historical bundle/pricing authority."""
     run = run_workforce_goal(_goal())
-    assert len(CUSTOMER_FACING_BUNDLES) == 5
-    assert run.recommended_service in CUSTOMER_FACING_BUNDLES
+    assert CANONICAL_ENTRY_OFFER == "free_mini_diagnostic"
+    assert run.recommended_service == CANONICAL_ENTRY_OFFER
+    assert run.guardrails["no_autonomous_pricing"] is True
+    assert run.guardrails["no_autonomous_payment"] is True
 
 
 def test_cost_estimate_is_non_negative():
@@ -74,7 +78,7 @@ def test_cost_estimate_is_non_negative():
 
 
 def test_guardrails_has_all_five_canonical_keys_true():
-    """All 5 canonical guardrail flags must be True on every run."""
+    """Every run keeps the core fail-closed safety contract."""
     run = run_workforce_goal(_goal())
     expected_keys = {
         "no_live_send",
@@ -96,7 +100,6 @@ def test_blocked_channels_does_not_break_legitimate_run():
     """
     run = run_workforce_goal(_goal(blocked_channels=["cold_whatsapp"]))
     assert isinstance(run, WorkforceRun)
-    # CompanyBrain ran successfully — the blocked channel was honored.
     brain_task = next(
         (t for t in run.task_plan if t.agent_id == "CompanyBrainAgent"),
         None,
@@ -123,12 +126,14 @@ def test_router_run_endpoint_returns_full_workforce_run():
     assert resp.status_code == 200
     body = resp.json()
     assert body["run_id"].startswith("run_")
-    assert body["recommended_service"] in CUSTOMER_FACING_BUNDLES
+    assert body["recommended_service"] == CANONICAL_ENTRY_OFFER
     assert body["guardrails"]["no_llm_calls"] is True
     assert body["guardrails"]["no_live_send"] is True
+    assert body["guardrails"]["no_autonomous_pricing"] is True
+    assert body["guardrails"]["no_autonomous_payment"] is True
 
 
-def test_router_status_endpoint_reports_twelve_agents():
+def test_router_status_endpoint_reports_twelve_specialist_roles():
     client = TestClient(create_app())
     resp = client.get("/api/v1/ai-workforce/status")
     assert resp.status_code == 200
@@ -137,7 +142,7 @@ def test_router_status_endpoint_reports_twelve_agents():
     assert body["agents_registered"] == 12
 
 
-def test_router_agents_listing_returns_all_twelve():
+def test_router_agents_listing_returns_all_twelve_specialist_roles():
     client = TestClient(create_app())
     resp = client.get("/api/v1/ai-workforce/agents")
     assert resp.status_code == 200
@@ -152,7 +157,7 @@ def test_router_agent_detail_returns_404_for_unknown():
     assert resp.status_code == 404
 
 
-def test_router_agent_detail_returns_known_agent():
+def test_router_agent_detail_returns_known_specialist_role():
     client = TestClient(create_app())
     resp = client.get("/api/v1/ai-workforce/agents/ComplianceGuardAgent")
     assert resp.status_code == 200

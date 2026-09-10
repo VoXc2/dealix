@@ -27,9 +27,11 @@ def _fake_repo(tmp_path: Path) -> tuple[Path, Path]:
     py.symlink_to(Path(sys.executable))
     (repo / "docs" / "ops").mkdir(parents=True)
     (repo / "docs" / "ops" / "DAILY_BUILDER_CONTRACT.md").write_text("v1\n")
+    scripts = repo / "scripts"
+    scripts.mkdir(parents=True)
     counter = tmp_path / "owner-count.txt"
     for name in ("fake_owner.py", "fake_owner_v2.py"):
-        (repo / name).write_text(
+        (scripts / name).write_text(
             "from pathlib import Path\n"
             "import os\n"
             "p=Path(os.environ['FAKE_OWNER_COUNTER'])\n"
@@ -98,7 +100,7 @@ def _receipts(state: Path) -> list[Path]:
 def test_identical_force_zero_dispatch_executes_real_owner_once(tmp_path: Path) -> None:
     repo, counter = _fake_repo(tmp_path)
     state = tmp_path / "state"
-    variant = _variant(tmp_path, ".venv/bin/python fake_owner.py")
+    variant = _variant(tmp_path, ".venv/bin/python scripts/fake_owner.py")
 
     first = _run(variant, state=state, repo=repo, counter=counter, force="0")
     assert first.returncode == 0, first.stderr
@@ -125,7 +127,7 @@ def test_none_to_real_force_zero_invalidates_dedupe_and_supersedes_handoff(tmp_p
     pending_before = list((state / ROLE / "pending").glob("JOB-*.json"))
     assert len(pending_before) == 1
 
-    variant = _variant(tmp_path, ".venv/bin/python fake_owner.py")
+    variant = _variant(tmp_path, ".venv/bin/python scripts/fake_owner.py")
     activated = _run(variant, state=state, repo=repo, counter=counter, force="0")
     assert activated.returncode == 0, activated.stderr
     after = _state(state)
@@ -149,8 +151,8 @@ def test_none_to_real_force_zero_invalidates_dedupe_and_supersedes_handoff(tmp_p
 def test_real_to_real_rotation_executes_at_force_zero(tmp_path: Path) -> None:
     repo, counter = _fake_repo(tmp_path)
     state = tmp_path / "state"
-    v1 = _variant(tmp_path, ".venv/bin/python fake_owner.py")
-    v2 = _variant(tmp_path, ".venv/bin/python fake_owner_v2.py")
+    v1 = _variant(tmp_path, ".venv/bin/python scripts/fake_owner.py")
+    v2 = _variant(tmp_path, ".venv/bin/python scripts/fake_owner_v2.py")
 
     r1 = _run(v1, state=state, repo=repo, counter=counter, force="0")
     assert r1.returncode == 0, r1.stderr
@@ -169,7 +171,7 @@ def test_post_dispatch_collect_is_idempotent_after_terminalization(tmp_path: Pat
     """Sequential collector re-entry cannot double-count a completed dispatch."""
     repo, counter = _fake_repo(tmp_path)
     state = tmp_path / "state"
-    variant = _variant(tmp_path, ".venv/bin/python fake_owner.py")
+    variant = _variant(tmp_path, ".venv/bin/python scripts/fake_owner.py")
 
     dispatched = _run(variant, state=state, repo=repo, counter=counter, force="0")
     assert dispatched.returncode == 0, dispatched.stderr

@@ -205,8 +205,6 @@ CHECKS: list[Check] = [
     # v5 layer 8 — Finance OS
     Check(name="finance_status", method="GET",
           path="/api/v1/finance/status"),
-    Check(name="finance_pricing", method="GET",
-          path="/api/v1/finance/pricing"),
     # v5 layer 9 — Delivery Factory
     Check(name="delivery_factory_status", method="GET",
           path="/api/v1/delivery-factory/status"),

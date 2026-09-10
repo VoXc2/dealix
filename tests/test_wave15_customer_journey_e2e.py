@@ -320,32 +320,51 @@ def test_step_07_no_offering_uses_guarantee_language() -> None:
 
 
 # ─────────────────────────────────────────────────────────────────────
-# Step 8 — Service Catalog JSON export round-trip
+# Step 8 — Governed public Service Catalog projection
 # ─────────────────────────────────────────────────────────────────────
 
 
-def test_step_08_service_catalog_json_export_in_sync_with_registry() -> None:
-    """Wave 15 §B2 — the JSON file on disk must match the registry."""
+def test_step_08_service_catalog_json_export_matches_public_authority() -> None:
+    """The committed public catalog must expose only the governed launch path."""
+    import json
+
     json_path = REPO_ROOT / "landing" / "assets" / "data" / "services-catalog.json"
     assert json_path.exists(), (
         "landing/assets/data/services-catalog.json missing — "
         "run: python3 scripts/dealix_export_service_catalog_json.py"
     )
 
-    import json
-
     payload = json.loads(json_path.read_text(encoding="utf-8"))
-    assert payload["count"] == 17
-    assert payload["schema_version"] == "1.0"
-    # Article 4: hard gates listed
-    assert set(payload["constitution"]["article_4_hard_gates"]) == {
-        "no_live_send", "no_live_charge", "no_cold_whatsapp",
-        "no_linkedin_auto", "no_scraping", "no_fake_proof",
-        "no_fake_revenue", "no_blast",
-    }
-    # Article 8 + 11 constitution declarations
-    assert payload["constitution"]["article_8_no_fake_claims"] is True
-    assert payload["constitution"]["article_11_single_source_of_truth"] is True
+
+    exporter_path = REPO_ROOT / "scripts" / "dealix_export_service_catalog_json.py"
+    spec = importlib.util.spec_from_file_location("_public_catalog_export", exporter_path)
+    assert spec is not None and spec.loader is not None
+    exporter = importlib.util.module_from_spec(spec)
+    sys.modules["_public_catalog_export"] = exporter
+    spec.loader.exec_module(exporter)
+
+    assert payload == exporter.build_catalog_dict()
+    assert payload["schema_version"] == "2.0-public"
+    assert payload["public_commercial_truth"] == "one_governed_path"
+    assert payload["generated_for"] == "public_static_surface"
+
+    offerings = payload["offerings"]
+    assert [item["id"] for item in offerings] == [
+        "free_mini_diagnostic",
+        "revenue_command_pilot_30d",
+    ]
+    assert offerings[0]["pricing"] == "free"
+    assert offerings[0]["next_step"] == "qualified_discovery"
+    assert offerings[1]["commercial_status"] == "quote_only"
+    assert offerings[1]["pricing"] == "customer_specific_quote_after_qualified_discovery"
+    assert offerings[1]["public_checkout"] is False
+    assert offerings[1]["customer_result_guarantee"] is False
+
+    policy = payload["claim_policy"]
+    assert policy["synthetic_or_demo_is_customer_proof"] is False
+    assert policy["revenue_requires_payment_evidence"] is True
+    assert policy["testimonial_requires_publication_approval"] is True
+    assert policy["unsupported_certification_or_residency_claims"] is False
 
 
 # ─────────────────────────────────────────────────────────────────────

@@ -34,17 +34,11 @@ def test_geo_audit_score_is_within_bounds():
         assert 0 <= page["score"] <= 100, f"{page['path']} score={page['score']}"
 
 
-def test_geo_audit_includes_status_html_with_high_score():
-    """status.html was authored on this branch with full meta + canonical
-    + OG + twitter:card. It should score among the highest."""
+def test_geo_audit_does_not_prioritize_retired_status_surface():
     report = geo_aio_radar.audit_all()
     by_path = {p["path"]: p for p in report["pages"]}
-    assert "status.html" in by_path
-    status_score = by_path["status.html"]["score"]
-    avg_score = report["summary"]["average_score"]
-    assert status_score >= avg_score, (
-        f"status.html score ({status_score}) should be >= average ({avg_score})"
-    )
+    assert "status.html" not in by_path
+    assert "status.html" not in {p["path"] for p in geo_aio_radar.top_priority_pages(limit=20)}
 
 
 def test_geo_audit_top_priority_pages_returns_lowest_scoring():

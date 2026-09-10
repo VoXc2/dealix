@@ -256,6 +256,9 @@ def test_draft_never_counted_as_sent() -> None:
         scope=["baseline", "workflow", "proof pack"],
         out_of_scope=["guaranteed revenue", "cold outreach"],
         timeline="30 days",
+        discovery_ref="test-discovery-001",
+        quote_id="test-quote-001",
+        customer_specific_quote_sar=1234,
     )
     assert p.approval_status == ProposalStatus.PENDING_APPROVAL.value
     assert p.approval_status != ProposalStatus.SENT.value

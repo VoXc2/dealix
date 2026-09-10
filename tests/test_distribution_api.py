@@ -1,8 +1,16 @@
-"""Distribution API — approval-first surface, no send / no charge endpoints."""
+"""Distribution API — approval-first, quote-bound, no send / no charge endpoints."""
 
 from __future__ import annotations
 
 import pytest
+
+from auto_client_acquisition.approval_center import (
+    ApprovalRequest,
+    ApprovalStore,
+    get_default_approval_store,
+    reset_default_approval_store_for_tests,
+)
+from auto_client_acquisition.distribution_os import payment_handoff, proposal as proposal_store
 
 
 @pytest.fixture(autouse=True)
@@ -16,6 +24,59 @@ def _isolate(tmp_path, monkeypatch):
         ("DEALIX_PAYMENT_HANDOFFS_PATH", "pay.jsonl"),
     ):
         monkeypatch.setenv(var, str(tmp_path / name))
+    reset_default_approval_store_for_tests(ApprovalStore())
+    yield
+    reset_default_approval_store_for_tests(None)
+
+
+def _approved_payment_context() -> dict[str, object]:
+    p = proposal_store.generate_proposal(
+        prospect_id="pros_api_1",
+        product_id="prod_sprint_v1",
+        problem="revenue follow-up leak",
+        proposed_solution="bounded revenue command pilot",
+        out_of_scope=["external sending"],
+        discovery_ref="discovery:pros-api-1",
+        quote_id="quote_doc_api_1",
+        customer_specific_quote_sar=12500,
+    )
+    approved = proposal_store.approve_proposal(p.id)
+    assert approved is not None
+
+    scope_ref = "scope:pros-api-1-v1"
+    fingerprint = payment_handoff._quote_authority_fingerprint(
+        lead_id=approved.prospect_id,
+        amount_sar=float(approved.customer_specific_quote_sar or 0),
+        discovery_ref=approved.discovery_ref,
+        customer_specific_scope_ref=scope_ref,
+    )
+    store = get_default_approval_store()
+    quote_approval = store.create(
+        ApprovalRequest(
+            object_type="customer_specific_quote",
+            object_id=fingerprint,
+            action_type="customer_specific_quote",
+            action_mode="approval_required",
+            channel="finance_manual",
+            risk_level="high",
+            proof_impact=f"customer_specific_quote:{fingerprint}",
+            action_id=f"quote:{fingerprint}",
+            lead_id=approved.prospect_id,
+            audit_ref=approved.discovery_ref,
+            proof_target=f"invoice_authority:{fingerprint}",
+        )
+    )
+    store.approve(quote_approval.approval_id, "founder-test")
+    return {
+        "proposal_id": approved.id,
+        "customer_id": approved.prospect_id,
+        "product_id": approved.product_id,
+        "discovery_ref": approved.discovery_ref,
+        "quote_id": approved.quote_id,
+        "quote_authority_ref": quote_approval.approval_id,
+        "customer_specific_scope_ref": scope_ref,
+        "amount_sar": approved.customer_specific_quote_sar,
+    }
 
 
 @pytest.mark.asyncio
@@ -26,11 +87,16 @@ async def test_overview_and_catalog(async_client) -> None:
     assert body["governance_decision"] == "ALLOW"
     assert len(body["ladder"]) == 5
     assert "metrics" in body
+    for rung in body["ladder"]:
+        if rung["id"] == "prod_diagnostic_v1":
+            assert rung["price_min_sar"] == 0
+        else:
+            assert rung["price_min_sar"] is None
+            assert rung["quote_required"] is True
 
 
 @pytest.mark.asyncio
 async def test_prospect_to_draft_to_approve_flow(async_client) -> None:
-    # add prospect
     res = await async_client.post(
         "/api/v1/distribution/prospects",
         json={
@@ -47,7 +113,6 @@ async def test_prospect_to_draft_to_approve_flow(async_client) -> None:
     assert pros["qualified"] is True
     pid = pros["prospect"]["id"]
 
-    # generate a clean draft
     res = await async_client.post(
         "/api/v1/distribution/drafts/generate",
         json={"prospect_id": pid, "draft_type": "outreach_first", "locale": "ar"},
@@ -55,10 +120,8 @@ async def test_prospect_to_draft_to_approve_flow(async_client) -> None:
     assert res.status_code == 200
     draft = res.json()["draft"]
     assert draft["governance_status"] == "pending_approval"
-    assert draft["product_id"] == "prod_sprint_v1"
     did = draft["id"]
 
-    # approve + mark copied
     res = await async_client.post(f"/api/v1/distribution/drafts/{did}/approve")
     assert res.status_code == 200
     assert res.json()["draft"]["status"] == "approved"
@@ -77,28 +140,39 @@ async def test_generate_draft_unknown_prospect_404(async_client) -> None:
 
 
 @pytest.mark.asyncio
-async def test_payment_handoff_requires_founder_then_approves(async_client) -> None:
-    res = await async_client.post(
-        "/api/v1/distribution/payments/handoff",
-        json={
-            "proposal_id": "prop_x",
-            "customer_id": "Acme",
-            "product_id": "prod_sprint_v1",
-            "amount_sar": 499,
-        },
-    )
-    assert res.status_code == 200
+async def test_payment_handoff_requires_real_approved_proposal_and_quote_authority(
+    async_client,
+) -> None:
+    base = _approved_payment_context()
+    res = await async_client.post("/api/v1/distribution/payments/handoff", json=base)
+    assert res.status_code == 200, res.text
     body = res.json()
-    assert body["payment_handoff"]["governance_status"] == "requires_founder_approval"
+    handoff = body["payment_handoff"]
+    assert handoff["governance_status"] == "requires_founder_approval"
+    assert handoff["status"] == "pending_approval"
+    assert handoff["price_authority"] == "customer_specific_quote_after_qualified_discovery"
+    assert handoff["public_fixed_price"] is False
+    assert handoff["live_charge_allowed"] is False
+    assert handoff["external_send_allowed"] is False
+    assert len(handoff["quote_fingerprint"]) == 64
+    assert handoff["quote_authority_ref"] == base["quote_authority_ref"]
     assert body["governance_decision"] == "REQUIRE_APPROVAL"
 
-    full = await async_client.post(
+    forged_proposal = await async_client.post(
+        "/api/v1/distribution/payments/handoff",
+        json={**base, "proposal_id": "prop_invented"},
+    )
+    assert forged_proposal.status_code == 422
+    assert "existing_proposal" in str(forged_proposal.json()["detail"])
+
+
+@pytest.mark.asyncio
+async def test_payment_handoff_cannot_self_approve_via_api(async_client) -> None:
+    base = _approved_payment_context()
+    forged = await async_client.post(
         "/api/v1/distribution/payments/handoff",
         json={
-            "proposal_id": "prop_y",
-            "customer_id": "Acme",
-            "product_id": "prod_sprint_v1",
-            "amount_sar": 499,
+            **base,
             "approvals": {
                 "proposal_approved": True,
                 "scope_confirmed": True,
@@ -109,7 +183,26 @@ async def test_payment_handoff_requires_founder_then_approves(async_client) -> N
             },
         },
     )
-    assert full.json()["payment_handoff"]["status"] == "approved"
+    assert forged.status_code == 422
+    detail = forged.json()["detail"]
+    assert any(item.get("type") == "extra_forbidden" for item in detail)
+
+
+@pytest.mark.asyncio
+async def test_payment_handoff_rejects_missing_or_substituted_quote_evidence(async_client) -> None:
+    base = _approved_payment_context()
+    for patch in (
+        {"quote_authority_ref": ""},
+        {"customer_specific_scope_ref": ""},
+        {"quote_authority_ref": "apr_invented"},
+        {"amount_sar": 12501},
+        {"customer_id": "invented_customer"},
+    ):
+        res = await async_client.post(
+            "/api/v1/distribution/payments/handoff",
+            json={**base, **patch},
+        )
+        assert res.status_code == 422
 
 
 @pytest.mark.asyncio
@@ -122,8 +215,34 @@ async def test_proposal_generate_validates_product(async_client) -> None:
 
 
 @pytest.mark.asyncio
+async def test_paid_proposal_requires_discovery_and_quote(async_client) -> None:
+    missing = await async_client.post(
+        "/api/v1/distribution/proposals/generate",
+        json={"prospect_id": "p", "product_id": "prod_sprint_v1", "out_of_scope": ["x"]},
+    )
+    assert missing.status_code == 422
+
+    ok = await async_client.post(
+        "/api/v1/distribution/proposals/generate",
+        json={
+            "prospect_id": "p",
+            "product_id": "prod_sprint_v1",
+            "out_of_scope": ["x"],
+            "discovery_ref": "discovery:p-001",
+            "quote_id": "quote_p_001",
+            "customer_specific_quote_sar": 12500,
+        },
+    )
+    assert ok.status_code == 200, ok.text
+    proposal = ok.json()["proposal"]
+    assert proposal["price_min_sar"] == 12500
+    assert proposal["price_max_sar"] == 12500
+    assert proposal["public_fixed_price"] is False
+    assert proposal["external_send_allowed"] is False
+
+
+@pytest.mark.asyncio
 async def test_no_send_or_charge_endpoint_exists(async_client) -> None:
-    # Doctrine: the distribution surface exposes no send/charge action.
     from api.routers.distribution import router
 
     paths = {route.path for route in router.routes}

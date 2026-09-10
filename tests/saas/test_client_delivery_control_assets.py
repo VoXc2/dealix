@@ -15,7 +15,8 @@ def test_client_delivery_control_assets_exist():
 
 def test_client_delivery_control_has_delivery_method_and_proof():
     manifest = Path("data/commercial/client_delivery_control_manifest.json").read_text(encoding="utf-8")
-    assert "Map" in manifest
+    assert "workflow map" in manifest
+    assert "stakeholder map" in manifest
     assert "Proof Pack" in manifest
     assert "acceptance criteria" in manifest
     assert "renewal" in manifest
