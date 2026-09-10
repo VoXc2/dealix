@@ -8,25 +8,6 @@ if [ "${RUN_RAILWAY_PRE_DEPLOY_MIGRATE:-0}" != "1" ]; then
   exit 0
 fi
 
-if [ "${DEALIX_DB_MIGRATION_AUTHORIZED:-0}" != "1" ]; then
-  echo "RAILWAY_PREDEPLOY: HOLD migrations — DEALIX_DB_MIGRATION_AUTHORIZED must equal 1"
-  exit 0
-fi
-
-if [ -z "${DATABASE_URL:-}" ]; then
-  echo "RAILWAY_PREDEPLOY: SKIP — DATABASE_URL unset"
-  exit 0
-fi
-
-echo "RAILWAY_PREDEPLOY: checking Alembic version-table capacity"
-python scripts/ops/check_alembic_version_capacity.py
-
-echo "RAILWAY_PREDEPLOY: alembic upgrade head"
-
-if command -v alembic >/dev/null 2>&1; then
-  alembic upgrade head
-else
-  python -m alembic upgrade head 2>/dev/null || python3 -m alembic upgrade head
-fi
-
-echo "RAILWAY_PREDEPLOY: OK"
+echo "RAILWAY_PREDEPLOY: HOLD migrations - automatic production DDL is disabled; persistent Railway variables are not action-bound L5 authority" >&2
+echo "RAILWAY_PREDEPLOY: use a separately authorized one-shot migration executor bound to the exact environment, revision payload, expiry, idempotency key, and ACTION_HASH" >&2
+exit 75

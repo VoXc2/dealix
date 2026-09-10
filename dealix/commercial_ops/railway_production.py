@@ -33,7 +33,7 @@ BAD_UI_PREDEPLOY_SNIPPETS = (
 
 
 def _has_canonical_predeploy(text: str) -> bool:
-    return CANONICAL_PREDEPLOY_MARKER in text and "railway_predeploy" in text
+    return CANONICAL_PREDEPLOY in text
 
 
 def check_repo_railway_config() -> dict[str, Any]:
@@ -47,7 +47,7 @@ def check_repo_railway_config() -> dict[str, Any]:
     elif 'healthcheckPath = "/healthz"' not in toml:
         issues.append('railway.toml must set healthcheckPath = "/healthz"')
     if not _has_canonical_predeploy(toml):
-        issues.append(f"railway.toml preDeployCommand must invoke {CANONICAL_PREDEPLOY_MARKER}")
+        issues.append(f"railway.toml preDeployCommand must invoke {CANONICAL_PREDEPLOY}")
     if "startCommand" in toml and "NO startCommand" not in toml:
         warnings.append("railway.toml should not set startCommand (use Dockerfile CMD)")
 
@@ -55,7 +55,7 @@ def check_repo_railway_config() -> dict[str, Any]:
     if jsn and "/healthz" not in jsn:
         issues.append("railway.json healthcheckPath should be /healthz")
     if jsn and not _has_canonical_predeploy(jsn):
-        issues.append(f"railway.json preDeployCommand must invoke {CANONICAL_PREDEPLOY_MARKER}")
+        issues.append(f"railway.json preDeployCommand must invoke {CANONICAL_PREDEPLOY}")
 
     docker = _read(DOCKERFILE)
     if "/app/start.sh" not in docker:
@@ -183,7 +183,7 @@ def parse_railway_ui_predeploy_drift(predeploy: str) -> str | None:
     if "railway_predeploy" in lower and "/app/scripts" not in lower:
         return f"استخدم مسار الحاوية: {CANONICAL_PREDEPLOY}"
     if "railway_predeploy" in lower:
-        return None
+        return f"Pre-deploy must invoke the Bash-only script explicitly: {CANONICAL_PREDEPLOY}"
     return f"Pre-deploy يجب أن يطابق railway.toml: {CANONICAL_PREDEPLOY}"
 
 
