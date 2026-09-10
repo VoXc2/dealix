@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Technical SEO auditor for the static landing site.
 
-Scans every ``landing/*.html`` page and emits a JSON report listing
-required-but-missing technical-SEO elements:
+Scans indexable ``landing/*.html`` pages and emits a JSON report listing
+required-but-missing technical-SEO elements. Explicit ``noindex`` pages are
+skipped because they are intentionally outside the SEO acquisition surface:
 
   - ``<title>``
   - ``<meta name="description">``
@@ -36,11 +37,19 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 LANDING = REPO / "landing"
 OUTPUT = REPO / "docs" / "SEO_AUDIT_REPORT.json"
+PUBLIC_SURFACE_MANIFEST = LANDING / "public-surface-manifest.json"
 
 # Pages that aren't true content pages and shouldn't be audited as such.
 SKIP_PAGES = {
     "posthog_snippet.html",  # snippet include, not a page
 }
+
+
+def _is_noindex(html: str) -> bool:
+    return re.search(
+        r'<meta\s+[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*noindex',
+        html, flags=re.IGNORECASE | re.DOTALL,
+    ) is not None
 
 # Pages that legitimately don't need an `og:title` / `og:description`
 # (they're internal redirects, founder-only authenticated UIs, or
@@ -112,10 +121,24 @@ def _audit(html: str) -> dict[str, bool]:
     }
 
 
+def _canonical_indexable_names() -> set[str]:
+    try:
+        data = json.loads(PUBLIC_SURFACE_MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError("public surface manifest unavailable or invalid") from exc
+    return {str(name) for name in data.get("canonical_indexable", [])}
+
+
 def _iter_pages() -> Iterable[Path]:
-    for p in sorted(LANDING.glob("*.html")):
-        if p.name in SKIP_PAGES:
+    for name in sorted(_canonical_indexable_names()):
+        p = LANDING / name
+        if p.name in SKIP_PAGES or p.suffix != ".html":
             continue
+        if not p.is_file():
+            raise FileNotFoundError(f"canonical indexable surface missing: {p}")
+        html = p.read_text(encoding="utf-8", errors="replace")
+        if _is_noindex(html):
+            raise RuntimeError(f"canonical indexable surface is noindex: {p.name}")
         yield p
 
 
@@ -150,7 +173,9 @@ def main() -> int:
         "summary": summary,
         "required_checks": REQUIRED_CHECKS,
         "advisory_checks": ADVISORY_CHECKS,
-        "skipped_pages": sorted(SKIP_PAGES),
+        "skipped_pages": sorted(
+            {p.name for p in LANDING.glob("*.html")} - _canonical_indexable_names()
+        ),
         "advisory_only_pages": sorted(ADVISORY_ONLY_PAGES),
         "pages": [
             {

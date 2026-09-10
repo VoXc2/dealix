@@ -31,6 +31,13 @@ LANDING = REPO_ROOT / "landing"
 SKIP_PAGES = {"posthog_snippet.html"}
 
 
+def _is_noindex(html: str) -> bool:
+    return re.search(
+        r'<meta\s+[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*noindex',
+        html, flags=re.IGNORECASE | re.DOTALL,
+    ) is not None
+
+
 _PATTERNS: dict[str, re.Pattern] = {
     "title": re.compile(r"<title[^>]*>[^<]+</title>", re.IGNORECASE | re.DOTALL),
     "meta_description": re.compile(
@@ -140,6 +147,8 @@ def audit_all() -> dict:
         try:
             html = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
+            continue
+        if _is_noindex(html):
             continue
         audit = _audit_page(html)
         pages.append(

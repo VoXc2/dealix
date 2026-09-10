@@ -362,18 +362,21 @@ def test_track_d5_playwright_files_exist():
     assert not missing, f"missing files: {missing}"
 
 
-def test_command_bus_html_has_safety_strip():
+def test_command_bus_html_is_retired_fail_closed_surface():
     html = (REPO / "landing" / "founder-command-bus.html").read_text(encoding="utf-8")
-    assert "NO_LIVE_SEND" in html
-    assert "NO_COLD_WHATSAPP" in html
-    # The UI must surface the access-gate (founder-only)
-    assert "access-gate.js" in html
+    compact = html.replace(" ", "").lower()
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
+    assert "noindex,nofollow" in compact
+    assert "url=/" in html
+    assert "access-gate.js" not in html
 
 
 def test_workflows_have_correct_cron():
-    # Watchdog: every hour
+    # Continuous watchdog ownership moved to the VPS; hosted Actions is manual-only.
     wd = (REPO / ".github" / "workflows" / "watchdog_drift.yml").read_text(encoding="utf-8")
-    assert re.search(r'cron:\s*"\d+\s+\*\s+\*\s+\*\s+\*"', wd)
+    assert "workflow_dispatch" in wd
+    assert "schedule:" not in wd
+    assert not re.search(r'cron:\s*', wd)
     # Weekly: Sunday 19:00 UTC
     ws = (
         REPO / ".github" / "workflows" / "weekly_self_improvement.yml"

@@ -27,7 +27,7 @@ OVERCLAIM_PATTERNS = [
     re.compile(r"(?:\d{2,}|\d+\+)\s*(?:عميل|عملاء)"),
 ]
 LIVE_CHECKOUT_PATTERNS = [
-    re.compile(r"(?i)href=[\"'][^\"']*(?:checkout|payment|pay-now)[^\"']*[\"']"),
+    re.compile(r"(?i)<a\b[^>]*href=[\"'][^\"']*(?:checkout|payment|pay-now)[^\"']*[\"']"),
     re.compile(r"(?i)action=[\"'][^\"']*(?:checkout|payment|pay-now)[^\"']*[\"']"),
     re.compile(r"(?i)\b(?:buy now|pay now|start checkout)\b"),
     re.compile(r"(?:ادفع الآن|اشتر الآن|ابدأ الدفع)"),

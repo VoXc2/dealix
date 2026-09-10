@@ -216,24 +216,16 @@ def test_diagnostic_matches_canonical_free_entry() -> None:
 # ─── Customer portal Today's Decision hero ────────────────────────────
 
 
-def test_customer_portal_today_decision_above_ops() -> None:
+def test_customer_portal_is_retired_to_current_proof_surface() -> None:
     html = _read("customer-portal.html")
-    today_idx = html.find('id="today-decision"')
-    ops_idx = html.find('id="ops-grid"')
-    assert today_idx > 0
-    assert ops_idx > 0
-    assert today_idx < ops_idx
-
-
-def test_customer_portal_ops_wrapped_in_collapsible_details() -> None:
-    html = _read("customer-portal.html")
-    assert 'class="ds-portal-deep"' in html
-
-
-def test_customer_portal_keeps_demo_label() -> None:
-    html = _read("customer-portal.html")
-    assert "src-pill" in html
-    assert "DEMO" in html
+    compact = html.replace(" ", "").lower()
+    assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
+    assert "noindex,nofollow" in compact
+    assert "url=/proof.html" in html
+    assert "synthetic" in html
+    assert "دليل عميل" in html
+    assert 'id="today-decision"' not in html
+    assert 'id="ops-grid"' not in html
 
 
 # ─── Proof page L1-L5 evidence ladder ─────────────────────────────────

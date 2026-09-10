@@ -56,10 +56,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
         "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
     },
-    "bespoke-ai.html": {
-        "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
-        "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
-    },
     "diagnostic-real-estate.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
     },
@@ -72,7 +68,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     },
     "index.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
-        "guaranteed": "negation/disclaimer (out-of-scope list: 'طلبات guaranteed revenue خارج أول cohort')",
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
     },
     "launchpad.html": {
@@ -85,13 +80,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "pricing.html": {
         "cold": "doctrine negation ('لا cold WhatsApp ولا LinkedIn automation')",
         "scraping": "doctrine negation ('لا scraping مخالف')",
-    },
-    "roadmap.html": {
-        "scraping": "doctrine negation ('no scraping' / policy-blocked)",
-    },
-    "sector-report-b2b-services.html": {
-        "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
-        "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
     },
     "subprocessors.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
