@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import pytest
 
+from auto_client_acquisition.approval_center import get_default_approval_store
+from auto_client_acquisition.approval_center.schemas import ApprovalRequest
 from auto_client_acquisition.distribution_os import (
     catalog,
     delivery_handoff,
@@ -33,6 +35,10 @@ def _isolate(tmp_path, monkeypatch):
         ("DEALIX_DELIVERY_HANDOFFS_PATH", "deliv.jsonl"),
     ):
         monkeypatch.setenv(var, str(tmp_path / name))
+    approvals = get_default_approval_store()
+    approvals.clear()
+    yield
+    approvals.clear()
 
 
 def _prospect(**over):
@@ -46,6 +52,54 @@ def _prospect(**over):
     }
     base.update(over)
     return prospect.add_prospect(**base)
+
+
+def _authorized_payment_handoff():
+    discovery_ref = "discovery:c-001"
+    scope_ref = "scope:c-001"
+    quote_id = "quote_c_001"
+    amount = 12500
+    prop = proposal.generate_proposal(
+        prospect_id="c",
+        product_id="prod_sprint_v1",
+        out_of_scope=["external send"],
+        discovery_ref=discovery_ref,
+        quote_id=quote_id,
+        customer_specific_quote_sar=amount,
+    )
+    proposal.approve_proposal(prop.id)
+    fingerprint = payment_handoff._quote_authority_fingerprint(
+        lead_id=prop.prospect_id,
+        amount_sar=amount,
+        discovery_ref=discovery_ref,
+        customer_specific_scope_ref=scope_ref,
+    )
+    approvals = get_default_approval_store()
+    req = ApprovalRequest(
+        object_type="customer_specific_quote",
+        object_id=fingerprint,
+        action_type="customer_specific_quote",
+        action_mode="approval_required",
+        channel="finance_manual",
+        risk_level="high",
+        proof_impact=f"customer_specific_quote:{fingerprint}",
+        action_id=f"quote:{fingerprint}",
+        lead_id=prop.prospect_id,
+        audit_ref=discovery_ref,
+        proof_target=f"invoice_authority:{fingerprint}",
+    )
+    stored = approvals.create(req)
+    approvals.approve(stored.approval_id, "founder-test")
+    return payment_handoff.prepare_handoff(
+        proposal_id=prop.id,
+        customer_id=prop.prospect_id,
+        product_id=prop.product_id,
+        discovery_ref=discovery_ref,
+        quote_id=quote_id,
+        quote_authority_ref=stored.approval_id,
+        customer_specific_scope_ref=scope_ref,
+        amount_sar=amount,
+    )
 
 
 def test_no_external_send_capability_in_any_submodule() -> None:
@@ -135,16 +189,11 @@ def test_off_catalog_product_cannot_produce_proposal_or_handoff() -> None:
 
 
 def test_payment_handoff_defaults_to_requiring_founder_approval() -> None:
-    h = payment_handoff.prepare_handoff(
-        proposal_id="p",
-        customer_id="c",
-        product_id="prod_sprint_v1",
-        discovery_ref="discovery:c-001",
-        quote_id="quote_c_001",
-        amount_sar=12500,
-    )
+    h = _authorized_payment_handoff()
     assert h.governance_status == "requires_founder_approval"
     assert h.approvals["founder_approved"] is False
     assert h.live_charge_allowed is False
     assert h.external_send_allowed is False
     assert h.public_fixed_price is False
+    assert h.quote_authority_ref
+    assert len(h.quote_fingerprint) == 64
