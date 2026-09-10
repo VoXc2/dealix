@@ -21,7 +21,7 @@ NOW = datetime(2026, 9, 10, 12, 0, tzinfo=timezone.utc)
 def snapshot(
     *,
     draft: bool = False,
-    body: str = "MERGE_RECOMMENDATION=READY",
+    body: str = "MERGE_RECOMMENDATION=READY-FOR-MERGE-REVIEW",
     head: str = HEAD,
     base: str = BASE,
     expires_hours: int = 2,
@@ -72,9 +72,16 @@ def test_draft_is_blocked_even_with_authority() -> None:
         verify_snapshot(snapshot(draft=True), {ACTOR})
 
 
-def test_explicit_hold_is_blocked_even_with_authority() -> None:
+def test_explicit_merge_hold_is_blocked_even_with_authority() -> None:
     with pytest.raises(GateError, match="declares hold"):
         verify_snapshot(snapshot(body="MERGE_RECOMMENDATION=HOLD"), {ACTOR})
+
+
+def test_production_not_green_does_not_deadlock_predeploy_merge_authority() -> None:
+    current = snapshot(
+        body="MERGE_RECOMMENDATION=READY-FOR-MERGE-REVIEW\nPRODUCTION_GREEN=false"
+    )
+    assert verify_snapshot(current, {ACTOR}).head_sha == HEAD
 
 
 def test_stale_head_invalidates_prior_authority() -> None:
@@ -85,7 +92,7 @@ def test_stale_head_invalidates_prior_authority() -> None:
 
 
 def test_unallowlisted_comment_does_not_grant_authority() -> None:
-    with pytest.raises(GateError, match="no valid allowlisted"):
+    with pytest.raises(GateError, match="no allowlisted merge-authority"):
         verify_snapshot(snapshot(), {"another-user"})
 
 
@@ -112,4 +119,25 @@ def test_long_authority_cannot_age_into_valid_window() -> None:
     current = snapshot(expires_hours=48)
     current["now"] = (NOW + timedelta(hours=30)).isoformat()
     with pytest.raises(GateError, match="24-hour"):
+        verify_snapshot(current, {ACTOR})
+
+
+def test_latest_revoke_blocks_an_earlier_still_fresh_grant() -> None:
+    current = snapshot()
+    current["comments"].append(
+        {
+            "user": {"login": ACTOR},
+            "body": "DEALIX_L5_MERGE_AUTHORITY\ndecision: REVOKE",
+            "created_at": (NOW + timedelta(minutes=5)).isoformat(),
+        }
+    )
+    current["now"] = (NOW + timedelta(minutes=6)).isoformat()
+    with pytest.raises(GateError, match="latest authority decision is not GRANT"):
+        verify_snapshot(current, {ACTOR})
+
+
+def test_future_dated_latest_authority_is_blocked() -> None:
+    current = snapshot()
+    current["comments"][0]["created_at"] = (NOW + timedelta(minutes=5)).isoformat()
+    with pytest.raises(GateError, match="timestamped in the future"):
         verify_snapshot(current, {ACTOR})
