@@ -20,7 +20,7 @@
 |---|---------|--------|
 | 1 | **Source** | branch `main` · repo `Dealix-sa/dealix` |
 | 2 | **Start Command** | **فارغ** (Dockerfile `CMD /app/start.sh`) |
-| 3 | **Pre-deploy** | `sh /app/scripts/railway_predeploy.sh` |
+| 3 | **Pre-deploy** | `bash /app/scripts/railway_predeploy.sh` |
 | 4 | **Variables** | Raw Editor ← الصق `.env.railway.generated` → Save |
 | 5 | **Deploy** | Deployments → **Deploy latest commit** (ليس Redeploy لنشر قديم) |
 | 6 | **Wait** | healthcheck `/healthz` = 200 |

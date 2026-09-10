@@ -4,7 +4,7 @@
 
 | الحقل | القيمة |
 |--------|--------|
-| Pre-deploy | `sh /app/scripts/railway_predeploy.sh` |
+| Pre-deploy | `bash /app/scripts/railway_predeploy.sh` |
 | Healthcheck | `/healthz` |
 
 ## تحقق

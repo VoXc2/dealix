@@ -84,3 +84,12 @@ def test_health_contract_is_healthz_not_retired_health_alias() -> None:
 
     assert 'healthcheckPath = "/healthz"' in toml
     assert railway_json["deploy"]["healthcheckPath"] == "/healthz"
+
+
+def test_predeploy_uses_bash_for_bash_only_script() -> None:
+    toml = _read("railway.toml")
+    railway_json = json.loads(_read("railway.json"))
+    assert "bash /app/scripts/railway_predeploy.sh" in toml
+    assert "bash /app/scripts/railway_predeploy.sh" in railway_json["deploy"]["preDeployCommand"]
+    assert "then sh /app/scripts/railway_predeploy.sh" not in toml
+    assert "then sh /app/scripts/railway_predeploy.sh" not in railway_json["deploy"]["preDeployCommand"]

@@ -50,36 +50,34 @@ def test_analyze_skips_live_when_api_base_false() -> None:
     assert blob["live_healthz"].get("probed") is False
 
 
-def test_verify_cli_skip_live_does_not_probe_production() -> None:
-    proc = subprocess.run(
+def _run_verify_cli(*args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
         [
             sys.executable,
             str(ROOT / "scripts" / "verify_railway_production_config.py"),
-            "--skip-live",
+            *args,
         ],
         cwd=ROOT,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
     )
+
+
+def test_verify_cli_skip_live_does_not_probe_production() -> None:
+    proc = _run_verify_cli("--skip-live")
     assert proc.returncode == 0, proc.stderr
     assert "live /healthz: skipped" in proc.stdout
     assert "RAILWAY_PRODUCTION_CONFIG_VERDICT=PASS" in proc.stdout
 
 
 def test_verify_cli_ui_drift_cannot_report_false_pass() -> None:
-    proc = subprocess.run(
-        [
-            sys.executable,
-            str(ROOT / "scripts" / "verify_railway_production_config.py"),
-            "--skip-live",
-            "--ui-restart-max-retries",
-            "10",
-        ],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
+    proc = _run_verify_cli(
+        "--skip-live",
+        "--ui-restart-max-retries",
+        "10",
     )
     assert proc.returncode == 0, proc.stderr
     assert "FOUNDER_ACTION (restart)" in proc.stdout
