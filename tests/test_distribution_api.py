@@ -79,7 +79,9 @@ async def test_generate_draft_unknown_prospect_404(async_client) -> None:
 
 
 @pytest.mark.asyncio
-async def test_payment_handoff_requires_quote_evidence_and_founder_then_approves(async_client) -> None:
+async def test_payment_handoff_requires_quote_evidence_and_cannot_self_approve_via_api(
+    async_client,
+) -> None:
     base = {
         "customer_id": "Acme",
         "product_id": "prod_sprint_v1",
@@ -95,12 +97,14 @@ async def test_payment_handoff_requires_quote_evidence_and_founder_then_approves
     body = res.json()
     handoff = body["payment_handoff"]
     assert handoff["governance_status"] == "requires_founder_approval"
+    assert handoff["status"] == "pending_approval"
     assert handoff["price_authority"] == "customer_specific_quote_after_qualified_discovery"
     assert handoff["public_fixed_price"] is False
     assert handoff["live_charge_allowed"] is False
+    assert handoff["external_send_allowed"] is False
     assert body["governance_decision"] == "REQUIRE_APPROVAL"
 
-    full = await async_client.post(
+    forged = await async_client.post(
         "/api/v1/distribution/payments/handoff",
         json={
             "proposal_id": "prop_y",
@@ -116,8 +120,9 @@ async def test_payment_handoff_requires_quote_evidence_and_founder_then_approves
             },
         },
     )
-    assert full.status_code == 200, full.text
-    assert full.json()["payment_handoff"]["status"] == "approved"
+    assert forged.status_code == 422
+    detail = forged.json()["detail"]
+    assert any(item.get("type") == "extra_forbidden" for item in detail)
 
 
 @pytest.mark.asyncio
