@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 from typing import Any, NamedTuple
 
@@ -27,6 +27,30 @@ class PriorityResult(NamedTuple):
     execution_drag: float
     confidence_factor: float
     final_priority: float
+
+
+class ExecutionContext(NamedTuple):
+    agent_id: str
+    workload_id: str
+    tenant_id: str
+    environment: str
+    code_version: str
+    policy_version: str
+    tool: str
+
+class AuthorityEnvelope(NamedTuple):
+    action: str
+    tenant_id: str
+    granted_by: str
+    authority_source: str
+    expires_at: str
+    idempotency_key: str
+
+
+class AuthorityDecision(NamedTuple):
+    decision: str
+    reason: str
+    idempotency_key: str
 
 
 def load_kernel(path: Path = KERNEL_PATH) -> dict[str, Any]:
@@ -225,8 +249,52 @@ def policy_decision_receipt(
     }
     if any(not str(value).strip() for value in receipt.values()):
         raise ControlKernelError("policy_receipt_required_field_missing")
-    receipt["timestamp"] = timestamp or datetime.now(timezone.utc).isoformat()
+    receipt["timestamp"] = timestamp or datetime.now(UTC).isoformat()
     return receipt
+
+
+def evaluate_action_authority(
+    *,
+    context: ExecutionContext,
+    action: str,
+    target_tenant_id: str,
+    authority: AuthorityEnvelope,
+    seen_idempotency_keys: set[str] | None = None,
+    now: datetime | None = None,
+) -> AuthorityDecision:
+    """Fail closed before material execution on identity, tenant, scope, expiry, or replay."""
+    binding = (
+        context.agent_id, context.workload_id, context.tenant_id, context.environment,
+        context.code_version, context.policy_version, context.tool,
+    )
+    if any(not str(value).strip() for value in binding):
+        return AuthorityDecision("DENY", "WORKLOAD_BINDING_INCOMPLETE", authority.idempotency_key)
+    if context.tenant_id != target_tenant_id or authority.tenant_id != target_tenant_id:
+        return AuthorityDecision("DENY", "WRONG_TENANT_DENIED", authority.idempotency_key)
+    if authority.action != action:
+        return AuthorityDecision("DENY", "ACTION_SCOPE_MISMATCH", authority.idempotency_key)
+    if not authority.granted_by.strip() or not authority.authority_source.strip():
+        return AuthorityDecision("DENY", "AUTHORITY_SOURCE_MISSING", authority.idempotency_key)
+    if authority.granted_by.strip() == context.agent_id.strip() or authority.authority_source.strip() == context.agent_id.strip():
+        return AuthorityDecision("DENY", "NO_AGENT_SELF_AUTHORITY", authority.idempotency_key)
+    try:
+        expiry = datetime.fromisoformat(authority.expires_at.replace("Z", "+00:00"))
+    except ValueError:
+        return AuthorityDecision("DENY", "INVALID_AUTHORITY_EXPIRY", authority.idempotency_key)
+    if expiry.tzinfo is None:
+        return AuthorityDecision("DENY", "AUTHORITY_EXPIRY_MUST_BE_TIMEZONE_AWARE", authority.idempotency_key)
+    current = now or datetime.now(UTC)
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=UTC)
+    if expiry <= current:
+        return AuthorityDecision("DENY", "EXPIRED_AUTHORITY_DENIED", authority.idempotency_key)
+    if not authority.idempotency_key.strip():
+        return AuthorityDecision("DENY", "MISSING_IDEMPOTENCY_KEY", authority.idempotency_key)
+    if seen_idempotency_keys is not None and authority.idempotency_key in seen_idempotency_keys:
+        return AuthorityDecision("DENY", "DUPLICATE_ACTION_SUPPRESSED", authority.idempotency_key)
+    if seen_idempotency_keys is not None:
+        seen_idempotency_keys.add(authority.idempotency_key)
+    return AuthorityDecision("ALLOW", "EXACT_ACTION_AUTHORITY_VALID", authority.idempotency_key)
 
 
 def tie_break_order(kernel: dict[str, Any] | None = None) -> list[str]:
