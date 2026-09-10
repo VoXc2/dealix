@@ -106,3 +106,10 @@ def test_tampered_action_hash_is_blocked() -> None:
     )
     with pytest.raises(GateError, match="action_hash mismatch"):
         verify_snapshot(current, {ACTOR})
+
+
+def test_long_authority_cannot_age_into_valid_window() -> None:
+    current = snapshot(expires_hours=48)
+    current["now"] = (NOW + timedelta(hours=30)).isoformat()
+    with pytest.raises(GateError, match="24-hour"):
+        verify_snapshot(current, {ACTOR})
