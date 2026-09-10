@@ -18,11 +18,12 @@ WIDENER = (ROOT / "scripts" / "ops" / "widen_alembic_version_capacity.py").read_
 PREDEPLOY = (ROOT / "scripts" / "railway_predeploy.sh").read_text(encoding="utf-8")
 
 
-def test_predeploy_checks_capacity_before_upgrade() -> None:
-    check = "python scripts/ops/check_alembic_version_capacity.py"
-    upgrade = "alembic upgrade head"
-    assert check in PREDEPLOY
-    assert PREDEPLOY.index(check) < PREDEPLOY.rindex(upgrade)
+def test_predeploy_does_not_execute_capacity_check_or_upgrade() -> None:
+    assert "python scripts/ops/check_alembic_version_capacity.py" not in PREDEPLOY
+    assert "alembic upgrade head" not in PREDEPLOY
+    assert "persistent Railway variables are not action-bound L5 authority" in PREDEPLOY
+    assert "ACTION_HASH" in PREDEPLOY
+    assert "exit 75" in PREDEPLOY
 
 
 def test_read_only_checker_has_no_schema_mutation() -> None:
