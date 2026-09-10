@@ -25,7 +25,7 @@ if ($LASTEXITCODE -ne 0) {
 
 FOUNDER_ACTION:
   1. Railway -> Deploy -> Start Command: CLEAR (or /app/start.sh only)
-  2. Railway -> Deploy -> Pre-deploy: sh /app/scripts/railway_predeploy.sh
+  2. Railway -> Deploy -> Pre-deploy: bash /app/scripts/railway_predeploy.sh
   3. Enable Wait for CI on main
 "@
     exit $LASTEXITCODE
