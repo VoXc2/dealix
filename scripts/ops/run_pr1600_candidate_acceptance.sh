@@ -7,7 +7,7 @@ umask 077
 # acceptance on that exact commit, and only promotes the result to CURRENT PR
 # evidence when the live PR head is still identical at the end.
 # Read/test only: no merge, deploy, Railway staged apply, DNS/DB/secret mutation,
-# payment, external send, public publish, or contract execution.
+# payment, external send, public publish, contract execution, or scheduler mutation.
 
 REPO="${DEALIX_REPO:-/opt/dealix/workspace/dealix}"
 CONTROL="${DEALIX_CONTROL:-/opt/dealix/control}"
@@ -73,35 +73,21 @@ install -d -m 0750 -o "$RUN_USER" -g "$RUN_GROUP" \
   "$CONTROL/worktrees" "$CONTROL/proof" "$PROOF"
 exec > >(tee -a "$PROOF/run.log") 2>&1
 
-RESTORE_TIMERS=()
-
 cleanup() {
   local rc=$?
   trap - EXIT
   if [[ -d "$WT" ]]; then
     as_dealix git -C "$REPO" worktree remove --force "$WT" >/dev/null 2>&1 || true
   fi
-  for timer in "${RESTORE_TIMERS[@]:-}"; do
-    systemctl start "$timer" >/dev/null 2>&1 || true
-  done
   echo "FINAL_PROOF=$PROOF"
   exit "$rc"
 }
 trap cleanup EXIT
 
-# Reduce avoidable branch churn during the acceptance window. Only timers that
-# were active are restored, including after fail-closed HOLD exits.
-for timer in \
-  dealix-omega-cycle.timer \
-  dealix-sovereign-cycle.timer \
-  dealix-autonomous-company.timer
-do
-  if systemctl is-active --quiet "$timer" 2>/dev/null; then
-    RESTORE_TIMERS+=("$timer")
-    systemctl stop "$timer"
-    echo "TEMPORARILY_STOPPED=$timer"
-  fi
-done
+# Deliberately do not stop, restart, or otherwise mutate production timers here.
+# If normal company automation moves main or the PR during this run, the final
+# exact-head stability checks fail closed and the candidate must be re-accepted.
+echo "SCHEDULER_MUTATION=false"
 
 echo "=== CANDIDATE FREEZE ==="
 as_dealix git -C "$REPO" fetch origin main --quiet
@@ -194,6 +180,7 @@ echo "LOCAL_HEAD_END=$LOCAL_END"
 [[ "$LOCAL_END" == "$CANDIDATE" ]] || hold LOCAL_HEAD_MOVED
 
 echo "EXACT_HEAD_STABILITY=PASS"
+echo "SCHEDULER_MUTATION=false"
 echo "MERGE_EXECUTED=false"
 echo "DEPLOY_EXECUTED=false"
 echo "RAILWAY_STAGED_APPLY=false"
