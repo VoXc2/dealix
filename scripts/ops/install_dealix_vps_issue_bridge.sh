@@ -40,7 +40,7 @@ fi
 
 PRIVATE="$(sudo -iu "$RUNNER_USER" gh api "repos/${REPO}" --jq '.private' 2>/dev/null || true)"
 if [[ "$PRIVATE" != "true" ]]; then
-  echo "BLOCKED: ${REPO} must remain private."
+  echo "BLOCKED: ${REPO} must be private."
   exit 6
 fi
 
