@@ -54,23 +54,48 @@ export PYTHONNOUSERSITE=1
 cd "$ROOT"
 
 "$PY" -m py_compile \
+  scripts/commercial/verify_dealix_control_kernel_v2.py \
+  scripts/commercial/dealix_control_kernel_v2.py \
   scripts/commercial/verify_dealix_operating_constitution.py \
   scripts/ops/dealix_north_star_status.py
 
+"$PY" scripts/commercial/verify_dealix_control_kernel_v2.py
 "$PY" scripts/commercial/verify_dealix_operating_constitution.py
 "$PY" scripts/ops/dealix_north_star_status.py
-"$PY" -m pytest -q tests/test_dealix_operating_constitution.py
+"$PY" -m pytest -q \
+  tests/test_dealix_control_kernel_v2.py \
+  tests/test_dealix_operating_constitution.py
 
-# The compatibility entrypoint must delegate to exactly one canonical runner
-# and must enforce constitution verification before delegation.
+# The compatibility entrypoint must evaluate the constitutional superlayer
+# before lower-level company law, then delegate to exactly one canonical runner.
 "$PY" - <<'PY'
 from pathlib import Path
 root = Path.cwd()
 text = (root / "scripts/commercial/run_company_os_daily.py").read_text(encoding="utf-8")
-assert "verify_dealix_operating_constitution.py" in text
-assert "run_self_operating_company_os.py" in text
-assert "BLOCKED_CONSTITUTION_INVALID" in text
-assert "DELEGATED_TO_CANONICAL_COMPANY_OS" in text
+for needle in (
+    "verify_dealix_control_kernel_v2.py",
+    "verify_dealix_operating_constitution.py",
+    "run_self_operating_company_os.py",
+    "BLOCKED_CONTROL_KERNEL_INVALID",
+    "BLOCKED_CONSTITUTION_INVALID",
+    "DELEGATED_TO_CANONICAL_COMPANY_OS",
+):
+    assert needle in text
+assert text.index("CONTROL_KERNEL_VERIFY") < text.index("CONSTITUTION_VERIFY")
+assert text.index("control_kernel_rc") < text.index("constitution_rc")
+
+kernel = (root / "config/company/dealix_control_kernel_v2.json").read_text(encoding="utf-8")
+for needle in (
+    '"kernel_version": "2.0-control-kernel"',
+    '"objective": "AUTONOMOUS_BUSINESS_THROUGHPUT"',
+    '"prediction_is_not_fact": true',
+    '"never_authorize_by_agent_name_only": true',
+    '"universal_l5_autonomy_forbidden": true',
+    '"global_uncontrolled_customer_sensitive_memory_forbidden": true',
+    '"do_not_install_spire_without_trigger": true',
+):
+    assert needle in kernel
+
 scorecard = root / "docs/ops/DEALIX_PERMANENT_NORTH_STAR_SCORECARD.md"
 assert scorecard.is_file()
 score_text = scorecard.read_text(encoding="utf-8")
@@ -81,6 +106,7 @@ for needle in (
     "No stage may be inferred from the stage before it.",
 ):
     assert needle in score_text
+print("CONTROL_KERNEL_V2_PREFLIGHT=PASS")
 print("COMPANY_OS_CONSTITUTION_PREFLIGHT=PASS")
 print("NORTH_STAR_SCORECARD_CONTRACT=PASS")
 PY
@@ -99,15 +125,20 @@ fi
 
 cat <<EOF
 EXACT_SHA=$EXPECTED
+CONTROL_KERNEL_VERSION=2.0-control-kernel
+CONTROL_KERNEL_VERIFIER=PASS
+CONTROL_KERNEL_RUNTIME_PRIMITIVES=PASS
 CONSTITUTION_VERIFIER=PASS
 NORTH_STAR_STATUS=PASS
 NORTH_STAR_SCORECARD_CONTRACT=PASS
 FOCUSED_TESTS=PASS
+CONTROL_KERNEL_V2_PREFLIGHT=PASS
 COMPANY_OS_CONSTITUTION_PREFLIGHT=PASS
 PERMANENT_AGENTS=5
 PORTFOLIOS=TRUST,MONEY_NOW,COMPOUNDING
 ACTIVE_GTM_WEDGE_LIMIT=3
 MATERIAL_AUTHORITY=FAIL_CLOSED
+UNIVERSAL_L5_AUTONOMY=false
 MERGE=false
 DEPLOY=false
 DNS_MUTATION=false
