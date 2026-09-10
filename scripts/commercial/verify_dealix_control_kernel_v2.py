@@ -157,6 +157,9 @@ def verify(data: dict[str, Any]) -> list[str]:
     require(len(repeat.get("dimensions", [])) == 8 and repeat.get("productization_requires_threshold") is True, "REPEATABILITY_INDEX")
 
     auto_roi = _dict(data, "automation_roi")
+    require(set(auto_roi.get("required_components", [])) == {"VALUE_CREATED", "HUMAN_COST_REMOVED", "BUILD_COST", "MAINTENANCE_COST", "FAILURE_COST"}, "AUTOMATION_ROI_COMPONENTS")
+    require(auto_roi.get("operator_relationship") == "UNSPECIFIED_IN_FOUNDER_TEXT", "AUTOMATION_ROI_OPERATOR")
+    require(auto_roi.get("aggregation_requires_explicit_policy") is True, "AUTOMATION_ROI_EXPLICIT_POLICY")
     require(auto_roi.get("kill_negative_automation") is True, "KILL_NEGATIVE_AUTOMATION")
     require(auto_roi.get("automation_volume_is_not_success") is True, "AUTOMATION_VOLUME_NOT_SUCCESS")
 
