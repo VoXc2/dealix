@@ -155,7 +155,7 @@ def verify_snapshot(snapshot: dict[str, Any], authority_actors: set[str]) -> Aut
         detail = "; ".join(parse_errors[-3:]) if parse_errors else "none found"
         raise GateError(f"no valid allowlisted authority comment: {detail}")
 
-    _, authority = max(valid, key=lambda item: item[0])
+    created_at, authority = max(valid, key=lambda item: item[0])
     if authority.pr != pr:
         raise GateError("authority PR number does not match current PR")
     if authority.head_sha != head_sha:
@@ -182,9 +182,11 @@ def verify_snapshot(snapshot: dict[str, Any], authority_actors: set[str]) -> Aut
         raise GateError("action_hash mismatch")
     if authority.expires_at <= now:
         raise GateError("merge authority is expired")
-    lifetime_hours = (authority.expires_at - now).total_seconds() / 3600
+    if authority.expires_at <= created_at:
+        raise GateError("merge authority expires_at must be after comment creation")
+    lifetime_hours = (authority.expires_at - created_at).total_seconds() / 3600
     if lifetime_hours > MAX_AUTHORITY_HOURS:
-        raise GateError("merge authority expiry exceeds 24-hour bound")
+        raise GateError("merge authority lifetime exceeds 24-hour bound")
     return authority
 
 
