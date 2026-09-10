@@ -102,11 +102,16 @@ def test_voi_research_first_when_information_is_more_valuable():
 
 
 def test_high_uncertainty_irreversible_action_defaults_hold():
-    assert RUNTIME.reversibility_default(reversibility="R5", confidence=0.4) == "HOLD"
+    assert RUNTIME.reversibility_default(reversibility="R5", high_uncertainty=True) == "HOLD"
 
 
 def test_high_confidence_read_only_defaults_execute():
-    assert RUNTIME.reversibility_default(reversibility="R0", confidence=0.9) == "EXECUTE"
+    assert RUNTIME.reversibility_default(reversibility="R0", high_confidence=True) == "EXECUTE"
+
+
+def test_conflicting_confidence_classification_fails_closed():
+    with pytest.raises(RUNTIME.ControlKernelError, match="confidence_classification_conflict"):
+        RUNTIME.reversibility_default(reversibility="R3", high_uncertainty=True, high_confidence=True)
 
 
 def test_state_machine_allows_only_next_step():
