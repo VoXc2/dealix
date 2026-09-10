@@ -17,7 +17,7 @@ def test_acceptance_runner_is_fail_closed_and_exact_head_bound() -> None:
     assert "EXACT_HEAD=FAIL" in text
     assert "HEAD_STABILITY=FAIL" in text
     assert "RELEASE_TRUST_ACCEPTANCE=PASS" in text
-    assert "run_gate TARGETED_PYTHON" in text
+    assert "run_pytest_gate TARGETED_PYTHON" in text
     assert "run_gate WEB_ACCEPTANCE" in text
     assert "run_gate BRAND_IDENTITY_V2" in text
 
@@ -68,10 +68,10 @@ def test_pytest_is_forced_into_isolated_test_environment() -> None:
         "PYTEST_ISOLATION=PASS",
     ):
         assert token in text
-    assert 'run_gate TARGETED_PYTHON "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
-    assert 'run_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
-    assert 'run_gate TARGETED_PYTHON "$PY" -m pytest -q' not in text
-    assert 'run_gate PYTHON_FULL "$PY" -m pytest -q' not in text
+    assert 'run_pytest_gate TARGETED_PYTHON "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
+    assert 'run_pytest_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
+    assert 'run_gate TARGETED_PYTHON "${PYTEST_ENV[@]}" "$PY" -m pytest -q' not in text
+    assert 'run_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q' not in text
 
 
 def test_canonical_shellcheck_owns_every_pr1600_trust_runner() -> None:
@@ -147,5 +147,5 @@ def test_acceptance_runner_contains_no_material_execution_verbs() -> None:
 def test_full_pytest_is_explicit_mode_and_still_fail_closed() -> None:
     text = _text()
     assert "DEALIX_ACCEPT_FULL_PYTEST" in text
-    assert 'run_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
+    assert 'run_pytest_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
     assert "PYTHON_FULL=SKIPPED_BY_MODE" in text
