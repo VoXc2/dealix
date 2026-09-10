@@ -120,14 +120,78 @@ def test_state_machine_allows_only_next_step():
         RUNTIME.validate_transition(machine="opportunity", from_state="KNOWN", to_state="PAID")
 
 
+def test_transition_packet_requires_evidence_authority_side_effect_and_receipt():
+    packet = {
+        "from_state": "KNOWN",
+        "to_state": "INTERACTION",
+        "required_evidence": ["email-reply-1"],
+        "authority": "permissioned-thread",
+        "side_effect": "NONE",
+        "receipt": "proof://interaction/1",
+    }
+    RUNTIME.validate_transition_packet(machine="opportunity", packet=packet)
+    packet["required_evidence"] = []
+    with pytest.raises(RUNTIME.InvalidStateTransition, match="TRANSITION_EVIDENCE_MISSING"):
+        RUNTIME.validate_transition_packet(machine="opportunity", packet=packet)
+
+
 def test_production_cannot_jump_from_build_to_green():
     with pytest.raises(RUNTIME.InvalidStateTransition):
         RUNTIME.validate_transition(machine="production", from_state="BUILD_ACCEPTED", to_state="PRODUCTION_GREEN")
 
 
+def test_production_green_can_explicitly_degrade_or_enter_rollback():
+    RUNTIME.validate_transition(machine="production", from_state="PRODUCTION_GREEN", to_state="DEGRADED")
+    RUNTIME.validate_transition(machine="production", from_state="PRODUCTION_GREEN", to_state="ROLLBACK_ACTIVE")
+
+
 def test_financial_quote_cannot_jump_to_payment_verified():
     with pytest.raises(RUNTIME.InvalidStateTransition):
         RUNTIME.validate_transition(machine="financial", from_state="QUOTE", to_state="PAYMENT_VERIFIED")
+
+
+def test_close_priority_candidates_use_constitutional_tie_break_order():
+    first = {
+        "id": "A",
+        "final_priority": 1.00,
+        "reversibility": "R2",
+        "feedback_speed": 0.8,
+        "customer_learning": 0.8,
+        "founder_attention": 0.2,
+        "proof_potential": 0.8,
+    }
+    second = {
+        "id": "B",
+        "final_priority": 1.05,
+        "reversibility": "R1",
+        "feedback_speed": 0.6,
+        "customer_learning": 0.6,
+        "founder_attention": 0.3,
+        "proof_potential": 0.6,
+    }
+    assert RUNTIME.choose_close_candidate(first=first, second=second) == "B"
+
+
+def test_non_close_priority_candidates_choose_higher_score():
+    first = {
+        "id": "A",
+        "final_priority": 1.00,
+        "reversibility": "R0",
+        "feedback_speed": 1.0,
+        "customer_learning": 1.0,
+        "founder_attention": 0.0,
+        "proof_potential": 1.0,
+    }
+    second = {
+        "id": "B",
+        "final_priority": 1.50,
+        "reversibility": "R5",
+        "feedback_speed": 0.0,
+        "customer_learning": 0.0,
+        "founder_attention": 1.0,
+        "proof_potential": 0.0,
+    }
+    assert RUNTIME.choose_close_candidate(first=first, second=second) == "B"
 
 
 def test_budget_exhaustion_is_fail_closed():
