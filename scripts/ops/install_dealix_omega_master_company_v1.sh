@@ -49,7 +49,14 @@ atomic_install "$BINDING_SOURCE" "$BINDING_TARGET" 0640
 PROMPT_SHA="$(sha256sum "$PROMPT_TARGET" | awk '{print $1}')"
 META_SHA="$(sha256sum "$META_TARGET" | awk '{print $1}')"
 BINDING_SHA="$(sha256sum "$BINDING_TARGET" | awk '{print $1}')"
-SOURCE_HEAD="$(sudo -u "$RUN_USER" -H git -C "$ROOT" rev-parse HEAD 2>/dev/null || printf unknown)"
+SOURCE_HEAD="$(git -c safe.directory="$ROOT" -C "$ROOT" rev-parse --verify HEAD 2>/dev/null)" || {
+  echo "MASTER_COMPANY_INSTALL=BLOCKED_SOURCE_HEAD_UNRESOLVED"
+  exit 2
+}
+[[ "$SOURCE_HEAD" =~ ^[0-9a-f]{40}$ ]] || {
+  echo "MASTER_COMPANY_INSTALL=BLOCKED_SOURCE_HEAD_INVALID"
+  exit 2
+}
 
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
