@@ -46,8 +46,8 @@ curl -fsS https://api.dealix.me/api/v1/meta
 - **افتراضي (آمن):** السكربت يطبع `SKIP` ولا يشغّل ترحيلاً.
 - **Automatic production migration:** disabled fail-closed. `RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1` expresses migration intent only and blocks pre-deploy; DDL requires a separate one-shot executor plus an exact action-bound approval receipt binding environment, revision payload, expiry, idempotency key, and `ACTION_HASH`.
 - **خطأ شائع في UI:** `echo "no migration needed"` — **استبدله** بـ `bash /app/scripts/railway_predeploy.sh` أو اترك الحقل فارغاً ليأخذ `railway.toml`.
-- **مرة واحدة:** `bash scripts/railway_prod_bootstrap.sh`
-- **بذرة أول مرة (اختياري):** `bash scripts/railway_prod_bootstrap.sh` بعد أول نشر ناجح.
+- **Legacy bootstrap:** `bash scripts/railway_prod_bootstrap.sh` is fail-closed (exit 75) and performs no migration, seed, or API mutation.
+- **Material bootstrap/seed:** requires a separate one-shot executor with an exact action-bound approval receipt; no legacy script or persistent environment flag grants authority.
 
 تحقق محلي (ومحاكاة انحراف لوحة Railway):
 

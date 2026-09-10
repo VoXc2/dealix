@@ -30,7 +30,7 @@ migrations:
   runs_when: "never in automatic pre-deploy; RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1 returns HOLD"
   enable_env: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1
   authorization: "separate one-shot executor + exact action-bound approval receipt/ACTION_HASH required"
-  bootstrap_once: scripts/railway_prod_bootstrap.sh
+  bootstrap_once: "DISABLED_FAIL_CLOSED - legacy bootstrap performs no material effects"
 
 verify_after_deploy:
   - curl -fsS https://api.dealix.me/healthz
