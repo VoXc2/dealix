@@ -52,7 +52,7 @@ if [[ "$RC" -ne 0 ]]; then
   echo ""
   echo "FOUNDER_ACTION:"
   echo "  1. Railway → Deploy → Start Command: CLEAR (or /app/start.sh only)"
-  echo "  2. Railway → Deploy → Pre-deploy: CLEAR (uses railway.toml) or sh /app/scripts/railway_predeploy.sh"
+  echo "  2. Railway → Deploy → Pre-deploy: CLEAR (uses railway.toml) or bash /app/scripts/railway_predeploy.sh"
   echo "  3. Enable Wait for CI on main"
   echo "  4. Re-deploy after fixing UI"
   exit "$RC"
