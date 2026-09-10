@@ -7,12 +7,14 @@ from datetime import UTC, datetime
 from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 ROOT=Path(__file__).resolve().parents[2]
 DEFAULT_JSON=ROOT/'data/self_operating_company_os/targets.json'
 DEFAULT_CSV=ROOT/'data/targets/targeted_outreach_verified.csv'
 DEFAULT_PROFILE=ROOT/'artifacts/commercial/Dealix_Company_Profile_2026.pdf'
 DEFAULT_REPORT=ROOT/'reports/targeted_outreach'
 PROBABILITY_REPORT=ROOT/'reports/probability_revenue_engine'
+RIYADH=ZoneInfo('Asia/Riyadh')
 REAL_RELATIONSHIP={'REAL_INTERACTION','VERIFIED_RELATIONSHIP','INBOUND','WARM','REFERRED'}
 CONSENT_OK={'PURPOSE_SPECIFIC','INBOUND_REQUEST','CONSENTED'}
 SUPPRESSED={'SUPPRESSED','OPTED_OUT','WITHDRAWN','DO_NOT_CONTACT'}
@@ -22,7 +24,7 @@ EMAIL_RE=re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 @dataclass
 class Candidate:
     company:str; email:str; contact_name:str; language:str; source:str; evidence_refs:list[str]; relationship_state:str; consent_state:str; suppression_state:str; channel_eligibility_state:str; pain_hypothesis:str; why_now:str; offer:str; evidence_score:int; draft_eligible:bool; dispatch_eligible:bool; blocker:str; probability_rank:int|None
-def today(): return datetime.now(UTC).strftime('%Y-%m-%d')
+def today(): return datetime.now(RIYADH).strftime('%Y-%m-%d')
 def utc_now(): return datetime.now(UTC).isoformat(timespec='seconds')
 def to_list(v:Any)->list[str]:
     if isinstance(v,list): return [str(x).strip() for x in v if str(x).strip()]
@@ -76,7 +78,7 @@ def main()->int:
     ap=argparse.ArgumentParser(); ap.add_argument('--targets-json',type=Path,default=Path(os.getenv('DEALIX_TARGETS_JSON',str(DEFAULT_JSON)))); ap.add_argument('--targets-csv',type=Path,default=Path(os.getenv('DEALIX_TARGETS_CSV',str(DEFAULT_CSV)))); ap.add_argument('--profile',type=Path,default=Path(os.getenv('DEALIX_COMPANY_PROFILE_PDF',str(DEFAULT_PROFILE)))); ap.add_argument('--report-root',type=Path,default=Path(os.getenv('DEALIX_TARGETED_OUTREACH_REPORT_ROOT',str(DEFAULT_REPORT)))); ap.add_argument('--max-drafts',type=int,default=int(os.getenv('DEALIX_OUTREACH_MAX_DRAFTS','3'))); ap.add_argument('--gmail-drafts',action='store_true',default=os.getenv('DEALIX_GMAIL_DRAFTS','0')=='1'); ap.add_argument('--gmail-token',type=Path,default=Path(os.getenv('GMAIL_TOKEN_PATH',str(ROOT/'token.json')))); a=ap.parse_args()
     if os.getenv('DEALIX_EMAIL_LIVE_SEND','0')=='1' or os.getenv('DEALIX_EXTERNAL_SEND','0')=='1': print('TARGETED_OUTREACH=BLOCKED_LIVE_SEND_FLAG_PRESENT'); return 2
     if not 1<=a.max_drafts<=3: print('TARGETED_OUTREACH=BLOCKED_WIP_LIMIT'); return 2
-    if not a.profile.is_file(): print(f'TARGETED_OUTREACH=HOLD_COMPANY_PROFILE_MISSING path={a.profile}'); return 3
+    if a.gmail_drafts and not a.profile.is_file(): print(f'TARGETED_OUTREACH=HOLD_COMPANY_PROFILE_MISSING path={a.profile}'); return 3
     items=load_items(a.targets_json); source=str(a.targets_json)
     if not items: items=load_items(a.targets_csv); source=str(a.targets_csv)
     selected,blocked=select(items,a.max_drafts); run=a.report_root/today(); run.mkdir(parents=True,exist_ok=True); (run/'selected_targets.json').write_text(json.dumps([asdict(x) for x in selected],ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); (run/'blocked_targets.json').write_text(json.dumps([asdict(x) for x in blocked[:50]],ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

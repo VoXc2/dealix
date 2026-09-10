@@ -1,3 +1,4 @@
+import json
 import importlib.util
 import sys
 from pathlib import Path
@@ -27,3 +28,22 @@ def test_probability_is_optional_consumer_only():
     t=RUNNER.read_text(); assert 'probability_revenue_engine' in t; assert 'probability_maximization_policy' not in t; assert 'probability_revenue_engine_v1.json' not in t
 def test_wrapper_is_current_main_and_l4_only():
     t=WRAPPER.read_text().lower(); assert 'fetch origin main' in t; assert 'worktree add --detach' in t; assert 'reset --hard' not in t; assert 'external_send=0' in t; assert 'max_drafts=3' in t; assert 'l5_executed=none' in t
+
+
+def test_runner_uses_riyadh_operating_date():
+    m=module(); assert m.RIYADH.key == 'Asia/Riyadh'
+
+def test_missing_profile_does_not_block_internal_draft_preparation(tmp_path, monkeypatch):
+    m=module(); targets=tmp_path/'targets.json'; targets.write_text(json.dumps([base()]), encoding='utf-8')
+    report=tmp_path/'report'; missing=tmp_path/'missing.pdf'
+    monkeypatch.setenv('DEALIX_EXTERNAL_SEND','0'); monkeypatch.setenv('DEALIX_EMAIL_LIVE_SEND','0')
+    monkeypatch.setattr(sys,'argv',['runner','--targets-json',str(targets),'--targets-csv',str(tmp_path/'none.csv'),'--profile',str(missing),'--report-root',str(report),'--max-drafts','1'])
+    assert m.main() == 0
+    summary=json.loads((report/m.today()/'summary.json').read_text(encoding='utf-8'))
+    assert summary['eligible_selected'] == 1; assert summary['gmail_drafts_requested'] is False; assert summary['gmail_drafts_created'] == 0
+
+def test_missing_profile_blocks_explicit_gmail_draft_creation(tmp_path, monkeypatch):
+    m=module(); targets=tmp_path/'targets.json'; targets.write_text(json.dumps([base()]), encoding='utf-8')
+    monkeypatch.setenv('DEALIX_EXTERNAL_SEND','0'); monkeypatch.setenv('DEALIX_EMAIL_LIVE_SEND','0')
+    monkeypatch.setattr(sys,'argv',['runner','--targets-json',str(targets),'--profile',str(tmp_path/'missing.pdf'),'--report-root',str(tmp_path/'report'),'--max-drafts','1','--gmail-drafts'])
+    assert m.main() == 3
