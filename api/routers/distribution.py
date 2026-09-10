@@ -87,10 +87,10 @@ class GenerateProofPackBody(BaseModel):
 class PaymentHandoffBody(BaseModel):
     """Public/internal API input for a payment handoff request.
 
-    Approval truth is intentionally NOT an input. An API caller may describe a
-    quote-bound handoff, but cannot manufacture governance authority by posting
-    ``founder_approved=true`` (or any other approval flag). Approval mutation is
-    a separate trusted control-plane concern.
+    Approval truth is intentionally NOT an input. The caller must reference an
+    existing approved proposal and the Approval Center quote authority that
+    commits to the exact customer, amount, discovery, and scope fingerprint.
+    Caller-supplied approval flags remain forbidden.
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -100,6 +100,8 @@ class PaymentHandoffBody(BaseModel):
     product_id: str = Field(..., min_length=1)
     discovery_ref: str = Field(..., min_length=1)
     quote_id: str = Field(..., min_length=1)
+    quote_authority_ref: str = Field(..., min_length=1)
+    customer_specific_scope_ref: str = Field(..., min_length=1)
     amount_sar: float = Field(..., gt=0)
     notes: str = ""
 
@@ -245,6 +247,8 @@ async def prepare_payment_handoff(body: PaymentHandoffBody) -> dict[str, Any]:
             product_id=body.product_id,
             discovery_ref=body.discovery_ref,
             quote_id=body.quote_id,
+            quote_authority_ref=body.quote_authority_ref,
+            customer_specific_scope_ref=body.customer_specific_scope_ref,
             amount_sar=body.amount_sar,
             notes=body.notes,
         )
