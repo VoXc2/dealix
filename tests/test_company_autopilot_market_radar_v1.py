@@ -115,8 +115,10 @@ def test_autopilot_market_radar_produces_read_only_brief_from_handoff(tmp_path: 
     reports = sorted((autopilot_root / "reports").glob("universal-market-radar-*.json"))
     assert len(reports) == 1
     brief = json.loads(reports[0].read_text(encoding="utf-8"))
-    assert brief["admitted_signal_count"] == 1
-    assert brief["invalid_signal_count"] == 0
+    assert brief["admitted_signal_count"] == 0
+    assert brief["invalid_signal_count"] == 1
+    assert "AHREFS" in brief["blocked_source_ids"]
+    assert brief["invalid_signals"][0]["status"] == "INVALID_NOT_ADMITTED_TO_RADAR"
     assert brief["new_scheduler"] is False
     assert brief["new_permanent_agent"] is False
     assert brief["external_send_or_spend"] is False

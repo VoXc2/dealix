@@ -112,7 +112,7 @@ def test_installer_makes_local_ai_8k_hardening_reinstall_safe() -> None:
 def test_local_ai_is_local_only_and_releases_model() -> None:
     body = text(AUTOPILOT)
     assert "http://127.0.0.1:11434/api/chat" in body
-    assert '"num_ctx": 8192' in body
+    assert '"num_ctx": 16384' in body
     assert '"keep_alive": "10m"' in body
     assert 'ollama stop "$model"' in body
     assert "Do not invent customers, revenue, payments, results, or proof" in body

@@ -75,6 +75,10 @@ def test_roi_estimate_returns_ranges():
     )
     assert resp.status_code == 200, resp.text
     body = resp.json()
-    assert body["is_estimate"] is True
-    assert body["gross_annual_value_sar_min"] <= body["gross_annual_value_sar_max"]
-    assert body["annual_cost_sar"] == 35000 + 12 * 8000
+    assert body["status"] == "internal_estimate_only"
+    assert body["customer_value_claim"] is False
+    assert body["guarantee"] is False
+    result = body["result"]
+    assert result["is_estimate"] is True
+    assert result["gross_annual_value_sar_min"] <= result["gross_annual_value_sar_max"]
+    assert result["annual_cost_sar"] == 35000 + 12 * 8000

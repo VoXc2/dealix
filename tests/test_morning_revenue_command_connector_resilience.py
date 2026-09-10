@@ -44,7 +44,7 @@ def test_morning_command_survives_missing_external_connector_evidence(tmp_path: 
     assert command["connectors"]["posthog"] == module.UNKNOWN
     assert command["connectors"]["clay"] == module.UNKNOWN
     assert command["connectors"]["canva"] == module.UNKNOWN
-    assert command["money"]["verified_revenue_sar"] == 0
+    assert command["money"]["verified_revenue_sar"] == module.UNKNOWN
     assert command["next_best_action"]["action"] == "CAPTURE_REAL_RELATIONSHIP_EVIDENCE"
 
 
@@ -56,6 +56,8 @@ def test_morning_command_uses_local_connector_receipt_without_network_dependency
     (current / "connector_receipt.json").write_text(
         json.dumps(
             {
+                "schema": "dealix.connector-receipt.runtime.v1",
+                "scope": "dealix_company",
                 "hubspot_status": "DEGRADED_ADAPTER_NOT_FATAL",
                 "posthog_status": "READY",
                 "verified_revenue_sar": 0,

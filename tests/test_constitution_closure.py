@@ -205,7 +205,8 @@ async def test_golden_loop_full_traversal() -> None:
             "sector": "marketing_agency", "signal_type": "no_proof_visible",
         })
         offer = r.json()["offer"]
-        assert offer["price_sar"] == 499
+        assert offer["price_sar"] is None
+        assert offer["price_mode"] == "customer_specific_quote_after_qualified_discovery"
         assert "guaranteed_revenue" in offer["blocked_claims"]
 
         # Stage 4: warm route draft → action_mode draft_only
@@ -220,14 +221,16 @@ async def test_golden_loop_full_traversal() -> None:
         })
         assert r.json()["route"]["action_mode"] == "blocked"
 
-        # Stage 6: diagnostic with consent → 7-day plan
+        # Stage 6: consented Free Mini Diagnostic remains preliminary and evidence-gated
         r = await c.post("/api/v1/company-growth-beast/diagnostic", json={
             "company_handle": "Slot-A", "sector": "marketing_agency",
             "biggest_problem": "no_proof_visible",
             "consent_for_diagnostic": True,
         })
         diag = r.json()["diagnostic"]
-        assert len(diag["seven_day_plan"]) == 7
+        assert diag["seven_day_plan"] == []
+        assert diag["legacy_seven_day_plan_status"] == "RETIRED_NOT_COMMERCIAL_AUTHORITY"
+        assert len(diag["diagnostic_workplan"]) == 7
         assert diag["action_mode"] == "approval_required"
 
         # Stage 7: invoice draft (NOT revenue)

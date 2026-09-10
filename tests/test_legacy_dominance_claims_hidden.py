@@ -5,11 +5,13 @@ def test_legacy_dominance_proof_pack_is_not_registered() -> None:
     from api.routers import dominance
     from api.routers.domains import sales as sales_domain
 
-    assert sales_domain.get_routers()
-    paths = {route.path for route in dominance.router.routes}
+    registered = sales_domain.get_routers()
+    assert registered
+    paths = {route.path for router in registered for route in router.routes}
 
     assert "/api/v1/customers/{customer_id}/proof-pack" not in paths
     assert "/api/v1/offers/route" in paths
+    assert "/api/v1/customers/{customer_id}/proof-pack" in {route.path for route in dominance.router.routes}
 
 
 def test_governed_proof_pack_remains_available() -> None:

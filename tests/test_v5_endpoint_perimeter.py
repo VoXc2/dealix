@@ -46,7 +46,7 @@ EXPECTED_ENDPOINTS: list[tuple[str, int]] = [
     ("/api/v1/customer-data/status", 200),
     # v5 layer 8 — Finance OS
     ("/api/v1/finance/status", 200),
-    ("/api/v1/finance/pricing", 200),
+    ("/api/v1/finance/pricing", 404),
     # v5 layer 9 — Delivery Factory
     ("/api/v1/delivery-factory/status", 200),
     ("/api/v1/delivery-factory/services", 200),

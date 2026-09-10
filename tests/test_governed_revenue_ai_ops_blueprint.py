@@ -37,7 +37,7 @@ def test_blueprint_state_machine_includes_founder_approval_rule() -> None:
 
 def test_router_endpoint_returns_same_blueprint() -> None:
     payload = asyncio.run(service_catalog.governed_operating_model())
-    assert payload["core_kpis"] == [
+    assert payload["operating_model"]["core_kpis"] == [
         "sent_count",
         "reply_count",
         "meeting_count",

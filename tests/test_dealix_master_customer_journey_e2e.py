@@ -252,14 +252,17 @@ def test_step_09_send_pilot_offer_draft(sim_dir):
         sys.executable, "scripts/dealix_pilot_brief.py",
         "--company", COMPANY,
         "--sector", SECTOR,
-        "--amount-sar", "499",
+        "--quote-evidence-id", "test-quote-evidence-001",
         "--out-md", str(out_md),
         "--out-json", str(out_json),
     ])
     assert r.returncode == 0, f"pilot brief failed: {r.stderr}\n{r.stdout}"
     assert out_md.exists()
     data = json.loads(out_json.read_text())
-    assert data.get("amount_sar") == 499 or data.get("amount_sar") == "499"
+    assert data.get("quote_evidence_id") == "test-quote-evidence-001"
+    assert data.get("approval_required_for_commitment") is True
+    assert data.get("external_send_allowed") is False
+    assert data.get("amount_sar") is None
 
 
 # ─────────────────────────────────────────────────────────────────────
