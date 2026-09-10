@@ -85,3 +85,11 @@ def test_master_runner_writes_durable_receipt_and_forces_l5_off() -> None:
     assert 'env["DEALIX_UNIVERSAL_L5"] = "0"' in text
     assert '"material_external_effects_executed": False' in text
     assert "kill_switches_forced_off" in text
+
+
+def test_installer_fails_closed_when_source_head_cannot_be_proven() -> None:
+    text = INSTALLER.read_text(encoding="utf-8")
+    assert 'SOURCE_HEAD="$(git -c safe.directory="$ROOT" -C "$ROOT" rev-parse --verify HEAD' in text
+    assert "MASTER_COMPANY_INSTALL=BLOCKED_SOURCE_HEAD_UNRESOLVED" in text
+    assert "MASTER_COMPANY_INSTALL=BLOCKED_SOURCE_HEAD_INVALID" in text
+    assert "printf unknown" not in text
