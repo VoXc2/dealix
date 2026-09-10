@@ -1,6 +1,6 @@
 # Dealix — LLMs.txt
 
-> Dealix is an AI Business Operating System. It turns company signals into evidence-backed decisions, governed execution and measurable outcomes. Its first market wedge is Revenue + Proof + Command.
+> Dealix is a Saudi-first AI Business Operating System. It turns company signals into evidence-backed decisions, governed execution and measurable outcomes. Its first market wedge is Revenue + Proof + Command.
 
 This file is a machine-readable public summary for AI search engines and language models. When any older page, document, cached result, or generated draft conflicts with the current launch rules below, the stricter current rule wins.
 

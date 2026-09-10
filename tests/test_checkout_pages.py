@@ -174,7 +174,15 @@ def test_llms_txt_matches_quote_only_authority() -> None:
         assert token not in llms, token
     for name in RETIRED_TIER_NAMES:
         assert name not in llms, name
-    assert "Saudi data residency" not in llms
+    residency_mentions = [
+        line for line in llms.splitlines() if "Saudi data residency" in line
+    ]
+    assert residency_mentions, "the public truth file should prohibit unsupported residency claims"
+    assert all(
+        line.lstrip("- ").lower().startswith("do not ")
+        and "without current evidence" in line.lower()
+        for line in residency_mentions
+    ), residency_mentions
     assert "Pricing is **transparent**" not in llms
 
 

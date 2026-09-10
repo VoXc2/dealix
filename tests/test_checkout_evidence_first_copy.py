@@ -1,4 +1,10 @@
-"""Commercial trust checks for the public checkout/test-request flow."""
+"""Commercial truth contracts for retired public checkout surfaces.
+
+The current first-launch authority is deliberately fail-closed:
+Free Mini Diagnostic -> qualified discovery -> named-customer quote ->
+30-day Revenue Command Pilot. Public checkout/payment initiation is retired.
+These tests prevent the older TEST invoice-intent flow from reappearing.
+"""
 
 from __future__ import annotations
 
@@ -26,56 +32,64 @@ def _text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def test_checkout_is_explicitly_a_test_request_not_live_revenue() -> None:
+def test_checkout_is_explicitly_quote_only_not_live_revenue() -> None:
     text = _text(CHECKOUT)
+    for required in (
+        "NO_LIVE_CHARGE",
+        "QUOTE_ONLY",
+        "NO_PUBLIC_FIXED_PRICE",
+        "NO_SELF_SERVE_CHECKOUT",
+        "REQUEST ≠ QUOTE ≠ INVOICE ≠ PAYMENT ≠ REVENUE",
+        "Free Mini Diagnostic",
+    ):
+        assert required in text
+    assert "لا يوجد Checkout عام" in text
+    assert "لا يُسجل الإيراد إلا بعد دليل payment_received" in text
 
-    assert "وضع TEST" in text
-    assert "NO_LIVE_CHARGE" in text
-    assert "REQUEST ≠ INVOICE ≠ REVENUE" in text
-    assert "إنشاء طلب بدء تجريبي" in text
-    assert "إنشاء الفاتورة" not in text
-    assert "لا يُسجل الإيراد قبل دليل payment_received حقيقي" in text
-    assert "تم استلام الدفع" not in text
 
-
-def test_success_page_does_not_claim_invoice_payment_or_service_start() -> None:
+def test_success_page_is_a_fail_closed_legacy_surface() -> None:
     text = _text(SUCCESS)
-
-    assert "تم تسجيل طلب البدء" in text
-    assert "لم يتم خصم أي مبلغ" in text
-    assert "لم تصدر فاتورة حية" in text
-    assert "لم يبدأ تنفيذ الخدمة" in text
-    assert "request_id" in text
+    for required in (
+        "Checkout العام غير مفعّل",
+        "NO_LIVE_CHARGE",
+        "NO_PUBLIC_FIXED_PRICE",
+        "NO_SELF_SERVE_CHECKOUT",
+        "REQUEST ≠ QUOTE ≠ INVOICE ≠ PAYMENT ≠ REVENUE",
+        "لم يتم إنشاء Invoice أو Payment request",
+        "لم يتم خصم أي مبلغ",
+        "لم يبدأ تنفيذ خدمة",
+    ):
+        assert required in text
+    assert "request_id" not in text
     assert "invoice_id" not in text
-    assert "test_request_recorded" in text
+    assert "test_request_recorded" not in text
 
 
 def test_unverified_capacity_sla_and_automation_claims_are_absent() -> None:
     combined = _text(CHECKOUT) + "\n" + _text(SUCCESS)
-
     for claim in FORBIDDEN_PUBLIC_CLAIMS:
         assert claim.casefold() not in combined.casefold()
 
 
-def test_bank_transfer_is_manual_validated_and_does_not_call_invoice_intent() -> None:
-    text = _text(CHECKOUT)
-    manual_start = text.index("if(method==='bank_transfer_manual')")
-    test_request_start = text.index("btn.disabled=true", manual_start)
-    manual_block = text[manual_start:test_request_start]
+def test_retired_payment_request_flow_cannot_reappear() -> None:
+    combined = _text(CHECKOUT) + "\n" + _text(SUCCESS)
+    for retired in (
+        "/api/v1/payment-ops/invoice-intent",
+        "bank_transfer_manual",
+        "TIERS=",
+        "amount_sar",
+        "test_request_recorded",
+        "وضع TEST",
+    ):
+        assert retired not in combined
+    assert "<form" not in _text(CHECKOUT)
+    assert "fetch(" not in _text(CHECKOUT)
 
-    assert "form.reportValidity()" in text
-    assert "طلب تعليمات التحويل" in manual_block
-    assert "No payment has been made" in manual_block
-    assert "Email: " in manual_block
-    assert "Phone: " in manual_block
-    assert "mailto:sales@dealix.sa" in manual_block
-    assert "/api/v1/payment-ops/invoice-intent" not in manual_block
 
-
-def test_test_intent_redirect_uses_request_semantics() -> None:
-    text = _text(CHECKOUT)
-
-    assert "/api/v1/payment-ops/invoice-intent" in text
-    assert "request_id=" in text
-    assert "invoice_id=" not in text
-    assert "تم تسجيل طلب تجريبي في TEST mode" in text
+def test_checkout_routes_back_to_diagnostic_not_payment() -> None:
+    checkout = _text(CHECKOUT)
+    success = _text(SUCCESS)
+    assert 'href="/diagnostic.html"' in checkout
+    assert 'href="/diagnostic.html"' in success
+    assert "qualified discovery" in success.lower()
+    assert "quote-only 30-day Revenue Command Pilot" in success
