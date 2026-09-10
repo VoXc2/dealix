@@ -94,12 +94,7 @@ def choose_execution_vs_information(*, voi: float, immediate_execution_advantage
 
 
 def reversibility_default(*, reversibility: str, high_uncertainty: bool = False, high_confidence: bool = False) -> str:
-    """Apply the constitutional default without inventing numeric thresholds.
-
-    The evidence/policy layer classifies high uncertainty or high confidence.
-    The Control Kernel only applies the R0-R5 default once that classification
-    is explicit.
-    """
+    """Apply the constitutional default without inventing numeric thresholds."""
     if reversibility not in {"R0", "R1", "R2", "R3", "R4", "R5"}:
         raise ControlKernelError("unknown_reversibility")
     if high_uncertainty and high_confidence:
@@ -121,10 +116,67 @@ def _machine(kernel: dict[str, Any], machine: str) -> list[str]:
 def validate_transition(*, machine: str, from_state: str, to_state: str, kernel: dict[str, Any] | None = None) -> None:
     kernel = kernel or load_kernel()
     states = _machine(kernel, machine)
+    if machine == "production" and from_state == "PRODUCTION_GREEN":
+        degraded = set(str(x) for x in kernel["state_machines"].get("production_degraded_states", []))
+        if to_state in degraded:
+            return
     if from_state not in states or to_state not in states:
         raise InvalidStateTransition("INVALID_STATE_TRANSITION")
     if states.index(to_state) != states.index(from_state) + 1:
         raise InvalidStateTransition("INVALID_STATE_TRANSITION")
+
+
+def validate_transition_packet(*, machine: str, packet: dict[str, Any], kernel: dict[str, Any] | None = None) -> None:
+    kernel = kernel or load_kernel()
+    required = list(kernel["state_machines"].get("transition_receipt_fields", []))
+    missing = [name for name in required if name not in packet or packet[name] in (None, "", [], {})]
+    if missing:
+        raise InvalidStateTransition("TRANSITION_EVIDENCE_MISSING:" + ",".join(sorted(missing)))
+    validate_transition(
+        machine=machine,
+        from_state=str(packet["from_state"]),
+        to_state=str(packet["to_state"]),
+        kernel=kernel,
+    )
+
+
+def choose_close_candidate(*, first: dict[str, Any], second: dict[str, Any], kernel: dict[str, Any] | None = None) -> str:
+    """Apply the constitutional <=10% tie-break law deterministically.
+
+    Candidate metrics are normalized 0..1 except reversibility, which is R0..R5.
+    Lower R class means more reversible. Lower founder_attention means less load.
+    """
+    kernel = kernel or load_kernel()
+    threshold = float(kernel["economic_dispatcher"]["close_candidate_threshold_percent"]) / 100.0
+    for candidate in (first, second):
+        if not str(candidate.get("id", "")).strip():
+            raise ControlKernelError("candidate_id_required")
+        if float(candidate.get("final_priority", -1)) < 0:
+            raise ControlKernelError("candidate_priority_must_be_nonnegative")
+        rev = str(candidate.get("reversibility", ""))
+        if rev not in {"R0", "R1", "R2", "R3", "R4", "R5"}:
+            raise ControlKernelError("candidate_reversibility_required")
+        for metric in ("feedback_speed", "customer_learning", "founder_attention", "proof_potential"):
+            _bounded01(metric, float(candidate.get(metric, -1)))
+
+    p1 = float(first["final_priority"])
+    p2 = float(second["final_priority"])
+    denominator = max(p1, p2, 1e-12)
+    if abs(p1 - p2) / denominator > threshold:
+        return str(first["id"] if p1 > p2 else second["id"])
+
+    def tie_key(candidate: dict[str, Any]) -> tuple[float, float, float, float, float, float]:
+        rev_score = 5.0 - float(str(candidate["reversibility"])[1:])
+        return (
+            rev_score,
+            float(candidate["feedback_speed"]),
+            float(candidate["customer_learning"]),
+            -float(candidate["founder_attention"]),
+            float(candidate["proof_potential"]),
+            float(candidate["final_priority"]),
+        )
+
+    return str(first["id"] if tie_key(first) >= tie_key(second) else second["id"])
 
 
 def check_budget(*, used: float, limit: float) -> None:
