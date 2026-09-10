@@ -10,8 +10,10 @@ simultaneously could produce corrupted token/call counts).
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
-from dataclasses import dataclass, field
+from collections import deque
+from dataclasses import asdict, dataclass
 from typing import Any
 
 from core.config.models import (
@@ -25,7 +27,17 @@ from core.llm.anthropic_client import AnthropicClient
 from core.llm.base import LLMClient, LLMResponse, Message
 from core.llm.gemini_client import GeminiClient
 from core.llm.glm_client import GLMClient
-from core.llm.openai_compat import DeepSeekClient, GroqClient, OpenAIClient
+from core.llm.model_economics import ModelUsageEvent, build_usage_event
+from core.llm.openai_compat import (
+    DeepSeekClient,
+    GroqClient,
+    OllamaCompatClient,
+    OpenAIClient,
+    OpenAICompatClient,
+    is_http_402_error,
+    openai_compat_retry_count,
+    reset_openai_compat_retry_count,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +68,11 @@ class ModelRouter:
         self.usage: dict[Provider, UsageRecord] = {p: UsageRecord() for p in Provider}
         # asyncio.Lock — protects usage counter mutations under concurrency
         self._usage_lock: asyncio.Lock = asyncio.Lock()
+        self._provider_circuits: dict[Provider, str] = {}
+        self._usage_events: deque[ModelUsageEvent] = deque(maxlen=500)
+        self._deepseek_local_fallback: LLMClient | None = None
         self._build_clients()
+        self._build_deepseek_local_fallback()
 
     # ── Client construction ─────────────────────────────────────
     def _build_clients(self) -> None:
@@ -107,6 +123,21 @@ class ModelRouter:
         configured = [p.value for p in self._clients]
         logger.info("ModelRouter initialized with providers: %s", configured)
 
+    def _build_deepseek_local_fallback(self) -> None:
+        """Prepare an opt-in loopback Ollama fallback for DeepSeek billing failures."""
+        s = self.settings
+        if getattr(s, "deepseek_402_ollama_fallback_enabled", False) is not True:
+            return
+        try:
+            self._deepseek_local_fallback = OllamaCompatClient(
+                model=str(s.deepseek_ollama_model),
+                base_url=str(s.deepseek_ollama_base_url),
+                timeout=int(s.deepseek_ollama_timeout),
+            )
+        except (TypeError, ValueError):
+            self._deepseek_local_fallback = None
+            logger.error("DeepSeek 402 local fallback disabled: invalid or non-loopback config")
+
     # ── Public API ──────────────────────────────────────────────
     def available_providers(self) -> list[Provider]:
         """List providers that are actually configured."""
@@ -114,6 +145,118 @@ class ModelRouter:
 
     def get_client(self, provider: Provider) -> LLMClient | None:
         return self._clients.get(provider)
+
+    def circuit_status(self) -> dict[str, str]:
+        """Return only provider/reason circuit state; never credentials."""
+        return {provider.value: reason for provider, reason in self._provider_circuits.items()}
+
+    def reset_provider_circuit(self, provider: Provider) -> None:
+        """Explicit in-process reset after the underlying provider condition is repaired."""
+        self._provider_circuits.pop(provider, None)
+
+    def recent_usage_events(self, limit: int = 50) -> list[dict[str, Any]]:
+        if limit <= 0:
+            return []
+        events = list(self._usage_events)[-limit:]
+        rows: list[dict[str, Any]] = []
+        for event in events:
+            row = asdict(event)
+            row["cost_per_accepted_result_usd"] = event.cost_per_accepted_result_usd
+            rows.append(row)
+        return rows
+
+    @staticmethod
+    def _retry_count(client: LLMClient) -> int:
+        return openai_compat_retry_count() if isinstance(client, OpenAICompatClient) else 0
+
+    @staticmethod
+    def _cache_status(provider: Provider | None, response: LLMResponse) -> str:
+        if provider == Provider.DEEPSEEK:
+            usage = response.raw.get("usage", {}) if isinstance(response.raw, dict) else {}
+            if int(usage.get("prompt_cache_hit_tokens", 0) or 0) > 0:
+                return "hit"
+            if int(usage.get("prompt_cache_miss_tokens", 0) or 0) > 0:
+                return "miss"
+        return "hit" if response.cached_tokens > 0 else "unknown"
+
+    def _record_usage_event(
+        self,
+        *,
+        task: Task,
+        requested_model: str,
+        effective_model: str,
+        input_tokens: int,
+        output_tokens: int,
+        cache_status: str,
+        retries: int,
+        accepted: bool,
+    ) -> None:
+        event = build_usage_event(
+            logical_route=task.value,
+            requested_model=requested_model,
+            effective_model=effective_model,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            cache_status=cache_status,  # type: ignore[arg-type]
+            retries=retries,
+            accepted=accepted,
+        )
+        self._usage_events.append(event)
+        logger.info("llm_usage_event=%s", json.dumps(asdict(event), sort_keys=True))
+
+    async def _try_deepseek_local_fallback(
+        self,
+        *,
+        task: Task,
+        messages: list[Message],
+        system: str | None,
+        max_tokens: int,
+        temperature: float,
+        requested_model: str,
+    ) -> LLMResponse | None:
+        client = self._deepseek_local_fallback
+        if client is None:
+            return None
+        async with self._usage_lock:
+            self.usage[Provider.DEEPSEEK].fallbacks_triggered += 1
+        try:
+            if isinstance(client, OpenAICompatClient):
+                reset_openai_compat_retry_count()
+            response = await client.chat(
+                messages=messages,
+                system=system,
+                max_tokens=max_tokens,
+                temperature=temperature,
+            )
+        except Exception as exc:
+            self._record_usage_event(
+                task=task,
+                requested_model=requested_model,
+                effective_model=str(getattr(client, "model", "ollama_local")),
+                input_tokens=0,
+                output_tokens=0,
+                cache_status="unknown",
+                retries=self._retry_count(client),
+                accepted=False,
+            )
+            logger.warning(
+                "DeepSeek 402 local fallback failed task=%s error_type=%s",
+                task.value,
+                type(exc).__name__,
+            )
+            return None
+        self._record_usage_event(
+            task=task,
+            requested_model=requested_model,
+            effective_model=response.model,
+            input_tokens=response.input_tokens,
+            output_tokens=response.output_tokens,
+            cache_status=self._cache_status(None, response),
+            retries=self._retry_count(client),
+            accepted=True,
+        )
+        logger.warning("DeepSeek circuit served by loopback Ollama task=%s", task.value)
+        return response
 
     async def run(
         self,
@@ -142,6 +285,27 @@ class ModelRouter:
         last_error: Exception | None = None
         for idx, provider in enumerate(chain):
             client = self._clients.get(provider)
+            requested_model = str(getattr(client, "model", provider.value))
+
+            if provider in self._provider_circuits:
+                logger.warning(
+                    "Skipping provider=%s open_circuit=%s",
+                    provider.value,
+                    self._provider_circuits[provider],
+                )
+                if provider == Provider.DEEPSEEK:
+                    local_response = await self._try_deepseek_local_fallback(
+                        task=task,
+                        messages=messages,
+                        system=system,
+                        max_tokens=max_tokens,
+                        temperature=temperature,
+                        requested_model=requested_model,
+                    )
+                    if local_response is not None:
+                        return local_response
+                continue
+
             if client is None:
                 logger.debug("Skipping unconfigured provider: %s", provider)
                 continue
@@ -161,6 +325,8 @@ class ModelRouter:
                         primary.value,
                     )
 
+                if isinstance(client, OpenAICompatClient):
+                    reset_openai_compat_retry_count()
                 response = await client.chat(
                     messages=messages,
                     system=system,
@@ -173,12 +339,46 @@ class ModelRouter:
                     self.usage[provider].input_tokens += response.input_tokens
                     self.usage[provider].output_tokens += response.output_tokens
 
+                self._record_usage_event(
+                    task=task,
+                    requested_model=requested_model,
+                    effective_model=response.model,
+                    input_tokens=response.input_tokens,
+                    output_tokens=response.output_tokens,
+                    cache_status=self._cache_status(provider, response),
+                    retries=self._retry_count(client),
+                    accepted=True,
+                )
                 return response
 
             except Exception as e:
                 async with self._usage_lock:
                     self.usage[provider].errors += 1
                 last_error = e
+                if provider == Provider.DEEPSEEK and is_http_402_error(e):
+                    self._provider_circuits[Provider.DEEPSEEK] = "billing_402"
+                    self._record_usage_event(
+                        task=task,
+                        requested_model=requested_model,
+                        effective_model=requested_model,
+                        input_tokens=0,
+                        output_tokens=0,
+                        cache_status="unknown",
+                        retries=self._retry_count(client),
+                        accepted=False,
+                    )
+                    logger.warning("DeepSeek billing circuit opened task=%s", task.value)
+                    local_response = await self._try_deepseek_local_fallback(
+                        task=task,
+                        messages=messages,
+                        system=system,
+                        max_tokens=max_tokens,
+                        temperature=temperature,
+                        requested_model=requested_model,
+                    )
+                    if local_response is not None:
+                        return local_response
+                    continue
                 logger.exception(
                     "Provider=%s failed for task=%s: %s", provider.value, task.value, e
                 )
