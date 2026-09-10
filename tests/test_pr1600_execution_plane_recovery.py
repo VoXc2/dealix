@@ -47,47 +47,44 @@ def test_recovery_keeps_all_material_actions_disabled() -> None:
         assert forbidden not in text
 
 
-def test_recovery_never_bootstraps_or_reinstalls_issue_bridge() -> None:
+def test_recovery_is_observe_only_for_live_control_plane() -> None:
     text = _text()
+    assert "control_plane_mutation=false" in text
+    assert "CONTROL_PLANE_MUTATION=false" in text
+    assert "observed_only=true" in text
+    assert "install_dealix_self_hosted_runner.sh" not in text
     assert "install_dealix_vps_issue_bridge.sh" not in text
     assert "--bootstrap" not in text
-    assert 'BRIDGE_TIMER="dealix-vps-issue-bridge.timer"' in text
-    assert 'BRIDGE_SERVICE="dealix-vps-issue-bridge.service"' in text
-    assert 'systemctl start "$BRIDGE_SERVICE"' in text
+    assert 'systemctl stop "$BRIDGE_TIMER"' not in text
+    assert 'systemctl start "$BRIDGE_TIMER"' not in text
+    assert 'systemctl start "$BRIDGE_SERVICE"' not in text
+    assert 'install -m 0750 -o "$RUN_USER"' not in text
+    assert 'cp -a "$INSTALLED_BRIDGE"' not in text
 
 
-def test_recovery_refreshes_bridge_from_same_source_without_state_reset() -> None:
+def test_recovery_accepts_exact_head_before_runner_or_bridge_health_checks() -> None:
     text = _text()
-    assert 'SOURCE_BRIDGE="$SCRIPT_DIR/dealix_vps_issue_bridge.py"' in text
-    assert 'SOURCE_DISPATCHER="$SCRIPT_DIR/dealix_vps_control.sh"' in text
-    assert 'INSTALLED_BRIDGE="$CONTROL_BIN/dealix_vps_issue_bridge.py"' in text
-    assert 'INSTALLED_DISPATCHER="$CONTROL_BIN/dealix_vps_control.sh"' in text
-    assert 'python3 -m py_compile "$SOURCE_BRIDGE"' in text
-    assert 'bash -n "$SOURCE_DISPATCHER"' in text
-    assert "BRIDGE_INSTALL_DIGEST_MISMATCH" in text
-    assert "DISPATCHER_INSTALL_DIGEST_MISMATCH" in text
-    assert "state_preserved=true bootstrap=false" in text
-    assert "BRIDGE_ALREADY_ACTIVE_REVIEW" in text
-
-
-def test_recovery_restores_runner_before_bridge_and_exact_head_acceptance() -> None:
-    text = _text()
-    runner_pos = text.index('bash "$RUNNER_INSTALLER"')
-    refresh_pos = text.index('install -m 0750 -o "$RUN_USER" -g "$RUN_USER" "$SOURCE_BRIDGE"')
-    bridge_pos = text.index('systemctl start "$BRIDGE_SERVICE"')
     acceptance_pos = text.index('bash "$ACCEPTANCE"')
-    assert runner_pos < refresh_pos < bridge_pos < acceptance_pos
-    assert "SELF_HOSTED_RUNNER=PASS" in text
-    assert "BRIDGE_SOURCE_REFRESH=PASS" in text
-    assert "ISSUE_BRIDGE=PASS" in text
+    runner_pos = text.index('"$RUNNER_DIR/svc.sh" status')
+    bridge_pos = text.index('systemctl is-active "$BRIDGE_TIMER"')
+    assert acceptance_pos < runner_pos < bridge_pos
     assert "PR1600_EXACT_HEAD_ACCEPTANCE=PASS" in text
+    assert "SELF_HOSTED_RUNNER=PASS observed_only=true" in text
+    assert "ISSUE_BRIDGE=PASS observed_only=true" in text
+
+
+def test_unhealthy_control_plane_requires_action_bound_l5_instead_of_repair() -> None:
+    text = _text()
+    assert "RUNNER_REPAIR_REQUIRES_ACTION_BOUND_L5" in text
+    assert "BRIDGE_REPAIR_REQUIRES_ACTION_BOUND_L5" in text
+    assert "DEPLOY_EXECUTED=false" in text
 
 
 def test_recovery_requires_acceptance_receipt_and_stable_head() -> None:
     text = _text()
     assert "RESULT=PR1600_CURRENT_EXACT_FULL_PASS" in text
     assert "EXACT_HEAD_STABILITY=PASS" in text
-    assert "RESULT=PR1600_EXECUTION_PLANE_RECOVERED_AND_EXACT_HEAD_ACCEPTED" in text
+    assert "RESULT=PR1600_EXECUTION_PLANE_HEALTHY_AND_EXACT_HEAD_ACCEPTED" in text
     assert "PRODUCTION_GREEN=false" in text
 
 
