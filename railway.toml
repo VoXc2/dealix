@@ -4,7 +4,7 @@ dockerfilePath = "Dockerfile"
 
 [deploy]
 # NO startCommand — use Dockerfile CMD (/app/start.sh), which reads Railway's injected $PORT.
-preDeployCommand = "if [ -x /app/scripts/railway_predeploy.sh ]; then sh /app/scripts/railway_predeploy.sh; else echo 'RAILWAY_PREDEPLOY: no predeploy script'; fi"
+preDeployCommand = "if [ -x /app/scripts/railway_predeploy.sh ]; then bash /app/scripts/railway_predeploy.sh; else echo 'RAILWAY_PREDEPLOY: no predeploy script'; fi"
 healthcheckPath = "/healthz"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
