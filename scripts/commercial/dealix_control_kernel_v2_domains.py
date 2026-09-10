@@ -158,6 +158,16 @@ def validate_company_twin(twin: dict[str, Any], kernel: dict[str, Any] | None = 
         raise DomainContractError("COMPANY_TWIN_CANNOT_BECOME_SECOND_BRAIN")
 
 
+def derive_company_twin(canonical_state: dict[str, Any], kernel: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Create a derived projection only; never create independent authority or storage."""
+    kernel = kernel or load_kernel()
+    fields = [str(x) for x in kernel["company_twin"]["fields"]]
+    twin = {field: canonical_state.get(field) for field in fields}
+    twin["source_system"] = "DERIVED_PROJECTION"
+    validate_company_twin(twin, kernel=kernel)
+    return twin
+
+
 def validate_proof_dimensions(dimensions: dict[str, Any], kernel: dict[str, Any] | None = None) -> None:
     kernel = kernel or load_kernel()
     required = [str(x) for x in kernel["proof_compounding_index"]["dimensions"]]

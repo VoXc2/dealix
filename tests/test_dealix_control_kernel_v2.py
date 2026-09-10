@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 KERNEL_PATH = ROOT / "config" / "company" / "dealix_control_kernel_v2.json"
 VERIFY_PATH = ROOT / "scripts" / "commercial" / "verify_dealix_control_kernel_v2.py"
 RUNTIME_PATH = ROOT / "scripts" / "commercial" / "dealix_control_kernel_v2.py"
+DOMAINS_PATH = ROOT / "scripts" / "commercial" / "dealix_control_kernel_v2_domains.py"
 
 
 def _load(path: Path, name: str):
@@ -23,6 +25,7 @@ def _load(path: Path, name: str):
 
 VERIFY = _load(VERIFY_PATH, "dealix_control_kernel_verify")
 RUNTIME = _load(RUNTIME_PATH, "dealix_control_kernel_runtime")
+DOMAINS = _load(DOMAINS_PATH, "dealix_control_kernel_domains")
 
 
 def valid_payload() -> dict:
@@ -64,8 +67,8 @@ def test_execution_drag_weights_must_sum_to_one():
 
 
 def test_priority_formula_matches_constitution():
-    values = {key: 1.0 for key in valid_payload()["economic_dispatcher"]["value_weights"]}
-    drag = {key: 0.2 for key in valid_payload()["economic_dispatcher"]["execution_drag_weights"]}
+    values = dict.fromkeys(valid_payload()["economic_dispatcher"]["value_weights"], 1.0)
+    drag = dict.fromkeys(valid_payload()["economic_dispatcher"]["execution_drag_weights"], 0.2)
     result = RUNTIME.calculate_priority(
         value_inputs=values,
         drag_inputs=drag,
@@ -81,8 +84,8 @@ def test_priority_formula_matches_constitution():
 
 
 def test_priority_rejects_non_normalized_input():
-    values = {key: 0.5 for key in valid_payload()["economic_dispatcher"]["value_weights"]}
-    drag = {key: 0.5 for key in valid_payload()["economic_dispatcher"]["execution_drag_weights"]}
+    values = dict.fromkeys(valid_payload()["economic_dispatcher"]["value_weights"], 0.5)
+    drag = dict.fromkeys(valid_payload()["economic_dispatcher"]["execution_drag_weights"], 0.5)
     values["CASH_IMPACT"] = 1.1
     with pytest.raises(RUNTIME.ControlKernelError):
         RUNTIME.calculate_priority(
@@ -263,3 +266,93 @@ def test_prompt_injection_privilege_escalation_control_test_is_mandatory():
     payload = valid_payload()
     payload["control_tests"].remove("PROMPT_INJECTION_DOES_NOT_ESCALATE_PRIVILEGE")
     assert "PROMPT_INJECTION_CONTROL_TEST" in VERIFY.verify(payload)
+
+
+
+def _execution_context():
+    return RUNTIME.ExecutionContext(
+        agent_id="dealix-sales",
+        workload_id="runtime-attested-123",
+        tenant_id="tenant-a",
+        environment="test",
+        code_version="sha-123",
+        policy_version="v2",
+        tool="gmail-draft",
+    )
+
+
+def _authority():
+    return RUNTIME.AuthorityEnvelope(
+        action="CREATE_DRAFT",
+        tenant_id="tenant-a",
+        granted_by="founder-authority",
+        authority_source="approval-center:receipt-1",
+        expires_at="2026-09-11T02:00:00+00:00",
+        idempotency_key="draft:tenant-a:1",
+    )
+
+
+def test_exact_action_authority_allows_once_and_suppresses_replay():
+    seen: set[str] = set()
+    now = datetime(2026, 9, 11, 0, 0, tzinfo=UTC)
+    first = RUNTIME.evaluate_action_authority(
+        context=_execution_context(), action="CREATE_DRAFT", target_tenant_id="tenant-a",
+        authority=_authority(), seen_idempotency_keys=seen, now=now,
+    )
+    assert first.decision == "ALLOW"
+    replay = RUNTIME.evaluate_action_authority(
+        context=_execution_context(), action="CREATE_DRAFT", target_tenant_id="tenant-a",
+        authority=_authority(), seen_idempotency_keys=seen, now=now,
+    )
+    assert replay.reason == "DUPLICATE_ACTION_SUPPRESSED"
+
+
+def test_exact_action_authority_denies_wrong_tenant_and_scope():
+    now = datetime(2026, 9, 11, 0, 0, tzinfo=UTC)
+    wrong_tenant = RUNTIME.evaluate_action_authority(
+        context=_execution_context(), action="CREATE_DRAFT", target_tenant_id="tenant-b",
+        authority=_authority(), now=now,
+    )
+    assert wrong_tenant.reason == "WRONG_TENANT_DENIED"
+    wrong_scope = RUNTIME.evaluate_action_authority(
+        context=_execution_context(), action="SEND_EMAIL", target_tenant_id="tenant-a",
+        authority=_authority(), now=now,
+    )
+    assert wrong_scope.reason == "ACTION_SCOPE_MISMATCH"
+
+
+def test_exact_action_authority_denies_self_expired_and_incomplete_binding():
+    now = datetime(2026, 9, 11, 0, 0, tzinfo=UTC)
+    self_grant = _authority()._replace(granted_by="dealix-sales")
+    assert RUNTIME.evaluate_action_authority(
+        context=_execution_context(), action="CREATE_DRAFT", target_tenant_id="tenant-a",
+        authority=self_grant, now=now,
+    ).reason == "NO_AGENT_SELF_AUTHORITY"
+    expired = _authority()._replace(expires_at="2026-09-10T23:00:00+00:00")
+    assert RUNTIME.evaluate_action_authority(
+        context=_execution_context(), action="CREATE_DRAFT", target_tenant_id="tenant-a",
+        authority=expired, now=now,
+    ).reason == "EXPIRED_AUTHORITY_DENIED"
+    incomplete = _execution_context()._replace(workload_id="")
+    assert RUNTIME.evaluate_action_authority(
+        context=incomplete, action="CREATE_DRAFT", target_tenant_id="tenant-a",
+        authority=_authority(), now=now,
+    ).reason == "WORKLOAD_BINDING_INCOMPLETE"
+
+
+def test_exact_action_authority_requires_timezone_aware_expiry():
+    naive = _authority()._replace(expires_at="2026-09-11T02:00:00")
+    result = RUNTIME.evaluate_action_authority(
+        context=_execution_context(), action="CREATE_DRAFT", target_tenant_id="tenant-a",
+        authority=naive, now=datetime(2026, 9, 11, 0, 0, tzinfo=UTC),
+    )
+    assert result.reason == "AUTHORITY_EXPIRY_MUST_BE_TIMEZONE_AWARE"
+
+
+def test_company_twin_is_derived_projection_only():
+    fields = valid_payload()["company_twin"]["fields"]
+    canonical = {field: f"canonical-{field}" for field in fields}
+    twin = DOMAINS.derive_company_twin(canonical)
+    assert twin["source_system"] == "DERIVED_PROJECTION"
+    assert twin["current_constraint"] == "canonical-current_constraint"
+    DOMAINS.validate_company_twin(twin)
