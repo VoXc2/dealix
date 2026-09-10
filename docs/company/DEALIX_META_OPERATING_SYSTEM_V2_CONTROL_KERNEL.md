@@ -4,8 +4,8 @@ Effective: 2026-09-11
 
 Status: **Canonical constitutional superlayer candidate.**
 
-Machine-readable authority: `config/company/dealix_control_kernel_v2.json`  
-Fail-closed verifier: `scripts/commercial/verify_dealix_control_kernel_v2.py`  
+Machine-readable authority: `config/company/dealix_control_kernel_v2.json`<br>
+Fail-closed verifier: `scripts/commercial/verify_dealix_control_kernel_v2.py`<br>
 Runtime primitives: `scripts/commercial/dealix_control_kernel_v2.py`
 
 This layer **overrides conflicting lower-level operating logic** but **does not replace the existing Dealix Constitution**. It strengthens decision quality, economic allocation, agent identity, execution safety, learning, scalability, and enterprise readiness.
@@ -221,10 +221,10 @@ Category: `AI BUSINESS OPERATING SYSTEM`. Continuously test whether buyers immed
 
 ## CXV — Growth Loop Architecture
 
-A: `CUSTOMER_RESULT → PROOF → CONTENT → QUALIFIED_DEMAND → CUSTOMER`  
-B: `DELIVERY → PLAYBOOK → AUTOMATION → LOWER_COST → BETTER_MARGIN → MORE_DELIVERY`  
-C: `MARKET_SIGNAL → OPPORTUNITY_GRAPH → CONVERSATION → LEARNING → BETTER_TARGETING`  
-D: `CUSTOMER_WORKFLOW → REPEATABILITY → PRODUCT → DATA → BETTER_PRODUCT`  
+A: `CUSTOMER_RESULT → PROOF → CONTENT → QUALIFIED_DEMAND → CUSTOMER`<br>
+B: `DELIVERY → PLAYBOOK → AUTOMATION → LOWER_COST → BETTER_MARGIN → MORE_DELIVERY`<br>
+C: `MARKET_SIGNAL → OPPORTUNITY_GRAPH → CONVERSATION → LEARNING → BETTER_TARGETING`<br>
+D: `CUSTOMER_WORKFLOW → REPEATABILITY → PRODUCT → DATA → BETTER_PRODUCT`<br>
 E: `PARTNER → ACCESS → DELIVERY → PROOF → STRONGER_PARTNER_NETWORK`
 
 Measure loop speed.
