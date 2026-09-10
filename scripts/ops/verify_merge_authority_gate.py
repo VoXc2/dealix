@@ -2,7 +2,8 @@
 """Fail-closed verifier for exact, human-issued Dealix merge authority.
 
 The verifier never creates authority. It validates a snapshot produced by the
-GitHub workflow and accepts only a fresh, exact action-bound founder comment.
+GitHub workflow and accepts only the latest fresh, exact action-bound founder
+comment. Technical/source checks remain separate required gates.
 """
 from __future__ import annotations
 
@@ -19,8 +20,6 @@ MARKER = "DEALIX_L5_MERGE_AUTHORITY"
 HOLD_MARKERS = (
     "MERGE_RECOMMENDATION=HOLD",
     "MERGE_RECOMMENDATION: HOLD",
-    "PRODUCTION_GREEN=false",
-    "PRODUCTION_GREEN: false",
 )
 MAX_AUTHORITY_HOURS = 24
 
@@ -49,7 +48,7 @@ def _parse_time(value: str) -> datetime:
     except ValueError as exc:
         raise GateError(f"invalid expires_at: {value!r}") from exc
     if parsed.tzinfo is None:
-        raise GateError("expires_at must include a timezone")
+        raise GateError("timestamp must include a timezone")
     return parsed.astimezone(timezone.utc)
 
 
@@ -65,8 +64,11 @@ def _parse_comment(actor: str, body: str) -> Authority | None:
         key, value = line.split(":", 1)
         fields[key.strip().lower()] = value.strip()
 
+    decision = fields.get("decision", "").upper()
+    if decision != "GRANT":
+        raise GateError("latest authority decision is not GRANT")
+
     required = {
-        "decision",
         "pr",
         "head_sha",
         "base_sha",
@@ -79,8 +81,6 @@ def _parse_comment(actor: str, body: str) -> Authority | None:
     missing = sorted(required - fields.keys())
     if missing:
         raise GateError("authority comment missing: " + ", ".join(missing))
-    if fields["decision"].upper() != "GRANT":
-        raise GateError("authority decision is not GRANT")
     try:
         pr = int(fields["pr"])
     except ValueError as exc:
@@ -135,27 +135,25 @@ def verify_snapshot(snapshot: dict[str, Any], authority_actors: set[str]) -> Aut
     if not authority_actors:
         raise GateError("no merge-authority actors configured")
 
-    valid: list[tuple[datetime, Authority]] = []
-    parse_errors: list[str] = []
+    marker_comments: list[tuple[datetime, str, str]] = []
     for comment in snapshot.get("comments", []):
         actor = str(((comment or {}).get("user") or {}).get("login", "")).strip()
         text = str((comment or {}).get("body", "") or "")
         if MARKER not in text or actor not in authority_actors:
             continue
-        try:
-            authority = _parse_comment(actor, text)
-            if authority is None:
-                continue
-            created = _parse_time(str((comment or {}).get("created_at", "")))
-            valid.append((created, authority))
-        except GateError as exc:
-            parse_errors.append(f"{actor}: {exc}")
+        created = _parse_time(str((comment or {}).get("created_at", "")))
+        marker_comments.append((created, actor, text))
 
-    if not valid:
-        detail = "; ".join(parse_errors[-3:]) if parse_errors else "none found"
-        raise GateError(f"no valid allowlisted authority comment: {detail}")
+    if not marker_comments:
+        raise GateError("no allowlisted merge-authority marker comment found")
 
-    created_at, authority = max(valid, key=lambda item: item[0])
+    created_at, actor, text = max(marker_comments, key=lambda item: item[0])
+    if created_at > now:
+        raise GateError("latest authority comment is timestamped in the future")
+    authority = _parse_comment(actor, text)
+    if authority is None:
+        raise GateError("latest authority marker could not be parsed")
+
     if authority.pr != pr:
         raise GateError("authority PR number does not match current PR")
     if authority.head_sha != head_sha:
