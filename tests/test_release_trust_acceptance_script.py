@@ -47,12 +47,31 @@ def test_acceptance_runner_requires_production_equivalent_node22_or_isolated_nod
     assert 'host_node_major" == "20"' not in text
 
 
-def test_actionlint_keeps_warning_and_error_shell_findings_blocking() -> None:
+def test_actionlint_is_required_and_keeps_warning_shell_findings_blocking() -> None:
     text = _text()
+    assert 'command -v actionlint >/dev/null 2>&1 || fail_env "actionlint_not_installed"' in text
     assert "run_gate ACTIONLINT" in text
     assert "SHELLCHECK_OPTS=--severity=warning" in text
     assert "actionlint -shellcheck=" not in text
-    assert "ACTIONLINT=SKIPPED_ENVIRONMENT" in text
+    assert "ACTIONLINT=SKIPPED_ENVIRONMENT" not in text
+
+
+def test_pytest_is_forced_into_isolated_test_environment() -> None:
+    text = _text()
+    for token in (
+        "APP_ENV=test",
+        "ENVIRONMENT=test",
+        "DATABASE_URL=sqlite+aiosqlite:///:memory:",
+        "DEALIX_APPROVAL_STORE_BACKEND=memory",
+        "DEALIX_APPROVAL_DATABASE_URL=",
+        "DEALIX_APPROVAL_ALLOW_SQLITE_TEST_BACKEND=1",
+        "PYTEST_ISOLATION=PASS",
+    ):
+        assert token in text
+    assert 'run_gate TARGETED_PYTHON "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
+    assert 'run_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
+    assert 'run_gate TARGETED_PYTHON "$PY" -m pytest -q' not in text
+    assert 'run_gate PYTHON_FULL "$PY" -m pytest -q' not in text
 
 
 def test_canonical_shellcheck_owns_every_pr1600_trust_runner() -> None:
@@ -128,5 +147,5 @@ def test_acceptance_runner_contains_no_material_execution_verbs() -> None:
 def test_full_pytest_is_explicit_mode_and_still_fail_closed() -> None:
     text = _text()
     assert "DEALIX_ACCEPT_FULL_PYTEST" in text
-    assert 'run_gate PYTHON_FULL "$PY" -m pytest -q' in text
+    assert 'run_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q' in text
     assert "PYTHON_FULL=SKIPPED_BY_MODE" in text
