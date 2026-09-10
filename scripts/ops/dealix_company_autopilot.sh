@@ -533,7 +533,7 @@ payload = {
     "messages": [{"role": "user", "content": prompt}],
     "stream": False,
     "keep_alive": "10m",
-    "options": {"num_ctx": 16384, "num_predict": 900, "temperature": 0.2},
+    "options": {"num_ctx": 8192, "num_predict": 900, "temperature": 0.2},
 }
 Path(sys.argv[3]).write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 PY
