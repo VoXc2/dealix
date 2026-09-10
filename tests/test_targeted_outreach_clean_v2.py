@@ -12,7 +12,7 @@ def base(**updates):
     item={'company_name':'Acme','verified_email':'x@acme.sa','source':'https://example.com','evidence_refs':['x']}
     item.update(updates); return item
 def test_runner_has_no_send_endpoint():
-    t=RUNNER.read_text().lower(); assert 'messages().send' not in t; assert 'messages.send' not in t; assert "drafts().create" in t
+    t=RUNNER.read_text(encoding='utf-8').lower(); assert 'messages().send' not in t; assert 'messages.send' not in t; assert "drafts().create" in t
 def test_suppression_blocks_draft():
     m=module(); c=m.normalize(base(suppression_state='OPTED_OUT'),{}); assert not c.draft_eligible and not c.dispatch_eligible
 def test_channel_research_only_blocks_outreach_draft():
@@ -26,9 +26,9 @@ def test_dispatch_candidate_requires_channel_eligibility_and_relationship_or_con
     c2=m.normalize(base(consent_state='PURPOSE_SPECIFIC',channel_eligibility_state='ELIGIBLE_PENDING_ACTION_AUTHORITY'),{}); assert c2.dispatch_eligible
     c3=m.normalize(base(channel_eligibility_state='ELIGIBLE_PENDING_ACTION_AUTHORITY'),{}); assert not c3.dispatch_eligible
 def test_probability_is_optional_consumer_only():
-    t=RUNNER.read_text(); assert 'probability_revenue_engine' in t; assert 'probability_maximization_policy' not in t; assert 'probability_revenue_engine_v1.json' not in t
+    t=RUNNER.read_text(encoding='utf-8'); assert 'probability_revenue_engine' in t; assert 'probability_maximization_policy' not in t; assert 'probability_revenue_engine_v1.json' not in t
 def test_wrapper_is_current_main_and_l4_only():
-    t=WRAPPER.read_text().lower(); assert 'fetch origin main' in t; assert 'worktree add --detach' in t; assert 'reset --hard' not in t; assert 'external_send=0' in t; assert 'max_drafts=3' in t; assert 'l5_executed=none' in t
+    t=WRAPPER.read_text(encoding='utf-8').lower(); assert 'fetch origin main' in t; assert 'worktree add --detach' in t; assert 'reset --hard' not in t; assert 'external_send=0' in t; assert 'max_drafts=3' in t; assert 'l5_executed=none' in t
 
 
 def test_runner_uses_riyadh_operating_date():
