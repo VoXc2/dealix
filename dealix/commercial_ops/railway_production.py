@@ -22,7 +22,7 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8") if path.is_file() else ""
 
 
-CANONICAL_PREDEPLOY = "sh /app/scripts/railway_predeploy.sh"
+CANONICAL_PREDEPLOY = "bash /app/scripts/railway_predeploy.sh"
 CANONICAL_PREDEPLOY_MARKER = "/app/scripts/railway_predeploy.sh"
 CANONICAL_START = "/app/start.sh"
 CANONICAL_RESTART_MAX_RETRIES = 3
