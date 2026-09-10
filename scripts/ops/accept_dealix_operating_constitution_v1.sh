@@ -96,6 +96,25 @@ for needle in (
 ):
     assert needle in kernel
 
+agent_directive = root / "prompts/company/DEALIX_CONTROL_KERNEL_V2_AGENT_DIRECTIVE.md"
+assert agent_directive.is_file()
+directive = agent_directive.read_text(encoding="utf-8")
+for agent in (
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content",
+):
+    assert f"`{agent}`" in directive
+for needle in (
+    "does not create a new agent, scheduler, brain, policy store, approval system, or proof ledger",
+    "agent name alone never grants authority",
+    "BUDGET_BLOCKED",
+    "Never self-heal via production DB mutation, secret replacement, DNS change, external commitment, payment, privilege expansion, or approval bypass",
+):
+    assert needle in directive
+
 scorecard = root / "docs/ops/DEALIX_PERMANENT_NORTH_STAR_SCORECARD.md"
 assert scorecard.is_file()
 score_text = scorecard.read_text(encoding="utf-8")
@@ -107,6 +126,7 @@ for needle in (
 ):
     assert needle in score_text
 print("CONTROL_KERNEL_V2_PREFLIGHT=PASS")
+print("FIVE_AGENT_DIRECTIVE=PASS")
 print("COMPANY_OS_CONSTITUTION_PREFLIGHT=PASS")
 print("NORTH_STAR_SCORECARD_CONTRACT=PASS")
 PY
@@ -128,6 +148,7 @@ EXACT_SHA=$EXPECTED
 CONTROL_KERNEL_VERSION=2.0-control-kernel
 CONTROL_KERNEL_VERIFIER=PASS
 CONTROL_KERNEL_RUNTIME_PRIMITIVES=PASS
+FIVE_AGENT_DIRECTIVE=PASS
 CONSTITUTION_VERIFIER=PASS
 NORTH_STAR_STATUS=PASS
 NORTH_STAR_SCORECARD_CONTRACT=PASS
