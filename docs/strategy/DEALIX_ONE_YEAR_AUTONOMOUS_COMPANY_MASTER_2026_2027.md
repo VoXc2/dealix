@@ -1,8 +1,8 @@
 # DEALIX Ω∞
 # ONE-YEAR STRATEGIC AUTONOMOUS COMPANY MASTER
 
-**Period:** 10 September 2026 → 10 September 2027  
-**Status:** ADOPTED STRATEGIC CONSTITUTION  
+**Period:** 10 September 2026 → 10 September 2027<br>
+**Status:** ADOPTED STRATEGIC CONSTITUTION<br>
 **North Star:** `CASH_READY_AUTONOMOUS_DEALIX_COMPANY`
 
 > Precedence: fresh live GitHub/Railway/VPS/current-release evidence overrides historical state or copied receipts. This document governs strategy and operating doctrine; it never turns an unproven runtime, commercial state, or customer claim into truth.
@@ -85,21 +85,21 @@ Dealix differentiation must compound around Saudi business context, cross-system
 
 Maintain exactly:
 
-ONE TRUTH  
-ONE COMPANY MACHINE  
-ONE PORTFOLIO  
-ONE COMPANY BRAIN  
-ONE OPPORTUNITY GRAPH  
-ONE PROCESS GRAPH  
-ONE APPROVAL AUTHORITY  
-ONE POLICY MODEL  
-ONE PROOF MODEL  
-ONE ECONOMIC MODEL  
-ONE CANONICAL SCHEDULER  
-ONE MODEL ROUTER  
-ONE DEV FACTORY  
-ONE LEARNING FACTORY  
-ONE OBSERVABILITY MODEL  
+ONE TRUTH<br>
+ONE COMPANY MACHINE<br>
+ONE PORTFOLIO<br>
+ONE COMPANY BRAIN<br>
+ONE OPPORTUNITY GRAPH<br>
+ONE PROCESS GRAPH<br>
+ONE APPROVAL AUTHORITY<br>
+ONE POLICY MODEL<br>
+ONE PROOF MODEL<br>
+ONE ECONOMIC MODEL<br>
+ONE CANONICAL SCHEDULER<br>
+ONE MODEL ROUTER<br>
+ONE DEV FACTORY<br>
+ONE LEARNING FACTORY<br>
+ONE OBSERVABILITY MODEL<br>
 ONE AGENT IDENTITY MODEL
 
 Never create duplicates because a new tool is fashionable.
@@ -151,40 +151,40 @@ By 10 September 2027 the desired state is:
 
 ## 7. TRUTH FIREWALL
 
-`research != relationship`  
-`public_contact != consent`  
-`contact != qualified_lead`  
-`event_presence != buyer_intent`  
-`email_open != buyer_intent`  
-`click != qualified_problem`  
-`proposal_view != buying_decision`  
-`meeting_booked != meeting_held`  
-`draft != sent`  
-`quote != invoice`  
-`invoice != payment`  
-`payment_request != verified_cash`  
-`deployment != running_release`  
-`HTTP_200 != correct_release`  
-`synthetic != customer_delivery`  
-`delivery != customer_outcome`  
-`customer_outcome != public_case_study_permission`  
-`partnership_discussion != partnership`  
-`supplier_registration != tender_invitation`  
-`merge != Production Green`  
-`SKIPPED != PASS`  
-`BLOCKED != PASS`  
-`historical_PASS != current_PASS`  
+`research != relationship`<br>
+`public_contact != consent`<br>
+`contact != qualified_lead`<br>
+`event_presence != buyer_intent`<br>
+`email_open != buyer_intent`<br>
+`click != qualified_problem`<br>
+`proposal_view != buying_decision`<br>
+`meeting_booked != meeting_held`<br>
+`draft != sent`<br>
+`quote != invoice`<br>
+`invoice != payment`<br>
+`payment_request != verified_cash`<br>
+`deployment != running_release`<br>
+`HTTP_200 != correct_release`<br>
+`synthetic != customer_delivery`<br>
+`delivery != customer_outcome`<br>
+`customer_outcome != public_case_study_permission`<br>
+`partnership_discussion != partnership`<br>
+`supplier_registration != tender_invitation`<br>
+`merge != Production Green`<br>
+`SKIPPED != PASS`<br>
+`BLOCKED != PASS`<br>
+`historical_PASS != current_PASS`<br>
 `AI_statement != evidence`
 
 Every promotion of state requires evidence.
 
 ## 8. AUTHORITY MODEL
 
-L0 OBSERVE  
-L1 ANALYZE  
-L2 DRAFT  
-L3 INTERNAL EXECUTE  
-L4 REPOSITORY EXECUTE  
+L0 OBSERVE<br>
+L1 ANALYZE<br>
+L2 DRAFT<br>
+L3 INTERNAL EXECUTE<br>
+L4 REPOSITORY EXECUTE<br>
 L5 MATERIAL EXECUTE
 
 L0-L4: maximum useful autonomy.
@@ -565,15 +565,15 @@ Deep WIP preferably <=3. Large research universe is allowed. Large active-sales 
 
 Maintain independent lanes:
 
-A Warm / Known  
-B Inbound Diagnostic  
-C Referral  
-D Partners  
-E Founder Network  
-F Events  
-G Content / SEO / AEO  
-H Saudi Market Signals  
-I B2G / Etimad  
+A Warm / Known<br>
+B Inbound Diagnostic<br>
+C Referral<br>
+D Partners<br>
+E Founder Network<br>
+F Events<br>
+G Content / SEO / AEO<br>
+H Saudi Market Signals<br>
+I B2G / Etimad<br>
 J Evidence-filtered direct outreach where legally and operationally valid
 
 Never combine RESEARCH_ONLY with pipeline.
@@ -648,10 +648,10 @@ Track time-to-first-value, blocked days, rework, automation %, proof coverage, c
 
 ## 45. PROOF LEDGER
 
-E1 = internal capability proof  
-E2 = synthetic/demo proof  
-E3 = runtime production proof  
-E4 = customer delivery proof  
+E1 = internal capability proof<br>
+E2 = synthetic/demo proof<br>
+E3 = runtime production proof<br>
+E4 = customer delivery proof<br>
 E5 = customer outcome proof
 
 Customer case study requires E4/E5 + same-customer evidence + publication permission.
@@ -1086,41 +1086,41 @@ The base LLM is NOT the moat.
 
 ## 92. CAPACITY ALLOCATION — Q1
 
-35% Production Trust / Engineering  
-30% Revenue  
-15% Delivery/Proof  
-10% Productization  
-5% Security/Data  
+35% Production Trust / Engineering<br>
+30% Revenue<br>
+15% Delivery/Proof<br>
+10% Productization<br>
+5% Security/Data<br>
 5% Strategic R&D
 
 Immediately rebalance after Production Green.
 
 ## 93. CAPACITY ALLOCATION — Q2
 
-20% Revenue  
-20% Delivery / Customer Success  
-25% Product / SaaS  
-15% Security / Data  
-10% Partners / Distribution  
+20% Revenue<br>
+20% Delivery / Customer Success<br>
+25% Product / SaaS<br>
+15% Security / Data<br>
+10% Partners / Distribution<br>
 10% AI / Agentic R&D
 
 ## 94. CAPACITY ALLOCATION — Q3
 
-25% Revenue / Growth  
-20% Product  
-15% Delivery  
-15% Agentic  
-10% Security/Data  
-10% Partners/B2G  
+25% Revenue / Growth<br>
+20% Product<br>
+15% Delivery<br>
+15% Agentic<br>
+10% Security/Data<br>
+10% Partners/B2G<br>
 5% Brand
 
 ## 95. CAPACITY ALLOCATION — Q4
 
-30% Growth / Distribution  
-25% Product / Agentic  
-15% Customer Success / Proof  
-10% Partners  
-10% Security / Compliance  
+30% Growth / Distribution<br>
+25% Product / Agentic<br>
+15% Customer Success / Proof<br>
+10% Partners<br>
+10% Security / Compliance<br>
 10% Operating Efficiency
 
 Always reallocate to the actual bottleneck.
@@ -1249,15 +1249,15 @@ The objective is:
 
 Dealix must continually answer:
 
-WHAT IS TRUE?  
-WHERE IS THE MONEY?  
-WHERE IS THE CUSTOMER VALUE?  
-WHAT IS THE BOTTLENECK?  
-WHAT CAN BE EXECUTED SAFELY?  
-WHAT REQUIRES APPROVAL?  
-WHAT PROOF WILL VERIFY SUCCESS?  
-WHAT SHOULD BECOME SOFTWARE?  
-WHAT SHOULD BE DELETED?  
+WHAT IS TRUE?<br>
+WHERE IS THE MONEY?<br>
+WHERE IS THE CUSTOMER VALUE?<br>
+WHAT IS THE BOTTLENECK?<br>
+WHAT CAN BE EXECUTED SAFELY?<br>
+WHAT REQUIRES APPROVAL?<br>
+WHAT PROOF WILL VERIFY SUCCESS?<br>
+WHAT SHOULD BECOME SOFTWARE?<br>
+WHAT SHOULD BE DELETED?<br>
 WHAT DID WE LEARN?
 
 Then execute:
