@@ -202,7 +202,8 @@ INSTALL_PROOF="$(printf '%s\n' \
   "- timer_active: ${TIMER_ACTIVE}" \
   "- service_result: ${SERVICE_RESULT}" \
   '- local_llm_fallback: loopback_ollama' \
-  '- historical_comments_ignored_or_state_preserved: true' \
+  '- historical_comments_ignored=true' \
+  '- historical_comments_ignored_or_state_preserved=true' \
   '- secret_values_printed: false')"
 
 sudo -iu "$RUNNER_USER" env XDG_CACHE_HOME="$CACHE_DIR" \
@@ -225,6 +226,7 @@ echo "timer_active=${TIMER_ACTIVE}"
 echo "service_result=${SERVICE_RESULT}"
 echo "local_llm_fallback=loopback_ollama"
 echo "secret_values_printed=false"
+echo "historical_comments_ignored=true"
 echo "historical_comments_ignored_or_state_preserved=true"
 echo "private_issue_proof_posted=true"
 echo "===== END ====="
