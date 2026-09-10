@@ -56,6 +56,7 @@ cd "$ROOT"
 "$PY" -m py_compile \
   scripts/commercial/verify_dealix_control_kernel_v2.py \
   scripts/commercial/dealix_control_kernel_v2.py \
+  scripts/commercial/dealix_control_kernel_v2_domains.py \
   scripts/commercial/verify_dealix_operating_constitution.py \
   scripts/ops/dealix_north_star_status.py
 
@@ -64,6 +65,7 @@ cd "$ROOT"
 "$PY" scripts/ops/dealix_north_star_status.py
 "$PY" -m pytest -q \
   tests/test_dealix_control_kernel_v2.py \
+  tests/test_dealix_control_kernel_v2_domains.py \
   tests/test_dealix_operating_constitution.py
 
 # The compatibility entrypoint must evaluate the constitutional superlayer
