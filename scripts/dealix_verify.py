@@ -278,34 +278,52 @@ def resolve_sha(root: Path, ref: str) -> str:
 def create_worktree(root: Path, ref: str) -> tuple[Path, Path, str]:
     """Create an isolated exact-SHA checkout without mutating root/.git.
 
-    Verification is often invoked by the unprivileged Issue Bridge against a
-    canonical repository whose Git administrative files may be root-owned.
-    `git worktree add` writes under root/.git/worktrees and can therefore fail
-    before checks execute. A local no-hardlink clone reads the canonical repo
-    but writes all Git metadata and checkout state under the temporary root.
+    Initialize an empty temporary repository and fetch only the requested
+    reachable history. This avoids both canonical ``.git/worktrees`` writes
+    and wholesale copying of unrelated loose objects that may have different
+    ownership or permissions in the canonical repository.
     """
     expected = resolve_sha(root, ref)
     tmp_root = Path(tempfile.mkdtemp(prefix="dealix-verify-"))
     worktree = tmp_root / "wt"
     try:
-        clone = subprocess.run(
-            [
-                "git",
-                "clone",
-                "--local",
-                "--no-hardlinks",
-                "--no-checkout",
-                "--quiet",
-                str(root),
-                str(worktree),
-            ],
+        init = subprocess.run(
+            ["git", "init", "--quiet", str(worktree)],
             check=False,
             capture_output=True,
             text=True,
         )
-        if clone.returncode != 0:
-            detail = (clone.stderr or clone.stdout or "").strip()[:500]
-            raise RuntimeError(f"isolated clone failed rc={clone.returncode}: {detail}")
+        if init.returncode != 0:
+            detail = (init.stderr or init.stdout or "").strip()[:500]
+            raise RuntimeError(f"isolated git init failed rc={init.returncode}: {detail}")
+
+        symbolic = subprocess.run(
+            ["git", "rev-parse", "--symbolic-full-name", ref],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        source_ref = symbolic.stdout.strip() if symbolic.returncode == 0 else ""
+        fetch_target = source_ref or expected
+        fetch = subprocess.run(
+            [
+                "git",
+                "fetch",
+                "--quiet",
+                "--no-tags",
+                "--depth=1",
+                str(root),
+                fetch_target,
+            ],
+            cwd=worktree,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if fetch.returncode != 0:
+            detail = (fetch.stderr or fetch.stdout or "").strip()[:500]
+            raise RuntimeError(f"isolated fetch failed rc={fetch.returncode}: {detail}")
 
         checkout = subprocess.run(
             ["git", "checkout", "--detach", "--quiet", expected],
