@@ -93,13 +93,20 @@ def choose_execution_vs_information(*, voi: float, immediate_execution_advantage
     return "RESEARCH_OR_TEST_FIRST" if voi > immediate_execution_advantage else "EXECUTE_BOUNDED_ACTION"
 
 
-def reversibility_default(*, reversibility: str, confidence: float) -> str:
-    confidence = _bounded01("confidence", confidence)
+def reversibility_default(*, reversibility: str, high_uncertainty: bool = False, high_confidence: bool = False) -> str:
+    """Apply the constitutional default without inventing numeric thresholds.
+
+    The evidence/policy layer classifies high uncertainty or high confidence.
+    The Control Kernel only applies the R0-R5 default once that classification
+    is explicit.
+    """
     if reversibility not in {"R0", "R1", "R2", "R3", "R4", "R5"}:
         raise ControlKernelError("unknown_reversibility")
-    if reversibility in {"R4", "R5"} and confidence < 0.80:
+    if high_uncertainty and high_confidence:
+        raise ControlKernelError("confidence_classification_conflict")
+    if reversibility in {"R4", "R5"} and high_uncertainty:
         return "HOLD"
-    if reversibility in {"R0", "R1"} and confidence >= 0.80:
+    if reversibility in {"R0", "R1"} and high_confidence:
         return "EXECUTE"
     return "REVIEW"
 
