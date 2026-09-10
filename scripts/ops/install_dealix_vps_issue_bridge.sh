@@ -73,11 +73,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# The root caller owns TMP_BRIDGE intentionally; only the authenticated `gh`
+# process is demoted to the bounded Dealix runner user.
+# shellcheck disable=SC2024
 sudo -iu "$RUNNER_USER" gh api \
   -H 'Accept: application/vnd.github.raw+json' \
   "repos/${REPO}/contents/scripts/ops/dealix_vps_issue_bridge.py?ref=${SOURCE_SHA}" \
   >"$TMP_BRIDGE"
 
+# The root caller owns TMP_DISPATCHER intentionally for the same reason.
+# shellcheck disable=SC2024
 sudo -iu "$RUNNER_USER" gh api \
   -H 'Accept: application/vnd.github.raw+json' \
   "repos/${REPO}/contents/scripts/ops/dealix_vps_control.sh?ref=${SOURCE_SHA}" \
