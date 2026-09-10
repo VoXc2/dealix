@@ -16,6 +16,20 @@ GATE="$ROOT/scripts/ops/fail_closed_gate.sh"
 PY="${DEALIX_ACCEPT_PYTHON:-$ROOT/.venv/bin/python}"
 NODE_IMAGE="${DEALIX_ACCEPT_NODE_IMAGE:-node:22-bookworm}"
 
+# Acceptance must never inherit a production application/database context from
+# the VPS. Tests that need another backend may override these values explicitly
+# with monkeypatch, but the process-level baseline is always isolated test mode.
+PYTEST_ENV=(
+  env
+  APP_ENV=test
+  ENVIRONMENT=test
+  APP_DEBUG=false
+  DATABASE_URL=sqlite+aiosqlite:///:memory:
+  DEALIX_APPROVAL_STORE_BACKEND=memory
+  DEALIX_APPROVAL_DATABASE_URL=
+  DEALIX_APPROVAL_ALLOW_SQLITE_TEST_BACKEND=1
+)
+
 log() { printf '[release-trust] %s\n' "$*"; }
 fail_env() { printf 'BLOCKED_ENVIRONMENT=%s\n' "$1" >&2; exit 3; }
 run_gate() { bash "$GATE" "$@"; }
@@ -47,7 +61,9 @@ fi
 [[ -f "$GATE" ]] || fail_env "missing_fail_closed_gate"
 [[ -x "$PY" ]] || fail_env "missing_accept_python:$PY"
 command -v shellcheck >/dev/null 2>&1 || fail_env "shellcheck_not_installed"
+command -v actionlint >/dev/null 2>&1 || fail_env "actionlint_not_installed"
 printf 'PYTHON_RUNTIME=PASS path=%s\n' "$PY"
+printf 'PYTEST_ISOLATION=PASS app_env=test environment=test database=sqlite_memory approval_store=memory\n'
 
 WEB_NODE_MODE=""
 host_node_major=0
@@ -155,7 +171,7 @@ TARGET_TESTS=(
   tests/test_vps_automation_runtime.py
   tests/test_verify_catalog.py
 )
-run_gate TARGETED_PYTHON "$PY" -m pytest -q "${TARGET_TESTS[@]}"
+run_gate TARGETED_PYTHON "${PYTEST_ENV[@]}" "$PY" -m pytest -q "${TARGET_TESTS[@]}"
 
 # Deterministic source-of-truth projections/verifiers. These are intentionally
 # direct gates as well as pytest coverage so stale generated artifacts cannot be
@@ -164,12 +180,7 @@ run_gate PUBLIC_SERVICE_CATALOG "$PY" scripts/dealix_export_service_catalog_json
 run_gate MARKET_SIGNAL_SOURCES_V3 "$PY" scripts/ops/verify_market_signal_sources_v3.py
 run_gate VERIFY_SCRIPT_CATALOG "$PY" scripts/ops/build_verify_catalog.py --check
 run_gate BRAND_IDENTITY_V2 "$PY" scripts/ops/verify_brand_identity_v2.py
-
-if command -v actionlint >/dev/null 2>&1; then
-  run_gate ACTIONLINT env SHELLCHECK_OPTS=--severity=warning actionlint
-else
-  printf 'ACTIONLINT=SKIPPED_ENVIRONMENT reason=not_installed\n'
-fi
+run_gate ACTIONLINT env SHELLCHECK_OPTS=--severity=warning actionlint
 
 if [[ "$WEB_NODE_MODE" == "HOST_PRODUCTION_NODE22" ]]; then
   (
@@ -198,7 +209,7 @@ else
 fi
 
 if [[ "$FULL_PYTEST" == "1" ]]; then
-  run_gate PYTHON_FULL "$PY" -m pytest -q
+  run_gate PYTHON_FULL "${PYTEST_ENV[@]}" "$PY" -m pytest -q
 else
   printf 'PYTHON_FULL=SKIPPED_BY_MODE set_DEALIX_ACCEPT_FULL_PYTEST=1_for_full_suite\n'
 fi
