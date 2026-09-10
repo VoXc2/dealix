@@ -276,30 +276,59 @@ def resolve_sha(root: Path, ref: str) -> str:
 
 
 def create_worktree(root: Path, ref: str) -> tuple[Path, Path, str]:
+    """Create an isolated exact-SHA checkout without mutating root/.git.
+
+    Verification is often invoked by the unprivileged Issue Bridge against a
+    canonical repository whose Git administrative files may be root-owned.
+    `git worktree add` writes under root/.git/worktrees and can therefore fail
+    before checks execute. A local no-hardlink clone reads the canonical repo
+    but writes all Git metadata and checkout state under the temporary root.
+    """
     expected = resolve_sha(root, ref)
     tmp_root = Path(tempfile.mkdtemp(prefix="dealix-verify-"))
     worktree = tmp_root / "wt"
-    subprocess.run(
-        ["git", "worktree", "add", "--detach", str(worktree), expected],
-        cwd=root,
-        check=True,
-        capture_output=True,
-    )
-    actual = resolve_sha(worktree, "HEAD")
-    if actual != expected:
-        raise RuntimeError(f"worktree SHA mismatch: expected={expected} actual={actual}")
-    return tmp_root, worktree, expected
+    try:
+        clone = subprocess.run(
+            [
+                "git",
+                "clone",
+                "--local",
+                "--no-hardlinks",
+                "--no-checkout",
+                "--quiet",
+                str(root),
+                str(worktree),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if clone.returncode != 0:
+            detail = (clone.stderr or clone.stdout or "").strip()[:500]
+            raise RuntimeError(f"isolated clone failed rc={clone.returncode}: {detail}")
+
+        checkout = subprocess.run(
+            ["git", "checkout", "--detach", "--quiet", expected],
+            cwd=worktree,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if checkout.returncode != 0:
+            detail = (checkout.stderr or checkout.stdout or "").strip()[:500]
+            raise RuntimeError(f"isolated checkout failed rc={checkout.returncode}: {detail}")
+
+        actual = resolve_sha(worktree, "HEAD")
+        if actual != expected:
+            raise RuntimeError(f"worktree SHA mismatch: expected={expected} actual={actual}")
+        return tmp_root, worktree, expected
+    except Exception:
+        shutil.rmtree(tmp_root, ignore_errors=True)
+        raise
 
 
 def cleanup_worktree(root: Path, tmp_root: Path | None, worktree: Path | None) -> None:
-    if worktree and worktree.exists():
-        subprocess.run(
-            ["git", "worktree", "remove", "--force", str(worktree)],
-            cwd=root,
-            check=False,
-            capture_output=True,
-        )
-    subprocess.run(["git", "worktree", "prune"], cwd=root, check=False, capture_output=True)
+    del root, worktree
     if tmp_root:
         shutil.rmtree(tmp_root, ignore_errors=True)
 
