@@ -14,7 +14,7 @@ deploy:
   start_command_forbidden:
     - ./start.sh
     - uvicorn api.main:app
-  pre_deploy_canonical: sh /app/scripts/railway_predeploy.sh
+  pre_deploy_canonical: bash /app/scripts/railway_predeploy.sh
   pre_deploy_forbidden:
     - echo "no migration needed"
     - no migration needed
@@ -27,8 +27,9 @@ deploy:
 migrations:
   pre_deploy_script: scripts/railway_predeploy.sh
   # Matches scripts/railway_predeploy.sh: SKIP by default; alembic only when flag is 1
-  runs_when: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1 and DATABASE_URL is set
+  runs_when: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1 and DEALIX_DB_MIGRATION_AUTHORIZED=1 and DATABASE_URL is set
   enable_env: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1
+  authorization_env: DEALIX_DB_MIGRATION_AUTHORIZED=1
   bootstrap_once: scripts/railway_prod_bootstrap.sh
 
 verify_after_deploy:

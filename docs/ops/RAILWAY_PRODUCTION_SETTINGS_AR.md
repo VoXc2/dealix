@@ -23,7 +23,7 @@ curl -fsS https://api.dealix.me/api/v1/meta
 |---------|----------------|----------|
 | **Builder** | Dockerfile | — |
 | **Start Command** | **فارغ** أو `/app/start.sh` فقط | `./start.sh` أو `uvicorn ...` مباشرة |
-| **Pre-deploy** | `sh /app/scripts/railway_predeploy.sh` (من [`railway.toml`](../../railway.toml)) | `echo "no migration needed"` |
+| **Pre-deploy** | `bash /app/scripts/railway_predeploy.sh` (من [`railway.toml`](../../railway.toml)) | `echo "no migration needed"` |
 | **Healthcheck Path** | `/healthz` | `/health` فقط |
 | **Healthcheck Timeout** | `300` | — |
 | **Public domain target port** | نفس `PORT` الذي تحقنه Railway (غالبًا **8080** على المنصة؛ التطبيق يقرأ `$PORT` عبر `/app/start.sh`) | منفذ ثابت 8000 في Start Command |
@@ -42,10 +42,10 @@ curl -fsS https://api.dealix.me/api/v1/meta
 
 ## الترحيل (Alembic)
 
-- **config-as-code:** [`railway.toml`](../../railway.toml) يشغّل `sh /app/scripts/railway_predeploy.sh` قبل كل نشر.
+- **config-as-code:** [`railway.toml`](../../railway.toml) يشغّل `bash /app/scripts/railway_predeploy.sh` قبل كل نشر.
 - **افتراضي (آمن):** السكربت يطبع `SKIP` ولا يشغّل ترحيلاً.
-- **ترحيل تلقائي عند النشر:** عيّن `RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1` + `DATABASE_URL` على خدمة API.
-- **خطأ شائع في UI:** `echo "no migration needed"` — **استبدله** بـ `sh /app/scripts/railway_predeploy.sh` أو اترك الحقل فارغاً ليأخذ `railway.toml`.
+- **ترحيل تلقائي عند النشر:** يتطلب `RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1` + `DEALIX_DB_MIGRATION_AUTHORIZED=1` + `DATABASE_URL`. لا يكفي flag قديم وحده لتفويض DDL.
+- **خطأ شائع في UI:** `echo "no migration needed"` — **استبدله** بـ `bash /app/scripts/railway_predeploy.sh` أو اترك الحقل فارغاً ليأخذ `railway.toml`.
 - **مرة واحدة:** `bash scripts/railway_prod_bootstrap.sh`
 - **بذرة أول مرة (اختياري):** `bash scripts/railway_prod_bootstrap.sh` بعد أول نشر ناجح.
 
@@ -69,6 +69,7 @@ python scripts/verify_railway_production_config.py --ui-restart-max-retries 10
 | متغير | الغرض |
 |--------|--------|
 | `DATABASE_URL` | Postgres (مرجع `${{Postgres.DATABASE_URL}}`) |
+| `DEALIX_DB_MIGRATION_AUTHORIZED` | بوابة تفويض منفصلة؛ يجب أن تساوي `1` مع migration flag قبل أي Alembic DDL |
 | `APP_SECRET_KEY` | جلسات وتوقيع |
 | `ENVIRONMENT` | `production` |
 | `CORS_ORIGINS` | دومينات الفرونت |
