@@ -9,7 +9,8 @@ if [[ -z "$EXPECTED_SHA" ]]; then
   echo "HOLD: DEALIX_EXPECTED_SHA is required" >&2
   exit 64
 fi
-if [[ "$(git -C "$REPO" rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
+cd "$REPO"
+if [[ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
   echo "HOLD: exact-head mismatch" >&2
   exit 65
 fi
