@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 import { motion, useInView, useAnimation, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { InteractiveTechDemo } from "./InteractiveTechDemo";
 
 const ORGANIZATION_JSON_LD = {
   "@context": "https://schema.org",
@@ -667,6 +668,10 @@ export function CommercialLaunchHome() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
+      <section className="py-12 px-4 max-w-4xl mx-auto">
+        <InteractiveTechDemo />
+      </section>
+
       {/* BEST OFFERS — BEST IN MARKET                                            */}
       <section className="py-20 px-4 max-w-6xl mx-auto">
         <div className="text-center mb-10">
