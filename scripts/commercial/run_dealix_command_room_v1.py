@@ -15,14 +15,17 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config" / "company" / "dealix_command_room_v1.json"
+BINDING = ROOT / "config" / "company" / "dealix_master_prompt_binding_v1.json"
 VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_command_room_v1.py"
 META_CONFIG = ROOT / "config" / "company" / "dealix_meta_operating_system_v2.json"
 META_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_meta_operating_system_v2.py"
@@ -30,7 +33,6 @@ META_CONTROL = ROOT / "scripts" / "commercial" / "run_dealix_meta_control_v2.py"
 META_RECEIPT = ROOT / "reports" / "company_os" / "meta_control" / "latest.json"
 OUT = ROOT / "reports" / "company_os" / "command_room"
 
-# Daily work only. Weekly proof assembly is explicitly opt-in below.
 RUNNERS: list[tuple[str, str, list[str], str]] = [
     (
         "company_os",
@@ -74,10 +76,12 @@ FORBIDDEN_LIVE_FLAGS = {
     "PRODUCTION_MUTATION": {"1", "true", "yes"},
 }
 _BOUND_TRUE = {"1", "true", "yes"}
+_SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
+_INVOCATION_RE = re.compile(r"^[0-9a-f]{32}$")
 
 
 def stamp() -> str:
-    return datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    return datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
 
 
 def now_iso() -> str:
@@ -86,6 +90,18 @@ def now_iso() -> str:
 
 def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def git_head() -> str:
+    result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    value = result.stdout.strip().lower()
+    return value if result.returncode == 0 and _SHA40_RE.fullmatch(value) else "unknown"
 
 
 def run(label: str, argv: list[str], env: dict[str, str] | None = None) -> dict[str, Any]:
@@ -118,8 +134,13 @@ def env_violations() -> list[str]:
     return violations
 
 
-def safe_agent_env(meta_sha: str, owner_agent: str) -> dict[str, str]:
-    env = dict(os.environ)
+def safe_agent_env(
+    meta_sha: str,
+    owner_agent: str,
+    *,
+    base_env: dict[str, str] | None = None,
+) -> dict[str, str]:
+    env = dict(base_env if base_env is not None else os.environ)
     env["DEALIX_META_CONTROL_BOUND"] = "1"
     env["DEALIX_META_CONTROL_PATH"] = str(META_CONFIG)
     env["DEALIX_META_CONTROL_SHA256"] = meta_sha
@@ -136,12 +157,6 @@ def safe_agent_env(meta_sha: str, owner_agent: str) -> dict[str, str]:
 
 
 def load_bound_master_prompt(env: dict[str, str]) -> dict[str, Any]:
-    """Load and verify the master prompt before an agent lane starts.
-
-    This deliberately reads the artifact rather than trusting inherited env
-    markers. The model router independently re-verifies and consumes the same
-    prompt at model-inference time.
-    """
     if env.get("DEALIX_MASTER_PROMPT_BOUND", "").strip().lower() not in _BOUND_TRUE:
         return {"bound": False, "sha256": "", "bytes": 0}
 
@@ -165,6 +180,35 @@ def load_bound_master_prompt(env: dict[str, str]) -> dict[str, Any]:
     return {"bound": True, "sha256": actual_sha, "bytes": len(raw)}
 
 
+def establish_master_prompt_binding(base_env: dict[str, str]) -> tuple[dict[str, str], dict[str, Any]]:
+    """Make standalone and wrapped command-room runs consume one verified prompt.
+
+    The master wrapper may provide an installed hash-bound artifact. A standalone
+    command instead binds the repository-shadow artifact named by the canonical
+    binding registry. Both paths are verified before any agent lane runs.
+    """
+    env = dict(base_env)
+    if env.get("DEALIX_MASTER_PROMPT_BOUND", "").strip().lower() in _BOUND_TRUE:
+        state = load_bound_master_prompt(env)
+        return env, {**state, "source": "LAUNCHER_ENV"}
+
+    if not BINDING.is_file():
+        raise RuntimeError("master binding registry missing")
+    data = json.loads(BINDING.read_text(encoding="utf-8"))
+    prompt_ref = str(data.get("prompt_ref") or "").strip()
+    if not prompt_ref:
+        raise RuntimeError("master binding registry prompt_ref missing")
+    prompt_path = ROOT / prompt_ref
+    if not prompt_path.is_file():
+        raise RuntimeError("repository master prompt missing")
+    prompt_sha = file_sha256(prompt_path)
+    env["DEALIX_MASTER_PROMPT_BOUND"] = "1"
+    env["DEALIX_COMPANY_MASTER_PROMPT"] = str(prompt_path)
+    env["DEALIX_COMPANY_MASTER_PROMPT_SHA256"] = prompt_sha
+    state = load_bound_master_prompt(env)
+    return env, {**state, "source": "REPO_SHADOW"}
+
+
 def runner_specs(*, include_proof_pack: bool) -> list[tuple[str, str, list[str], str]]:
     specs = list(RUNNERS)
     if include_proof_pack:
@@ -181,8 +225,8 @@ def load_meta_receipt() -> dict[str, Any]:
         return {"status": "MISSING"}
     try:
         return json.loads(META_RECEIPT.read_text(encoding="utf-8"))
-    except Exception as exc:  # noqa: BLE001 - receipt is non-authoritative if unreadable
-        return {"status": "UNREADABLE", "reason": str(exc)}
+    except Exception as exc:  # noqa: BLE001
+        return {"status": "UNREADABLE", "reason": type(exc).__name__}
 
 
 def write_outputs(payload: dict[str, Any]) -> None:
@@ -201,6 +245,8 @@ def write_outputs(payload: dict[str, Any]) -> None:
         "# Dealix Founder Command Room",
         "",
         f"- Run: `{payload['run_id']}`",
+        f"- Invocation: `{payload['invocation_id']}`",
+        f"- Repository head: `{payload['repository_head']}`",
         f"- Generated: `{payload['generated_at']}`",
         f"- Status: **{payload['status']}**",
         f"- North Star: `{payload['north_star']}`",
@@ -208,6 +254,7 @@ def write_outputs(payload: dict[str, Any]) -> None:
         f"- Channels: `{len(payload['channels'])}`",
         f"- V2 Meta-Control: **{payload['meta_control']['status']}**",
         f"- V2 SHA256: `{payload['meta_control']['sha256']}`",
+        f"- Master Prompt binding source: `{payload['master_prompt']['source']}`",
         f"- Executed lanes bound to Master Prompt: **{payload['master_prompt']['all_executed_lanes_bound']}**",
         "",
         "## CEO Now",
@@ -242,7 +289,7 @@ def main() -> int:
     parser.add_argument("--include-proof-pack", action="store_true")
     args = parser.parse_args()
 
-    required = (CONFIG, VERIFY, META_CONFIG, META_VERIFY, META_CONTROL)
+    required = (CONFIG, BINDING, VERIFY, META_CONFIG, META_VERIFY, META_CONTROL)
     if any(not path.is_file() for path in required):
         print("COMMAND_ROOM=BLOCKED_REQUIRED_CONTROL_FILE_MISSING", file=sys.stderr)
         return 2
@@ -252,11 +299,33 @@ def main() -> int:
         print(f"COMMAND_ROOM=BLOCKED_LIVE_FLAGS flags={','.join(sorted(live_flags))}", file=sys.stderr)
         return 2
 
+    repository_head = git_head()
+    if repository_head == "unknown":
+        print("COMMAND_ROOM=BLOCKED_REPOSITORY_HEAD_UNRESOLVED", file=sys.stderr)
+        return 2
+    expected_head = os.getenv("DEALIX_EXPECTED_REPOSITORY_HEAD", "").strip().lower()
+    if expected_head and expected_head != repository_head:
+        print("COMMAND_ROOM=BLOCKED_REPOSITORY_HEAD_MISMATCH", file=sys.stderr)
+        return 2
+
+    supplied_invocation = os.getenv("DEALIX_COMMAND_ROOM_INVOCATION_ID", "").strip().lower()
+    if supplied_invocation and not _INVOCATION_RE.fullmatch(supplied_invocation):
+        print("COMMAND_ROOM=BLOCKED_INVOCATION_ID_INVALID", file=sys.stderr)
+        return 2
+    invocation_id = supplied_invocation or uuid.uuid4().hex
+
     meta_sha = file_sha256(META_CONFIG)
+    initial_env = safe_agent_env(meta_sha, "dealix-pm")
+    try:
+        bound_base_env, binding_state = establish_master_prompt_binding(initial_env)
+    except Exception as exc:  # noqa: BLE001
+        print(f"COMMAND_ROOM=BLOCKED_MASTER_PROMPT_BINDING_{type(exc).__name__}", file=sys.stderr)
+        return 78
+
     meta_preflight = run(
         "meta_control_v2",
         [str(META_CONTROL.relative_to(ROOT))],
-        env=safe_agent_env(meta_sha, "dealix-pm"),
+        env=safe_agent_env(meta_sha, "dealix-pm", base_env=bound_base_env),
     )
     if meta_preflight["rc"] != 0:
         print("COMMAND_ROOM=BLOCKED_META_CONTROL_V2", file=sys.stderr)
@@ -266,7 +335,7 @@ def main() -> int:
     verify = run(
         "command_room_verify",
         [str(VERIFY.relative_to(ROOT))],
-        env=safe_agent_env(meta_sha, "dealix-pm"),
+        env=safe_agent_env(meta_sha, "dealix-pm", base_env=bound_base_env),
     )
     if verify["rc"] != 0:
         print("COMMAND_ROOM=BLOCKED_VERIFIER", file=sys.stderr)
@@ -279,7 +348,7 @@ def main() -> int:
 
     lanes: list[dict[str, Any]] = []
     for label, owner, argv, criticality in specs:
-        env = safe_agent_env(meta_sha, owner)
+        env = safe_agent_env(meta_sha, owner, base_env=bound_base_env)
         try:
             prompt_binding = load_bound_master_prompt(env)
         except RuntimeError as exc:
@@ -312,8 +381,10 @@ def main() -> int:
                 "meta_control_sha256": meta_sha,
                 "master_prompt_bound": prompt_binding["bound"],
                 "master_prompt_sha256": prompt_binding["sha256"],
+                "universal_l5": False,
             })
             continue
+
         receipt = run(label, argv, env=env)
         receipt.update(
             owner_agent=owner,
@@ -329,13 +400,20 @@ def main() -> int:
         lanes.append(receipt)
 
     degraded = [lane for lane in lanes if lane["rc"] != 0]
-    all_executed_lanes_bound = bool(lanes) and all(bool(lane.get("master_prompt_bound")) for lane in lanes)
+    all_executed_lanes_bound = bool(lanes) and all(
+        bool(lane.get("master_prompt_bound"))
+        and lane.get("master_prompt_sha256") == binding_state["sha256"]
+        for lane in lanes
+    )
+    run_id = f"{stamp()}-{invocation_id[:12]}"
     payload: dict[str, Any] = {
-        "schema_version": "dealix.command-room-receipt.v2",
-        "run_id": stamp(),
+        "schema_version": "dealix.command-room-receipt.v3",
+        "run_id": run_id,
+        "invocation_id": invocation_id,
+        "repository_head": repository_head,
         "generated_at": now_iso(),
         "north_star": config["north_star"],
-        "status": "DEGRADED" if degraded else "PASS",
+        "status": "DEGRADED" if degraded or not all_executed_lanes_bound else "PASS",
         "meta_control": {
             "status": "PASS",
             "sha256": meta_sha,
@@ -343,7 +421,9 @@ def main() -> int:
             "runtime_receipt": meta_receipt,
         },
         "master_prompt": {
-            "required_by_launcher": os.getenv("DEALIX_MASTER_PROMPT_BOUND", "").strip().lower() in _BOUND_TRUE,
+            "source": binding_state["source"],
+            "active_sha256": binding_state["sha256"],
+            "bytes": binding_state["bytes"],
             "all_executed_lanes_bound": all_executed_lanes_bound,
         },
         "agents": config["canonical_agents"],
@@ -354,7 +434,8 @@ def main() -> int:
         "lanes": lanes,
         "ceo_now": [
             "V2 Meta-Operating Control Kernel is a mandatory preflight for every executed canonical agent lane.",
-            "The hash-bound Company Master Prompt is loaded before each executed lane and consumed by model-backed work through the canonical Model Router.",
+            "A verified hash-bound Company Master Prompt is established for wrapped and standalone runs before any agent lane executes.",
+            "Model-backed work consumes a context-sized critical control digest derived from the exact verified master artifact.",
             "Production Trust remains the first engineering gate until exact-release evidence is green.",
             "Revenue agent continuously ranks evidence-backed opportunities and prepares the next commercial movement.",
             "Delivery proof assembly runs only when explicitly requested by the weekly proof cadence.",
@@ -370,14 +451,18 @@ def main() -> int:
     write_outputs(payload)
 
     print(f"COMMAND_ROOM={payload['status']}")
-    print(f"COMMAND_ROOM_RUN={payload['run_id']}")
+    print(f"COMMAND_ROOM_RUN={run_id}")
+    print(f"COMMAND_ROOM_INVOCATION_ID={invocation_id}")
+    print(f"COMMAND_ROOM_REPOSITORY_HEAD={repository_head}")
     print(f"META_CONTROL_SHA256={meta_sha}")
     print("META_CONTROL_BOUND_TO_ALL_EXECUTED_AGENT_LANES=true")
+    print(f"MASTER_PROMPT_SHA256={binding_state['sha256']}")
+    print(f"MASTER_PROMPT_BINDING_SOURCE={binding_state['source']}")
     print(f"MASTER_PROMPT_BOUND_TO_ALL_EXECUTED_AGENT_LANES={str(all_executed_lanes_bound).lower()}")
     print(f"WEEKLY_PROOF_PACK_INCLUDED={str(args.include_proof_pack).lower()}")
     print(f"COMMAND_ROOM_REPORT={OUT / 'latest.md'}")
     print("EXTERNAL_EFFECTS=NONE_BY_THIS_RUNNER")
-    return 1 if degraded else 0
+    return 1 if payload["status"] != "PASS" else 0
 
 
 if __name__ == "__main__":
