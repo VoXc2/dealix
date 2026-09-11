@@ -8,6 +8,7 @@ import { motion, useInView, useAnimation, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveTechDemo } from "./InteractiveTechDemo";
+import { HermesAgentWidget } from "./HermesAgentWidget";
 
 const ORGANIZATION_JSON_LD = {
   "@context": "https://schema.org",
@@ -670,6 +671,7 @@ export function CommercialLaunchHome() {
       {/* ------------------------------------------------------------------ */}
       <section className="py-12 px-4 max-w-4xl mx-auto">
         <InteractiveTechDemo />
+      <HermesAgentWidget />
       </section>
 
       {/* BEST OFFERS — BEST IN MARKET                                            */}
