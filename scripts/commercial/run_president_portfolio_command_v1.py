@@ -22,6 +22,49 @@ SUPPRESSED={'SUPPRESSED','OPTED_OUT','WITHDRAWN'}
 POS_WEIGHTS={'evidence_strength':0.16,'urgency':0.11,'buyer_access':0.10,'economic_impact':0.11,'gross_margin':0.08,'automation_ratio':0.07,'collection_probability':0.08,'proof_reuse':0.07,'strategic_reuse':0.06,'expansion_value':0.06,'partner_leverage':0.05,'productization_potential':0.05}
 NEG_WEIGHTS={'time_to_cash':0.14,'founder_minutes':0.10,'delivery_cost':0.10,'compute_cost':0.05,'sales_cycle':0.10,'working_capital_risk':0.10,'compliance_risk':0.12,'security_risk':0.10,'irreversibility':0.07,'maintenance_debt':0.06,'opportunity_cost':0.06}
 
+SECTOR_HINTS=[
+    (('construction','contractor','epc','project services'),'CONSTRUCTION_EPC_PROJECT_SERVICES'),
+    (('industrial','manufacturing','factory'),'INDUSTRIAL_MANUFACTURING'),
+    (('logistics','supply chain','fleet','warehouse'),'LOGISTICS_SUPPLY_CHAIN'),
+    (('energy','utility','oil','gas'),'ENERGY_UTILITIES_OIL_GAS'),
+    (('mining','metals'),'MINING_METALS'),
+    (('real estate','property','proptech','facility management'),'REAL_ESTATE_PROPTECH_FM'),
+    (('healthcare','hospital','clinic','medical'),'HEALTHCARE_LIFE_SCIENCES'),
+    (('fintech','bank','insurance','financial services'),'FINANCIAL_SERVICES_FINTECH_INSURANCE'),
+    (('retail','ecommerce','e-commerce','shop'),'RETAIL_ECOMMERCE'),
+    (('tourism','hospitality','hotel','event'),'TOURISM_HOSPITALITY_EVENTS'),
+    (('saas','software','technology','system integrator','si '),'TECHNOLOGY_SAAS_SI'),
+    (('telecom','media','marketing'),'TELECOM_MEDIA_MARKETING'),
+    (('education','training','workforce'),'EDUCATION_WORKFORCE'),
+    (('agriculture','food','water'),'AGRICULTURE_FOOD_WATER'),
+    (('automotive','vehicle','mobility'),'MOBILITY_AUTOMOTIVE_FLEET'),
+    (('export','import','rhq','market entry'),'EXPORT_IMPORT_RHQ_MARKET_ENTRY'),
+    (('government','public sector','b2g'),'GOVERNMENT_B2G'),
+]
+PROBLEM_HINTS=[
+    (('tender','procurement','rfp','rfq'),'PROCUREMENT_DELAY'),
+    (('collection','receivable','invoice overdue'),'COLLECTION_DELAY'),
+    (('quote','proposal delay'),'QUOTE_DELAY'),
+    (('document','pdf','contract','paperwork'),'DOCUMENT_CHAOS'),
+    (('approval','signoff'),'APPROVAL_DELAY'),
+    (('cyber','security','agent governance'),'CYBER_AI_GOVERNANCE_RISK'),
+    (('compliance','pdpl','fatoora'),'COMPLIANCE_RISK'),
+    (('support','ticket','backlog'),'SUPPORT_BACKLOG'),
+    (('project delay','schedule delay'),'PROJECT_DELAY'),
+    (('inventory','stockout'),'INVENTORY_EXCEPTION'),
+    (('data fragmentation','fragmented data','data silo'),'DATA_FRAGMENTATION'),
+    (('manual handoff','handoff','manual workflow'),'MANUAL_HANDOFF'),
+    (('revenue','sales','follow-up','pipeline leakage'),'REVENUE_LEAKAGE'),
+    (('cost','waste'),'COST_LEAKAGE'),
+    (('slow decision','decision latency'),'DECISION_LATENCY'),
+]
+SECTOR_ARM_HINTS={
+    'INDUSTRIAL_MANUFACTURING':'ARM-017','LOGISTICS_SUPPLY_CHAIN':'ARM-018','REAL_ESTATE_PROPTECH_FM':'ARM-025',
+    'HEALTHCARE_LIFE_SCIENCES':'ARM-024','RETAIL_ECOMMERCE':'ARM-022','TOURISM_HOSPITALITY_EVENTS':'ARM-026',
+    'EDUCATION_WORKFORCE':'ARM-027','FINANCIAL_SERVICES_FINTECH_INSURANCE':'ARM-023',
+}
+PROBLEM_ARM_HINTS={'PROCUREMENT_DELAY':'ARM-012','CYBER_AI_GOVERNANCE_RISK':'ARM-006','COMPLIANCE_RISK':'ARM-006','REVENUE_LEAKAGE':'ARM-004'}
+
 def truthy(v: str|None)->bool: return str(v or '').strip().lower() in {'1','true','yes','on'}
 def load(path: Path)->Any: return json.loads(path.read_text(encoding='utf-8'))
 def clamp(v:Any)->float:
@@ -44,7 +87,7 @@ def candidate_source(path:Path|None)->tuple[list[dict[str,Any]],str]:
                 rows.append({
                   'candidate_id':str(t.get('candidate_id') or t.get('id') or f'TARGET-{i:04d}'),
                   'arm_id':t.get('arm_id'),'sector_id':t.get('sector_id'),'buyer_group_id':t.get('buyer_group_id'),
-                  'problem_class':t.get('problem_class'),'source':t.get('source'),'evidence_refs':t.get('evidence_refs') or [],
+                  'problem_class':t.get('problem_class'),'company_name':t.get('company_name'),'segment':t.get('segment'),'pain_hypothesis':t.get('pain_hypothesis'),'buyer_role':t.get('buyer_role'),'source':t.get('source'),'evidence_refs':t.get('evidence_refs') or [],
                   'buyer_access_evidence_refs':t.get('buyer_access_evidence_refs') or [],
                   'relationship_state':t.get('relationship_state','RESEARCH'),'suppression_state':t.get('suppression_state','CLEAR'),
                   'commercial_stage':t.get('commercial_stage','RESEARCH'),'validated_problem':bool(t.get('validated_problem',False)),
@@ -64,6 +107,19 @@ def score(row:dict[str,Any])->tuple[float,dict[str,float],dict[str,float]]:
     pos={k:clamp(m.get(k)) for k in POS_WEIGHTS}; neg={k:clamp(m.get(k)) for k in NEG_WEIGHTS}
     p=sum(pos[k]*w for k,w in POS_WEIGHTS.items()); n=sum(neg[k]*w for k,w in NEG_WEIGHTS.items())
     return round(max(0,min(100,p-(0.45*n))),2),pos,neg
+
+def _hint(text:str,hints:list[tuple[tuple[str,...],str]])->str|None:
+    normalized=text.lower()
+    for keywords,value in hints:
+        if any(k in normalized for k in keywords): return value
+    return None
+
+def suggest_mapping(row:dict[str,Any])->dict[str,Any]:
+    text=' '.join(str(row.get(k) or '') for k in ('segment','pain_hypothesis','company_name'))
+    sector=str(row.get('sector_id') or '').strip() or _hint(text,SECTOR_HINTS)
+    problem=str(row.get('problem_class') or '').strip() or _hint(text,PROBLEM_HINTS)
+    arm=str(row.get('arm_id') or '').strip() or PROBLEM_ARM_HINTS.get(problem or '') or SECTOR_ARM_HINTS.get(sector or '')
+    return {'arm_id':arm,'sector_id':sector,'problem_class':problem,'buyer_group_id':row.get('buyer_group_id'),'origin':'DETERMINISTIC_HYPOTHESIS_NOT_EVIDENCE'}
 
 def select_deep(ranked:list[dict[str,Any]],limit:int)->list[dict[str,Any]]:
     return [r for r in ranked if r.get('status')=='DEEP_WIP_ELIGIBLE'][:max(0,int(limit))]
@@ -101,14 +157,14 @@ def main()->int:
     ap=argparse.ArgumentParser(); ap.add_argument('--candidate-file',type=Path); ap.add_argument('--output-root',type=Path,default=OUT_ROOT); args=ap.parse_args()
     if not REGISTRY.is_file() or not DIMENSIONS.is_file(): print('PRESIDENT_PORTFOLIO_COMMAND=BLOCKED_REGISTRY_MISSING'); return 2
     reg=load(REGISTRY); dims=load(DIMENSIONS); arms={a['id']:a for a in reg['arms']}; violations=tripwire(); rows,source=candidate_source(args.candidate_file)
-    ranked=[]; blocked=[]
+    ranked=[]; blocked=[]; source_rows={str(r.get('candidate_id') or 'UNKNOWN'):r for r in rows}
     for raw in rows:
         status,gaps=classify(raw,arms,dims); s,pos,neg=score(raw)
-        rec={'candidate_id':str(raw.get('candidate_id') or 'UNKNOWN'),'arm_id':raw.get('arm_id'),'sector_id':raw.get('sector_id'),'buyer_group_id':raw.get('buyer_group_id'),'problem_class':raw.get('problem_class'),'portfolio':raw.get('portfolio','MONEY_NOW'),'status':status,'economic_priority_score':s,'score_semantics':'PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY','evidence_refs':raw.get('evidence_refs') or [],'evidence_gaps':gaps,'positive_metrics':pos,'negative_metrics':neg,'material_authority':False}
+        rec={'candidate_id':str(raw.get('candidate_id') or 'UNKNOWN'),'company_name':raw.get('company_name'),'segment':raw.get('segment'),'pain_hypothesis':raw.get('pain_hypothesis'),'arm_id':raw.get('arm_id'),'sector_id':raw.get('sector_id'),'buyer_group_id':raw.get('buyer_group_id'),'problem_class':raw.get('problem_class'),'portfolio':raw.get('portfolio','MONEY_NOW'),'status':status,'economic_priority_score':s,'score_semantics':'PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY','evidence_refs':raw.get('evidence_refs') or [],'evidence_gaps':gaps,'positive_metrics':pos,'negative_metrics':neg,'material_authority':False}
         (ranked if status!='BLOCKED_OR_EVIDENCE_GAP' else blocked).append(rec)
     ranked.sort(key=lambda x:(-x['economic_priority_score'],x['candidate_id']))
     deep=select_deep(ranked,int(reg['deep_wip_max']))
-    enrichment=[{'candidate_id':r['candidate_id'],'score':r['economic_priority_score'],'gaps':r['evidence_gaps'],'owner_agent':'dealix-pm'} for r in ranked if r['status']=='RADAR_ONLY'][:10]
+    enrichment=[{'candidate_id':r['candidate_id'],'score':r['economic_priority_score'],'gaps':r['evidence_gaps'],'suggested_mapping':suggest_mapping(source_rows.get(r['candidate_id'],{})),'owner_agent':'dealix-pm'} for r in ranked if r['status']=='RADAR_ONLY'][:10]
     for r in deep: r['selected_deep_wip']=True
     for r in ranked:
         if 'selected_deep_wip' not in r: r['selected_deep_wip']=False
