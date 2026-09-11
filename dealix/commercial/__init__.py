@@ -348,4 +348,6 @@ from dealix.commercial.best_offers_catalog import BestOfferCatalog
 from dealix.commercial.realistic_money_now import RealisticMoneyNowCandidate, RealisticMoneyNowEngine
 # Master 15 Plans — best, smart, comprehensive, future, real, launch, money
 from dealix.commercial.master_15_plans import PLANS, Master15Executor, MasterPlan
+# Execute 15 Plans — comprehensive, no stop
+from dealix.commercial.execute_15_plans import Execute15Plans
 
