@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "evaluated_at": "2026-09-11",
+  "purpose": "Adopt open-source capabilities only when they improve Dealix revenue, trust, reliability, research or delivery without creating a parallel Company Machine.",
+  "rules": ["One-Company Law: no duplicate CRM, analytics plane, scheduler, approval authority or Company Brain", "Pin exact versions/tags before deployment", "Default new server services to loopback/private networking", "Public exposure, secrets, DNS, production DB and paid services remain separately gated", "Scraping/research must respect robots.txt, site terms, privacy and evidence provenance"],
+  "adopt_now_repo": [
+    {"name":"GoogleChrome/lighthouse-ci","license":"Apache-2.0","role":"web performance/SEO regression gate","deployment":"CI or acceptance runner only"},
+    {"name":"pa11y/pa11y","license":"LGPL-3.0-only","role":"WCAG accessibility regression gate","deployment":"dev/acceptance dependency only"},
+    {"name":"lycheeverse/lychee","license":"MIT OR Apache-2.0","role":"broken-link and public-surface integrity gate","deployment":"binary/container in acceptance runner"}
+  ],
+  "adopt_next_private": [
+    {"name":"louislam/uptime-kuma","license":"MIT","role":"independent HTTP/TCP/DNS/TLS uptime and certificate monitoring","deployment":"VPS loopback/private only; uptime never equals Production Green"},
+    {"name":"dgtlmoon/changedetection.io","license":"Apache-2.0","role":"official-source/regulatory/competitor page change detection","deployment":"VPS loopback/private; webhook events feed Market Signal receipts"},
+    {"name":"unclecode/crawl4ai","license":"Apache-2.0","role":"LLM-ready web extraction for bounded market intelligence","deployment":"private Docker/API; exact version pin; domain allowlist; respect robots/terms"},
+    {"name":"open-telemetry/opentelemetry-collector-contrib","license":"Apache-2.0","role":"vendor-neutral traces/metrics/log routing","deployment":"phase-in behind current observability; do not replace proven telemetry blindly"}
+  ],
+  "evaluate_later": [
+    {"name":"searxng/searxng","license":"AGPL-3.0","reason":"useful private metasearch but adds maintenance and provider-policy complexity"},
+    {"name":"DIYgod/RSSHub","license":"AGPL-3.0","reason":"useful feed normalization but broad route surface and source-terms burden"},
+    {"name":"firecrawl/firecrawl","license":"AGPL-3.0","reason":"powerful self-hosted extraction, but overlaps Crawl4AI and should not duplicate crawler planes"}
+  ],
+  "do_not_add_now": [{"name":"Umami","reason":"duplicates existing PostHog analytics plane"},{"name":"self-hosted Sentry","reason":"existing SDK is sufficient now; self-hosted server is FSL and operationally heavy"}]
+}
