@@ -367,4 +367,6 @@ from dealix.commercial.large_scale_sector_execution import LargeScaleExecution, 
 from dealix.commercial.delix_service_preparation import CompanyProfile, DelixServicePreparation
 # Saudi Sector Targeting — simple picture applied fully to all Saudi sectors
 from dealix.commercial.saudi_sector_targeting import SaudiSectorTarget, SaudiSectorTargetingEngine
+# Modern Data Pipeline — all types, first-by-first, comprehensive, daily targeting
+from dealix.commercial.modern_data_pipeline import ModernDataPipeline, ModernDataRecord, ModernDataType
 
