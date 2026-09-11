@@ -5,10 +5,11 @@ OpenAI-compatible API client — used for DeepSeek, Groq, OpenAI.
 
 from __future__ import annotations
 
+from contextvars import ContextVar
 from typing import Any
 
 import httpx
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 from core.llm.base import LLMClient, LLMResponse, Message
 
@@ -37,6 +38,39 @@ def _requests_json_only(system: str | None) -> bool:
         or "valid json only" in normalized
         or "json only" in normalized
     )
+
+
+def is_http_402_error(exc: BaseException) -> bool:
+    return isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code == 402
+
+
+_retry_attempt: ContextVar[int] = ContextVar("openai_compat_retry_attempt", default=1)
+
+
+def _record_retry_attempt(retry_state: Any) -> None:
+    _retry_attempt.set(max(1, int(retry_state.attempt_number)))
+
+
+def reset_openai_compat_retry_count() -> None:
+    _retry_attempt.set(1)
+
+
+def openai_compat_retry_count() -> int:
+    """Retries performed by the most recent compatible-client call in this async context."""
+    return max(0, _retry_attempt.get() - 1)
+
+
+def _retryable_openai_compat_error(exc: BaseException) -> bool:
+    """Retry transient transport/server errors, never billing/auth/client errors.
+
+    In particular HTTP 402 must fail immediately so the router can open its
+    provider circuit/fallback path instead of spending time on doomed retries.
+    """
+    if isinstance(exc, httpx.TimeoutException):
+        return True
+    if isinstance(exc, httpx.HTTPStatusError):
+        return exc.response.status_code in {408, 409, 429} or exc.response.status_code >= 500
+    return False
 
 
 class OpenAICompatClient(LLMClient):
@@ -70,7 +104,8 @@ class OpenAICompatClient(LLMClient):
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
-        retry=retry_if_exception_type((httpx.TimeoutException, httpx.HTTPStatusError)),
+        retry=retry_if_exception(_retryable_openai_compat_error),
+        before=_record_retry_attempt,
         reraise=True,
     )
     async def chat(
@@ -141,6 +176,7 @@ class OpenAICompatClient(LLMClient):
             model=data.get("model", self.model),
             input_tokens=usage.get("prompt_tokens", 0),
             output_tokens=usage.get("completion_tokens", 0),
+            cached_tokens=usage.get("prompt_cache_hit_tokens", 0),
             finish_reason=first_choice.get("finish_reason"),
             raw=data,
         )
@@ -174,6 +210,22 @@ class GroqClient(OpenAICompatClient):
         timeout: int = 60,
     ) -> None:
         super().__init__(api_key=api_key, model=model, base_url=base_url, timeout=timeout)
+
+
+class OllamaCompatClient(OpenAICompatClient):
+    """Loopback Ollama client for DeepSeek 402 fallback."""
+
+    provider_name = "ollama_local"
+
+    def __init__(
+        self,
+        model: str,
+        base_url: str = "http://127.0.0.1:11434/v1",
+        timeout: int = 60,
+    ) -> None:
+        if not _is_local_ollama_base_url(base_url):
+            raise ValueError("Ollama fallback must use an exact loopback base URL")
+        super().__init__(api_key="ollama-local", model=model, base_url=base_url, timeout=timeout)
 
 
 class OpenAIClient(OpenAICompatClient):
