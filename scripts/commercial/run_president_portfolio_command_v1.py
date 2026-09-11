@@ -65,6 +65,9 @@ def score(row:dict[str,Any])->tuple[float,dict[str,float],dict[str,float]]:
     p=sum(pos[k]*w for k,w in POS_WEIGHTS.items()); n=sum(neg[k]*w for k,w in NEG_WEIGHTS.items())
     return round(max(0,min(100,p-(0.45*n))),2),pos,neg
 
+def select_deep(ranked:list[dict[str,Any]],limit:int)->list[dict[str,Any]]:
+    return [r for r in ranked if r.get('status')=='DEEP_WIP_ELIGIBLE'][:max(0,int(limit))]
+
 def classify(row:dict[str,Any],arms:dict[str,dict[str,Any]],registry:dict[str,Any])->tuple[str,list[str]]:
     hard=[]; mapping=[]; aid=str(row.get('arm_id') or '').strip()
     arm=arms.get(aid) if aid else None
@@ -104,7 +107,7 @@ def main()->int:
         rec={'candidate_id':str(raw.get('candidate_id') or 'UNKNOWN'),'arm_id':raw.get('arm_id'),'sector_id':raw.get('sector_id'),'buyer_group_id':raw.get('buyer_group_id'),'problem_class':raw.get('problem_class'),'portfolio':raw.get('portfolio','MONEY_NOW'),'status':status,'economic_priority_score':s,'score_semantics':'PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY','evidence_refs':raw.get('evidence_refs') or [],'evidence_gaps':gaps,'positive_metrics':pos,'negative_metrics':neg,'material_authority':False}
         (ranked if status!='BLOCKED_OR_EVIDENCE_GAP' else blocked).append(rec)
     ranked.sort(key=lambda x:(-x['economic_priority_score'],x['candidate_id']))
-    deep=[r for r in ranked if r['status']=='DEEP_WIP_ELIGIBLE'][:int(reg['deep_wip_max'])]
+    deep=select_deep(ranked,int(reg['deep_wip_max']))
     enrichment=[{'candidate_id':r['candidate_id'],'score':r['economic_priority_score'],'gaps':r['evidence_gaps'],'owner_agent':'dealix-pm'} for r in ranked if r['status']=='RADAR_ONLY'][:10]
     for r in deep: r['selected_deep_wip']=True
     for r in ranked:
