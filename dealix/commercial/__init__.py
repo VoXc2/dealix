@@ -285,4 +285,8 @@ from dealix.commercial.saudi_market_radar import (
     SaudiMarketRadar,
     SignalSource,
 )
+# Phase A — Distribution & Relationship
+from dealix.commercial.channel_registry import Channel, ChannelRegistry, ChannelStatus, ChannelType
+from dealix.commercial.consent_registry import ConsentRecord, ConsentRegistry, ConsentState
+from dealix.commercial.relationship_graph import RelationshipGraph, RelationshipRecord, RelationshipStage
 

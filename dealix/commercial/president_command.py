@@ -16,7 +16,12 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from dealix.commercial.economic_cell import EconomicCell, LifecycleState, UNKNOWN
+from dealix.commercial.economic_cell import (
+    EconomicCell,
+    LifecycleState,
+    PromotionGate,
+    UNKNOWN,
+)
 from dealix.commercial.economic_cell_registry import EconomicCellRegistry
 from dealix.commercial.economic_dispatcher import (
     BatchDispatcher,
