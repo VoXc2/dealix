@@ -30,9 +30,9 @@ _ARABIC_RE = re.compile(r"[\u0600-\u06FF]")
 _CURRENCY_CODES = r"sar|usd|aed|qar|bhd|kwd|omr|eur|gbp"
 _PRICE_RE = re.compile(
     rf"(?:"
-    rf"[$€£]\s*\d[\d,]*(?:\.\d+)?|"
-    rf"\b(?:{_CURRENCY_CODES})\b\s*\d[\d,]*(?:\.\d+)?|"
-    rf"\b\d[\d,]*(?:\.\d+)?\s*(?:{_CURRENCY_CODES}|ريال|دولار|درهم)\b|"
+    rf"[$€£]\s*\d[\d,]*(?:\.\d+)?\s*[km]?|"
+    rf"\b(?:{_CURRENCY_CODES})\b\s*\d[\d,]*(?:\.\d+)?\s*[km]?|"
+    rf"\b\d[\d,]*(?:\.\d+)?\s*[km]?\s*(?:{_CURRENCY_CODES}|ريال|دولار|درهم)\b|"
     r"\b\d+(?:\.\d+)?\s*%|خصم\s*\d|discount\s*\d"
     r")",
     re.IGNORECASE,
@@ -43,12 +43,16 @@ _COMMITMENT_RE = re.compile(
     r"contract is agreed|deal is agreed|agreement is agreed|"
     r"payment is confirmed|refund is confirmed|"
     r"net\s*\d{1,3}|"
-    r"(?:we\s+)?(?:accept|agree(?:d)?(?:\s+to)?)\s+(?:the\s+)?(?:payment\s+)?terms?|"
+    r"(?:we\s+)?(?:accept(?:ed)?|agree(?:d)?)(?:\s+to)?\s+"
+    r"(?:(?:your|the|this|these)\s+)?(?:contract|offer|proposal|agreement|quote|terms?|payment\s+terms?)|"
     r"binding\s+(?:price|quote|offer|terms?|agreement|contract)|"
+    r"(?:payment|invoice)\s+(?:is\s+)?(?:due|payable)(?:\s+(?:within|in|on|by)\b)?|"
     r"payment\s+terms?|refund\s+terms?|contract\s+terms?|legal\s+terms?"
     r")\b|"
     r"(?:نضمن|مضمون|تم الاتفاق على العقد|تم تأكيد الدفع|تم تأكيد الاسترداد|"
-    r"نقبل\s+(?:شروط|بنود)|نوافق\s+على\s+(?:شروط|بنود)|"
+    r"نقبل\s+(?:(?:هذه|هذا|ال)\s*)?(?:شروط|بنود|عرض|عقد|اتفاق)|"
+    r"نوافق\s+على\s+(?:(?:هذه|هذا|ال)\s*)?(?:شروط|بنود|عرض|عقد|اتفاق)|"
+    r"(?:الدفع|الفاتورة)\s+(?:مستحق|مستحقة|واجبة)|"
     r"شروط\s+(?:الدفع|السداد|العقد)|بنود\s+(?:الدفع|السداد|العقد)|"
     r"صافي\s*\d{1,3})",
     re.IGNORECASE,
@@ -149,12 +153,7 @@ def prepare_founder_reply(
     now: datetime | None = None,
     cloud_fallback_enabled: bool = True,
 ) -> FounderReplyDraft:
-    """Prepare one smart inbound reply and bounded approval packet.
-
-    The returned packet is *not* provider authority. Canonical founder delegation,
-    approval, runtime authority, suppression freshness, and provider execution are
-    evaluated after this function by ``external_execution_gate``.
-    """
+    """Prepare one smart inbound reply and bounded approval packet."""
 
     current = (now or datetime.now(UTC)).astimezone(UTC)
     language = _language(event.message_text)
