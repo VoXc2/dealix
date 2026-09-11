@@ -352,24 +352,22 @@ export function CommercialLaunchHome() {
             <motion.h1
               variants={fadeUp}
               custom={1}
-              className="font-display text-3xl sm:text-4xl md:text-5xl font-bold leading-[1.1] tracking-[-0.02em]"
+              className="font-display text-[clamp(1.875rem,5vw,3rem)] sm:text-[clamp(2.25rem,4vw,3.5rem)] md:text-[clamp(2.5rem,3vw,4rem)] font-bold leading-[1.1] tracking-[-0.02em]"
               style={{ fontFamily: "'Space Grotesk', 'IBM Plex Arabic', sans-serif" }}
             >
               {isAr ? (
                 <>
-                  محرّك الإيرادات{" "}
+                  حوّل إشارات شركتك إلى{" "}
                   <span className="bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent">
-                    بالذكاء الاصطناعي
-                  </span>{" "}
-                  للشركات السعودية
+                    تنفيذ حقيقي يمكن إثباته
+                  </span>
                 </>
               ) : (
                 <>
-                  The{" "}
+                  Turn your company signals into{" "}
                   <span className="bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent">
-                    AI Revenue Engine
-                  </span>{" "}
-                  for Saudi Enterprises
+                    real, provable execution
+                  </span>
                 </>
               )}
             </motion.h1>
@@ -672,6 +670,35 @@ export function CommercialLaunchHome() {
       <section className="py-12 px-4 max-w-4xl mx-auto">
         <InteractiveTechDemo />
       <HermesAgentWidget />
+      </section>
+
+      {/* EXECUTION LOOP — SIGNAL → DECISION → ACTION → PROOF */}
+      <section className="py-16 px-4 max-w-5xl mx-auto">
+        <div className="text-center mb-8">
+          <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">
+            {isAr ? "حلقة التنفيذ" : "Execution Loop"}
+          </p>
+          <h2 className="text-2xl md:text-3xl font-bold">
+            {isAr ? "إشارة → قرار → إجراء → إثبات" : "Signal → Decision → Action → Proof"}
+          </h2>
+          <p className="text-white/50 text-sm mt-2 max-w-xl mx-auto">
+            {isAr ? "كل إشارة تشغيلية تمر عبر قرار موثق، ثم إجراء محكوم، ثم إثبات يمكن قبوله" : "Every operational signal goes through a documented decision, then governed action, then acceptable proof"}
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-4">
+          {[
+            { step: "01", ar: "إشارة", en: "Signal", descAr: "إشارة تشغيلية حقيقية", descEn: "Real operational signal", color: "border-cyan-500/20 bg-cyan-500/10" },
+            { step: "02", ar: "قرار", en: "Decision", descAr: "دليل + أولوية + اقتصاديات", descEn: "Evidence + priority + economics", color: "border-gold-500/20 bg-gold-500/10" },
+            { step: "03", ar: "إجراء", en: "Action", descAr: "تنفيذ محكوم بصلاحية واضحة", descEn: "Governed execution with clear authority", color: "border-emerald-500/20 bg-emerald-500/10" },
+            { step: "04", ar: "إثبات", en: "Proof", descAr: "خط أساس → دليل → قبول", descEn: "Baseline → evidence → acceptance", color: "border-violet-500/20 bg-violet-500/10" },
+          ].map((s) => (
+            <div key={s.step} className={`rounded-2xl border p-5 backdrop-blur card-interactive ${s.color}`}>
+              <div className="text-xs font-bold text-white/40">{s.step}</div>
+              <div className="font-bold mt-1">{isAr ? s.ar : s.en}</div>
+              <div className="text-xs text-white/50 mt-1">{isAr ? s.descAr : s.descEn}</div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* BEST OFFERS — BEST IN MARKET                                            */}
