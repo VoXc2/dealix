@@ -328,4 +328,6 @@ from dealix.commercial.saas_onboarding import OnboardingSession, OnboardingStep,
 from dealix.commercial.launch_readiness import LaunchReadiness, check as check_launch_readiness
 # Expanded Launch — 20 sectors × 44 arms × SaaS comprehensive
 from dealix.commercial.expanded_launch_executor import ExpandedLaunchExecutor
+# Comprehensive Launch — all sectors, all arms, expanded
+from dealix.commercial.comprehensive_launch import ComprehensiveLaunch
 
