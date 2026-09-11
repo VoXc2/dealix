@@ -356,4 +356,7 @@ from dealix.commercial.master_20_plans import PLANS_20, Master20Executor
 from dealix.commercial.slack_telegram_l5 import SlackL5Packet, TelegramL5Packet, action_hash
 # Sales Automation via Hermes + OpenClaw — real, whole market
 from dealix.commercial.sales_automation_hermes_openclaw import SalesAutomationEngine, SalesAutomationTask
+# Communication & Social — self, complete, site ready, all platforms
+from dealix.commercial.communication_negotiation import CommunicationNegotiationEngine, CommunicationTask, NegotiationState
+from dealix.commercial.social_automation import ALL_PLATFORMS, SocialPlatform, get_all_platforms
 
