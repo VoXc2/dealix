@@ -60,10 +60,25 @@ SECTOR_INTEL: dict[Sector, dict[str, Any]] = {
     Sector.PROFESSIONAL_SERVICES: {"ar": "خدمات مهنية", "en": "Professional Services", "buyers": ["ceo","sales_director","finance_director"], "problems": ["revenue_leakage","quote_delay","collection_delay"], "workflows": ["lead→proposal→cash"], "procurement": "direct", "compliance": [], "offers": ["Revenue Leakage","Proposal Automation"], "channels": ["founder_content","referral","website_inbound"]},
 }
 
+# Arabic-first names for the remaining canonical sectors. Sector pattern knowledge,
+# never customer facts. Kept explicit so Arabic is a real product path, not a fallback.
+_REMAINING_SECTOR_AR: dict[Sector, str] = {
+    Sector.MINING_METALS: "تعدين ومعادن",
+    Sector.RETAIL_COMMERCE_ECOMMERCE: "تجارة تجزئة وإلكترونية",
+    Sector.TOURISM_HOSPITALITY: "سياحة وضيافة",
+    Sector.TELECOM_MEDIA_MARKETING: "اتصالات وإعلام وتسويق",
+    Sector.EDUCATION_TRAINING: "تعليم وتدريب",
+    Sector.AGRICULTURE_FOOD_WATER: "زراعة وأغذية ومياه",
+    Sector.MOBILITY_AUTOMOTIVE: "تنقل وسيارات",
+    Sector.EXPORT_IMPORT_RHQ: "تصدير واستيراد ومقرات إقليمية",
+    Sector.CREATIVE_SPORTS_GAMING: "إبداع ورياضة وألعاب",
+    Sector.ASSOCIATIONS_NONPROFITS: "جمعيات وغير ربحية",
+}
+
 # Fill remaining sectors with generic but intelligent defaults
 for s in Sector:
     if s not in SECTOR_INTEL:
-        SECTOR_INTEL[s] = {"ar": s.value.replace("_"," "), "en": s.value.replace("_"," ").title(), "buyers": ["ceo","coo"], "problems": ["revenue_leakage","operational_exception_overload"], "workflows": ["lead→cash"], "procurement": "direct", "compliance": ["PDPL"], "offers": ["Diagnostic","Automation Sprint"], "channels": ["website_inbound","seo"]}
+        SECTOR_INTEL[s] = {"ar": _REMAINING_SECTOR_AR.get(s, s.value.replace("_"," ")), "en": s.value.replace("_"," ").title(), "buyers": ["ceo","coo"], "problems": ["revenue_leakage","operational_exception_overload"], "workflows": ["lead→cash"], "procurement": "direct", "compliance": ["PDPL"], "offers": ["Diagnostic","Automation Sprint"], "channels": ["website_inbound","seo"]}
 
 class SectorCompanyFactory:
     def __init__(self) -> None:
