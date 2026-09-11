@@ -326,4 +326,6 @@ from dealix.commercial.saas_foundation import BillingRecord, SaaSControlPlane, S
 from dealix.commercial.saas_onboarding import OnboardingSession, OnboardingStep, SaaSOnboardingEngine
 # Launch Readiness — expanded launch verification
 from dealix.commercial.launch_readiness import LaunchReadiness, check as check_launch_readiness
+# Expanded Launch — 20 sectors × 44 arms × SaaS comprehensive
+from dealix.commercial.expanded_launch_executor import ExpandedLaunchExecutor
 
