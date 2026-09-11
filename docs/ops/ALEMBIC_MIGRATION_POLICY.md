@@ -2,7 +2,7 @@
 
 ## الوضع الحالي
 
-- سلسلة الترحيل في [db/migrations/versions](../../db/migrations/versions) تتضمن **دمجاً سابقاً** (`006` يربط `005` مع `0001`) ثم تطورات حتى **`009` كرأس وحيد** متوقع لـ `alembic heads`.
+- مرجع الحقيقة هو ناتج `python scripts/check_alembic_single_head.py` على الـSHA الجاري اختباره، وليس رقم revision تاريخياً ثابتاً. في قبول المصدر الحالي بتاريخ 2026-09-11 ظهر رأس وحيد: **`20260908_023_consent_events`**؛ أي تغيير لاحق يجب أن يعيد التحقق ولا يرث هذا الرأس كحقيقة دائمة.
 - التحقق الآلي في CI: `python scripts/check_alembic_single_head.py` (يفشل عند تعدد الرؤوس).
 - نفّذ `alembic heads` محلياً قبل الإنتاج؛ إذا ظهر **أكثر من رأس** بعد PR جديد يضيف فرعاً، أنشئ **merge revision** قبل الاعتماد على `upgrade head`.
 - في التطوير، قد يعتمد الفريق على `init_db` / `create_all` كما في [AGENTS.md](../../AGENTS.md).

@@ -48,6 +48,7 @@ curl -fsS https://api.dealix.me/api/v1/meta
 - **خطأ شائع في UI:** `echo "no migration needed"` — **استبدله** بـ `bash /app/scripts/railway_predeploy.sh` أو اترك الحقل فارغاً ليأخذ `railway.toml`.
 - **Legacy bootstrap:** `bash scripts/railway_prod_bootstrap.sh` is fail-closed (exit 75) and performs no migration, seed, or API mutation.
 - **Material bootstrap/seed:** requires a separate one-shot executor with an exact action-bound approval receipt; no legacy script or persistent environment flag grants authority.
+- **Prepare only:** `python scripts/ops/prepare_railway_migration_packet.py ...` يبني حزمة `PENDING_EXACT_L5_AUTHORITY` مرتبطة بـ release SHA + Railway project/environment/service + Alembic head + backup proof + rollback ref + expiry + idempotency + `ACTION_HASH`. الباني لا يتصل بقاعدة البيانات ويُبقي `execution_allowed=false`.
 
 تحقق محلي (ومحاكاة انحراف لوحة Railway):
 
