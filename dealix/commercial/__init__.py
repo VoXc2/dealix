@@ -350,4 +350,6 @@ from dealix.commercial.realistic_money_now import RealisticMoneyNowCandidate, Re
 from dealix.commercial.master_15_plans import PLANS, Master15Executor, MasterPlan
 # Execute 15 Plans — comprehensive, no stop
 from dealix.commercial.execute_15_plans import Execute15Plans
+# Master 20 Plans — best, smart, comprehensive, all aspects, merged 15 + 5
+from dealix.commercial.master_20_plans import PLANS_20, Master20Executor
 
