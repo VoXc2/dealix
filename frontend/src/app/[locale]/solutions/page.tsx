@@ -19,9 +19,16 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
   return (
     <div className="min-h-screen bg-navy-900 text-white" dir={isAr ? "rtl" : "ltr"}>
       <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="inline-flex items-center gap-2 bg-gold-500/10 border border-gold-500/20 rounded-full px-4 py-1.5 mb-4">
+          <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          <span className="text-xs font-bold text-gold-400">{isAr ? "المنتج الرئيسي: Dealix AI Business OS — منفتح على كلشي" : "Main Product: Dealix AI Business OS — Open to Everything"}</span>
+        </div>
         <h1 className="text-4xl font-bold mb-3">{isAr ? "حلول لكل القطاعات" : "Solutions for Every Sector"}</h1>
-        <p className="text-white/60 mb-8 max-w-2xl">
-          {isAr ? "٢٠ قطاع — كل قطاع له شركة افتراضية مؤتمتة بالكامل يديرها 5 وكلاء: pm, sales, delivery, engineer, content. اختر قطاعك وشاهد الخدمات." : "20 sectors — each as a fully automated virtual company managed by 5 agents: pm, sales, delivery, engineer, content. Pick your sector."}
+        <p className="text-white/60 mb-2 max-w-2xl">
+          {isAr ? "٢٠ قطاع — كل قطاع له شركة افتراضية مؤتمتة بالكامل يديرها 5 وكلاء: pm, sales, delivery, engineer, content. اختر قطاعك وشاهد ماذا يقدم Dealix تقنياً." : "20 sectors — each as a fully automated virtual company managed by 5 agents: pm, sales, delivery, engineer, content. Pick your sector to see what Dealix serves technically."}
+        </p>
+        <p className="text-xs text-white/40 mb-8 max-w-2xl">
+          {isAr ? "القدرات: 50 عائلة تشخيصية (D0-D5) • 500 خلية • 44 ذراع • 12 قناة • SaaS 20 مستأجر • DeepWIP≤3 — يخدم كل القطاعات والحكومة بأفضل شكل" : "Capabilities: 50 diagnostic families (D0-D5) • 500 cells • 44 arms • 12 channels • SaaS 20 tenants • DeepWIP≤3 — serves all sectors & government in best form"}
         </p>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {ALL_SECTORS.map((s) => (
