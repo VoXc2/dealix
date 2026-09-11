@@ -373,4 +373,6 @@ from dealix.commercial.modern_data_pipeline import ModernDataPipeline, ModernDat
 from dealix.commercial.daily_benefit_maximizer import DailyBenefit, DailyBenefitMaximizer
 # Execute 20 Plans — 20 current plans, comprehensive
 from dealix.commercial.execute_20_plans import Execute20Plans
+# Truth Type System — prevents synthetic pollution
+from dealix.commercial.truth_types import EconomicTruth, TruthClass, ensure_real_value
 
