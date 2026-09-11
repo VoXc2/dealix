@@ -346,4 +346,6 @@ from dealix.commercial.best_free_diagnostic import BEST_OFFERS, BestFreeDiagnost
 from dealix.commercial.best_offers_catalog import BestOfferCatalog
 # Realistic Money-Now — real relationships, realistic value
 from dealix.commercial.realistic_money_now import RealisticMoneyNowCandidate, RealisticMoneyNowEngine
+# Master 15 Plans — best, smart, comprehensive, future, real, launch, money
+from dealix.commercial.master_15_plans import PLANS, Master15Executor, MasterPlan
 
