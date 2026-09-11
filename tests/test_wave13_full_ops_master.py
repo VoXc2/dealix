@@ -14,12 +14,20 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _VERIFIER = _REPO_ROOT / "scripts" / "dealix_full_ops_productization_verify.sh"
+
+
+def _verifier_env() -> dict[str, str]:
+    """Keep nested verifier pytest calls on the same accepted interpreter."""
+    env = os.environ.copy()
+    env["DEALIX_PYTHON_BIN"] = sys.executable
+    return env
 
 
 def test_verifier_script_exists_and_executable():
@@ -34,6 +42,7 @@ def test_verifier_exits_zero_on_clean_branch():
     result = subprocess.run(
         ["bash", str(_VERIFIER)],
         cwd=str(_REPO_ROOT),
+        env=_verifier_env(),
         capture_output=True,
         text=True,
         timeout=120,
@@ -51,6 +60,7 @@ def test_verifier_output_contains_verdict_line():
     result = subprocess.run(
         ["bash", str(_VERIFIER)],
         cwd=str(_REPO_ROOT),
+        env=_verifier_env(),
         capture_output=True,
         text=True,
         timeout=120,
