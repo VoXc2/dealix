@@ -317,4 +317,7 @@ from dealix.commercial.arm_registry import ALL_ARMS, ArmHealth, CapabilityArm, g
 from dealix.commercial.low_touch_products.diagnostic_product import DiagnosticProductEngine
 # Content Factory — proof atomization
 from dealix.commercial.content_factory import ContentAtom, ContentFactory
+# Partner & Marketplace — expanded launch
+from dealix.commercial.partner_economy import PartnerCandidate, PartnerEconomy, PartnerMotion, PartnerType
+from dealix.commercial.marketplace_strategy import MarketplaceCandidate, MarketplaceStrategy, MarketplaceType
 
