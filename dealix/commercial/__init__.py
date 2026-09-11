@@ -320,4 +320,6 @@ from dealix.commercial.content_factory import ContentAtom, ContentFactory
 # Partner & Marketplace — expanded launch
 from dealix.commercial.partner_economy import PartnerCandidate, PartnerEconomy, PartnerMotion, PartnerType
 from dealix.commercial.marketplace_strategy import MarketplaceCandidate, MarketplaceStrategy, MarketplaceType
+# SaaS Master — comprehensive SaaS, market control
+from dealix.commercial.saas_foundation import BillingRecord, SaaSControlPlane, SaaSEntitlement, Tenant, TenantTier
 
