@@ -365,4 +365,6 @@ from dealix.commercial.hermes_sector_diagnostic import HermesSectorDiagnostic
 from dealix.commercial.large_scale_sector_execution import LargeScaleExecution, LargeScaleSectorExecutor
 # Delix Service Preparation — for each person ready, daily proposal per company, complete profile per sector
 from dealix.commercial.delix_service_preparation import CompanyProfile, DelixServicePreparation
+# Saudi Sector Targeting — simple picture applied fully to all Saudi sectors
+from dealix.commercial.saudi_sector_targeting import SaudiSectorTarget, SaudiSectorTargetingEngine
 
