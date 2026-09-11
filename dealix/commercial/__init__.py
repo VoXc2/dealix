@@ -303,3 +303,6 @@ from dealix.commercial.scheduler_inventory import TimerEntry, classify_timers, i
 from dealix.commercial.probability_engine import BetState, EconomicBet, ProbBand, ProbabilityVector
 from dealix.commercial.portfolio_bets import PortfolioBets
 
+# Proof → Asset & Delivery
+from dealix.commercial.delivery_kit import DeliveryFactory, DeliveryKit, DeliveryStage
+from dealix.commercial.proof_asset_factory import AssetType, ProofAsset, ProofAssetFactory
