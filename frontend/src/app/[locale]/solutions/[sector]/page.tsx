@@ -58,19 +58,43 @@ export default async function SectorPage({ params }: { params: Promise<{ locale:
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold mt-10 mb-4">{isAr ? "الخدمات المتاحة" : "Available Services"}</h2>
-        <p className="text-sm text-white/50 mb-4">{isAr ? "كل خدمة يديرها الاجينتس الخمسة بشكل مؤتمت بالكامل" : "Every service is fully automated by the 5 agents"}</p>
+        <div className="mt-4 rounded-xl border border-gold-500/20 bg-gold-500/10 p-4">
+          <p className="text-sm font-bold text-gold-400">{isAr ? "المنتج الرئيسي: Dealix AI Business Operating System" : "Main Product: Dealix AI Business Operating System"}</p>
+          <p className="text-xs text-white/60 mt-1">{isAr ? "نظام تشغيل إيرادات B2B — محرك الإيرادات + حوكمة AI + إثبات — منفتح على كل القطاعات والحكومة، يعمل بأفضل شكل" : "B2B Revenue Operating System — Revenue Engine + AI Governance + Proof — open to all sectors & government, works in best form"}</p>
+          <p className="text-xs text-white/40 mt-2">5 core + 8 extended = 13 agents • 44 arms • 500 cells • DeepWIP≤3 • L0-L5</p>
+        </div>
+
+        <h2 className="text-2xl font-bold mt-10 mb-2">{isAr ? "ماذا يقدم Dealix تقنياً لهذا القطاع؟" : "What Dealix Serves Technically for This Sector?"}</h2>
+        <p className="text-sm text-white/50 mb-4">{isAr ? "كل قطاع له حلول تقنية محددة — تشخيص 50 عائلة (D0-D5)، أتمتة، تكامل، AI خاص، حوكمة" : "Each sector has specific technical solutions — 50 diagnostic families (D0-D5), automation, integration, private AI, governance"}</p>
         <div className="grid gap-4 md:grid-cols-3">
           {services.map((svc) => (
-            <div key={svc.title} className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-6 backdrop-blur">
+            <div key={svc.title} className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-6 backdrop-blur hover:border-gold-500/20 transition">
               <h3 className="font-bold">{svc.title}</h3>
               <p className="text-sm text-white/60 mt-1">{svc.desc}</p>
-              <p className="text-xs text-gold-400 mt-3">{svc.agents}</p>
+              <p className="text-xs text-emerald-400 mt-2">✓ {isAr ? "تقني" : "Technical"} • {isAr ? "قابل للتنفيذ" : "Executable"} • {isAr ? "محكوم" : "Governed"}</p>
+              <p className="text-xs text-gold-400 mt-1">{svc.agents}</p>
               <Link href={`/${locale}/dealix-diagnostic?sector=${s.id}`} className="inline-block mt-4 text-sm bg-gold-500 text-navy-900 px-4 py-2 rounded-lg font-semibold hover:bg-gold-400">
                 {isAr ? "ابدأ التشخيص" : "Start Diagnostic"}
               </Link>
             </div>
           ))}
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <h4 className="font-bold text-sm">{isAr ? "القدرات" : "Capabilities"}</h4>
+            <ul className="mt-2 space-y-1 text-xs text-white/60">
+              <li>• 50 diagnostic families (D0-D5) — {isAr ? "من إشارة إلى إثبات" : "signal to proof"}</li>
+              <li>• 500 خلية اقتصادية — {isAr ? "بدون 500 مشروع" : "without 500 projects"}</li>
+              <li>• 44 ذراع — {isAr ? "Large Surface" : "Large Surface"}</li>
+              <li>• 12 قناة — {isAr ? "موقع، بريد، واتساب opt-in" : "website, email, WhatsApp opt-in"}</li>
+              <li>• SaaS 20 مستأجر — {isAr ? "عزل بمفتاح" : "isolation via key"}</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-5">
+            <h4 className="font-bold text-sm text-emerald-400">{isAr ? "الحكومة" : "Government"}</h4>
+            <p className="text-xs text-white/60 mt-2">{isAr ? "نخدم كل القطاعات والحكومة — B2G Readiness، Etimad، Jadeer، NCA، PDPL، ZATCA — كلها محكومة" : "We serve all sectors & government — B2G Readiness, Etimad, Jadeer, NCA, PDPL, ZATCA — all governed"}</p>
+            <p className="text-xs text-white/40 mt-2">DeepWIP≤3 • 5 core + 8 extended = 13 agents • 20 sectors • 50 families</p>
+          </div>
         </div>
 
         <div className="mt-10 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-6">
