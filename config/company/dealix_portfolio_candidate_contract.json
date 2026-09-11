@@ -1,0 +1,71 @@
+{
+  "schema": "dealix.portfolio-candidate-contract.v1",
+  "effective_date": "2026-09-11",
+  "purpose": "Normalize source-bound candidate cells for President economic prioritization without creating leads, relationships, pipeline or revenue from addressability alone.",
+  "required_identity": [
+    "candidate_id",
+    "arm_id",
+    "source",
+    "evidence_refs"
+  ],
+  "recommended_dimensions": [
+    "sector_id",
+    "buyer_group_id",
+    "problem_class",
+    "factory_id",
+    "monetization_rail_id",
+    "distribution_rail_id",
+    "procurement_rail_id",
+    "proof_path"
+  ],
+  "commercial_truth": [
+    "relationship_state",
+    "suppression_state",
+    "commercial_stage",
+    "validated_problem",
+    "buyer_access_evidence_refs"
+  ],
+  "positive_metrics_0_100": [
+    "evidence_strength",
+    "urgency",
+    "buyer_access",
+    "economic_impact",
+    "gross_margin",
+    "automation_ratio",
+    "collection_probability",
+    "proof_reuse",
+    "strategic_reuse",
+    "expansion_value",
+    "partner_leverage",
+    "productization_potential"
+  ],
+  "negative_metrics_0_100": [
+    "time_to_cash",
+    "founder_minutes",
+    "delivery_cost",
+    "compute_cost",
+    "sales_cycle",
+    "working_capital_risk",
+    "compliance_risk",
+    "security_risk",
+    "irreversibility",
+    "maintenance_debt",
+    "opportunity_cost"
+  ],
+  "promotion_law": {
+    "radar_only": "Source-bound addressability or evidence without both validated problem and buyer-access evidence.",
+    "deep_wip_eligible": "Valid non-blocked arm plus source/evidence plus validated problem plus buyer-access evidence and no suppression block.",
+    "deep_wip_limit": 3,
+    "score_semantics": "PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY"
+  },
+  "forbidden_promotions": [
+    "research_to_relationship_without_evidence",
+    "public_contact_to_consent",
+    "addressable_cell_to_pipeline",
+    "score_to_purchase_probability",
+    "draft_to_sent",
+    "quote_or_invoice_to_payment",
+    "synthetic_to_customer_proof"
+  ],
+  "material_authority": false
+}
