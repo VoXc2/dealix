@@ -352,8 +352,8 @@ export function CommercialLaunchHome() {
             <motion.h1
               variants={fadeUp}
               custom={1}
-              className="font-arabic text-3xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight"
-              style={{ fontFamily: "'Noto Sans Arabic', 'IBM Plex Arabic', sans-serif" }}
+              className="font-display text-3xl sm:text-4xl md:text-5xl font-bold leading-[1.1] tracking-[-0.02em]"
+              style={{ fontFamily: "'Space Grotesk', 'IBM Plex Arabic', sans-serif" }}
             >
               {isAr ? (
                 <>

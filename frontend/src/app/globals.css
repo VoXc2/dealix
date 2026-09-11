@@ -166,3 +166,27 @@
     animation: shimmer 2s infinite linear;
   }
 }
+
+/* High-end visual design — premium tech, smart, no impurities */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400&family=IBM+Plex+Arabic:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-display: 'Space Grotesk', 'IBM Plex Arabic', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --shadow-premium: 0 8px 32px rgba(0,31,63,0.12), 0 1px 0 rgba(212,175,55,0.08);
+  --shadow-gold: 0 4px 24px rgba(212,175,55,0.25);
+}
+
+.font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+.shadow-premium { box-shadow: var(--shadow-premium); }
+.shadow-gold { box-shadow: var(--shadow-gold); }
+
+/* Smart site: subtle grid, premium spacing */
+.bg-grid { background-image: radial-gradient(circle at 1px 1px, rgba(212,175,55,0.08) 1px, transparent 0); background-size: 24px 24px; }
+
+/* Interactive: smooth hover, no impurities */
+.card-interactive { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+.card-interactive:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); border-color: rgba(212,175,55,0.25); }
+
+/* Arabic typography: optimal line height */
+.font-arabic { font-family: 'IBM Plex Arabic', 'Noto Sans Arabic', sans-serif; line-height: 1.7; letter-spacing: 0; }
