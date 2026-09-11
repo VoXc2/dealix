@@ -64,23 +64,25 @@ class SaudiMarketRadar:
         return sig
 
     def zatca_wave25_signal(self) -> RegulatorySignal:
-        # Official Wave 25 as market signal, not guaranteed demand
+        # Official ZATCA Wave 25 — deep research 2026-07-24, lowest threshold yet
+        # Source: zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx + Grant Thornton 2026-08-13
+        # Threshold halved 375k→187,500 SAR for VAT-subject revenue in ANY of 2022/2023/2024/2025; integration by 2027-02-01
         now = datetime.now(UTC).isoformat()
         sig = RegulatorySignal(
             signal_id="zatca_wave25_2026",
             source=SignalSource.ZATCA,
-            source_url="https://zatca.gov.sa",
-            retrieved_at=now,
-            effective_date="2026-06-01",
-            title_ar="ZATCA Wave 25 إشارة سوقية للفوترة الإلكترونية",
-            title_en="ZATCA Wave 25 market signal for e-invoicing",
-            scope="Businesses exceeding threshold per official announcement; integration/readiness demand signal",
-            affected_sectors=["finance_fintech_insurance", "technology_saas_si", "retail_commerce_ecommerce"],
+            source_url="https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+            retrieved_at="2026-07-24T00:00:00Z",
+            effective_date="2027-02-01",
+            title_ar="ZATCA Wave 25 — الفوترة الإلكترونية عتبة 187,500 ر.س (2022-2025) تكامل 1 فبراير 2027",
+            title_en="ZATCA Wave 25 — e-invoicing 187,500 SAR threshold (2022-2025) integration 1 Feb 2027",
+            scope="All taxpayers VAT-subject revenue >187,500 SAR in ANY of 2022,2023,2024,2025; Integration Phase requires Fatoora platform integration, prescribed format, additional fields; ZATCA notifies ≥6 months before",
+            affected_sectors=["finance_fintech_insurance", "technology_saas_si", "retail_commerce_ecommerce", "professional_services", "healthcare"],
             affected_cells=[],
-            confidence=0.7,
-            commercial_implication="e-invoicing readiness diagnostic, ERP integration assessment, workflow automation, data validation",
-            compliance_implication="No ZATCA certification claim; readiness diagnostic only",
-            evidence_strength=3,
+            confidence=0.85,
+            commercial_implication="Wave 25 expands addressable market ~50% lower threshold + 2025 added; offers: readiness diagnostic, ERP/Fatoora integration architecture, data quality, test harness, monitoring, managed support — deep research shows early preparation high VOI",
+            compliance_implication="No ZATCA certification/affiliation claim; readiness diagnostic only, official Fatoora integration + UBL 2.1 KSA, QR, additional fields",
+            evidence_strength=4,
         )
         return self.ingest(sig)
 
@@ -118,6 +120,26 @@ class SaudiMarketRadar:
             confidence=0.9,
             commercial_implication="Consent-first outreach, purpose limitation, no cold WhatsApp",
             compliance_implication="Direct marketing requires explicit consent",
+            evidence_strength=4,
+        ))
+
+    def misa_invest_saudi_signal(self) -> RegulatorySignal:
+        # Deep research 2026-05-23: MISA Invest Saudi, National Investment Strategy, vision2030.ai
+        # 1,865 opportunities, FDI target SAR 388bn by 2030, 888% registered companies growth since 2020, SEZ incentives
+        now = datetime.now(UTC).isoformat()
+        return self.ingest(RegulatorySignal(
+            signal_id="misa_invest_saudi_2026",
+            source=SignalSource.MISA,
+            source_url="https://misa.gov.sa/en/about",
+            retrieved_at="2026-05-23T00:00:00Z",
+            effective_date="2026-01-01",
+            title_ar="MISA استثمر في السعودية — 1,865 فرصة، FDI 388 مليار بحلول 2030",
+            title_en="MISA Invest Saudi — 1,865 opportunities, FDI SAR 388bn by 2030",
+            scope="National Investment Strategy: triple investment 2019-2030, FDI 20x from 17bn to 388bn, sectors: tourism, mining, logistics, digital, fintech, manufacturing, renewables, healthcare, real estate, culture, entertainment; SEZ Riyadh/Jeddah/Ras Al-Khair/Jazan, 100% foreign ownership most sectors, Investor Matchmaking, Partner Directory",
+            affected_sectors=["tourism_hospitality", "mining_metals", "logistics_supply_chain", "technology_saas_si", "industrial_manufacturing", "healthcare", "finance_fintech_insurance", "real_estate_proptech"],
+            confidence=0.8,
+            commercial_implication="Saudi Market Entry Sprint for foreign B2B: buyer mapping, partner directory, procurement mapping, Arabic localization, operating setup — deep research shows 888% growth, matchmaking signal high VOI",
+            compliance_implication="MISA licensing via eservices.misa.gov.sa, Regional HQ program, SEZ incentives, no privileged government access claim",
             evidence_strength=4,
         ))
 
