@@ -1,0 +1,22 @@
+{
+  "schema": "dealix_run_checkpoint_v1",
+  "run_id": "20260911T132937Z",
+  "generated_at": "2026-09-11T13:29:37.396049+00:00",
+  "objective": "ONE company / every sector: taxonomy + blueprints + run checkpoints + state exports",
+  "start_head": "ffb6333b3",
+  "end_head": "ffb6333b3a13ed77c61431cc30681e7eb94dc3d1",
+  "branch": "feat/hermes-sector-company-factory-20260911",
+  "origin_main": "6725af7745320c31db1743b33941f52e10716aa6",
+  "pr": "will link on push",
+  "tests": "17 passed (blueprint/taxonomy/checkpoint/exports)",
+  "go_usage_if_observable": "NO_AUTOMATED_GO_DISPATCH",
+  "l5_required": [
+    "merge chain #1700-#1704",
+    "production deploy parity",
+    "www TLS SAN",
+    "external sends (iMini/NELC/KARIZMA/follow-ups)"
+  ],
+  "next_action": "push sector-company branch + draft PR; portfolio QA wave",
+  "truth_class": "RECEIPT",
+  "secrets_included": false
+}
