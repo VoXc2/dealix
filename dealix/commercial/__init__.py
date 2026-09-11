@@ -338,4 +338,6 @@ from dealix.commercial.final_expanded_launch import FinalExpandedLaunch
 from dealix.commercial.legacy_adapters import LEGACY_PROOF_AVAILABLE, get_proof_ledger
 # Next Expansion — continuous, never stops
 from dealix.commercial.next_expansion import NextExpansion
+# AI Sector Expansion — double coverage via AI
+from dealix.commercial.ai_sector_expansion import AI_GENERATED_SECTORS, AISectorExpansion
 
