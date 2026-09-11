@@ -18,8 +18,24 @@ fi
 export DEALIX_GIT_SHA="$EXPECTED_SHA"
 docker compose -f "$COMPOSE_FILE" --profile ingress-canary up -d ingress
 
-api_body="$(curl -fsS -H 'Host: api.dealix.me' http://127.0.0.1:18081/version)"
-web_body="$(curl -fsS -H 'Host: dealix.me' http://127.0.0.1:18081/healthz)"
+probe_host() {
+  local host="$1"
+  local path="$2"
+  local body=""
+  for _ in $(seq 1 30); do
+    if body="$(curl -fsS --max-time 3 -H "Host: $host" "http://127.0.0.1:18081$path" 2>/dev/null)"; then
+      printf '%s' "$body"
+      return 0
+    fi
+    sleep 1
+  done
+  echo "FAIL: ingress canary not ready host=$host path=$path" >&2
+  docker compose -f "$COMPOSE_FILE" --profile ingress-canary ps >&2 || true
+  return 66
+}
+
+api_body="$(probe_host api.dealix.me /version)"
+web_body="$(probe_host dealix.me /healthz)"
 python3 - "$EXPECTED_SHA" "$api_body" "$web_body" <<'PY'
 import json, sys
 expected, api_raw, web_raw = sys.argv[1:]
