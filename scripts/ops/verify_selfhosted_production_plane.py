@@ -17,14 +17,20 @@ def main() -> int:
         'profiles: ["local-db"]',
         "/opt/dealix/control/secrets/selfhost.env",
         "/opt/dealix/control/secrets/selfhost-web.env",
+        "/opt/dealix/control/secrets/selfhost-postgres.env",
+        "dealix-postgres:/var/lib/postgresql/data",
         "restart: unless-stopped",
     ]
     required_runner = [
         "DEALIX_EXPECTED_SHA",
+        "DEALIX_SELFHOST_LOCAL_DB",
         "exact-head mismatch",
+        "RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1",
+        "DEALIX_DB_MIGRATION_AUTHORIZED=1",
+        "api bash /app/scripts/railway_predeploy.sh",
         "SELFHOST_CANARY=PASS",
         "PUBLIC_CUTOVER=NOT_EXECUTED",
-        "LOCAL_POSTGRES=NOT_EXECUTED",
+        "LOCAL_POSTGRES=CANARY_ONLY",
     ]
 
     missing = [x for x in required_compose if x not in compose]
@@ -35,6 +41,8 @@ def main() -> int:
         "docker compose down -v",
         "railway up",
         "railway redeploy",
+        "railway variables",
+        "RAILWAY_TOKEN",
     ]
     present_forbidden = [x for x in forbidden if x in compose or x in runner]
 
