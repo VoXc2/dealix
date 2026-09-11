@@ -334,4 +334,6 @@ from dealix.commercial.comprehensive_launch import ComprehensiveLaunch
 from dealix.commercial.remaining_plans_executor import RemainingPlansExecutor
 # Final Expanded Launch — best thought, all aspects
 from dealix.commercial.final_expanded_launch import FinalExpandedLaunch
+# Legacy Adapters — best-form integration, One Company
+from dealix.commercial.legacy_adapters import LEGACY_PROOF_AVAILABLE, get_proof_ledger
 
