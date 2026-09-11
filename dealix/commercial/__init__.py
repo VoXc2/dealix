@@ -371,4 +371,6 @@ from dealix.commercial.saudi_sector_targeting import SaudiSectorTarget, SaudiSec
 from dealix.commercial.modern_data_pipeline import ModernDataPipeline, ModernDataRecord, ModernDataType
 # Daily Benefit Maximizer — best form, daily, comprehensive
 from dealix.commercial.daily_benefit_maximizer import DailyBenefit, DailyBenefitMaximizer
+# Execute 20 Plans — 20 current plans, comprehensive
+from dealix.commercial.execute_20_plans import Execute20Plans
 
