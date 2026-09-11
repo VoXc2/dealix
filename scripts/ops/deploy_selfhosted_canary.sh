@@ -29,16 +29,21 @@ docker compose -f "$COMPOSE_FILE" build --pull api web
 if [[ "$USE_LOCAL_DB" == "1" ]]; then
   docker compose -f "$COMPOSE_FILE" --profile local-db up -d postgres
   for _ in $(seq 1 30); do
-    if docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres pg_isready -U dealix_canary -d dealix_canary >/dev/null 2>&1; then
+    if docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
+      pg_isready -U dealix_canary -d dealix_canary >/dev/null 2>&1; then
       break
     fi
     sleep 2
   done
-  docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres pg_isready -U dealix_canary -d dealix_canary >/dev/null
+  docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
+    pg_isready -U dealix_canary -d dealix_canary >/dev/null
+
   docker compose -f "$COMPOSE_FILE" --profile local-db run --rm \
-    -e RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1 \
-    -e DEALIX_DB_MIGRATION_AUTHORIZED=1 \
-    api bash /app/scripts/railway_predeploy.sh
+    -e DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1 \
+    api python /app/scripts/ops/bootstrap_fresh_database.py --confirm-empty-bootstrap
+
+  docker compose -f "$COMPOSE_FILE" --profile local-db run --rm \
+    api python /app/scripts/ops/check_alembic_version_capacity.py
 fi
 
 docker compose -f "$COMPOSE_FILE" up -d api web
