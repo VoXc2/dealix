@@ -330,4 +330,6 @@ from dealix.commercial.launch_readiness import LaunchReadiness, check as check_l
 from dealix.commercial.expanded_launch_executor import ExpandedLaunchExecutor
 # Comprehensive Launch — all sectors, all arms, expanded
 from dealix.commercial.comprehensive_launch import ComprehensiveLaunch
+# Remaining Plans — comprehensive from all aspects
+from dealix.commercial.remaining_plans_executor import RemainingPlansExecutor
 
