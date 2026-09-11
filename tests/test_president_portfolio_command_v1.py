@@ -42,3 +42,14 @@ def test_legacy_target_scores_feed_radar_metrics_without_new_commercial_facts(tm
         assert rows[0]['relationship_state']=='RESEARCH'
     finally:
         m.DEFAULT_CANDIDATES, m.DEFAULT_TARGETS = old_candidates,old_targets
+
+def test_mapping_suggestion_is_hypothesis_only():
+    s=m.suggest_mapping({'segment':'Saudi logistics and fleet operator','pain_hypothesis':'manual workflow and document delays'})
+    assert s['sector_id']=='LOGISTICS_SUPPLY_CHAIN'
+    assert s['arm_id']=='ARM-018'
+    assert s['origin']=='DETERMINISTIC_HYPOTHESIS_NOT_EVIDENCE'
+
+def test_mapping_suggestion_does_not_make_candidate_deep():
+    row=base(arm_id=None,sector_id=None,buyer_group_id=None,problem_class=None,segment='logistics',pain_hypothesis='manual handoff')
+    _=m.suggest_mapping(row)
+    assert m.classify(row,ARMS,DIMS)[0]=='RADAR_ONLY'
