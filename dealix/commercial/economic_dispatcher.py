@@ -43,6 +43,15 @@ class ConfidenceLevel(StrEnum):
     HIGH = "high"
     VERY_HIGH = "very_high"
 
+    def rank_value(self) -> int:
+        return {
+            "very_low": 0,
+            "low": 1,
+            "medium": 2,
+            "high": 3,
+            "very_high": 4,
+        }[self.value]
+
 
 class EvidenceClass(StrEnum):
     ANECDOTAL = "anecdotal"
@@ -430,7 +439,7 @@ class EconomicDispatcher:
     def rank_cells(self, cells: list[EconomicCell]) -> list[DispatchDecision]:
         """Rank multiple cells by economic priority."""
         decisions = [self.score(cell) for cell in cells]
-        return sorted(decisions, key=lambda d: (-d.score.economic_priority, -d.score.confidence.value))
+        return sorted(decisions, key=lambda d: (-d.score.economic_priority, -d.score.confidence.rank_value()))
 
 
 # ─── Batch Scoring for Registry ────────────────────────────────────────

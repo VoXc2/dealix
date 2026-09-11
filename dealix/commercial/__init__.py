@@ -279,4 +279,10 @@ from dealix.commercial.financial_os import (
     FinancialState,
     OfferEconomics,
 )
+# Saudi Market Radar — official watchers
+from dealix.commercial.saudi_market_radar import (
+    RegulatorySignal,
+    SaudiMarketRadar,
+    SignalSource,
+)
 
