@@ -4,7 +4,7 @@ ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('cmd',ROOT/'scripts/commercial/run_president_portfolio_command_v1.py'); m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
 REG=json.loads((ROOT/'config/company/dealix_arm_registry.json').read_text()); DIMS=json.loads((ROOT/'config/company/dealix_portfolio_dimensions.json').read_text()); ARMS={a['id']:a for a in REG['arms']}
 def base(**kw):
- d={'candidate_id':'x','arm_id':'ARM-001','sector_id':'PROFESSIONAL_SERVICES','buyer_group_id':'FOUNDER_CEO_GM','problem_class':'REVENUE_LEAKAGE','source':'evidence://x','evidence_refs':['ev1'],'buyer_access_evidence_refs':['ev2'],'relationship_state':'REAL_INTERACTION','suppression_state':'CLEAR','commercial_stage':'QUALIFIED_PROBLEM','validated_problem':True,'metrics':{k:80 for k in m.POS_WEIGHTS}|{k:10 for k in m.NEG_WEIGHTS}}; d.update(kw); return d
+ d={'candidate_id':'x','arm_id':'ARM-001','sector_id':'PROFESSIONAL_SERVICES','buyer_group_id':'FOUNDER_CEO_GM','problem_class':'REVENUE_LEAKAGE','source':'evidence://x','evidence_refs':['ev1'],'buyer_access_evidence_refs':['ev2'],'economic_evidence_refs':['econ1'],'stop_loss_evidence_refs':[],'relationship_state':'REAL_INTERACTION','suppression_state':'CLEAR','commercial_stage':'QUALIFIED_PROBLEM','validated_problem':True,'metrics':{k:80 for k in m.POS_WEIGHTS}|{k:10 for k in m.NEG_WEIGHTS}}; d.update(kw); return d
 def test_no_evidence_cannot_deep(): assert m.classify(base(evidence_refs=[]),ARMS,DIMS)[0]=='BLOCKED_OR_EVIDENCE_GAP'
 def test_suppression_blocks(): assert m.classify(base(suppression_state='OPTED_OUT'),ARMS,DIMS)[0]=='BLOCKED_OR_EVIDENCE_GAP'
 def test_blocked_arm_cannot_activate(): assert m.classify(base(arm_id='ARM-042'),ARMS,DIMS)[0]=='BLOCKED_OR_EVIDENCE_GAP'
@@ -53,3 +53,13 @@ def test_mapping_suggestion_does_not_make_candidate_deep():
     row=base(arm_id=None,sector_id=None,buyer_group_id=None,problem_class=None,segment='logistics',pain_hypothesis='manual handoff')
     _=m.suggest_mapping(row)
     assert m.classify(row,ARMS,DIMS)[0]=='RADAR_ONLY'
+
+def test_missing_economic_evidence_stays_radar_only():
+    status,gaps=m.classify(base(economic_evidence_refs=[]),ARMS,DIMS)
+    assert status=='RADAR_ONLY'
+    assert 'ECONOMIC_EVIDENCE_REQUIRED' in gaps
+
+def test_evidenced_stop_loss_demotes_without_score_based_kill():
+    status,gaps=m.classify(base(stop_loss_triggered=True,stop_loss_evidence_refs=['stop-proof']),ARMS,DIMS)
+    assert status=='STOP_OR_DEMOTE'
+    assert gaps==['STOP_LOSS_EVIDENCED']
