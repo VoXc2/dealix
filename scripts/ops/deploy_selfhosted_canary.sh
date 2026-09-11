@@ -52,6 +52,20 @@ fi
 
 docker compose -f "$COMPOSE_FILE" up -d api web
 
+wait_liveness() {
+  local url="$1"
+  for _ in $(seq 1 30); do
+    if curl -fsS "$url" >/dev/null 2>&1; then
+      printf 'CANARY_LIVENESS=PASS url=%s\n' "$url"
+      return 0
+    fi
+    sleep 2
+  done
+  echo "FAIL: canary liveness timeout: $url" >&2
+  docker compose -f "$COMPOSE_FILE" ps >&2 || true
+  return 67
+}
+
 verify_release() {
   local url="$1"
   local service="$2"
@@ -80,7 +94,7 @@ PY
   return 67
 }
 
-curl -fsS http://127.0.0.1:18000/healthz >/dev/null
+wait_liveness http://127.0.0.1:18000/healthz
 verify_release http://127.0.0.1:18000/version dealix-api
 verify_release http://127.0.0.1:13000/healthz dealix-web
 
