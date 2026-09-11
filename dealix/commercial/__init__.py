@@ -270,3 +270,13 @@ __all__ = [
     "get_telemetry",
     "reset_telemetry_for_tests",
 ]
+# Financial OS — cash truth, unit economics, forecast
+from dealix.commercial.financial_os import (
+    CashForecast,
+    FinancialCommandView,
+    FinancialOS,
+    FinancialRecord,
+    FinancialState,
+    OfferEconomics,
+)
+
