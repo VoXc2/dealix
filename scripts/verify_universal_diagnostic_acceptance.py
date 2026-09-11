@@ -2,6 +2,7 @@
 """Synthetic acceptance for Universal Diagnostic Factory — 8 scenarios A-H."""
 
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,7 +62,7 @@ def main() -> int:
     print(f"PASS {ok}/8 scenarios")
     # Test other invariants
     # Economic cell registry
-    reg = EconomicCellRegistry(storage_path=Path("/tmp/accept_cells.jsonl"))
+    reg = EconomicCellRegistry(storage_path=Path(tempfile.mktemp(suffix=".jsonl")))
     cells = reg.generate_addressable_universe(max_cells=10)
     print(f"Registry 10 cells: {len(cells)}")
     # Financial truth
@@ -79,7 +80,8 @@ def main() -> int:
     from dealix.commercial.economic_cell import EconomicCell, Identity, Market, Sector, Buyer, BuyerGroup, Problem, ProblemClass, Value, Offer, Monetization, MonetizationRail, Distribution, DistributionRail, Procurement, Execution, Evidence, Economics, Risk, Portfolio, Proof, LifecycleState
     from datetime import UTC, datetime
     import uuid
-    reg2 = ECR(storage_path=None)
+    tmp2 = Path(tempfile.mktemp(suffix=".jsonl"))
+    reg2 = ECR(storage_path=tmp2)
     def mk(state):
         now = datetime.now(UTC).isoformat()
         return EconomicCell(identity=Identity(cell_id=str(uuid.uuid4()), canonical_name="test", version=1, created_at=now, updated_at=now), market=Market(sector=Sector.TECHNOLOGY_SAAS_SI), buyer=Buyer(buyer_group=BuyerGroup.CEO), problem=Problem(problem_class=ProblemClass.REVENUE_LEAKAGE), value=Value(), offer=Offer(offer_family="test"), monetization=Monetization(monetization_rail=MonetizationRail.PAID_SPRINT), distribution=Distribution(distribution_rail=DistributionRail.WEBSITE_INBOUND), procurement=Procurement(), execution=Execution(), evidence=Evidence(), economics=Economics(), risk=Risk(), portfolio=Portfolio(lifecycle_state=state), proof=Proof())
