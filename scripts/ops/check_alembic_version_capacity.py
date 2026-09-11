@@ -9,6 +9,7 @@ migration has begun.
 from __future__ import annotations
 
 import asyncio
+import math
 import os
 import sys
 from dataclasses import dataclass
@@ -22,6 +23,10 @@ from alembic.config import Config
 from alembic.script import ScriptDirectory
 from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import create_async_engine
+
+DEFAULT_CONNECT_TIMEOUT_SECONDS = 10.0
+DEFAULT_COMMAND_TIMEOUT_SECONDS = 20.0
+DEFAULT_TOTAL_TIMEOUT_SECONDS = 30.0
 
 
 @dataclass(frozen=True)
@@ -46,6 +51,18 @@ def _database_url() -> str:
     if not url.startswith("postgresql+asyncpg://"):
         raise RuntimeError("Alembic version-capacity preflight supports PostgreSQL only")
     return url
+
+
+def _timeout_seconds(name: str, default: float, maximum: float) -> float:
+    """Read a finite positive timeout while preventing unbounded waits."""
+    raw = os.getenv(name, str(default)).strip()
+    try:
+        value = float(raw)
+    except ValueError as exc:
+        raise RuntimeError(f"{name} must be a number") from exc
+    if not math.isfinite(value) or value <= 0 or value > maximum:
+        raise RuntimeError(f"{name} must be > 0 and <= {maximum:g} seconds")
+    return value
 
 
 def required_revision_capacity() -> int:
@@ -75,7 +92,21 @@ def _inspect_capacity_sync(connection, required: int) -> CapacityResult:
 
 async def check_capacity() -> CapacityResult:
     required = required_revision_capacity()
-    engine = create_async_engine(_database_url(), pool_pre_ping=True)
+    connect_timeout = _timeout_seconds(
+        "DEALIX_ALEMBIC_PREFLIGHT_CONNECT_TIMEOUT_SECONDS",
+        DEFAULT_CONNECT_TIMEOUT_SECONDS,
+        60.0,
+    )
+    command_timeout = _timeout_seconds(
+        "DEALIX_ALEMBIC_PREFLIGHT_COMMAND_TIMEOUT_SECONDS",
+        DEFAULT_COMMAND_TIMEOUT_SECONDS,
+        120.0,
+    )
+    engine = create_async_engine(
+        _database_url(),
+        pool_pre_ping=True,
+        connect_args={"timeout": connect_timeout, "command_timeout": command_timeout},
+    )
     try:
         async with engine.connect() as connection:
             return await connection.run_sync(_inspect_capacity_sync, required)
@@ -84,7 +115,32 @@ async def check_capacity() -> CapacityResult:
 
 
 def main() -> int:
-    result = asyncio.run(check_capacity())
+    try:
+        total_timeout = _timeout_seconds(
+            "DEALIX_ALEMBIC_PREFLIGHT_TOTAL_TIMEOUT_SECONDS",
+            DEFAULT_TOTAL_TIMEOUT_SECONDS,
+            180.0,
+        )
+        result = asyncio.run(asyncio.wait_for(check_capacity(), timeout=total_timeout))
+    except TimeoutError:
+        print(
+            "ALEMBIC_VERSION_CAPACITY=BLOCKED reason=database_preflight_timeout",
+            file=sys.stderr,
+        )
+        return 2
+    except Exception as exc:
+        # Provider/driver exception details can contain connection material.
+        # Emit only the exception type; never emit exception payloads, URLs, or arguments.
+        print(
+            f"ALEMBIC_VERSION_CAPACITY=ERROR error_type={type(exc).__name__}",
+            file=sys.stderr,
+        )
+        print(
+            "ALEMBIC_VERSION_CAPACITY_DETAIL=REDACTED review Railway/database connectivity and migration configuration",
+            file=sys.stderr,
+        )
+        return 2
+
     actual = "unbounded" if result.actual is None and result.ok else str(result.actual)
     status = "PASS" if result.ok else "FAIL"
     print(f"ALEMBIC_VERSION_CAPACITY={status} required={result.required} actual={actual} reason={result.reason}")
