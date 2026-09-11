@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Evidence-first economic ranking across Dealix arm/sector capability cells.
+
+This command is internal/draft-only. It does not create prospects or commercial
+facts, and never sends, publishes, pays, bids, merges, deploys, or mutates prod.
+"""
+from __future__ import annotations
+import argparse, json, os
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
+
+ROOT=Path(__file__).resolve().parents[2]
+REGISTRY=ROOT/'config'/'company'/'dealix_arm_registry.json'
+DIMENSIONS=ROOT/'config'/'company'/'dealix_portfolio_dimensions.json'
+DEFAULT_CANDIDATES=ROOT/'data'/'self_operating_company_os'/'portfolio_candidates.json'
+DEFAULT_TARGETS=ROOT/'data'/'self_operating_company_os'/'targets.json'
+OUT_ROOT=ROOT/'reports'/'president_portfolio_command'
+FORBIDDEN_ENV={'DEALIX_EXTERNAL_SEND','DEALIX_EMAIL_LIVE_SEND','DEALIX_WHATSAPP_OUTBOUND','DEALIX_PUBLIC_PUBLISH','DEALIX_PAID_SPEND','DEALIX_PAYMENT_EXECUTION','DEALIX_PRODUCTION_MUTATION','DEALIX_DNS_MUTATION','DEALIX_DB_MUTATION','DEALIX_SECRET_MUTATION','DEALIX_IDENTITY_MUTATION','AUTO_MERGE_ENABLED','AUTO_DEPLOY_ENABLED'}
+REAL_STAGES={'REAL_INTERACTION','VERIFIED_RELATIONSHIP','QUALIFIED_PROBLEM','FREE_MINI_DIAGNOSTIC','QUALIFIED_DISCOVERY','CUSTOMER_SPECIFIC_QUOTE','VERIFIED_PAYMENT','PAYMENT_EVIDENCE','DELIVERY','DELIVERY_EVIDENCE','CUSTOMER_VALIDATED_PROOF'}
+SUPPRESSED={'SUPPRESSED','OPTED_OUT','WITHDRAWN'}
+POS_WEIGHTS={'evidence_strength':0.16,'urgency':0.11,'buyer_access':0.10,'economic_impact':0.11,'gross_margin':0.08,'automation_ratio':0.07,'collection_probability':0.08,'proof_reuse':0.07,'strategic_reuse':0.06,'expansion_value':0.06,'partner_leverage':0.05,'productization_potential':0.05}
+NEG_WEIGHTS={'time_to_cash':0.14,'founder_minutes':0.10,'delivery_cost':0.10,'compute_cost':0.05,'sales_cycle':0.10,'working_capital_risk':0.10,'compliance_risk':0.12,'security_risk':0.10,'irreversibility':0.07,'maintenance_debt':0.06,'opportunity_cost':0.06}
+
+def truthy(v: str|None)->bool: return str(v or '').strip().lower() in {'1','true','yes','on'}
+def load(path: Path)->Any: return json.loads(path.read_text(encoding='utf-8'))
+def clamp(v:Any)->float:
+    try: return max(0.0,min(100.0,float(v)))
+    except (TypeError,ValueError): return 0.0
+
+def tripwire()->list[str]: return sorted(k for k in FORBIDDEN_ENV if truthy(os.getenv(k)))
+
+def candidate_source(path:Path|None)->tuple[list[dict[str,Any]],str]:
+    if path and path.is_file():
+        d=load(path); return ([x for x in d if isinstance(x,dict)] if isinstance(d,list) else []),str(path)
+    if DEFAULT_CANDIDATES.is_file():
+        d=load(DEFAULT_CANDIDATES); return ([x for x in d if isinstance(x,dict)] if isinstance(d,list) else []),str(DEFAULT_CANDIDATES)
+    if DEFAULT_TARGETS.is_file():
+        d=load(DEFAULT_TARGETS)
+        rows=[]
+        if isinstance(d,list):
+            for i,t in enumerate(d,1):
+                if not isinstance(t,dict): continue
+                rows.append({
+                  'candidate_id':str(t.get('candidate_id') or t.get('id') or f'TARGET-{i:04d}'),
+                  'arm_id':t.get('arm_id'),'sector_id':t.get('sector_id'),'buyer_group_id':t.get('buyer_group_id'),
+                  'source':t.get('source'),'evidence_refs':t.get('evidence_refs') or [],
+                  'buyer_access_evidence_refs':t.get('buyer_access_evidence_refs') or [],
+                  'relationship_state':t.get('relationship_state','RESEARCH'),'suppression_state':t.get('suppression_state','CLEAR'),
+                  'commercial_stage':t.get('commercial_stage','RESEARCH'),'validated_problem':bool(t.get('validated_problem',False)),
+                  'portfolio':t.get('portfolio','MONEY_NOW'),'metrics':t.get('metrics') or {},
+                })
+        return rows,str(DEFAULT_TARGETS)
+    return [],'NO_EVIDENCE_SOURCE'
+
+def score(row:dict[str,Any])->tuple[float,dict[str,float],dict[str,float]]:
+    m=row.get('metrics') if isinstance(row.get('metrics'),dict) else {}
+    pos={k:clamp(m.get(k)) for k in POS_WEIGHTS}; neg={k:clamp(m.get(k)) for k in NEG_WEIGHTS}
+    p=sum(pos[k]*w for k,w in POS_WEIGHTS.items()); n=sum(neg[k]*w for k,w in NEG_WEIGHTS.items())
+    return round(max(0,min(100,p-(0.45*n))),2),pos,neg
+
+def classify(row:dict[str,Any],arms:dict[str,dict[str,Any]],registry:dict[str,Any])->tuple[str,list[str]]:
+    gaps=[]; aid=str(row.get('arm_id') or '')
+    arm=arms.get(aid)
+    if not arm: gaps.append('ARM_ID_REQUIRED_AND_VALID')
+    elif arm.get('state') in {'BLOCKED','STOPPED'}: gaps.append('ARM_STATE_BLOCKS_ACTIVATION')
+    if not str(row.get('source') or '').strip(): gaps.append('SOURCE_REQUIRED')
+    if not [x for x in (row.get('evidence_refs') or []) if str(x).strip()]: gaps.append('EVIDENCE_REFS_REQUIRED')
+    if str(row.get('suppression_state','CLEAR')).upper() in SUPPRESSED: gaps.append('SUPPRESSION_BLOCK')
+    sec=str(row.get('sector_id') or '')
+    if sec and sec not in set(registry['sectors']): gaps.append('UNKNOWN_SECTOR')
+    buyer=str(row.get('buyer_group_id') or '')
+    if buyer and buyer not in set(registry['buyer_groups']): gaps.append('UNKNOWN_BUYER_GROUP')
+    if gaps: return 'BLOCKED_OR_EVIDENCE_GAP',gaps
+    stage=str(row.get('commercial_stage','RESEARCH')).upper()
+    rel=str(row.get('relationship_state','RESEARCH')).upper()
+    access_refs=[x for x in (row.get('buyer_access_evidence_refs') or []) if str(x).strip()]
+    validated=bool(row.get('validated_problem')) or stage in {'QUALIFIED_PROBLEM','FREE_MINI_DIAGNOSTIC','QUALIFIED_DISCOVERY','CUSTOMER_SPECIFIC_QUOTE','VERIFIED_PAYMENT','PAYMENT_EVIDENCE','DELIVERY','DELIVERY_EVIDENCE','CUSTOMER_VALIDATED_PROOF'}
+    has_access=bool(access_refs) or stage in REAL_STAGES or rel in {'REAL_INTERACTION','VERIFIED_RELATIONSHIP','INBOUND'}
+    if validated and has_access: return 'DEEP_WIP_ELIGIBLE',[]
+    return 'RADAR_ONLY',(['VALIDATED_PROBLEM_REQUIRED'] if not validated else [])+(['BUYER_ACCESS_EVIDENCE_REQUIRED'] if not has_access else [])
+
+def main()->int:
+    ap=argparse.ArgumentParser(); ap.add_argument('--candidate-file',type=Path); ap.add_argument('--output-root',type=Path,default=OUT_ROOT); args=ap.parse_args()
+    if not REGISTRY.is_file() or not DIMENSIONS.is_file(): print('PRESIDENT_PORTFOLIO_COMMAND=BLOCKED_REGISTRY_MISSING'); return 2
+    reg=load(REGISTRY); dims=load(DIMENSIONS); arms={a['id']:a for a in reg['arms']}; violations=tripwire(); rows,source=candidate_source(args.candidate_file)
+    ranked=[]; blocked=[]
+    for raw in rows:
+        status,gaps=classify(raw,arms,dims); s,pos,neg=score(raw)
+        rec={'candidate_id':str(raw.get('candidate_id') or 'UNKNOWN'),'arm_id':raw.get('arm_id'),'sector_id':raw.get('sector_id'),'buyer_group_id':raw.get('buyer_group_id'),'portfolio':raw.get('portfolio','MONEY_NOW'),'status':status,'economic_priority_score':s,'score_semantics':'PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY','evidence_refs':raw.get('evidence_refs') or [],'evidence_gaps':gaps,'positive_metrics':pos,'negative_metrics':neg,'material_authority':False}
+        (ranked if status!='BLOCKED_OR_EVIDENCE_GAP' else blocked).append(rec)
+    ranked.sort(key=lambda x:(-x['economic_priority_score'],x['candidate_id']))
+    deep=[r for r in ranked if r['status']=='DEEP_WIP_ELIGIBLE'][:int(reg['deep_wip_max'])]
+    for r in deep: r['selected_deep_wip']=True
+    for r in ranked:
+        if 'selected_deep_wip' not in r: r['selected_deep_wip']=False
+    now=datetime.now(UTC); out=args.output_root/now.strftime('%Y-%m-%d'); out.mkdir(parents=True,exist_ok=True)
+    payload={'schema':'dealix.president-portfolio-command.v1','generated_at':now.isoformat(),'mode':'draft-only','north_star':reg['north_star'],'portfolio_doctrine':dims['portfolio_doctrine'],'candidate_source':source,'radar_surface':{'canonical_arms':len(reg['arms']),'sectors':len(dims['sectors']),'buyer_groups':len(dims['buyer_groups']),'factories':len(dims['factories']),'monetization_rails':len(dims['monetization_rails']),'distribution_rails':len(dims['distribution_rails']),'minimum_addressable_capability_cells':dims['addressable_cell_contract']['minimum_addressable_surface'],'capability_cells_are_not_opportunities':True},'tripwire_violations':violations,'ranked_candidates':ranked,'deep_wip_selection':deep,'blocked_or_evidence_gap':blocked,'deep_wip_limit':reg['deep_wip_max'],'founder_required_actions':[],'next_autonomous_action':('Ingest or enrich source-bound candidate evidence; no synthetic opportunities created.' if not deep else f"Execute internal L0-L4 preparation for {deep[0]['candidate_id']} and preserve evidence/authority gates."),'material_authority':dims['authority']}
+    (out/'president_command.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    lines=['# Dealix President Portfolio Command','',f"Source: `{source}`",f"Verdict: `{'HALTED_BY_ENV_TRIPWIRE' if violations else 'SAFE_INTERNAL_RANKING'}`",'',f"Radar: {len(reg['arms'])} arms x {len(dims['sectors'])} sectors x {len(dims['buyer_groups'])} buyer groups; addressability is not pipeline.",'','## Deep WIP <= 3']
+    if deep:
+        for x in deep: lines.append(f"- {x['candidate_id']} - {x['arm_id']} - score={x['economic_priority_score']} (prioritization only)")
+    else: lines.append('- none; no evidence-qualified candidate is promoted')
+    lines+=['','## Evidence gaps']
+    for x in blocked[:20]: lines.append(f"- {x['candidate_id']}: {', '.join(x['evidence_gaps'])}")
+    if not blocked: lines.append('- none')
+    lines+=['','## Authority','- No external send, publish, tender, payment, merge, deploy, DNS/DB/secret/identity mutation is executed by this command.']
+    (out/'president_command.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+    print(json.dumps({'ok':not violations,'source':source,'ranked':len(ranked),'deep_wip':len(deep),'blocked':len(blocked),'output':str(out)},ensure_ascii=False))
+    return 0 if not violations else 2
+if __name__=='__main__': raise SystemExit(main())
