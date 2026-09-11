@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+from auto_client_acquisition.intelligence.dealix_model_router import _compose_bound_master_prompt
+
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts" / "commercial" / "run_dealix_master_company_cycle_v1.py"
 INSTALLER = ROOT / "scripts" / "ops" / "install_dealix_omega_master_company_v1.sh"
@@ -67,6 +69,34 @@ def test_resolve_artifact_rejects_declared_or_content_drift(tmp_path: Path, monk
     monkeypatch.setenv("DX_SHA", "0" * 64)
     with pytest.raises(RuntimeError, match="declared SHA mismatch"):
         module.resolve_artifact(canonical=canonical, path_env="DX_PATH", sha_env="DX_SHA")
+
+
+def test_bound_master_prompt_is_composed_into_model_prompt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    prompt = tmp_path / "master.md"
+    prompt.write_text("MASTER VERSION A\nGovern the company.", encoding="utf-8")
+    monkeypatch.setenv("DEALIX_MASTER_PROMPT_BOUND", "1")
+    monkeypatch.setenv("DEALIX_COMPANY_MASTER_PROMPT", str(prompt))
+    monkeypatch.setenv("DEALIX_COMPANY_MASTER_PROMPT_SHA256", digest(prompt))
+
+    composed_a = _compose_bound_master_prompt("Prepare the next action")
+    assert composed_a.startswith("MASTER VERSION A")
+    assert composed_a.endswith("Prepare the next action")
+
+    prompt.write_text("MASTER VERSION B\nDifferent governed directive.", encoding="utf-8")
+    monkeypatch.setenv("DEALIX_COMPANY_MASTER_PROMPT_SHA256", digest(prompt))
+    composed_b = _compose_bound_master_prompt("Prepare the next action")
+    assert composed_b.startswith("MASTER VERSION B")
+    assert composed_b != composed_a
+
+
+def test_bound_master_prompt_hash_drift_fails_closed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    prompt = tmp_path / "master.md"
+    prompt.write_text("canonical", encoding="utf-8")
+    monkeypatch.setenv("DEALIX_MASTER_PROMPT_BOUND", "1")
+    monkeypatch.setenv("DEALIX_COMPANY_MASTER_PROMPT", str(prompt))
+    monkeypatch.setenv("DEALIX_COMPANY_MASTER_PROMPT_SHA256", "0" * 64)
+    with pytest.raises(RuntimeError, match="SHA mismatch"):
+        _compose_bound_master_prompt("task")
 
 
 def test_installer_copies_binding_prompt_meta_and_never_creates_scheduler() -> None:
