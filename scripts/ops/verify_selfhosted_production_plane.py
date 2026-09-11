@@ -5,11 +5,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 COMPOSE = ROOT / "deploy/selfhost/compose.yml"
 RUNNER = ROOT / "scripts/ops/deploy_selfhosted_canary.sh"
+WEB_HEALTH = ROOT / "apps/web/app/healthz/route.ts"
 
 
 def main() -> int:
     compose = COMPOSE.read_text(encoding="utf-8")
     runner = RUNNER.read_text(encoding="utf-8")
+    web_health = WEB_HEALTH.read_text(encoding="utf-8") if WEB_HEALTH.exists() else ""
 
     required_compose = [
         "127.0.0.1:18000:8000",
@@ -19,6 +21,7 @@ def main() -> int:
         "dealix-postgres-canary:/var/lib/postgresql/data",
         "APP_ENV: ${DEALIX_APP_ENV:-development}",
         "DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}",
+        "GIT_SHA: ${DEALIX_GIT_SHA:-unknown}",
         "EXTERNAL_SEND_ENABLED: \"false\"",
         "PAYMENT_EXECUTION: \"0\"",
         "restart: unless-stopped",
@@ -30,13 +33,24 @@ def main() -> int:
         "DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1",
         "bootstrap_fresh_database.py --confirm-empty-bootstrap",
         "check_alembic_version_capacity.py",
+        "CANARY_RELEASE=PASS",
+        "dealix-api",
+        "dealix-web",
+        'data.get("git_sha") != expected',
         "SELFHOST_CANARY=PASS",
         "PUBLIC_CUTOVER=NOT_EXECUTED",
         "LOCAL_POSTGRES=CANARY_ONLY",
     ]
+    required_web_health = [
+        'service: "dealix-web"',
+        'process.env.GIT_SHA?.trim() || "unknown"',
+        "git_sha: gitSha",
+        '"cache-control": "no-store"',
+    ]
 
     missing = [x for x in required_compose if x not in compose]
     missing += [x for x in required_runner if x not in runner]
+    missing += [f"web_health:{x}" for x in required_web_health if x not in web_health]
     forbidden = [
         "0.0.0.0:18000:8000",
         "0.0.0.0:13000:3000",
