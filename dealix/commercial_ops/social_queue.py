@@ -1,4 +1,4 @@
-"""Social content queue — current Dealix draft posts only (no auto-publish)."""
+"""Social content queue — current Dealix corporate drafts only (no auto-publish)."""
 
 from __future__ import annotations
 
@@ -13,9 +13,10 @@ import yaml
 from dealix.commercial_ops.doctrine import SOAEN_CHECKLIST_AR
 from dealix.commercial_ops.paths import SOCIAL_QUEUE_YAML
 
-# Historical content can remain in the YAML as an audit trail, but it must not
-# become today's draft or be re-approved after the first-launch authority moved
-# to one quote-only 30-day Revenue Command Pilot.
+CURRENT_LAUNCH_AUTHORITY = "corporate_brand_gtm_v1"
+
+# Historical content remains in YAML/Git history as an audit trail, but it must
+# never become today's draft after the parent-company GTM authority changed.
 _RETIRED_COMMERCIAL_TOKENS = (
     "4,999",
     "15,000",
@@ -26,6 +27,7 @@ _RETIRED_COMMERCIAL_TOKENS = (
     "sprint 499",
     "data pack 1500",
     "growth 2999",
+    "risk score",
     "أول diagnostic مدفوع",
     "first-paid-diagnostic",
     "diagnostic → sprint",
@@ -51,10 +53,12 @@ def is_current_launch_safe_post(post: dict[str, Any]) -> bool:
 
 
 def _is_selectable_post(post: dict[str, Any]) -> bool:
-    """Only current-authority, not-yet-published rows can become today's draft."""
-    return is_current_launch_safe_post(post) and (
-        post.get("status") or "draft"
-    ) != "published"
+    """Only exact current-authority, not-yet-published rows can become today's draft."""
+    return (
+        str(post.get("launch_authority") or "") == CURRENT_LAUNCH_AUTHORITY
+        and is_current_launch_safe_post(post)
+        and (post.get("status") or "draft") != "published"
+    )
 
 
 def load_social_queue(path: Path | None = None) -> dict[str, Any]:
@@ -78,9 +82,9 @@ def get_post_for_date(
 ) -> dict[str, Any] | None:
     """Pick a current-authority draft by anchor week + weekday (Sun=0 .. Sat=6).
 
-    Unsafe historical or already-published posts are excluded even when they
-    match today's slot. If no safe unpublished row remains, return ``None``
-    rather than resurrecting stale or already-used content.
+    Legacy authority, unsafe historical or already-published posts are excluded
+    even when they match today's slot. If no current corporate draft remains,
+    return ``None`` rather than resurrecting stale content.
     """
     data = queue if queue is not None else load_social_queue()
     posts: list[dict[str, Any]] = [
@@ -92,12 +96,12 @@ def get_post_for_date(
         return None
 
     d = on_date or datetime.now(UTC).date()
-    anchor_raw = str(data.get("anchor_date") or "2026-05-17").strip()
+    anchor_raw = str(data.get("anchor_date") or "2026-09-13").strip()
     try:
         anchor = date.fromisoformat(anchor_raw[:10])
     except ValueError:
-        anchor = date(2026, 5, 17)
-    num_weeks = max(1, int(data.get("cycle_weeks") or 4))
+        anchor = date(2026, 9, 13)
+    num_weeks = max(1, int(data.get("cycle_weeks") or 8))
     week_num = ((d - anchor).days // 7) % num_weeks + 1
     day_index = (d.weekday() + 1) % 7  # Sun=0
 
@@ -124,7 +128,9 @@ def get_post_for_date(
 
 
 def format_linkedin_draft(post: dict[str, Any]) -> str:
-    """Format a safe internal draft; never format a retired launch claim."""
+    """Format a safe internal draft; never format legacy authority or retired copy."""
+    if str(post.get("launch_authority") or "") != CURRENT_LAUNCH_AUTHORITY:
+        raise ValueError("refusing to format social draft with legacy launch authority")
     if not is_current_launch_safe_post(post):
         raise ValueError("refusing to format social draft with retired commercial authority")
     title = post.get("title_ar") or ""
@@ -137,7 +143,7 @@ def format_linkedin_draft(post: dict[str, Any]) -> str:
         "",
         f"➡️ {cta}",
         "",
-        "— Dealix · Saudi-first AI Business Operating System · Revenue + Proof + Command",
+        "— Dealix · Strategy + Systems + Intelligence + Products · Revenue + Proof + Command",
         "(مسودة داخلية — Approval-first، راجع SOAEN قبل أي نشر)",
     ]
     return "\n".join(lines)
@@ -200,7 +206,8 @@ def mark_post_status(
         (
             idx
             for idx in matching_indexes
-            if is_current_launch_safe_post(posts[idx])
+            if str(posts[idx].get("launch_authority") or "") == CURRENT_LAUNCH_AUTHORITY
+            and is_current_launch_safe_post(posts[idx])
             and (posts[idx].get("status") or "draft") != "published"
         ),
         None,

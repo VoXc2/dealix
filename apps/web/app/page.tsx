@@ -11,13 +11,34 @@ const structuredData = {
   email: founderEmail,
   areaServed: { "@type": "Country", name: "Saudi Arabia" },
   description:
-    "Dealix is an AI Business Operating System that turns company signals into governed decisions, controlled action, and measurable proof.",
+    "Dealix is a Saudi B2B strategy, systems, intelligence, and product company that turns business signals into governed execution and measurable proof.",
   knowsAbout: [
+    "B2B Strategy and Transformation",
     "Governed AI Execution",
+    "Workflow Automation",
     "Revenue Operations",
     "AI Governance",
     "Saudi Market Intelligence",
     "Operational Proof",
+  ],
+  makesOffer: [
+    {
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: "Strategic B2B Solutions",
+        description: "Strategy, systems, intelligence, governance, market-access and proof-led execution services.",
+      },
+    },
+    {
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "SoftwareApplication",
+        name: "Dealix OS",
+        applicationCategory: "BusinessApplication",
+        description: "AI Business Operating System for Signal to Decision to Action to Proof workflows.",
+      },
+    },
   ],
 };
 
