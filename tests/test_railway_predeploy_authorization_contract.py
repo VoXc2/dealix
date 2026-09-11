@@ -23,24 +23,32 @@ def _bash_executable() -> str:
     return bash
 
 
-def test_migration_requires_separate_db_authorization() -> None:
+def _run(env: dict[str, str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [_bash_executable(), str(SCRIPT)], cwd=ROOT, env=env, text=True,
+        encoding="utf-8", errors="replace", capture_output=True, check=False,
+    )
+
+
+def test_migrations_disabled_is_safe_skip() -> None:
+    env = os.environ.copy()
+    env["RUN_RAILWAY_PRE_DEPLOY_MIGRATE"] = "0"
+    result = _run(env)
+    assert result.returncode == 0
+    assert "SKIP migrations" in result.stdout
+
+
+def test_persistent_flags_cannot_authorize_production_ddl() -> None:
     env = os.environ.copy()
     env.update({
         "RUN_RAILWAY_PRE_DEPLOY_MIGRATE": "1",
+        "DEALIX_DB_MIGRATION_AUTHORIZED": "1",
         "DATABASE_URL": "postgresql://invalid/never-used",
     })
-    env.pop("DEALIX_DB_MIGRATION_AUTHORIZED", None)
-    result = subprocess.run(
-        [_bash_executable(), str(SCRIPT)],
-        cwd=ROOT,
-        env=env,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        capture_output=True,
-        check=False,
-    )
-    assert result.returncode == 0
-    assert "DEALIX_DB_MIGRATION_AUTHORIZED must equal 1" in result.stdout
-    assert "checking Alembic" not in result.stdout
-    assert "alembic upgrade head" not in result.stdout
+    result = _run(env)
+    assert result.returncode == 75
+    combined = result.stdout + result.stderr
+    assert "persistent Railway variables are not action-bound L5 authority" in combined
+    assert "ACTION_HASH" in combined
+    assert "checking Alembic" not in combined
+    assert "alembic upgrade head" not in combined

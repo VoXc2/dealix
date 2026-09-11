@@ -36,6 +36,12 @@ def test_ui_predeploy_drift_no_migration_stub() -> None:
     assert "railway_predeploy" in hint
 
 
+def test_ui_predeploy_legacy_sh_is_rejected() -> None:
+    hint = parse_railway_ui_predeploy_drift("sh /app/scripts/railway_predeploy.sh")
+    assert hint is not None
+    assert "bash /app/scripts/railway_predeploy.sh" in hint
+
+
 def test_ui_restart_retries_drift_from_uploaded_snapshot() -> None:
     hint = parse_railway_ui_restart_retries_drift("10")
     assert hint is not None
