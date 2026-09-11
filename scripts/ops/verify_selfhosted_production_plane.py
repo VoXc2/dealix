@@ -5,12 +5,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 COMPOSE = ROOT / "deploy/selfhost/compose.yml"
 RUNNER = ROOT / "scripts/ops/deploy_selfhosted_canary.sh"
+INGRESS_RUNNER = ROOT / "scripts/ops/verify_selfhosted_ingress_canary.sh"
 WEB_HEALTH = ROOT / "apps/web/app/healthz/route.ts"
 
 
 def main() -> int:
     compose = COMPOSE.read_text(encoding="utf-8")
     runner = RUNNER.read_text(encoding="utf-8")
+    ingress_runner = INGRESS_RUNNER.read_text(encoding="utf-8")
     web_health = WEB_HEALTH.read_text(encoding="utf-8") if WEB_HEALTH.exists() else ""
 
     required_compose = [
@@ -42,6 +44,12 @@ def main() -> int:
         "PUBLIC_CUTOVER=NOT_EXECUTED",
         "LOCAL_POSTGRES=CANARY_ONLY",
     ]
+    required_ingress_runner = [
+        "DEALIX_EXPECTED_SHA",
+        'COMPOSE_PROJECT_NAME="dealix-selfhost-${EXPECTED_SHA:0:12}"',
+        "SELFHOST_INGRESS_CANARY=PASS",
+        "PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER",
+    ]
     required_web_health = [
         'service: "dealix-web"',
         'process.env.GIT_SHA?.trim() || "unknown"',
@@ -51,6 +59,7 @@ def main() -> int:
 
     missing = [x for x in required_compose if x not in compose]
     missing += [x for x in required_runner if x not in runner]
+    missing += [f"ingress:{x}" for x in required_ingress_runner if x not in ingress_runner]
     missing += [f"web_health:{x}" for x in required_web_health if x not in web_health]
     forbidden = [
         "0.0.0.0:18000:8000",
@@ -64,7 +73,8 @@ def main() -> int:
         "APP_ENV: production",
         "api bash /app/scripts/railway_predeploy.sh",
     ]
-    present_forbidden = [x for x in forbidden if x in compose or x in runner]
+    all_selfhost_source = compose + runner + ingress_runner
+    present_forbidden = [x for x in forbidden if x in all_selfhost_source]
 
     if missing or present_forbidden:
         print(f"SELFHOST_VERIFY=FAIL missing={missing} forbidden={present_forbidden}")
