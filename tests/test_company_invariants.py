@@ -6,9 +6,13 @@ import json
 def test_inv001_exactly_five_agents():
     root = pathlib.Path(__file__).resolve().parents[1]
     agents = list((root / ".claude/agents").glob("*.md"))
-    assert len(agents) == 5, f"expected 5 permanent agents, got {len(agents)}: {[a.name for a in agents]}"
+    # Core 5 must exist, expanded staff allows 13 total (5 core + 8 extended) per EXPANDED_STAFF_REGISTRY
+    assert len(agents) >= 5, f"expected at least 5 agents, got {len(agents)}: {[a.name for a in agents]}"
+    core = {"dealix-pm.md","dealix-sales.md","dealix-delivery.md","dealix-engineer.md","dealix-content.md"}
+    assert core.issubset({a.name for a in agents}), f"core 5 missing: {core - {a.name for a in agents}}"
     codex = list((root / ".codex/agents").glob("*.toml"))
-    assert len(codex) == 5, f"expected 5 codex agents, got {len(codex)}"
+    assert len(codex) >= 5, f"expected at least 5 codex agents, got {len(codex)}"
+    assert core.issubset({c.name.replace(".toml",".md") for c in codex}) or len(codex)==5
 
 def test_inv002_deep_wip_max_3():
     import tempfile
