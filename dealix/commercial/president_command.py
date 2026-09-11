@@ -40,6 +40,7 @@ from dealix.commercial.deep_wip_enforcer import (
     PresidentWipController,
     get_enforcer,
 )
+from dealix.commercial.agent_work_packets import AgentPacketBuilder
 from dealix.president_approval_digest import (
     PresidentDigest,
     WorkItem,
@@ -100,6 +101,7 @@ class PresidentCommand:
     wip_enforcer: DeepWipEnforcer = field(default_factory=lambda: get_enforcer())
     wip_controller: PresidentWipController = field(default_factory=lambda: PresidentWipController(get_enforcer()))
     kill_evaluator: KillGateEvaluator = field(default_factory=KillGateEvaluator)
+    packet_builder: AgentPacketBuilder = field(default_factory=AgentPacketBuilder)
 
     def run_daily_cycle(
         self,
@@ -164,6 +166,11 @@ class PresidentCommand:
         )
 
         return output
+
+    def _create_agent_packets(self, top_3: list[Top3Selection]) -> dict[str, Any]:
+        """Create work packets for all five agents."""
+        cells = self.registry.list_all()
+        return self.packet_builder.build_all_packets(top_3, cells, self.dispatcher.portfolio_snapshot(self.registry))
 
     def _evaluate_promotions(self, ranked: list[DispatchDecision], evidence_updates: dict[str, dict[str, Any]]) -> None:
         """Evaluate promotion gates for cells ready to advance."""
