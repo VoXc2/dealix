@@ -273,3 +273,25 @@ def test_command_room_loads_hash_bound_master_prompt_before_agent_lane(tmp_path:
     env["DEALIX_COMPANY_MASTER_PROMPT_SHA256"] = "0" * 64
     with pytest.raises(RuntimeError, match="SHA mismatch"):
         module.load_bound_master_prompt(env)
+
+
+def test_standalone_command_room_establishes_repo_shadow_master_binding() -> None:
+    module = _load_runner()
+    env, state = module.establish_master_prompt_binding({})
+    assert state["bound"] is True
+    assert state["source"] == "REPO_SHADOW"
+    assert len(state["sha256"]) == 64
+    assert env["DEALIX_MASTER_PROMPT_BOUND"] == "1"
+    assert env["DEALIX_COMPANY_MASTER_PROMPT_SHA256"] == state["sha256"]
+    assert Path(env["DEALIX_COMPANY_MASTER_PROMPT"]).is_file()
+
+
+def test_command_room_receipt_identity_is_unique_and_source_bound() -> None:
+    text = RUNNER.read_text(encoding="utf-8")
+    assert "dealix.command-room-receipt.v3" in text
+    assert "uuid.uuid4().hex" in text
+    assert "%Y%m%dT%H%M%S%fZ" in text
+    assert '"invocation_id": invocation_id' in text
+    assert '"repository_head": repository_head' in text
+    assert "DEALIX_EXPECTED_REPOSITORY_HEAD" in text
+    assert "BLOCKED_REPOSITORY_HEAD_MISMATCH" in text
