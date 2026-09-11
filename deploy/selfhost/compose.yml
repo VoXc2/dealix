@@ -1,0 +1,103 @@
+name: dealix-selfhost
+
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+    environment:
+      PORT: "8000"
+      APP_ENV: ${DEALIX_APP_ENV:-development}
+      ENVIRONMENT: ${DEALIX_APP_ENV:-development}
+      GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+      APP_URL: http://127.0.0.1:18000
+      BASE_URL: http://127.0.0.1:18000
+      DEALIX_API_BASE: http://127.0.0.1:18000
+      CORS_ORIGINS: http://127.0.0.1:13000
+      DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
+      DEALIX_ORCHESTRATOR_BACKEND: ${DEALIX_ORCHESTRATOR_BACKEND:-postgres}
+      DEALIX_ORCHESTRATOR_DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
+      EXTERNAL_SEND_ENABLED: "false"
+      OUTBOUND_MODE: draft_only
+      EMAIL_SEND_ENABLED: "false"
+      WHATSAPP_SEND_ENABLED: "false"
+      WHATSAPP_ALLOW_LIVE_SEND: "false"
+      SMS_SEND_ENABLED: "false"
+      PUBLIC_PUBLISH: "0"
+      PAID_SPEND: "0"
+      PAYMENT_EXECUTION: "0"
+      PRODUCTION_MUTATION: "0"
+      RUN_RAILWAY_PRE_DEPLOY_MIGRATE: "0"
+    ports:
+      - "127.0.0.1:18000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [dealix]
+
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+      GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+    ports:
+      - "127.0.0.1:13000:3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [dealix]
+
+  postgres:
+    image: postgres:16-bookworm
+    profiles: ["local-db"]
+    environment:
+      POSTGRES_USER: dealix_canary
+      POSTGRES_DB: dealix_canary
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - dealix-postgres-canary:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dealix_canary -d dealix_canary"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [dealix]
+
+  ingress:
+    image: caddy:2.11.4-alpine
+    profiles: ["ingress-canary"]
+    ports:
+      - "127.0.0.1:18081:80"
+    volumes:
+      - ./Caddyfile.canary:/etc/caddy/Caddyfile:ro
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: [dealix]
+
+networks:
+  dealix:
+    name: dealix-selfhost
+
+volumes:
+  dealix-postgres-canary:
+    name: dealix-postgres-canary

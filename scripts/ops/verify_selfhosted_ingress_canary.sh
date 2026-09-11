@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+REPO="${DEALIX_REPO:-/opt/dealix/workspace/dealix}"
+COMPOSE_FILE="$REPO/deploy/selfhost/compose.yml"
+EXPECTED_SHA="${DEALIX_EXPECTED_SHA:-}"
+
+if [[ -z "$EXPECTED_SHA" ]]; then
+  echo "HOLD: DEALIX_EXPECTED_SHA is required" >&2
+  exit 64
+fi
+cd "$REPO"
+if [[ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
+  echo "HOLD: exact-head mismatch" >&2
+  exit 65
+fi
+
+export DEALIX_GIT_SHA="$EXPECTED_SHA"
+export COMPOSE_PROJECT_NAME="dealix-selfhost-${EXPECTED_SHA:0:12}"
+docker compose -f "$COMPOSE_FILE" --profile ingress-canary up -d ingress
+
+probe_host() {
+  local host="$1"
+  local path="$2"
+  local body=""
+  for _ in $(seq 1 30); do
+    if body="$(curl -fsS --max-time 3 -H "Host: $host" "http://127.0.0.1:18081$path" 2>/dev/null)"; then
+      printf '%s' "$body"
+      return 0
+    fi
+    sleep 1
+  done
+  echo "FAIL: ingress canary not ready host=$host path=$path" >&2
+  docker compose -f "$COMPOSE_FILE" --profile ingress-canary ps >&2 || true
+  return 66
+}
+
+api_body="$(probe_host api.dealix.me /version)"
+web_body="$(probe_host dealix.me /healthz)"
+python3 - "$EXPECTED_SHA" "$api_body" "$web_body" <<'PY'
+import json, sys
+expected, api_raw, web_raw = sys.argv[1:]
+api = json.loads(api_raw)
+web = json.loads(web_raw)
+assert api.get("status") == "ok"
+assert api.get("service") == "dealix-api"
+assert api.get("git_sha") == expected
+assert web.get("status") == "ok"
+assert web.get("service") == "dealix-web"
+assert web.get("git_sha") == expected
+PY
+
+if ss -ltn | grep -Eq '(^|[[:space:]])0\.0\.0\.0:18081([[:space:]]|$)'; then
+  echo "FAIL: ingress canary exposed publicly" >&2
+  exit 67
+fi
+
+echo "SELFHOST_INGRESS_CANARY=PASS"
+echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
+echo "INGRESS=http://127.0.0.1:18081"
+echo "PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER"
