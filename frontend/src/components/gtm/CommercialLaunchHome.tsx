@@ -400,6 +400,16 @@ export function CommercialLaunchHome() {
                 asChild
                 size="lg"
                 variant="outline"
+                className="w-full sm:w-auto border-gold-500/30 bg-gold-500/10 text-gold-400 hover:bg-gold-500/20 backdrop-blur-sm text-base h-13 px-8"
+              >
+                <Link href={`${base}/solutions`}>
+                  {isAr ? "استكشف حلول القطاعات" : "Explore Sector Solutions"}
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
                 className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 backdrop-blur-sm text-base h-13 px-8"
               >
                 <Link href={`${base}/demo`}>
