@@ -299,3 +299,7 @@ from dealix.commercial.low_touch_income import IncomeRail, LowTouchCandidate, Lo
 from dealix.commercial.open_source_registry import OpenSourceRegistry, OpenSourceStatus, OpenSourceTool
 from dealix.commercial.company_invariants import INVARIANTS, CompanyInvariant, get_invariants
 from dealix.commercial.scheduler_inventory import TimerEntry, classify_timers, inventory_timers
+# Probability-driven execution & compounding
+from dealix.commercial.probability_engine import BetState, EconomicBet, ProbBand, ProbabilityVector
+from dealix.commercial.portfolio_bets import PortfolioBets
+

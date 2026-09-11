@@ -22,7 +22,6 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from dealix.commercial.economic_cell import EconomicCell, LifecycleState
-from dealix.commercial.president_command import Top3Selection
 
 
 class AgentRole(StrEnum):
@@ -49,6 +48,27 @@ class PacketStatus(StrEnum):
     COMPLETED = "completed"
     BLOCKED = "blocked"
     FAILED = "failed"
+
+
+# Top3Selection defined locally to avoid circular import
+class Top3Selection(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    rank: int
+    cell_id: str
+    canonical_name: str
+    economic_score: float
+    confidence: str
+    evidence_class: str
+    why_selected: str
+    evidence_refs: list[str]
+    economic_hypothesis: str
+    expected_movement: str
+    next_measurable_event: str
+    owner: str
+    resource_budget: str
+    stop_loss: str
+    why_not_competitors: list[str]
 
 
 class WorkPacket(BaseModel):
@@ -488,4 +508,5 @@ __all__ = [
     "WorkPacket",
     "AgentPacketBuilder",
     "PacketTracker",
+    "Top3Selection",
 ]
