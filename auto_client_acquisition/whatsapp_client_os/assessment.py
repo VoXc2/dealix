@@ -234,43 +234,39 @@ _FIRST_WORKFLOW_AR = "Lead intake → مسودة متابعة → موافقة �
 
 
 def recommend_offer(score: ReadinessScore, answers: list[AssessmentAnswer]) -> dict[str, Any]:
-    """Pick ONE best next offer + rationale. First match wins (fastest value)."""
+    """Pick the canonical customer-facing next offer without legacy fixed pricing."""
     by_axis = {a.axis: int(a.score) for a in answers}
     lead_present = by_axis.get("lead_flow", 0) >= 4
 
-    offer_id: str
-    rationale: list[str]
     if score.overall < 45:
         offer_id = "free_mini_diagnostic"
         rationale = [
             "الجاهزية الكلية منخفضة — نبدأ بتشخيص مجاني قبل أي بناء.",
-            "أول قيمة سريعة وبدون مخاطرة.",
-        ]
-    elif score.follow_up_maturity < 55 and lead_present:
-        offer_id = "revenue_command_pilot_30d"
-        rationale = [
-            "عندكم leads لكن المتابعة تتسرّب.",
-            "أفضل قيمة هي تحديد نطاق Pilot بعد جلسة discovery وقياس baseline.",
-            "الـPilot لمدة 30 يومًا وبـquote موثق فقط.",
-        ]
-    elif score.automation_readiness < 50:
-        offer_id = "data_to_revenue_pack_1500"
-        rationale = [
-            "البيانات والأدوات غير مرتّبة بعد.",
-            "ننظّف ونُثري البيانات أولًا لتصبح قابلة للتشغيل.",
-        ]
-    elif score.overall >= 75 and score.automation_readiness >= 65:
-        offer_id = "executive_command_center_7500"
-        rationale = [
-            "جاهزية عالية وحاجة لقرار تنفيذي مستمر.",
-            "غرفة قيادة الإدارة مع موجز ومتابعة أسبوعية.",
+            "نثبت المشكلة والفرصة أولًا قبل أي التزام تجاري.",
         ]
     else:
-        offer_id = "growth_ops_monthly_2999"
-        rationale = [
-            "جاهزية جيدة وحاجة شهرية متكررة للمتابعة والتقارير.",
-            "تشغيل مُدار مع مخرجات أسبوعية.",
-        ]
+        offer_id = "revenue_command_pilot_30d"
+        if score.follow_up_maturity < 55 and lead_present:
+            rationale = [
+                "عندكم leads لكن المتابعة تتسرّب.",
+                "الخطوة التالية جلسة discovery لتحديد baseline ونطاق Pilot لمدة 30 يومًا.",
+                "السعر والنطاق لا يُحددان هنا؛ يصدران في customer-specific quote موثق بعد discovery.",
+            ]
+        elif score.automation_readiness < 50:
+            rationale = [
+                "نحتاج أولًا تحديد أين تتعطل البيانات والتشغيل قبل أي أتمتة إضافية.",
+                "جلسة discovery تحدد baseline ونطاق Pilot محدود ثم customer-specific quote موثق.",
+            ]
+        elif score.overall >= 75 and score.automation_readiness >= 65:
+            rationale = [
+                "الجاهزية مرتفعة بما يكفي للانتقال من التشخيص إلى Pilot محدود ومقاس.",
+                "نثبت النطاق والـbaseline في discovery ثم نصدر customer-specific quote موثق.",
+            ]
+        else:
+            rationale = [
+                "الجاهزية مناسبة لخطوة تنفيذ محدودة بدل اشتراك ثابت مسبقًا.",
+                "نحدد النطاق والـbaseline في discovery ثم نصدر customer-specific quote موثق.",
+            ]
 
     offering = get_offering(offer_id)
     name_ar = offering.name_ar if offering else offer_id
@@ -290,14 +286,8 @@ def recommend_offer(score: ReadinessScore, answers: list[AssessmentAnswer]) -> d
 
 def _required_permissions(offer_id: str) -> list[str]:
     base = ["L1: ملف/رابط يرسله العميل", "L1: رابط حجز التقويم"]
-    if offer_id in {
-        "revenue_command_pilot_30d",
-        "growth_ops_monthly_2999",
-        "executive_command_center_7500",
-    }:
+    if offer_id == "revenue_command_pilot_30d":
         base.insert(0, "L2: قراءة leads من CRM (بعد موافقة)")
-    if offer_id == "data_to_revenue_pack_1500":
-        base.insert(0, "L1: رفع ملف leads عبر بوابة آمنة")
     base.append("L4: إرسال متابعة بعد موافقة صريحة")
     return base
 
@@ -307,8 +297,6 @@ def _next_action_ar(offer_id: str) -> str:
         return "ابدأ التشخيص المجاني (24 ساعة)."
     if offer_id == "revenue_command_pilot_30d":
         return "احجز جلسة discovery لتوثيق نطاق Pilot لمدة 30 يومًا والـquote."
-    if offer_id == "data_to_revenue_pack_1500":
-        return "ابدأ حزمة البيانات (14 يوم)."
     return "احجز مكالمة 10 دقائق لتأكيد النطاق."
 
 

@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-09-10",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "operating_mode": "AGENT_FIRST_FOUNDER_EXCEPTION_ONLY",
+  "constitution_ref": "config/company/dealix_operating_constitution.json",
+  "arm_registry_ref": "config/company/dealix_arm_registry.json",
+  "canonical_agents": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content"
+  ],
+  "deep_wip_max": 3,
+  "default_policy": "FAIL_CLOSED",
+  "readiness_states": [
+    "INTERNAL_READY",
+    "INBOUND_READY",
+    "DRAFT_ONLY",
+    "PROVIDER_QUARANTINED",
+    "ADAPTER_PRESENT_AUTHORITY_NOT_PROVEN",
+    "NOT_WIRED",
+    "MANUAL_ONLY"
+  ],
+  "command_surfaces": [
+    {"id": "slack-command", "type": "slack", "scope": "internal", "name": "#dealix-command", "owner": "dealix-pm", "readiness": "INTERNAL_READY"},
+    {"id": "telegram-founder", "type": "telegram", "scope": "internal", "name": "founder-proof-plane", "owner": "dealix-pm", "readiness": "INTERNAL_READY"},
+    {"id": "vps-control", "type": "vps", "scope": "internal", "name": "canonical-control-plane", "owner": "dealix-engineer", "readiness": "INTERNAL_READY"},
+    {"id": "github", "type": "github", "scope": "internal", "name": "Dealix-sa/dealix", "owner": "dealix-engineer", "readiness": "INTERNAL_READY"},
+    {"id": "airtable", "type": "airtable", "scope": "internal_mirror", "name": "operating-boards", "owner": "dealix-pm", "readiness": "INTERNAL_READY"}
+  ],
+  "queues": [
+    "signal_queue",
+    "work_queue",
+    "conversation_queue",
+    "approval_queue",
+    "execution_queue",
+    "proof_queue",
+    "learning_queue",
+    "dead_letter_queue"
+  ],
+  "required_work_item_fields": [
+    "trace_id",
+    "owner_agent",
+    "arm_id",
+    "source_ref",
+    "evidence_refs",
+    "risk_class",
+    "authority_class",
+    "status",
+    "next_action"
+  ],
+  "channels": [
+    {"id": "gmail", "kind": "email", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "ACTION_BOUND_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "gmail_api", "readiness": "PROVIDER_QUARANTINED", "live_execution_ready": false, "readiness_reason": "Canonical Gmail provider intentionally blocks execution until provider-owned authority resolver and durable idempotency boundary are wired."},
+    {"id": "whatsapp-business", "kind": "whatsapp", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "ACTION_BOUND_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "meta_cloud_preferred", "graph_api_version_env_ref": "WHATSAPP_GRAPH_API_VERSION", "graph_api_default": "v26.0", "draft_intelligence_source_ready": true, "runtime_verified": false, "readiness": "ADAPTER_PRESENT_AUTHORITY_NOT_PROVEN", "live_execution_ready": false, "readiness_reason": "Meta/transition transport plus draft intelligence exist in source, but current provider identity, runtime authority, exact-release execution and one-conversation canary are not yet proven."},
+    {"id": "website-chat", "kind": "website_chat", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "INBOUND_THREAD_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": false, "provider": "unified_gateway", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "website-forms", "kind": "website_form", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": false, "outbound_policy": "NONE", "consent_or_relationship_required_for_marketing": false, "provider": "dealix_web", "readiness": "INBOUND_READY", "live_execution_ready": false},
+    {"id": "facebook-messenger", "kind": "messenger", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "INBOUND_THREAD_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "unified_gateway", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "instagram-dm", "kind": "instagram", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "INBOUND_THREAD_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "unified_gateway", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "tiktok-business", "kind": "tiktok", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "INBOUND_THREAD_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "unified_gateway", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "telegram-customer", "kind": "telegram", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "INBOUND_THREAD_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "telegram_bot", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "sms", "kind": "sms", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "ACTION_BOUND_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "unified_gateway", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "voice", "kind": "voice", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "ACTION_BOUND_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "automated_identity_disclosure_required": true, "provider": "voice_gateway", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "line", "kind": "line", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "INBOUND_THREAD_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "unified_gateway", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "api-inbox", "kind": "api", "scope": "customer", "owner": "dealix-sales", "inbound": true, "outbound": true, "outbound_policy": "ACTION_BOUND_OR_DELEGATED_SESSION", "consent_or_relationship_required_for_marketing": true, "provider": "custom_adapter", "readiness": "NOT_WIRED", "live_execution_ready": false},
+    {"id": "linkedin-founder", "kind": "linkedin", "scope": "market_research", "owner": "dealix-sales", "inbound": true, "outbound": false, "outbound_policy": "FOUNDER_MANUAL_ONLY", "consent_or_relationship_required_for_marketing": true, "provider": "manual", "readiness": "MANUAL_ONLY", "live_execution_ready": false}
+  ],
+  "conversation_intelligence": {
+    "owner": "dealix-sales",
+    "reply_engine": "dealix.company_os.founder_reply_bot.prepare_founder_reply",
+    "queue_worker": "scripts/commercial/prepare_founder_whatsapp_reply_v1.py",
+    "model_router": "auto_client_acquisition.intelligence.dealix_model_router.route_task",
+    "model_policy": "LOCAL_FIRST",
+    "supported_languages": ["ar", "en"],
+    "supported_intents": ["pricing", "objection", "meeting", "support", "general"],
+    "negotiation_mode": "NON_BINDING_PREPARATION",
+    "material_terms_escalate": true,
+    "provider_execution_allowed_by_reply_engine": false,
+    "event_driven": true,
+    "source_ready": true,
+    "runtime_verified": false
+  },
+  "founder_delegation": {
+    "enabled_by_default": false,
+    "session_store": "/opt/dealix/control/authority/founder-delegations",
+    "founder_phone_env_ref": "DEALIX_FOUNDER_PHONE_E164",
+    "sender_persona": "Dealix Founder Office",
+    "automated_voice_disclosure": "I am Dealix's automated assistant acting for the Founder Office.",
+    "must_mint_exact_action_hash_before_effect": true,
+    "must_recheck_suppression_before_effect": true,
+    "must_persist_provider_receipt": true,
+    "global_kill_switch_env": "DEALIX_EXTERNAL_SEND"
+  },
+  "views": [
+    "CEO_NOW",
+    "PRODUCTION_TRUST",
+    "REVENUE_OPPORTUNITY_GRAPH",
+    "CONVERSATIONS_REQUIRING_ACTION",
+    "DELIVERY_CUSTOMER_HEALTH",
+    "PROOF_LEDGER",
+    "APPROVAL_AND_DELEGATION",
+    "CONTENT_DISTRIBUTION",
+    "PARTNER_B2G",
+    "FINANCE_ECONOMIC_TRUTH",
+    "LEARNING_EXPERIMENTS",
+    "RUNTIME_CONNECTORS_MODELS"
+  ],
+  "truth_firewall": [
+    "research != relationship",
+    "public_contact != consent",
+    "draft != sent",
+    "quote != invoice",
+    "invoice != payment",
+    "synthetic != customer proof",
+    "HTTP 200 != correct release",
+    "merge != Production Green"
+  ]
+}

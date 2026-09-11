@@ -1,50 +1,77 @@
-# Dealix Permanent Operating Constitution
+# Dealix Permanent Operating Constitution — V2 Fast Compression
 
-Effective: 2026-09-08
+Effective: 2026-09-10
 
 Status: **Canonical permanent operating constitution for the existing Dealix Company Machine.**
 
-This document does **not** create a second Company OS, Company Brain, CRM, Opportunity Graph, Approval system, Consent system, Proof Ledger, scheduler, model router, Dev Factory, Learning Factory, or permanent agent fleet. The machine-readable authority is `config/company/dealix_operating_constitution.json`; the verifier is `scripts/commercial/verify_dealix_operating_constitution.py`.
+Machine-readable authority: `config/company/dealix_operating_constitution.json`.
+
+Governed mutable arm registry: `config/company/dealix_arm_registry.json`.
+
+Strategic horizon: `docs/strategy/DEALIX_ONE_YEAR_AUTONOMOUS_COMPANY_MASTER_2026_2027.md`.
+
+This amendment upgrades the existing constitution. It does **not** create a second Company OS, Company Brain, CRM, Opportunity Graph, Approval Authority, Consent Authority, Proof Ledger, scheduler, model router, Dev Factory, Learning Factory, observability model, policy model, or permanent agent fleet.
 
 ## 1. Supreme rule
 
-`LIVE VERIFIED STATE > CURRENT PROVIDER STATE > CURRENT EXACT-HEAD RECEIPTS > OPERATING CONSTITUTION > HISTORICAL RECEIPTS > MEMORY`
+`LIVE VERIFIED STATE > CURRENT PROVIDER STATE > CURRENT EXACT-HEAD RECEIPTS > OPERATING CONSTITUTION > CURRENT STRATEGY/ARM REGISTRY > HISTORICAL RECEIPTS > MEMORY`
 
-The constitution governs decision law. It does not turn a historical SHA, deployment, relationship, payment, consent, or proof claim into current truth.
+The constitution controls decision law. It never converts stale evidence into current truth.
 
 ## 2. North Star
 
 `CASH_READY_AUTONOMOUS_DEALIX_COMPANY`
 
-Optimize for:
+Optimize:
 
 `Verified Economic Movement / Founder Minutes / Cost / Risk`
 
-Dealix is a **Saudi B2B technology execution company + governed AI operating layer**. The public wedge is:
+Dealix is a **Saudi-first B2B AI Business Operating System and governed technology execution company**.
+
+Public wedge:
 
 `Revenue + Proof + Command`
 
-The simple mechanism is:
+Public mechanism:
 
 `Signal -> Decision -> Action -> Proof`
 
-Dealix is not positioned as a generic AI-agent vendor, CRM clone, lead scraper, content farm, or feature factory.
+## 3. Compression law
 
-## 3. One-Company law
+Dealix compresses **time**, never **truth**.
 
-Dealix keeps exactly one canonical owner for each company-wide truth surface:
+`EXPLORE BROADLY -> VALIDATE CHEAPLY -> SELL BEFORE BUILD -> DELIVER GOVERNED -> PROVE -> PRODUCTIZE -> SCALE`
+
+Independent safe lanes run in parallel. A blocker in one lane does not freeze unrelated L0-L4 work. A prerequisite gate is never bypassed merely to move faster.
+
+Deep WIP remains at most three simultaneous items:
+
+1. one Production/Product lane;
+2. one Revenue/Customer lane;
+3. one Scale/Strategic lane.
+
+Broad research may cover hundreds of opportunities. Deep execution remains narrow.
+
+## 4. One-Company law
+
+Dealix keeps one canonical owner for each company-wide truth/control surface:
 
 - Company Machine
 - Company Brain
+- Portfolio
 - Opportunity Graph
+- Process Graph
 - Approval Authority
 - Consent Authority
+- Policy Model
 - Proof Ledger
 - Economic Model
 - Canonical Scheduler
 - Model Router
 - Dev Factory
 - Learning Factory
+- Observability Model
+- Agent Identity Model
 
 Permanent agents remain exactly:
 
@@ -54,42 +81,96 @@ Permanent agents remain exactly:
 4. `dealix-engineer`
 5. `dealix-content`
 
-Temporary specialists may exist only as bounded workloads inside a Project Cell or experiment. They never become a parallel permanent fleet.
+No business arm receives a new permanent agent by default. Temporary specialists exist only as bounded workloads or Project Cells.
 
-## 4. Three portfolios only
+## 5. Three operating portfolios
 
-The company runs three portfolios in parallel:
+All company work remains inside three operating portfolios:
 
 ### TRUST
-Production identity, CI/release evidence, consent, approvals, security, front door, proof integrity, and trustworthy governance.
+Production identity, release evidence, security, consent, approvals, policy, customer data boundaries, proof integrity and runtime trust.
 
 ### MONEY_NOW
-Real interactions, qualified problems, diagnostics, discovery, customer-specific solution routing, quotes, verified payment/start authority, delivery, acceptance and proof.
+Real interactions, qualified problems, diagnostics, discovery, customer-specific commercial work, verified payment/start authority, delivery and customer proof.
 
 ### COMPOUNDING
-Official market intelligence, evidence-derived content, partner leverage, reusable capabilities, learning, and evidence-gated productization.
+Market intelligence, data assets, reusable capabilities, partnerships, distribution, learning, productization, SaaS/API/IP and venture optionality.
 
-Trust blockers do not freeze safe MONEY_NOW or COMPOUNDING work. They only block the authority they actually govern.
+The many business arms below are **economic surfaces inside these three portfolios**, not parallel companies or duplicate operating systems.
 
-## 5. Truth Firewall
+## 6. Nine economic engines
 
-The following distinctions are permanent and cannot be weakened to manufacture progress:
+Dealix may create and retire business arms under nine engines:
+
+1. `CORE_CASH_ENGINE`
+2. `RECURRING_REVENUE_ENGINE`
+3. `PRODUCTIZED_SERVICE_ENGINE`
+4. `DATA_AND_INTELLIGENCE_ENGINE`
+5. `SOFTWARE_AND_API_ENGINE`
+6. `PARTNER_AND_CHANNEL_ENGINE`
+7. `EDUCATION_MEDIA_AND_IP_ENGINE`
+8. `B2G_AND_REGULATED_ENTERPRISE_ENGINE`
+9. `VENTURE_AND_ASSET_ENGINE`
+
+An engine is not permission to build everything in it. Each arm must pass the Arm Law.
+
+## 7. Arm Law
+
+The canonical arm registry is `config/company/dealix_arm_registry.json`.
+
+Every arm moves through:
+
+`IDEA -> RESEARCHED -> SIGNAL_FOUND -> VALIDATED_PROBLEM -> BUYER_ACCESS -> DISCOVERY -> COMMERCIAL_TEST -> PAID -> DELIVERED -> PROOF -> REPEATABLE -> PRODUCTIZED -> SCALE`
+
+Possible terminal states include:
+
+`NO_SIGNAL / NO_BUYER / BAD_ECONOMICS / DELIVERY_RISK / COMPLIANCE_BLOCK / DUPLICATE / STRATEGIC_MISMATCH / STOPPED`.
+
+Permanent rules:
+
+- sell before build whenever possible;
+- customer pull precedes SaaS investment;
+- no arm self-promotes from research to opportunity;
+- no arm receives material engineering capacity without evidence;
+- weak arms are killed quickly;
+- a new arm reuses the existing five agents and Company Machine;
+- an arm does not get a duplicate CRM, Brain, scheduler, approval system, proof system or data authority;
+- any regulated or safety-critical gap routes to a qualified partner or is declined.
+
+## 8. Current Deep-WIP commercial wedges
+
+The current strategic wedges are policy, not identity:
+
+1. `REVENUE_COMMAND_AND_AI_COMPANY_OS`
+2. `GOVERNED_AI_EXECUTION`
+3. `SAUDI_MARKET_ACCESS_PARTNER_AND_B2G_INTELLIGENCE`
+
+They may be replaced only by evidence-backed reallocation. Maximum active deep GTM wedges remains three.
+
+## 9. Truth Firewall
+
+Permanent distinctions:
 
 - Research != Relationship
 - Public Contact != Consent
 - Signal != Opportunity
 - Engagement != Buyer Intent
+- Meeting Booked != Meeting Held
 - Draft != Sent
 - Quote != Invoice
 - Invoice != Payment
+- Payment Request != Verified Cash
 - HTTP 200 != Correct Release
 - PR Merge != Production Green
 - Internal/Synthetic Proof != Customer-Validated Proof
+- Customer Outcome != Public Case-Study Permission
+- Partnership Discussion != Partnership
+- Supplier Registration != Tender Invitation
 - Historical PASS != Current Exact-Head PASS
 - Model Output != Authority
 - Unknown = `UNKNOWN_NOT_EVIDENCE_BACKED`
 
-## 6. Canonical market-to-cash-to-proof loop
+## 10. Canonical market-to-cash-to-proof loop
 
 `Official/Economic Signal`
 → `Evidence`
@@ -110,25 +191,23 @@ The following distinctions are permanent and cannot be weakened to manufacture p
 → `Expansion / Referral`
 → `Learning`
 → `Repeatability`
-→ `Productization only when evidence-backed`
+→ `Productization if evidence-backed`.
 
-No stage advances merely because an agent predicts that it should.
+No model prediction advances a stage by itself.
 
-## 7. Public commercial front door
-
-The public customer path stays intentionally simple:
+## 11. Commercial front door
 
 `Execution Diagnostic -> Qualified Discovery -> Customer-Specific Outcome Sprint -> Dealix Runtime / Managed Execution -> Expansion / Partner / Repeatable System`
 
-The preferred CTA is:
+Preferred CTA:
 
-> **Give Dealix one broken workflow.**
+> Give Dealix one broken workflow.
 
-The diagnostic should identify a bounded workflow, evidence, friction, proof gap, economic hypothesis, smallest measurable intervention and next decision. Public evidence may support a hypothesis; it does not authorize Dealix to state an unverified private customer problem as fact.
+No universal public fixed price becomes authority unless current commercial policy explicitly changes.
 
-## 8. Solution routing law
+## 12. Solution routing law
 
-Every qualified problem must be routed through one of:
+Qualified problems route through one of:
 
 - `BUILD_DIRECT`
 - `CONFIGURE_OR_ADAPT`
@@ -138,143 +217,213 @@ Every qualified problem must be routed through one of:
 - `DISCLOSED_REFERRAL`
 - `DECLINE_OR_DEFER`
 
-Build is not the default. Buy/configure/integrate/partner wins whenever it produces a better customer outcome with lower cost, risk or founder load.
+Building is not the default. Integration or partner delivery wins when it provides higher customer value with lower risk/cost/founder load.
 
-## 9. Current GTM policy: mutable under constitutional limits
-
-The **current evidence-backed GTM seed** is:
-
-1. SI / MSP / ERP / CRM / AI implementers
-2. Fatoora integration and operations
-3. Construction / FM commercial execution
-
-These three are **current policy, not permanent constitutional identities**. They may change when evidence shows a better allocation. The permanent rule is:
-
-- active GTM wedges <= 3;
-- research may remain broad;
-- deep execution stays narrow;
-- policy changes must be evidence-backed and preserve the Truth Firewall.
-
-Current market radar families include official/public Saudi sources such as Etimad, Muqawil, PIF Musahama, Invest Saudi Matchmaking, SIDF/Future Factories and ZATCA/Fatoora, plus project awards, expansions, hiring/migration signals, first-party conversations, warm introductions and partner ecosystems.
-
-## 10. Opportunity capital allocation
-
-Priority is based on economic evidence, timing, delivery/proof fit and collection probability, not raw lead volume.
+## 13. Opportunity capital allocation
 
 Conceptual priority:
 
 `(Trigger Strength × Urgency × Evidence Confidence × Fit × Collection Probability × Proofability × Reusability × Strategic Leverage) / (Founder Minutes × Delivery Cost × Sales Cycle × Working-Capital Risk × Operational Risk × Compliance Risk)`
 
-Unknown inputs reduce confidence. They are never silently treated as zero risk.
+Arm scoring additionally considers proximity to cash, buyer budget, Saudi fit, software leverage, data moat, partner leverage, gross-margin potential and founder-minute efficiency.
 
-Hard WIP controls include:
+Hard controls:
 
 - top active actions/cycle <= 3
 - deep-qualified <= 10
-- diagnostics <= 3
+- diagnostic WIP <= 3
 - live Project Cells <= 2
 - venture experiments <= 2
-- capability benchmarks <= 1
+- active OSS capability benchmark <= 1
 
-## 11. Buying committee and commercial asset factory
+## 14. Revenue architecture
 
-For real opportunities, Dealix prepares the right evidence for the real buying group:
+The preferred compounding sequence is:
 
-- CEO / GM: economics, speed, visibility, strategic risk
-- Operations: ownership, handoffs, exceptions, implementation reality
-- IT / CTO: architecture, integration, security, data boundary
-- Finance: economics, payment, margin, collection, evidence
-- Legal / Compliance / Procurement: scope, authority, controls, terms, auditability
+`Service Cash -> Productized Service -> Managed Retainer -> Intelligence Subscription -> Benchmark/Data Product -> SaaS/API -> Licensing/White Label -> Academy/IP -> Partner Revenue -> Acquisition/Venture Assets when cash and integration capability are proven`.
 
-The canonical asset library may generate Company Profile, Service Capability Catalog, Execution Diagnostic, Executive Decision Brief, Technical Architecture Brief, Economic Case, Governance/PDPL Pack, Customer-Specific Proposal, Delivery/Proof Plan, Weekly Proof Pack, Final Outcome Review and Partner Capability Pack.
+The target is **low-touch recurring revenue**, not unsupported claims of zero-work passive income.
 
-## 12. Channel and consent law
+## 15. Data moat
 
-Researching a contact is intelligence, not permission.
+Dealix's durable moat is governed operating knowledge with provenance, not an LLM brand.
+
+Canonical graph family:
+
+- Company Graph
+- Opportunity Graph
+- Process Graph
+- Proof Graph
+- Policy Graph
+- Economic Graph
+- Learning Graph
+
+Knowledge intended for compounding must preserve source, source type, date, owner, confidence, evidence class, scope, review date and customer permission where relevant.
+
+## 16. Saudi signal system
+
+The Company Brain may ingest and reconcile evidence from lawful/public/first-party sources including Etimad, Muqawil, PIF Musahama/Private Sector Hub, Invest Saudi, SIDF/Future Factories, ZATCA/Fatoora, SAMA/Open Banking, SDAIA/NDGP, NCA, CST cloud-market signals, Ministry of Commerce business bulletins, Monsha'at, SVC, awards, expansions, hiring/migration signals, first-party conversations, warm introductions and partner ecosystems.
+
+Source presence is not relationship or buyer intent.
+
+## 17. Regulated and partner-first law
+
+Dealix expands its economic surface through qualified partners when the opportunity includes regulated, licensed, safety-critical or specialist authority Dealix has not independently proven.
+
+Partner-first examples include:
+
+- regulated financial services;
+- clinical decisioning;
+- safety-critical industrial/OT control;
+- formal cybersecurity certification/audit/penetration-testing authority;
+- legal or tax opinion;
+- government prime-contracting where eligibility is unproven.
+
+Dealix may provide workflow, integration, evidence, orchestration, command and proof layers around these domains when scope and authority are clear.
+
+## 18. Agent identity and control
+
+Every material agentic workflow should resolve:
+
+- owner;
+- tenant/account;
+- data scope;
+- tool scope;
+- action scope;
+- authority/risk class;
+- model/router;
+- budget/rate limits;
+- expiry/revocation;
+- policy decision;
+- approval where required;
+- trace/eval/receipt;
+- kill switch/fallback.
+
+Policy outcomes remain:
+
+`ALLOW / DENY / REQUIRE_APPROVAL / REQUIRE_MORE_EVIDENCE`.
+
+## 19. MCP/A2A interoperability law
+
+MCP is a selective interoperability layer, never a replacement for the Company Brain or authority model. Only allowlisted capabilities may be exposed; production mutation, secrets, unbounded shell, payment, DNS and DB administration do not become generally available merely because a protocol can expose them.
+
+A2A is reserved for real cross-boundary agent interoperability. Ordinary internal function calls do not need an agent protocol.
+
+Protocol versions and security guidance must be reverified live before production adoption.
+
+## 20. AI evaluation law
+
+Agent and model evaluations should include real examples, historical failures, synthetic edges, prompt/tool injection, bad tool results, missing/conflicting evidence, permission denial, timeouts, provider failure, duplicate events and adversarial inputs.
+
+Track task success, truthfulness, evidence quality, policy compliance, tool correctness, approval precision, latency, AI cost, retry behavior, escalation and rollbackability.
+
+## 21. Channel and consent law
+
+Researching contact data is intelligence, not permission.
 
 ### Email
-Founder personal email is a temporary high-value channel for warm, inbound, introduced or otherwise eligible one-to-one conversations. It is not a bulk unsolicited sender. Scaled commercial sending should move to an authenticated Dealix-domain mailbox with sender-health controls.
+Warm/inbound/high-value eligible one-to-one first. Bulk unsolicited sending is not a default capability.
 
 ### WhatsApp
-Cold WhatsApp blasting is prohibited. A discovered public number is not permission. WhatsApp outbound requires the appropriate evidence of number provision/opt-in, purpose and suppression state. Withdrawal/opt-out blocks promptly.
+No cold blasting. Discovered public number != permission. Outbound requires the appropriate opt-in/number provision, purpose and suppression evidence.
 
 ### LinkedIn
-Mass automation is prohibited. Founder high-value activity remains human-operated or approval-bound.
+No mass automation. Founder high-value engagement remains human-operated or specifically governed.
 
-The durable consent model must preserve recipient, channel, purpose, grant/withdrawal state and timestamps, source/evidence, and account/tenant linkage.
+Consent authority preserves normalized recipient, channel, purpose, grant/withdrawal state and timestamps, source/evidence and tenant/account linkage.
 
-## 13. Autonomy and material authority
+## 22. Autonomy
 
-L0 Observe
+- L0 Observe
+- L1 Analyze
+- L2 Draft
+- L3 Internal Execute
+- L4 Repository Execute
+- L5 Material/External Execute — **exact current action-bound authority only**
 
-L1 Analyze
+L5 includes main merge, production deploy/redeploy, DNS, production DB/schema, secret/identity mutation, customer send, public publish, paid spend, payment/refund, binding quote/contract/tender and live voice activation.
 
-L2 Draft
+General phrases such as “execute everything” do not silently authorize unrelated material actions.
 
-L3 Internal Execute
+## 23. Proof and economics
 
-L4 Repository Execute
+Target economic milestone:
 
-L5 Material/External Execute — **exact action-bound current authority only**.
+`Real Customer + Verified Payment + Governed Delivery + Customer Acceptance + Customer-Validated Proof`.
 
-Material actions include main merge, production deploy/redeploy, DNS, production DB/schema, secrets/identity, external customer send, public publish, paid spend, payment/refund, binding quote/contract/tender, and live voice activation.
+Activity is not revenue. Quote is not payment. Invoice is not payment. Internal/demo/synthetic evidence is not customer proof.
 
-General enthusiasm or a historical approval is not durable authority for a different material action.
+Every scaled arm must eventually show sustainable economics: contribution margin, collection probability, delivery cost, founder minutes, AI/tool cost, support burden, repeatability and expansion potential.
 
-## 14. Proof and economic law
+## 24. Productization law
 
-The company optimizes toward:
+`Service -> Managed Service -> Repeatable Delivery -> Reusable Module -> Productized System -> SaaS/API where justified`.
 
-`Real Customer + Verified Payment + Governed Delivery + Customer Acceptance + Customer-Validated Proof`
+Customer evidence pulls the roadmap. Idea volume does not.
 
-Activity is not revenue. A quote is not payment. An invoice is not payment. Internal/demo/synthetic evidence is not customer proof.
+## 25. OSS/tool admission law
 
-The first strong economic milestone is not "many leads". It is a paid engagement that is delivered, accepted and proven.
+`Measured Gap -> Canonical Owner -> Duplication Check -> License/Security/Data Boundary -> Isolated Pilot -> Benchmark -> Receipt -> ADOPT/INTEGRATE/HARVEST/WATCH/REJECT_DUPLICATE/BLOCKED`.
 
-## 15. Productization law
+Maximum one active capability benchmark at a time until policy changes with evidence.
 
-`Service -> Managed Service -> Repeatable Delivery -> Reusable Module -> Productized System -> SaaS where justified`
+## 26. Founder role
 
-Do not build a product because an idea is attractive. Build only when paid pain, repeated delivery evidence or a measured capability gap justifies it.
+Founder owns identity/legal/account setup, capital, high-level policy, atomic L5 approvals, exceptional commitments and high-leverage relationships.
 
-## 16. Engineering priority after production trust
+The Company Machine owns routine research, qualification, internal analysis, drafting, evidence packaging, safe L0-L4 execution, proof gaps and learning.
 
-Once trust is sufficiently stable, engineering allocation follows economic leverage:
+Founder Brief:
 
-1. customer blocker
-2. sales blocker
-3. delivery blocker
-4. trust/security blocker
-5. high-repeatability automation
-6. proof/data-quality improvement
-7. material cost reduction
+`MONEY / DECISIONS / RISKS / APPROVALS / NEXT_ACTION`.
 
-Interesting tooling without a measured gap is not a priority.
+## 27. Forbidden shortcuts
 
-## 17. OSS admission law
+Dealix does not use:
 
-`Measured Gap -> Canonical Owner -> Duplication Check -> License/Security/Data Boundary -> Isolated Pilot -> Benchmark -> Receipt -> Admit/Reject`
+- cold WhatsApp blasting;
+- mass LinkedIn automation;
+- fake consent, relationship, testimonials or proof;
+- guaranteed revenue/ROI claims;
+- unsupported government access/endorsement/accreditation/certification claims;
+- secret printing;
+- parallel Company OS/Brain/CRM/scheduler/permanent fleets;
+- one permanent agent per business arm;
+- bulk OSS installation without a measured gap;
+- universal fixed public pricing without current authority;
+- deep-building every researched arm before buyer evidence;
+- regulated/safety-critical work without qualified authority.
 
-Do not bulk-install GitHub projects. Maximum one active capability benchmark at a time.
+## 28. Execution continuity
 
-## 18. Founder role
+The company never stops because one lane is blocked. It also never bypasses that lane's gate.
 
-The founder owns identity/legal/account setup, capital and policy, atomic L5 approvals, exceptional commitments and high-leverage relationships.
+Every meaningful failure should become:
 
-The Company Machine owns routine research, qualification, drafting, internal analysis, evidence packaging, safe L0-L4 execution, proof gaps and learning.
+`Failure -> Evidence -> Root Cause -> Bounded Fix -> Regression Guard -> Verification -> Receipt -> Company Brain`.
 
-Founder Brief stays compact:
+Every recurring decision becomes:
 
-`MONEY / DECISIONS / RISKS / APPROVALS / NEXT_ACTION`
+`DOUBLE_DOWN / CONTINUE / FIX / AUTOMATE / SIMPLIFY / WATCH / STOP`.
 
-## 19. Forbidden shortcuts
+## 29. Runtime enforcement
 
-Dealix will not optimize by using cold WhatsApp blasts, mass LinkedIn automation, fake consent/relationship/proof, guaranteed revenue claims, unsupported government-access claims, secret printing, parallel Company OS/Brain/CRM/scheduler/fleet, bulk OSS installation, or universal fixed public pricing without current policy evidence.
+The daily Company OS must fail closed if the canonical constitution is missing or invalid.
 
-## 20. Runtime enforcement
+The governed arm registry must be validated before any autonomous arm allocation is treated as canonical.
 
-`run_company_os_daily.py` must verify the machine-readable constitution before delegating to the canonical Company OS runner.
+A constitution or arm-registry PASS never implies Production Green, revenue, consent, buyer intent, payment or customer proof.
 
-If the constitution is missing or invalid, the daily Company OS must fail closed rather than silently run under drifted company law.
+## 30. Final objective
 
-Live provider/repository/economic truth remains separate. A constitution PASS never implies Production Green, revenue, consent, buyer intent or customer proof.
+For every cycle ask:
+
+1. What is true now?
+2. Where is the money/customer value/bottleneck?
+3. What can execute safely now?
+4. What requires exact authority?
+5. What must be proven, productized, partnered, automated, pruned or stopped?
+
+Then:
+
+`READ -> RECONCILE -> PRIORITIZE -> EXECUTE -> VERIFY -> PROVE -> LEARN -> PRUNE -> SCALE`.
