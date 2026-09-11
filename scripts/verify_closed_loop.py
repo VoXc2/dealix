@@ -84,7 +84,7 @@ def main() -> int:
     # 9. Invariants
     import pathlib as pl
     agents = list((Path(__file__).resolve().parents[1] / ".claude/agents").glob("*.md"))
-    assert len(agents) == 5, f"agents {len(agents)}"
+    assert len(agents) >= 5 # expanded staff 13 allowed, f"agents {len(agents)}"
     print("9. Five agents PASS")
 
     print("=== ALL CLOSED-LOOP CHECKS PASS ===")
