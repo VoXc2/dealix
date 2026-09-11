@@ -332,4 +332,6 @@ from dealix.commercial.expanded_launch_executor import ExpandedLaunchExecutor
 from dealix.commercial.comprehensive_launch import ComprehensiveLaunch
 # Remaining Plans — comprehensive from all aspects
 from dealix.commercial.remaining_plans_executor import RemainingPlansExecutor
+# Final Expanded Launch — best thought, all aspects
+from dealix.commercial.final_expanded_launch import FinalExpandedLaunch
 
