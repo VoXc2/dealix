@@ -7,12 +7,29 @@ services:
       dockerfile: Dockerfile
       args:
         GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
-    env_file:
-      - /opt/dealix/control/secrets/selfhost.env
     environment:
       PORT: "8000"
-      APP_ENV: production
+      APP_ENV: ${DEALIX_APP_ENV:-development}
+      ENVIRONMENT: ${DEALIX_APP_ENV:-development}
       GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+      APP_URL: http://127.0.0.1:18000
+      BASE_URL: http://127.0.0.1:18000
+      DEALIX_API_BASE: http://127.0.0.1:18000
+      CORS_ORIGINS: http://127.0.0.1:13000
+      DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
+      DEALIX_ORCHESTRATOR_BACKEND: ${DEALIX_ORCHESTRATOR_BACKEND:-postgres}
+      DEALIX_ORCHESTRATOR_DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
+      EXTERNAL_SEND_ENABLED: "false"
+      OUTBOUND_MODE: draft_only
+      EMAIL_SEND_ENABLED: "false"
+      WHATSAPP_SEND_ENABLED: "false"
+      WHATSAPP_ALLOW_LIVE_SEND: "false"
+      SMS_SEND_ENABLED: "false"
+      PUBLIC_PUBLISH: "0"
+      PAID_SPEND: "0"
+      PAYMENT_EXECUTION: "0"
+      PRODUCTION_MUTATION: "0"
+      RUN_RAILWAY_PRE_DEPLOY_MIGRATE: "0"
     ports:
       - "127.0.0.1:18000:8000"
     restart: unless-stopped
@@ -28,10 +45,9 @@ services:
     build:
       context: ../../apps/web
       dockerfile: Dockerfile
-    env_file:
-      - /opt/dealix/control/secrets/selfhost-web.env
     environment:
       NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
       PORT: "3000"
       HOSTNAME: 0.0.0.0
     ports:
@@ -48,15 +64,15 @@ services:
   postgres:
     image: postgres:16-bookworm
     profiles: ["local-db"]
-    env_file:
-      - /opt/dealix/control/secrets/selfhost-postgres.env
+    environment:
+      POSTGRES_USER: dealix_canary
+      POSTGRES_DB: dealix_canary
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - dealix-postgres:/var/lib/postgresql/data
-    ports:
-      - "127.0.0.1:15432:5432"
+      - dealix-postgres-canary:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U dealix_canary -d dealix_canary"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -67,5 +83,5 @@ networks:
     name: dealix-selfhost
 
 volumes:
-  dealix-postgres:
-    name: dealix-postgres
+  dealix-postgres-canary:
+    name: dealix-postgres-canary
