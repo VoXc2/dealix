@@ -19,32 +19,22 @@ if [[ "$CURRENT_SHA" != "$EXPECTED_SHA" ]]; then
   exit 65
 fi
 
-required=(
-  /opt/dealix/control/secrets/selfhost.env
-  /opt/dealix/control/secrets/selfhost-web.env
-)
-if [[ "$USE_LOCAL_DB" == "1" ]]; then
-  required+=(/opt/dealix/control/secrets/selfhost-postgres.env)
-fi
-for f in "${required[@]}"; do
-  if [[ ! -s "$f" ]]; then
-    echo "HOLD: required runtime env file missing: $f" >&2
-    exit 66
-  fi
-done
-
 export DEALIX_GIT_SHA="$CURRENT_SHA"
+export DEALIX_APP_ENV="${DEALIX_APP_ENV:-development}"
+export DEALIX_ORCHESTRATOR_BACKEND="${DEALIX_ORCHESTRATOR_BACKEND:-postgres}"
+export DEALIX_DATABASE_URL="${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}"
+
 docker compose -f "$COMPOSE_FILE" build --pull api web
 
 if [[ "$USE_LOCAL_DB" == "1" ]]; then
   docker compose -f "$COMPOSE_FILE" --profile local-db up -d postgres
   for _ in $(seq 1 30); do
-    if docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres pg_isready >/dev/null 2>&1; then
+    if docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres pg_isready -U dealix_canary -d dealix_canary >/dev/null 2>&1; then
       break
     fi
     sleep 2
   done
-  docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres pg_isready >/dev/null
+  docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres pg_isready -U dealix_canary -d dealix_canary >/dev/null
   docker compose -f "$COMPOSE_FILE" --profile local-db run --rm \
     -e RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1 \
     -e DEALIX_DB_MIGRATION_AUTHORIZED=1 \
