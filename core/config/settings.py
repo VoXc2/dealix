@@ -91,6 +91,12 @@ class Settings(BaseSettings):
     deepseek_api_key: SecretStr | None = None
     deepseek_base_url: str = "https://api.deepseek.com/v1"
     deepseek_model: str = "deepseek-chat"
+    # Fail-closed preparation only: production keeps this disabled unless an
+    # explicit environment enables a loopback-only local fallback.
+    deepseek_402_ollama_fallback_enabled: bool = False
+    deepseek_ollama_base_url: str = "http://127.0.0.1:11434/v1"
+    deepseek_ollama_model: str = "qwen3:4b-instruct-2507-q4_K_M"
+    deepseek_ollama_timeout: int = 60
 
     # ── LLM: GLM (Z.ai) ─────────────────────────────────────────
     glm_api_key: SecretStr | None = None

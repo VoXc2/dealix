@@ -1,83 +1,70 @@
-# Model Registry — Dealix (AR)
+# Model Registry — Dealix
 
-> **Source of truth:** `data/ai_ops/model_registry.yaml`
+> **Canonical source:** `data/ai_ops/model_registry.yaml`
 > **Schema:** `schemas/model_registry.schema.json`
-> **Update rule:** أي model جديد يُضاف هنا **قبل** استخدامه في production.
+> **Rule:** registry evidence may be prepared before production routing changes; production routing changes require a stable provider ID + official rate card + Dealix evals.
+> **Implementation boundary:** this change prepares registry truth, bounded in-process telemetry, HTTP 402 circuit behavior, and an opt-in loopback-only Ollama fallback. It does **not** mutate the configured production model name, provider key, billing, or production environment.
 
----
+## Required model truth
 
-## Registry Format
+Every registry entry separates:
 
-```yaml
-- model_id: <unique>
-  provider: <MiniMax|OpenAI|DeepSeek|Ollama|...>
-  model_name: <e.g., claude-sonnet-4-6>
-  cost_class: low|medium|high
-  allowed_tasks: [R1, R2, R3]   # see AI_OPS_OS_AR.md
-  forbidden_tasks: []
-  pii_policy: forbid|redact|allow
-  max_context_tokens: <int>
-  fallback_model_id: <id>
-  eval_score_threshold: 0.7
-  owner: <name>
-  added_at: <date>
-  status: active|deprecated|testing
-  notes: ""
-```
+- `logical_routes`: business/workload intent such as `daily`, `light`, `code`, `proof_summary`.
+- `model_name`: model Dealix requests.
+- runtime `effective_model`: model the provider reports actually serving the request.
+- `lifecycle`: `stable | beta | expired`.
+- `api_name_stability`: `stable | experimental | expiring`.
+- `production_eligible`: explicit fail-closed production permission.
+- `effective_at/effective_on` and `expires_at/expires_on`.
+- cache-hit/cache-miss/output prices, peak windows, concurrency, pricing source, and evaluation gates.
 
----
+If a provider silently aliases a requested model, Dealix must record both `requested_model` and `effective_model`; cost and quality analysis uses the effective model where it is known.
 
-## Initial Models (مُقترح)
+## DeepSeek decision — 11 September 2026
 
-| model_id | provider | model_name | cost | tasks | PII |
-|----------|----------|------------|------|-------|-----|
-| `minimax-haiku-45` | MiniMax | claude-haiku-4-5 | low | R1 | forbid |
-| `minimax-sonnet-46` | MiniMax | claude-sonnet-4-6 | med | R1, R2, R3 | redact |
-| `openai-gpt4o-mini` | OpenAI | gpt-4o-mini | low | R1 | forbid |
-| `openai-gpt4o` | OpenAI | gpt-4o | high | R2, R3 | redact |
-| `deepseek-chat` | DeepSeek | deepseek-chat | low | R1, R2 (non-sensitive) | forbid |
-| `ollama-llama31-8b` | Ollama | llama-3.1-8b | free | R1 (internal) | allow |
+DeepSeek officially released **V4.1 Flash** on 10 September 2026. The supported API model name is `deepseek-flash`. The provider also states that the old names `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` are offline and temporarily compatibility-routed to V4.1 Flash. Dealix therefore marks those old registry entries expired/non-production rather than pretending their requested model is still the effective model.
 
-> **ملاحظة:** قائمة النماذج ديناميكية. تُحدّث عند إضافة/إزالة نموذج.
+DeepSeek also announced an orderly V4 Pro retirement: after 14 September 2026 12:00 Beijing (07:00 Riyadh), and until V4.1 Pro launches, requests to `deepseek-v4-pro` will be routed to V4.1 Flash and billed at V4.1 Flash pricing. Dealix therefore holds new V4 Pro production promotion until requested/effective-model evidence and official pricing are revalidated.
 
----
+The temporary `deepseek-v4.1-flash-expires-on-0910` beta is expired and superseded by `deepseek-flash`. The stable provider ID is now known, but `deepseek-flash` remains `production_eligible=false` in Dealix until the promotion gates below pass.
 
-## Onboarding a New Model
+The official release announces lower V4.1 Flash pricing and says the new prices became effective on 10 September 2026 12:00 Beijing, but the exact numeric table is published as an image and is not text-verified in the current evidence set. The previously reported numeric price cut therefore remains an **inactive candidate**. `estimate_budget_cost_usd()` returns `None` for `deepseek-flash` until an official numeric rate card is verified; it must never silently interpret missing rates as zero cost.
 
-1. Business case
-2. Security review (DPA, data flow, PII handling)
-3. Add to `data/ai_ops/model_registry.yaml`
-4. Eval suite (≥ 50 test prompts)
-5. Pilot in low-risk task (R1)
-6. Council approval
-7. Promote to R2/R3 if eval ≥ 0.8
-8. Update this doc
+Current production model names remain unchanged by this PR.
 
----
+## Promotion gate for a new DeepSeek production ID
 
-## Offboarding a Model
+All of the following are required:
 
-1. Mark `status: deprecated`
-2. Route remaining traffic to fallback
-3. Audit usage
-4. Remove from routing after 30 days
-5. Update registry
+1. official stable model ID;
+2. official DeepSeek pricing/rate card;
+3. lifecycle is not expiring;
+4. Dealix daily/light eval passes;
+5. Dealix code eval passes;
+6. Dealix proof-summary eval passes;
+7. requested/effective-model telemetry shows no unexplained alias drift;
+8. production fallback/circuit-breaker behavior is verified.
 
----
+## HTTP 402 policy
 
-## Cost Snapshot (per 1M tokens, approximate)
+A DeepSeek HTTP 402 is a billing/availability condition, not a transient transport error. `core/llm/openai_compat.py` does not retry it. `ModelRouter` opens an in-process `billing_402` circuit immediately and skips further DeepSeek attempts until `reset_provider_circuit(Provider.DEEPSEEK)` is called explicitly. There is no hidden timed auto-reset.
 
-| Model | Input | Output | Notes |
-|-------|-------|--------|-------|
-| Haiku 4.5 | $1 | $5 | fast, cheap |
-| Sonnet 4.6 | $3 | $15 | balanced |
-| GPT-4o-mini | $0.15 | $0.60 | cheapest API |
-| GPT-4o | $5 | $15 | premium |
-| DeepSeek | $0.27 | $1.10 | very cheap, review needed for sensitive |
-| Ollama local | $0 | $0 | compute cost only |
+An Ollama fallback may be prepared only when `deepseek_402_ollama_fallback_enabled=true`. It accepts exact loopback URLs only (`127.0.0.1`, `localhost`, or `::1` on port 11434), defaults to the canonical `qwen3:4b-instruct-2507-q4_K_M`, and never changes production configuration by itself. If disabled, 402 fails closed into the existing provider fallback chain. If the local fallback itself fails, the router records the failure once and does not loop.
 
-**تحذير:** الأسعار تتغير. راجع صفحة كل provider.
+No policy may print API keys, mutate billing, purchase credits, or weaken provider validation.
 
----
+## Cost telemetry
 
-> **Owner:** Tech Lead · **Cadence:** يُحدّث عند كل إضافة/إزالة
+Per accepted result, capture at minimum:
+
+`logical_route, requested_model, effective_model, cache_status, input_tokens, output_tokens, retries, accepted, occurred_at, budget_cost_usd, cost_per_accepted_result_usd`.
+
+`core/llm/model_economics.py` provides side-effect-free registry loading, production eligibility, conservative cost estimation, and usage-event construction. `ModelRouter` now keeps a bounded in-memory deque of the latest 500 events and records requested/effective model, cache state, retries, acceptance, and budget cost without writing a new runtime database or exposing credentials.
+
+## Onboarding / offboarding
+
+New model: business case → security/data-flow review → registry → ≥50 eval prompts → R1 pilot → approval → promote only after thresholds pass.
+
+Offboarding: mark deprecated/expired → stop new routing → audit usage → route to approved fallback → remove only after evidence confirms no active dependency.
+
+> **Owner:** `dealix-engineer` · **Review cadence:** provider release/pricing change or model promotion event.

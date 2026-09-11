@@ -1,0 +1,365 @@
+[
+  {
+    "model_id": "deepseek-v4-flash-0731",
+    "provider": "DeepSeek",
+    "model_name": "deepseek-v4-flash",
+    "cost_class": "low",
+    "allowed_tasks": [
+      "R1",
+      "R2"
+    ],
+    "forbidden_tasks": [
+      "sensitive_without_redaction"
+    ],
+    "pii_policy": "forbid",
+    "max_context_tokens": 1000000,
+    "fallback_model_id": "ollama-local",
+    "eval_score_threshold": 0.8,
+    "owner": "dealix-engineer",
+    "added_at": "2026-07-31T00:00:00Z",
+    "status": "deprecated",
+    "lifecycle": "expired",
+    "api_name_stability": "stable",
+    "production_eligible": false,
+    "effective_at": null,
+    "effective_on": "2026-07-31",
+    "expires_at": null,
+    "expires_on": "2026-09-10",
+    "logical_routes": [
+      "daily",
+      "light",
+      "code",
+      "proof_summary"
+    ],
+    "concurrency_limit": 2500,
+    "legacy_aliases": [
+      {
+        "model_name": "deepseek-chat",
+        "retired_on": "2026-07-24"
+      },
+      {
+        "model_name": "deepseek-reasoner",
+        "retired_on": "2026-07-24"
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "unit_tokens": 1000000,
+      "source_authority": "official",
+      "source_url": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "verified_at": "2026-09-10T03:17:00Z",
+      "budget_basis": "peak",
+      "peak_windows_utc": [
+        "01:00-04:00",
+        "06:00-10:00"
+      ],
+      "peak_days_utc": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "off_peak": {
+        "cache_hit": 0.007,
+        "cache_miss": 0.22,
+        "output": 0.66
+      },
+      "peak": {
+        "cache_hit": 0.014,
+        "cache_miss": 0.44,
+        "output": 1.32
+      }
+    },
+    "notes": "Officially offline as of 2026-09-10; legacy API name is temporarily compatibility-routed by DeepSeek to V4.1 Flash. Never treat this entry as the effective serving model."
+  },
+  {
+    "model_id": "deepseek-v4-pro-0813",
+    "provider": "DeepSeek",
+    "model_name": "deepseek-v4-pro",
+    "cost_class": "medium",
+    "allowed_tasks": [
+      "R2",
+      "R3"
+    ],
+    "forbidden_tasks": [
+      "sensitive_without_redaction"
+    ],
+    "pii_policy": "redact",
+    "max_context_tokens": 1000000,
+    "fallback_model_id": "deepseek-v4-flash-0731",
+    "eval_score_threshold": 0.8,
+    "owner": "dealix-engineer",
+    "added_at": "2026-08-13T00:00:00Z",
+    "status": "active",
+    "lifecycle": "stable",
+    "api_name_stability": "stable",
+    "production_eligible": false,
+    "effective_at": null,
+    "effective_on": "2026-08-13",
+    "expires_at": null,
+    "expires_on": null,
+    "logical_routes": [
+      "code_review",
+      "complex_reasoning",
+      "proof_review"
+    ],
+    "concurrency_limit": 500,
+    "pricing": {
+      "currency": "USD",
+      "unit_tokens": 1000000,
+      "source_authority": "official",
+      "source_url": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "verified_at": "2026-09-10T03:17:00Z",
+      "budget_basis": "peak",
+      "peak_windows_utc": [
+        "01:00-04:00",
+        "06:00-10:00"
+      ],
+      "peak_days_utc": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "off_peak": {
+        "cache_hit": 0.022,
+        "cache_miss": 0.66,
+        "output": 1.98
+      },
+      "peak": {
+        "cache_hit": 0.044,
+        "cache_miss": 1.32,
+        "output": 3.96
+      }
+    },
+    "notes": "Provider announced orderly retirement. From 2026-09-14 12:00 Beijing / 07:00 Riyadh until V4.1 Pro launches, requests to deepseek-v4-pro will be routed to V4.1 Flash and billed at V4.1 Flash pricing. Hold new Dealix production promotion until effective-model and official-rate evidence are revalidated."
+  },
+  {
+    "model_id": "deepseek-v4-flash-vision-exp",
+    "provider": "DeepSeek",
+    "model_name": "deepseek-v4-flash-vision-exp",
+    "cost_class": "low",
+    "allowed_tasks": [
+      "R1",
+      "R2"
+    ],
+    "forbidden_tasks": [
+      "production_default",
+      "sensitive_without_redaction"
+    ],
+    "pii_policy": "forbid",
+    "max_context_tokens": 1000000,
+    "fallback_model_id": "deepseek-v4-flash-0731",
+    "eval_score_threshold": 0.8,
+    "owner": "dealix-engineer",
+    "added_at": "2026-08-21T00:00:00Z",
+    "status": "deprecated",
+    "lifecycle": "expired",
+    "api_name_stability": "experimental",
+    "production_eligible": false,
+    "effective_at": null,
+    "effective_on": "2026-08-21",
+    "expires_at": null,
+    "expires_on": "2026-09-10",
+    "logical_routes": [
+      "multimodal_eval"
+    ],
+    "concurrency_limit": 2500,
+    "pricing": {
+      "currency": "USD",
+      "unit_tokens": 1000000,
+      "source_authority": "official",
+      "source_url": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "verified_at": "2026-09-10T03:17:00Z",
+      "budget_basis": "peak",
+      "peak_windows_utc": [
+        "01:00-04:00",
+        "06:00-10:00"
+      ],
+      "peak_days_utc": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "off_peak": {
+        "cache_hit": 0.007,
+        "cache_miss": 0.22,
+        "output": 0.66
+      },
+      "peak": {
+        "cache_hit": 0.014,
+        "cache_miss": 0.44,
+        "output": 1.32
+      }
+    },
+    "notes": "Officially offline as of 2026-09-10; legacy API name is temporarily compatibility-routed to V4.1 Flash."
+  },
+  {
+    "model_id": "deepseek-v41-flash-expiring-0910",
+    "provider": "DeepSeek",
+    "model_name": "deepseek-v4.1-flash-expires-on-0910",
+    "cost_class": "low",
+    "allowed_tasks": [
+      "R1"
+    ],
+    "forbidden_tasks": [
+      "production",
+      "default_route",
+      "customer_material_action"
+    ],
+    "pii_policy": "forbid",
+    "max_context_tokens": 1000000,
+    "fallback_model_id": "deepseek-v4-flash-0731",
+    "eval_score_threshold": 0.8,
+    "owner": "dealix-engineer",
+    "added_at": "2026-09-08T00:00:00Z",
+    "status": "deprecated",
+    "lifecycle": "expired",
+    "api_name_stability": "expiring",
+    "production_eligible": false,
+    "effective_at": null,
+    "effective_on": "2026-09-08",
+    "expires_at": null,
+    "expires_on": "2026-09-10",
+    "logical_routes": [
+      "evaluation_only"
+    ],
+    "concurrency_limit": 20,
+    "pricing": {
+      "currency": "USD",
+      "unit_tokens": 1000000,
+      "source_authority": "secondary_report_of_deepseek_community_notice",
+      "source_url": "https://technode.com/2026/09/09/deepseek-v4-1-flash-multimodal-limited-beta/",
+      "verified_at": "2026-09-10T03:17:00Z",
+      "budget_basis": "peak",
+      "inherits_current_model": "deepseek-v4-flash",
+      "peak_windows_utc": [
+        "01:00-04:00",
+        "06:00-10:00"
+      ],
+      "peak_days_utc": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "off_peak": {
+        "cache_hit": 0.007,
+        "cache_miss": 0.22,
+        "output": 0.66
+      },
+      "peak": {
+        "cache_hit": 0.014,
+        "cache_miss": 0.44,
+        "output": 1.32
+      },
+      "announced_pricing_candidate": {
+        "effective_at": "2026-09-10T04:00:00Z",
+        "source_authority": "secondary_report_of_customer_notice",
+        "source_url": "https://runtimewire.com/article/deepseek-v41-flash-release-pro-routing-price-cut",
+        "official_rate_card_verified": false,
+        "off_peak": {
+          "cache_hit": 0.003,
+          "cache_miss": 0.15,
+          "output": 0.6
+        },
+        "peak": {
+          "cache_hit": 0.006,
+          "cache_miss": 0.3,
+          "output": 1.2
+        }
+      }
+    },
+    "promotion_requirements": [
+      "official_stable_model_id",
+      "official_pricing_page_updated",
+      "daily_eval_pass",
+      "light_eval_pass",
+      "code_eval_pass",
+      "proof_summary_eval_pass"
+    ],
+    "notes": "Temporary pre-release beta expired on 2026-09-10 and is superseded by official V4.1 Flash API model deepseek-flash."
+  },
+  {
+    "model_id": "deepseek-v41-flash-0910",
+    "provider": "DeepSeek",
+    "model_name": "deepseek-flash",
+    "cost_class": "low",
+    "allowed_tasks": [
+      "R1",
+      "R2"
+    ],
+    "forbidden_tasks": [
+      "production_default",
+      "customer_material_action",
+      "sensitive_without_redaction"
+    ],
+    "pii_policy": "forbid",
+    "max_context_tokens": 1000000,
+    "fallback_model_id": "ollama-local",
+    "eval_score_threshold": 0.8,
+    "owner": "dealix-engineer",
+    "added_at": "2026-09-10T04:00:00Z",
+    "status": "testing",
+    "lifecycle": "stable",
+    "api_name_stability": "stable",
+    "production_eligible": false,
+    "effective_at": "2026-09-10T04:00:00Z",
+    "effective_on": "2026-09-10",
+    "expires_at": null,
+    "expires_on": null,
+    "logical_routes": [
+      "evaluation_only"
+    ],
+    "legacy_aliases": [
+      {
+        "model_name": "deepseek-v4-flash",
+        "compatibility_routed_from": "2026-09-10"
+      },
+      {
+        "model_name": "deepseek-v4-flash-vision-exp",
+        "compatibility_routed_from": "2026-09-10"
+      }
+    ],
+    "pricing": {
+      "currency": "USD",
+      "unit_tokens": 1000000,
+      "source_authority": "official_release_announces_lower_pricing_exact_text_rates_unverified",
+      "source_url": "https://deepseek.com/news/deepseek-v4-1-flash/",
+      "verified_at": "2026-09-11T00:30:00Z",
+      "budget_basis": "peak",
+      "rate_card_verified": false,
+      "announced_pricing_candidate": {
+        "effective_at": "2026-09-10T04:00:00Z",
+        "source_authority": "secondary_report_of_customer_notice",
+        "source_url": "https://runtimewire.com/article/deepseek-v41-flash-release-pro-routing-price-cut",
+        "official_rate_card_verified": false,
+        "off_peak": {
+          "cache_hit": 0.003,
+          "cache_miss": 0.15,
+          "output": 0.6
+        },
+        "peak": {
+          "cache_hit": 0.006,
+          "cache_miss": 0.3,
+          "output": 1.2
+        }
+      }
+    },
+    "promotion_requirements": [
+      "official_numeric_rate_card_verified",
+      "daily_eval_pass",
+      "light_eval_pass",
+      "code_eval_pass",
+      "proof_summary_eval_pass",
+      "requested_effective_model_telemetry_pass",
+      "402_circuit_fallback_pass"
+    ],
+    "notes": "Official V4.1 Flash API name is deepseek-flash. Stable provider ID is known, but Dealix production promotion remains fail-closed until numeric official pricing and Dealix eval gates pass."
+  }
+]
