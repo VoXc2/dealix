@@ -340,4 +340,6 @@ from dealix.commercial.legacy_adapters import LEGACY_PROOF_AVAILABLE, get_proof_
 from dealix.commercial.next_expansion import NextExpansion
 # AI Sector Expansion — double coverage via AI
 from dealix.commercial.ai_sector_expansion import AI_GENERATED_SECTORS, AISectorExpansion
+# Best Free Diagnostic — best in market, all agents operate
+from dealix.commercial.best_free_diagnostic import BEST_OFFERS, BestFreeDiagnosticEngine, BestFreeDiagnosticOffer
 
