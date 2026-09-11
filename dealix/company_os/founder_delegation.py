@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from dealix.commercial.external_execution_gate import ExternalActionPacket
 
@@ -89,6 +89,14 @@ class FounderDelegationSession(BaseModel):
         if len(cleaned) != len(value):
             raise ValueError("delegation list fields cannot contain blanks")
         return cleaned
+
+    @model_validator(mode="after")
+    def _require_finite_destination_scope(self) -> "FounderDelegationSession":
+        if not self.conversation_ids and not self.recipients:
+            raise ValueError(
+                "delegation requires at least one recipient or conversation scope"
+            )
+        return self
 
 
 class DelegationUsage(BaseModel):
