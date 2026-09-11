@@ -27,15 +27,30 @@ ReplyIntent = Literal["pricing", "objection", "meeting", "support", "general"]
 ReplyLanguage = Literal["ar", "en"]
 
 _ARABIC_RE = re.compile(r"[\u0600-\u06FF]")
+_CURRENCY_CODES = r"sar|usd|aed|qar|bhd|kwd|omr|eur|gbp"
 _PRICE_RE = re.compile(
-    r"(?:\b(?:sar|riyal|riyals)\b\s*\d|\d[\d,]*(?:\.\d+)?\s*(?:sar|ريال)|"
-    r"\b\d+(?:\.\d+)?\s*%|خصم\s*\d|discount\s*\d)",
+    rf"(?:"
+    rf"[$€£]\s*\d[\d,]*(?:\.\d+)?|"
+    rf"\b(?:{_CURRENCY_CODES})\b\s*\d[\d,]*(?:\.\d+)?|"
+    rf"\b\d[\d,]*(?:\.\d+)?\s*(?:{_CURRENCY_CODES}|ريال|دولار|درهم)\b|"
+    r"\b\d+(?:\.\d+)?\s*%|خصم\s*\d|discount\s*\d"
+    r")",
     re.IGNORECASE,
 )
 _COMMITMENT_RE = re.compile(
-    r"\b(?:guarantee(?:d)?|we guarantee|contract is agreed|deal is agreed|"
-    r"payment is confirmed|refund is confirmed)\b|"
-    r"(?:نضمن|مضمون|تم الاتفاق على العقد|تم تأكيد الدفع|تم تأكيد الاسترداد)",
+    r"\b(?:"
+    r"guarantee(?:d)?|we guarantee|"
+    r"contract is agreed|deal is agreed|agreement is agreed|"
+    r"payment is confirmed|refund is confirmed|"
+    r"net\s*\d{1,3}|"
+    r"(?:we\s+)?(?:accept|agree(?:d)?(?:\s+to)?)\s+(?:the\s+)?(?:payment\s+)?terms?|"
+    r"binding\s+(?:price|quote|offer|terms?|agreement|contract)|"
+    r"payment\s+terms?|refund\s+terms?|contract\s+terms?|legal\s+terms?"
+    r")\b|"
+    r"(?:نضمن|مضمون|تم الاتفاق على العقد|تم تأكيد الدفع|تم تأكيد الاسترداد|"
+    r"نقبل\s+(?:شروط|بنود)|نوافق\s+على\s+(?:شروط|بنود)|"
+    r"شروط\s+(?:الدفع|السداد|العقد)|بنود\s+(?:الدفع|السداد|العقد)|"
+    r"صافي\s*\d{1,3})",
     re.IGNORECASE,
 )
 
@@ -120,6 +135,7 @@ Inbound message:
 
 
 def _material_commitment(text: str) -> bool:
+    """Fail closed when model output contains material price or legal/payment terms."""
     return bool(_PRICE_RE.search(text) or _COMMITMENT_RE.search(text))
 
 
