@@ -342,4 +342,6 @@ from dealix.commercial.next_expansion import NextExpansion
 from dealix.commercial.ai_sector_expansion import AI_GENERATED_SECTORS, AISectorExpansion
 # Best Free Diagnostic — best in market, all agents operate
 from dealix.commercial.best_free_diagnostic import BEST_OFFERS, BestFreeDiagnosticEngine, BestFreeDiagnosticOffer
+# Best Offers — best in market, all sectors
+from dealix.commercial.best_offers_catalog import BestOfferCatalog
 
