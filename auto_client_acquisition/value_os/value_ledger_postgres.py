@@ -11,7 +11,7 @@ import threading
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import DateTime, Float, String, Text, create_engine, delete, select
+from sqlalchemy import DateTime, Float, String, Text, create_engine, delete, inspect, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
@@ -68,6 +68,12 @@ class PostgresValueLedgerStore:
         self._lock = threading.Lock()
         if create_tables:
             _ValueLedgerBase.metadata.create_all(self._engine)
+
+    def required_schema_ready(self) -> bool:
+        try:
+            return inspect(self._engine).has_table(ValueLedgerEventORM.__tablename__)
+        except Exception:
+            return False
 
     def insert_event(self, row: dict[str, Any]) -> None:
         occurred_raw = str(row.get("occurred_at") or "")
@@ -163,7 +169,12 @@ def get_postgres_value_ledger_store() -> PostgresValueLedgerStore | None:
         except Exception:
             return None
         _engine_singleton = eng
-        _store_singleton = PostgresValueLedgerStore(engine=_engine_singleton, create_tables=True)
+        candidate = PostgresValueLedgerStore(engine=_engine_singleton, create_tables=False)
+        if not candidate.required_schema_ready():
+            _engine_singleton.dispose()
+            _engine_singleton = None
+            return None
+        _store_singleton = candidate
         return _store_singleton
 
 

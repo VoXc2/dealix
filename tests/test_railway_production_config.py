@@ -168,6 +168,8 @@ def _bound_success(**overrides: str) -> dict[str, object]:
         "railway_deployment_status": "SUCCESS",
         "expected_deployment_id": "dep-123",
         "observed_deployment_id": "dep-123",
+        "expected_project_id": "proj-123",
+        "observed_project_id": "proj-123",
         "expected_service_id": "svc-123",
         "observed_service_id": "svc-123",
         "expected_environment_id": "env-123",
@@ -213,3 +215,9 @@ def test_railway_success_with_stale_live_sha_fails_closed() -> None:
     assert evidence["identity_binding_valid"] is False
     assert evidence["release_evidence_valid"] is False
     assert evidence["reason"] == "RAILWAY_SUCCESS_IDENTITY_MISMATCH"
+
+
+def test_railway_success_requires_exact_project_and_sha40() -> None:
+    assert _bound_success(observed_project_id="proj-old")["release_evidence_valid"] is False
+    assert _bound_success(live_sha="A" * 40)["release_evidence_valid"] is False
+    assert _bound_success(live_sha="a" * 39)["release_evidence_valid"] is False

@@ -32,13 +32,14 @@ def test_get_autopilot_store_defaults_to_json(monkeypatch: pytest.MonkeyPatch) -
     assert not isinstance(store, AutopilotPostgresStore)
 
 
-def test_get_autopilot_store_postgres_backend_with_sqlite(
+def test_get_autopilot_store_missing_schema_falls_back_to_json(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("DEALIX_AUTOPILOT_STORE_BACKEND", "postgres")
     monkeypatch.setenv("DATABASE_URL", "sqlite:///:memory:")
     store = get_autopilot_store()
-    assert isinstance(store, AutopilotPostgresStore)
+    assert isinstance(store, AutopilotJSONStore)
+    assert not isinstance(store, AutopilotPostgresStore)
 
 
 def test_postgres_backend_env_cannot_auto_create_schema(
@@ -51,15 +52,17 @@ def test_postgres_backend_env_cannot_auto_create_schema(
     class StubPostgresStore:
         def __init__(self, *, database_url: str, create_tables: bool = True) -> None:
             seen["create_tables"] = create_tables
+        def required_schema_ready(self) -> bool:
+            return False
 
     monkeypatch.setattr(postgres_store, "AutopilotPostgresStore", StubPostgresStore)
     monkeypatch.setenv("DEALIX_AUTOPILOT_STORE_BACKEND", "postgres")
     monkeypatch.setenv("DATABASE_URL", "sqlite:///:memory:")
     store = get_autopilot_store()
-    assert isinstance(store, StubPostgresStore)
+    assert isinstance(store, AutopilotJSONStore)
     assert seen["create_tables"] is False
 
-def test_get_autopilot_store_does_not_fallback_or_create_on_unreachable_postgres(
+def test_get_autopilot_store_falls_back_on_unreachable_postgres(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("DEALIX_AUTOPILOT_STORE_BACKEND", "postgres")
@@ -68,7 +71,18 @@ def test_get_autopilot_store_does_not_fallback_or_create_on_unreachable_postgres
         "postgresql+asyncpg://invalid:invalid@127.0.0.1:59999/nope",
     )
     store = get_autopilot_store()
+    assert isinstance(store, AutopilotJSONStore)
+
+
+def test_postgres_backend_uses_preexisting_schema(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+    url = f"sqlite:///{tmp_path / 'autopilot.db'}"
+    seed = AutopilotPostgresStore(database_url=url, create_tables=True)
+    assert seed.required_schema_ready() is True
+    monkeypatch.setenv("DEALIX_AUTOPILOT_STORE_BACKEND", "postgres")
+    monkeypatch.setenv("DATABASE_URL", url)
+    store = get_autopilot_store()
     assert isinstance(store, AutopilotPostgresStore)
+    assert store.required_schema_ready() is True
 
 
 def test_postgres_store_upsert_and_get_lead() -> None:

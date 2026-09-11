@@ -109,7 +109,10 @@ def _validate_rollback_artifact(value: str, *, repo: Path) -> tuple[str, str]:
         raise ValueError("rollback_ref must resolve inside repository") from exc
     if not candidate.is_file():
         raise ValueError("rollback_ref artifact not found")
-    digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+    artifact = candidate.read_bytes()
+    if not artifact:
+        raise ValueError("rollback_ref artifact must be non-empty")
+    digest = hashlib.sha256(artifact).hexdigest()
     return ref, digest
 
 def _parse_aware(value: str, *, field: str) -> datetime:

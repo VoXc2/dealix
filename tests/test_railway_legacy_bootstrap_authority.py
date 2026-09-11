@@ -32,3 +32,11 @@ def test_launch_handles_legacy_bootstrap_hold_without_aborting_safe_checks() -> 
     assert "continuing non-material verification only" in LAUNCH
     assert 'elif [[ "$bootstrap_rc" -ne 0 ]]' in LAUNCH
     assert 'exit "$bootstrap_rc"' in LAUNCH
+
+def test_launch_rc75_enters_hold_safe_mode_and_blocks_material_paths() -> None:
+    launch = (ROOT / "scripts" / "launch_execution_railway.sh").read_text(encoding="utf-8")
+    assert "HOLD_SAFE_MODE=1" in launch
+    assert '[[ "$HOLD_SAFE_MODE" != "1" ]]' in launch
+    assert "sync_war_room_targets_api.py" in launch
+    assert 'if [[ "$HOLD_SAFE_MODE" == "1" ]]; then' in launch
+    assert "SKIP founder revenue day: bootstrap authority HOLD safe mode" in launch

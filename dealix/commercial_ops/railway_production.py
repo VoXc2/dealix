@@ -81,6 +81,8 @@ def classify_release_evidence(
     railway_deployment_status: str | None,
     expected_deployment_id: str | None = None,
     observed_deployment_id: str | None = None,
+    expected_project_id: str | None = None,
+    observed_project_id: str | None = None,
     expected_service_id: str | None = None,
     observed_service_id: str | None = None,
     expected_environment_id: str | None = None,
@@ -97,6 +99,8 @@ def classify_release_evidence(
     identity_values = {
         "expected_deployment_id": _evidence_value(expected_deployment_id),
         "observed_deployment_id": _evidence_value(observed_deployment_id),
+        "expected_project_id": _evidence_value(expected_project_id),
+        "observed_project_id": _evidence_value(observed_project_id),
         "expected_service_id": _evidence_value(expected_service_id),
         "observed_service_id": _evidence_value(observed_service_id),
         "expected_environment_id": _evidence_value(expected_environment_id),
@@ -109,11 +113,15 @@ def classify_release_evidence(
     identity_bound = bool(
         identity_complete
         and identity_values["expected_deployment_id"] == identity_values["observed_deployment_id"]
+        and identity_values["expected_project_id"] == identity_values["observed_project_id"]
         and identity_values["expected_service_id"] == identity_values["observed_service_id"]
         and identity_values["expected_environment_id"] == identity_values["observed_environment_id"]
         and identity_values["expected_sha"] == identity_values["deployed_sha"]
         and identity_values["expected_sha"] == identity_values["live_sha"]
     )
+    sha_values = (identity_values["expected_sha"], identity_values["deployed_sha"], identity_values["live_sha"])
+    sha_format_valid = all(isinstance(v, str) and re.fullmatch(r"[0-9a-f]{40}", v) for v in sha_values)
+    identity_bound = identity_bound and sha_format_valid
     release_valid = provider_success and identity_bound
 
     if provider_success and not identity_complete:

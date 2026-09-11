@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
@@ -94,3 +94,9 @@ def test_packet_ttl_is_bounded() -> None:
 def test_packet_rejects_naive_created_at() -> None:
     with pytest.raises(ValueError, match="created_at"):
         build_packet(**{**BASE, "created_at": datetime(2026, 9, 11, 0, 0)})
+
+
+def test_packet_rejects_empty_rollback_artifact(tmp_path: Path) -> None:
+    (tmp_path / "empty.md").write_bytes(b"")
+    with pytest.raises(ValueError, match="non-empty"):
+        build_packet(**{**BASE, "rollback_ref": "empty.md", "repo_root": tmp_path})

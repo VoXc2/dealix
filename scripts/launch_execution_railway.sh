@@ -9,6 +9,7 @@ SKIP_VERIFY="${SKIP_VERIFY:-0}"
 SKIP_WARM="${SKIP_WARM:-0}"
 SKIP_REVENUE_DAY="${SKIP_REVENUE_DAY:-0}"
 ALLOW_REPLACE_TOP="${ALLOW_REPLACE_TOP:-1}"
+HOLD_SAFE_MODE=0
 
 echo "=== A: Railway env check ==="
 python3 scripts/railway_launch_env_check.py || true
@@ -21,6 +22,7 @@ if [[ "$SKIP_BOOTSTRAP" != "1" ]] && [[ -n "${DATABASE_URL:-}" ]]; then
   set -e
   if [[ "$bootstrap_rc" -eq 75 ]]; then
     echo "RAILWAY_BOOTSTRAP=HOLD acknowledged; continuing non-material verification only"
+    HOLD_SAFE_MODE=1
   elif [[ "$bootstrap_rc" -ne 0 ]]; then
     echo "RAILWAY_BOOTSTRAP=FAIL rc=${bootstrap_rc}" >&2
     exit "$bootstrap_rc"
@@ -41,12 +43,14 @@ if [[ "$SKIP_WARM" != "1" ]]; then
     extra+=(--max-replace-top 99)
   fi
   python3 scripts/validate_warm_targeting_csv.py "${extra[@]}"
-  if [[ -n "${DEALIX_API_BASE:-}" ]] && [[ -n "${DEALIX_ADMIN_API_KEY:-}" ]]; then
+  if [[ "$HOLD_SAFE_MODE" != "1" ]] && [[ -n "${DEALIX_API_BASE:-}" ]] && [[ -n "${DEALIX_ADMIN_API_KEY:-}" ]]; then
     python3 scripts/sync_war_room_targets_api.py
   fi
 fi
 
-if [[ "$SKIP_REVENUE_DAY" != "1" ]]; then
+if [[ "$HOLD_SAFE_MODE" == "1" ]]; then
+  echo "SKIP founder revenue day: bootstrap authority HOLD safe mode"
+elif [[ "$SKIP_REVENUE_DAY" != "1" ]]; then
   echo "=== D: Founder revenue day ==="
   bash scripts/run_founder_revenue_day.sh
 fi
