@@ -1,0 +1,25 @@
+{
+  "schema": "dealix.portfolio-candidate-contract.v1",
+  "effective_date": "2026-09-11",
+  "purpose": "Normalize source-bound candidate cells for President economic prioritization without creating leads, relationships, pipeline or revenue from addressability alone.",
+  "required_identity": ["candidate_id", "arm_id", "source", "evidence_refs"],
+  "recommended_dimensions": ["sector_id", "buyer_group_id", "problem_class", "factory_id", "monetization_rail_id", "distribution_rail_id", "procurement_rail_id", "proof_path"],
+  "commercial_truth": ["relationship_state", "suppression_state", "commercial_stage", "validated_problem", "buyer_access_evidence_refs", "economic_evidence_refs", "stop_loss_triggered", "stop_loss_evidence_refs"],
+  "positive_metrics_0_100": ["evidence_strength", "urgency", "buyer_access", "economic_impact", "gross_margin", "automation_ratio", "collection_probability", "proof_reuse", "strategic_reuse", "expansion_value", "partner_leverage", "productization_potential"],
+  "negative_metrics_0_100": ["time_to_cash", "founder_minutes", "delivery_cost", "compute_cost", "sales_cycle", "working_capital_risk", "compliance_risk", "security_risk", "irreversibility", "maintenance_debt", "opportunity_cost"],
+  "promotion_law": {
+    "radar_only": "Source-bound evidence may be ranked for research/enrichment, but missing mapping, validated problem, buyer access, or minimum economic evidence prevents Deep WIP promotion.",
+    "deep_wip_eligible": "Valid non-blocked arm plus source/evidence, complete arm/sector/buyer/problem mapping, validated problem, buyer-access evidence, economic evidence, and no suppression/stop-loss block.",
+    "economic_minimum": "economic_evidence_refs plus economic_impact > 0 plus at least one of gross_margin or collection_probability > 0",
+    "deep_wip_limit": 3,
+    "score_semantics": "PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY"
+  },
+  "kill_law": {
+    "score_alone_may_kill": false,
+    "stop_loss_requires": ["stop_loss_triggered=true", "stop_loss_evidence_refs"],
+    "evidenced_result": "STOP_OR_DEMOTE",
+    "unevidenced_stop_signal": "BLOCK_FROM_DEEP_UNTIL_EVIDENCE"
+  },
+  "forbidden_promotions": ["research_to_relationship_without_evidence", "public_contact_to_consent", "addressable_cell_to_pipeline", "score_to_purchase_probability", "draft_to_sent", "quote_or_invoice_to_payment", "synthetic_to_customer_proof"],
+  "material_authority": false
+}
