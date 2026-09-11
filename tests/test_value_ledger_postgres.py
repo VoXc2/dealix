@@ -56,7 +56,10 @@ def test_value_ledger_public_api_uses_sqlite_postgres_backend(
 
 
 def test_value_ledger_singleton_missing_schema_fails_closed_without_ddl(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
-    from auto_client_acquisition.value_os.value_ledger_postgres import get_postgres_value_ledger_store, reset_postgres_value_ledger_singleton_for_test
+    from auto_client_acquisition.value_os.value_ledger_postgres import (
+        get_postgres_value_ledger_store,
+        reset_postgres_value_ledger_singleton_for_test,
+    )
     url = f"sqlite:///{tmp_path / 'missing.db'}"
     monkeypatch.setenv("DEALIX_VALUE_LEDGER_SYNC_DATABASE_URL", url)
     reset_postgres_value_ledger_singleton_for_test()
