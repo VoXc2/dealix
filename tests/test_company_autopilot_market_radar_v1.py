@@ -8,19 +8,21 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTOPILOT = ROOT / "scripts" / "ops" / "dealix_company_autopilot.sh"
+LEGACY = ROOT / "scripts" / "ops" / "dealix_company_autopilot_legacy.sh"
 
 
 def test_autopilot_market_radar_mode_is_syntax_valid_and_fail_closed() -> None:
-    result = subprocess.run(
-        ["bash", "-n", str(AUTOPILOT)],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    assert result.returncode == 0, result.stderr
+    for path in (AUTOPILOT, LEGACY):
+        result = subprocess.run(
+            ["bash", "-n", str(path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr
 
-    script = AUTOPILOT.read_text(encoding="utf-8")
+    script = AUTOPILOT.read_text(encoding="utf-8") + "\n" + LEGACY.read_text(encoding="utf-8")
     assert "market-radar) market_radar ;;" in script
     assert "market_radar_run" in script
     assert "DEALIX_MARKET_RADAR_SIGNALS_FILE" in script
