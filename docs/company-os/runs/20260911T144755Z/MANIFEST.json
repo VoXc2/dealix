@@ -1,0 +1,19 @@
+{
+  "schema": "dealix_run_checkpoint_v1",
+  "run_id": "20260911T144755Z",
+  "generated_at": "2026-09-11T14:47:55.893795+00:00",
+  "objective": "Stack convergence acceptance #1700-#1705: exact-head local verification at tip 8bcce79d1 (hosted CI BLOCKED_ENVIRONMENT), truth-law green, scheduler audit PASS, radar PASS; 2 bounded lint/style fixes",
+  "start_head": "6725af774",
+  "end_head": "8bcce79d17bc7c79ede80071af6cec962def7f1f",
+  "branch": "feat/market-intelligence-evidence-20260911",
+  "origin_main": "6725af7745320c31db1743b33941f52e10716aa6",
+  "pr": "https://github.com/Dealix-sa/dealix/pull/1705",
+  "tests": "stack suite 135 passed + circuit 26 passed + truth-law 39 passed at tip; scheduler audit PASS; radar 16/16 PASS",
+  "go_usage_if_observable": "NO_AUTOMATED_GO_DISPATCH",
+  "l5_required": [
+    "merge chain #1700-#1705; production deploy parity (rollback 8099b00); www TLS SAN; external sends (iMini/NELC/KARIZMA/Linnk follow-ups)"
+  ],
+  "next_action": "founder approval packet review; after L5 merge: deploy parity + TLS",
+  "truth_class": "RECEIPT",
+  "secrets_included": false
+}
