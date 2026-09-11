@@ -7,13 +7,13 @@ import sys
 from pathlib import Path
 
 from dealix.commercial_ops.railway_production import (
+    _has_canonical_predeploy,
     analyze_railway_production,
+    classify_release_evidence,
     parse_railway_ui_drift_hint,
     parse_railway_ui_predeploy_drift,
     parse_railway_ui_restart_retries_drift,
 )
-
-from dealix.commercial_ops.railway_production import _has_canonical_predeploy
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -86,15 +86,26 @@ def test_verify_cli_ui_drift_cannot_report_false_pass() -> None:
     assert "RAILWAY_PRODUCTION_CONFIG_VERDICT=WARN" in proc.stdout
 
 
-def test_predeploy_predicate_requires_parsed_exact_wrapper() -> None:
+def test_predeploy_predicate_requires_parsed_exact_array_wrapper() -> None:
     assert _has_canonical_predeploy((ROOT / "railway.toml").read_text(encoding="utf-8"))
     assert _has_canonical_predeploy((ROOT / "railway.json").read_text(encoding="utf-8"))
+
     deceptive = "sh /app/scripts/railway_predeploy.sh # bash /app/scripts/railway_predeploy.sh"
     assert not _has_canonical_predeploy(
-        f'[deploy]\npreDeployCommand = "{deceptive}"\n'
+        f'[deploy]\npreDeployCommand = ["{deceptive}"]\n'
     )
     assert not _has_canonical_predeploy(
-        '{"deploy":{"preDeployCommand":"' + deceptive + '"}}'
+        '{"deploy":{"preDeployCommand":["' + deceptive + '"]}}'
+    )
+
+
+def test_predeploy_predicate_rejects_legacy_string_schema() -> None:
+    direct = "bash /app/scripts/railway_predeploy.sh"
+    assert not _has_canonical_predeploy(
+        f'[deploy]\npreDeployCommand = "{direct}"\n'
+    )
+    assert not _has_canonical_predeploy(
+        '{"deploy":{"preDeployCommand":"' + direct + '"}}'
     )
 
 
@@ -114,3 +125,43 @@ def test_ui_predeploy_comment_smuggling_is_drift() -> None:
 
 def test_ui_predeploy_canonical_bash_has_no_drift() -> None:
     assert parse_railway_ui_predeploy_drift("bash /app/scripts/railway_predeploy.sh") is None
+
+
+def test_github_success_cannot_promote_skipped_railway_deployment() -> None:
+    evidence = classify_release_evidence(
+        github_context_state="success",
+        railway_deployment_status="SKIPPED",
+    )
+    assert evidence["github_context_is_release_authority"] is False
+    assert evidence["provider_deployment_success"] is False
+    assert evidence["release_evidence_valid"] is False
+    assert evidence["reason"] == "RAILWAY_DEPLOYMENT_SKIPPED_NOT_RELEASE_EVIDENCE"
+
+
+def test_github_success_cannot_promote_failed_railway_deployment() -> None:
+    evidence = classify_release_evidence(
+        github_context_state="success",
+        railway_deployment_status="FAILED",
+    )
+    assert evidence["release_evidence_valid"] is False
+    assert evidence["reason"] == "RAILWAY_DEPLOYMENT_NOT_SUCCESS:FAILED"
+
+
+def test_missing_railway_status_fails_closed() -> None:
+    evidence = classify_release_evidence(
+        github_context_state="success",
+        railway_deployment_status=None,
+    )
+    assert evidence["release_evidence_valid"] is False
+    assert evidence["reason"] == "RAILWAY_DEPLOYMENT_STATUS_MISSING"
+
+
+def test_railway_success_is_provider_release_evidence() -> None:
+    evidence = classify_release_evidence(
+        github_context_state="failure",
+        railway_deployment_status="success",
+    )
+    assert evidence["github_context_is_release_authority"] is False
+    assert evidence["provider_deployment_success"] is True
+    assert evidence["release_evidence_valid"] is True
+    assert evidence["reason"] == "RAILWAY_DEPLOYMENT_SUCCESS"
