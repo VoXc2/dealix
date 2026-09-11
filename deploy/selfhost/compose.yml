@@ -50,6 +50,7 @@ services:
       NEXT_TELEMETRY_DISABLED: "1"
       PORT: "3000"
       HOSTNAME: 0.0.0.0
+      GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
     ports:
       - "127.0.0.1:13000:3000"
     restart: unless-stopped
