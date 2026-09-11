@@ -412,6 +412,16 @@ export function CommercialLaunchHome() {
                 variant="outline"
                 className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 backdrop-blur-sm text-base h-13 px-8"
               >
+                <Link href={`${base}/market-control`}>
+                  {isAr ? "لوحة السيطرة" : "Market Control"}
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 backdrop-blur-sm text-base h-13 px-8"
+              >
                 <Link href={`${base}/demo`}>
                   {isAr ? "شاهد كيف يعمل" : "See How It Works"}
                 </Link>
