@@ -16,8 +16,10 @@ On 2026-09-11 the VPS Company Autopilot reported Production GREEN from HTTP prob
 
 ## Acceptance
 
-- `python scripts/ops/verify_production_trust_exact_release_parity.py` passes.
-- Production probe compares a release SHA/identity with the expected trusted head.
+- `pytest -q tests/test_company_autopilot_release_truth_guard.py` passes.
+- `python scripts/ops/verify_canonical_company_autopilot.py` passes.
+- Bash syntax and ShellCheck error-level verification pass for the canonical and delegated legacy entrypoints.
+- Production probe compares immutable Web/API release SHAs with the current trusted `origin/main` SHA.
 - Missing identity fails closed.
 - Web/API identity disagreement fails closed.
 - HTTP success without identity never writes GREEN.
