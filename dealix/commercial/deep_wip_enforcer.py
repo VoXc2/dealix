@@ -15,13 +15,11 @@ from datetime import UTC, datetime
 from typing import Any
 
 from dealix.commercial.economic_cell import (
+    DEEP_WIP_MAX,
     EconomicCell,
     LifecycleState,
 )
 from dealix.commercial.economic_cell_registry import EconomicCellRegistry
-
-
-DEEP_WIP_MAX = 3
 
 
 @dataclass
@@ -51,7 +49,7 @@ class DeepWipEnforcer:
                 )
 
     def current_count(self) -> int:
-        return len(self._slots)
+        return self.registry.count_active_deep()
 
     def available_slots(self) -> int:
         return max(0, DEEP_WIP_MAX - self.current_count())
@@ -83,21 +81,16 @@ class DeepWipEnforcer:
 
     def release_slot(self, cell_id: str) -> bool:
         """Release a deep WIP slot."""
-        if cell_id not in self._slots:
-            return False
-
         success = self.registry.release_deep_wip_slot(cell_id)
         if success:
-            del self._slots[cell_id]
+            self._slots.pop(cell_id, None)
         return success
 
     def force_release_slot(self, cell_id: str) -> bool:
         """Force release (e.g., for kill/demote)."""
-        if cell_id in self._slots:
-            self.registry.release_deep_wip_slot(cell_id)
-            del self._slots[cell_id]
-            return True
-        return False
+        success = self.registry.release_deep_wip_slot(cell_id)
+        self._slots.pop(cell_id, None)
+        return success
 
     def get_occupants(self) -> list[WipSlot]:
         return list(self._slots.values())
@@ -120,11 +113,14 @@ class DeepWipEnforcer:
 
         # Demote the last one (lowest priority)
         victim = ranked_active[-1]
-        return self.registry.transition(
+        demoted = self.registry.transition(
             victim,
             LifecycleState.CANDIDATE_DEEP,
             notes="Demoted to make room for higher priority deep work",
         )
+        if demoted is not None:
+            self._slots.pop(victim.identity.cell_id, None)
+        return demoted
 
     def status(self) -> dict[str, Any]:
         return {

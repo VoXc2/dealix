@@ -17,6 +17,7 @@ import hashlib
 from dealix.commercial.economic_cell import (
     BuyerGroup,
     CellTemplate,
+    DEEP_WIP_MAX,
     DEFAULT_TEMPLATES,
     DistributionRail,
     EconomicCell,
@@ -353,7 +354,7 @@ class EconomicCellRegistry:
         """Attempt to claim a deep WIP slot. Returns True if successful."""
         with self._lock:
             active_deep = self.list_active_deep()
-            if len(active_deep) >= 3:
+            if len(active_deep) >= DEEP_WIP_MAX:
                 return False
             cell = self._cells.get(cell_id)
             if not cell:
@@ -378,6 +379,7 @@ class EconomicCellRegistry:
             updated = cell.model_copy(update={
                 "portfolio": cell.portfolio.model_copy(update={
                     "deep_wip_slot": False,
+                    "lifecycle_state": LifecycleState.CANDIDATE_DEEP,
                 }),
             })
             self._cells[cell_id] = updated

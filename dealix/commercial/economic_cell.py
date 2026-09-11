@@ -17,6 +17,9 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+# Canonical deep WIP limit — single source for registry + enforcer.
+DEEP_WIP_MAX = 3
+
 
 # ─── Canonical Dimensions ──────────────────────────────────────────────
 
