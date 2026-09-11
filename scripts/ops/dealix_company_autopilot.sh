@@ -92,6 +92,7 @@ write_state() {
 notify_transition() {
   local previous="$1" state="$2" reason="$3" expected="$4" api_sha="$5" web_sha="$6"
   [[ "$previous" != "$state" ]] || return 0
+  [[ "${DEALIX_DISABLE_TRANSITION_NOTIFY:-0}" != "1" ]] || return 0
   command -v gh >/dev/null 2>&1 || return 0
   gh auth status >/dev/null 2>&1 || return 0
   local body

@@ -81,6 +81,7 @@ def _run_production_truth(
             "PATH": f"{fake_bin}:{env['PATH']}",
             "DEALIX_REPO_ROOT": str(repo),
             "DEALIX_AUTOPILOT_ROOT": str(state_root),
+            "DEALIX_DISABLE_TRANSITION_NOTIFY": "1",
             "DEALIX_PUBLIC_API_BASE": "https://api.test",
             "DEALIX_PUBLIC_WEB_BASE": "https://web.test",
             "DEALIX_PYTHON": os.environ.get("DEALIX_PYTHON_BIN", os.sys.executable),
@@ -174,4 +175,5 @@ def test_guard_contains_release_identity_invariants() -> None:
     assert "origin/main" in source
     assert "immutable_release_identity_missing" in source
     assert "running_release_not_equal_current_main" in source
+    assert "DEALIX_DISABLE_TRANSITION_NOTIFY" in source
     assert 'transition_notify production GREEN "Public API/site probes are responding."' not in source
