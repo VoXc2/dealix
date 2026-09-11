@@ -306,3 +306,6 @@ from dealix.commercial.portfolio_bets import PortfolioBets
 # Proof → Asset & Delivery
 from dealix.commercial.delivery_kit import DeliveryFactory, DeliveryKit, DeliveryStage
 from dealix.commercial.proof_asset_factory import AssetType, ProofAsset, ProofAssetFactory
+# Universal Diagnostic Factory — 50 families, D0-D5, overlays
+from dealix.commercial.universal_diagnostic_factory import DiagnosticDepth, DiagnosticFamily, FAMILIES, UniversalDiagnosticFactory
+
