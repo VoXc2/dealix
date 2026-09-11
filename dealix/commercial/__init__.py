@@ -361,4 +361,6 @@ from dealix.commercial.communication_negotiation import CommunicationNegotiation
 from dealix.commercial.social_automation import ALL_PLATFORMS, SocialPlatform, get_all_platforms
 # Hermes Sector Diagnostic — in every sector Hermes can diagnose and convince
 from dealix.commercial.hermes_sector_diagnostic import HermesSectorDiagnostic
+# Large-Scale Sector Execution — many people per sector, all channels, no ban, pain targeting
+from dealix.commercial.large_scale_sector_execution import LargeScaleExecution, LargeScaleSectorExecutor
 
