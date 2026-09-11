@@ -363,4 +363,6 @@ from dealix.commercial.social_automation import ALL_PLATFORMS, SocialPlatform, g
 from dealix.commercial.hermes_sector_diagnostic import HermesSectorDiagnostic
 # Large-Scale Sector Execution — many people per sector, all channels, no ban, pain targeting
 from dealix.commercial.large_scale_sector_execution import LargeScaleExecution, LargeScaleSectorExecutor
+# Delix Service Preparation — for each person ready, daily proposal per company, complete profile per sector
+from dealix.commercial.delix_service_preparation import CompanyProfile, DelixServicePreparation
 
