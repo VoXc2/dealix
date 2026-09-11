@@ -29,6 +29,7 @@ def main() -> int:
     required_runner = [
         "DEALIX_EXPECTED_SHA",
         "DEALIX_SELFHOST_LOCAL_DB",
+        'COMPOSE_PROJECT_NAME="dealix-selfhost-${CURRENT_SHA:0:12}"',
         "exact-head mismatch",
         "DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1",
         "bootstrap_fresh_database.py --confirm-empty-bootstrap",
