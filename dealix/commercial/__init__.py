@@ -293,3 +293,9 @@ from dealix.commercial.relationship_graph import RelationshipGraph, Relationship
 # Phase B — Website Intelligence
 from dealix.commercial.ai_concierge import AIConcierge, ConciergeRequest, ConciergeResponse
 from dealix.commercial.diagnostic_self_serve import DiagnosticInput, DiagnosticOutput, SelfServeDiagnostic
+
+# Phase C — Income, Open Source, Invariants, Scheduler
+from dealix.commercial.low_touch_income import IncomeRail, LowTouchCandidate, LowTouchRegistry
+from dealix.commercial.open_source_registry import OpenSourceRegistry, OpenSourceStatus, OpenSourceTool
+from dealix.commercial.company_invariants import INVARIANTS, CompanyInvariant, get_invariants
+from dealix.commercial.scheduler_inventory import TimerEntry, classify_timers, inventory_timers
