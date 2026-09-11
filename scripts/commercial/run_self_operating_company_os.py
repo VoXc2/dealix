@@ -15,6 +15,11 @@ import argparse
 import json
 import os
 from dataclasses import asdict, dataclass
+try:
+    from dealix.commercial.universal_diagnostic_factory import DiagnosticDepth, UniversalDiagnosticFactory
+except Exception:
+    UniversalDiagnosticFactory = None
+    DiagnosticDepth = None
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -489,6 +494,20 @@ def main() -> int:
         "evidence_backed_target_count": len(cards),
         "approval_ready_count": len(approvals),
     }
+
+    # Universal Diagnostic Factory enrichment — D1 rapid per target (evidence-first, never fails cycle)
+    try:
+        if UniversalDiagnosticFactory and DiagnosticDepth:
+            factory = UniversalDiagnosticFactory()
+            for card in cards:
+                sector = getattr(card, "sector", "technology_saas_si") or "technology_saas_si"
+                buyer = getattr(card, "buyer_role", "ceo") or "ceo"
+                problem = getattr(card, "problem", "revenue_leakage") or "revenue_leakage"
+                families = factory.compose(sector, "sme", buyer, problem, DiagnosticDepth.D1_RAPID)
+                if hasattr(card, "__dict__"):
+                    card.__dict__["diagnostic_families"] = [f.family_id for f in families[:5]]
+    except Exception as exc:
+        print(f"DIAGNOSTIC_ENRICHMENT=SKIPPED reason={type(exc).__name__}:{exc}")
 
     write_json(OUT_ROOT / "targets" / f"{today}.json", [asdict(card) for card in cards])
     write_json(OUT_ROOT / "actions" / f"{today}.json", [asdict(action) for action in actions])
