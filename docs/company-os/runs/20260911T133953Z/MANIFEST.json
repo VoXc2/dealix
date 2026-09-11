@@ -1,0 +1,22 @@
+{
+  "schema": "dealix_run_checkpoint_v1",
+  "run_id": "20260911T133953Z",
+  "generated_at": "2026-09-11T13:39:53.155811+00:00",
+  "objective": "Real authoritative market research: 16 validated signal receipts, sector economic ranking, top economic cells (privacy: no contact data)",
+  "start_head": "081f0ffd5",
+  "end_head": "081f0ffd500924d9e06dff67f62ddf119ec5a48d",
+  "branch": "feat/market-intelligence-evidence-20260911",
+  "origin_main": "6725af7745320c31db1743b33941f52e10716aa6",
+  "pr": "Dealix-sa/dealix (draft created after push)",
+  "tests": "12 new market tests passed; 16/16 receipts admitted; 0 invalid",
+  "go_usage_if_observable": "NO_AUTOMATED_GO_DISPATCH",
+  "l5_required": [
+    "merge chain #1700-#1705",
+    "production deploy parity (rollback 8099b00)",
+    "www TLS SAN",
+    "external sends (iMini/NELC/KARIZMA/follow-ups)"
+  ],
+  "next_action": "top-cell buyer research; delivery readiness for logistics+finance; bounded benchmarks",
+  "truth_class": "RECEIPT",
+  "secrets_included": false
+}

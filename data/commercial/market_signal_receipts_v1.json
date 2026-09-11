@@ -1,0 +1,1002 @@
+{
+  "schema": "dealix.market-signal-set.v1",
+  "generated_at": "2026-09-11T16:40:00+03:00",
+  "scope": "dealix_company",
+  "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
+  "authority": {
+    "relationship": false,
+    "consent": false,
+    "offer": false,
+    "price": false,
+    "quote": false,
+    "contract": false,
+    "external_send": false,
+    "payment": false,
+    "customer_proof": false,
+    "execution": false,
+    "production": false
+  },
+  "signals": [
+    {
+      "signal_id": "sig-2026-gastat-q1-finance-business-5p4",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/199",
+      "observed_at": "2026-06-09T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "GASTAT GDP Publication Q1 2026 news release",
+      "fresh_until": "2026-12-08T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/199",
+        "https://spa.gov.sa/en/w2609038"
+      ],
+      "facts": [
+        "Real GDP grew 3.0% YoY in Q1 2026.",
+        "Financial, insurance and business services posted the highest activity growth at 5.4% YoY.",
+        "Non-oil activities contributed 1.7 percentage points to real GDP growth."
+      ],
+      "inferences": [
+        "Fast-growing finance and business-service firms have expanding operations where revenue leakage, collection and reporting automation questions are relevant.",
+        "Growth alone does not prove demand for Dealix; it only raises research priority."
+      ],
+      "unknowns": [
+        "No buyer-level or procurement evidence in this signal."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify named finance/business-service firms with public transformation signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-gastat-q1-manufacturing-4p0",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/199",
+      "observed_at": "2026-06-09T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "GASTAT GDP Publication Q1 2026 news release",
+      "fresh_until": "2026-12-08T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MANUFACTURING",
+      "business_archetype": "PROJECT_ASSET_HEAVY",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/199"
+      ],
+      "facts": [
+        "Manufacturing activities excluding oil refining grew 4.0% YoY in Q1 2026."
+      ],
+      "inferences": [
+        "Manufacturing growth raises the relevance of quality, inventory-exception and cost-leakage diagnostics."
+      ],
+      "unknowns": [
+        "No plant-level data; no verified pain evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "MODON/ministry facility-level announcements for named manufacturers"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-zatca-wave25-feb2027",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "http://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "observed_at": "2026-08-11T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "ZATCA Wave 25 announcement (official)",
+      "fresh_until": "2027-02-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "evidence_refs": [
+        "http://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://www.vatupdate.com/2026/08/11/zatca-announces-wave-25-of-e-invoicing-threshold-halved-to-sar-187500-integration-deadline-1-february-2027"
+      ],
+      "facts": [
+        "ZATCA Wave 25 targets taxpayers with VAT revenues above SAR 187,500 in 2022-2025.",
+        "Integration with the Fatoora platform is required by 1 February 2027.",
+        "Previous waves carried penalties of SAR 5,000 to SAR 50,000 for non-compliance."
+      ],
+      "inferences": [
+        "A dated, mandatory integration deadline is a legitimate why-now trigger for finance-operations readiness work.",
+        "The deadline does not create a relationship or consent to contact."
+      ],
+      "unknowns": [
+        "Count of affected companies in each region is not published in this signal."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm official wave criteria and totals from zatca.gov.sa only"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-health-transformation-sehhaty-31m",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.spa.gov.sa/en/N2617269",
+      "observed_at": "2026-06-20T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "Health Sector Transformation Program 2025 Annual Report (SPA/MOH)",
+      "fresh_until": "2026-12-20T00:00:00+03:00",
+      "signal_family": "TECHNOLOGY_OR_PLATFORM_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "evidence_refs": [
+        "https://www.spa.gov.sa/en/N2617269",
+        "https://www.moh.gov.sa/en/ministry/mediacenter/news/pages/news-2026-06-20-001.aspx"
+      ],
+      "facts": [
+        "Sehhaty app passed 31 million users in 2025.",
+        "Seha Virtual Hospital serves more than 365,000 beneficiaries through 241 connected facilities.",
+        "The sector reports 803,000+ health practitioners and 97.5% primary-care coverage."
+      ],
+      "inferences": [
+        "Healthcare operators run on digital flows where support backlogs and data fragmentation are plausible pain areas worth a free diagnostic.",
+        "The report is a sector fact, not evidence of any individual provider's pain."
+      ],
+      "unknowns": [
+        "Provider-level operating data is not in the public report."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Public provider announcements about digital or support operations"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-tga-delivery-118m-q1-49pct",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://spa.gov.sa/en/N2567413",
+      "observed_at": "2026-04-21T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "Transport General Authority delivery statistics Q1 2026 (SPA/TGA)",
+      "fresh_until": "2026-12-21T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "DISTRIBUTION_NETWORK",
+      "evidence_refs": [
+        "https://spa.gov.sa/en/N2567413",
+        "https://www.spa.gov.sa/en/N2486332"
+      ],
+      "facts": [
+        "Delivery orders exceeded 118 million in Q1 2026, up 49% YoY.",
+        "Q4 2025 recorded 124 million orders, up 60% YoY.",
+        "TGA attributes growth to digital solutions and e-commerce expansion."
+      ],
+      "inferences": [
+        "High-volume delivery operations create exception-handling and support load that can be diagnosed cheaply.",
+        "Volume growth is sector context, not an individual operator commitment."
+      ],
+      "unknowns": [
+        "No operator-level performance data."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Named delivery operators with public expansion or hiring signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 3,
+        "distribution_density": 5,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-mawani-jeddah-expansion",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.arabnews.pk/node/2651889/business-economy",
+      "observed_at": "2026-07-22T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "Mawani/Jeddah Islamic Port expansion reporting (Arab News, official statements)",
+      "fresh_until": "2026-12-22T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "PROJECT_ASSET_HEAVY",
+      "evidence_refs": [
+        "https://www.arabnews.pk/node/2651889/business-economy",
+        "https://www.arabnews.pk/node/2650713/business-economy"
+      ],
+      "facts": [
+        "Logistics zones within Saudi ports reached 34 with SAR 15 billion of private investment.",
+        "Jeddah warehouse occupancy reached 97% in 2024.",
+        "A new logistics city fund totals SAR 650 million.",
+        "Cargo handled by Saudi ports exceeded 320 million tonnes in 2024."
+      ],
+      "inferences": [
+        "Warehouse and port operators under tight occupancy have throughput, exception and scheduling pressure suited to operational diagnostics.",
+        "These are sector infrastructure facts, not customer facts."
+      ],
+      "unknowns": [
+        "No named operator pain evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Operator announcements (cold chain, warehousing, freight forwarding) for named targets"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-modon-investments-30b",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.spa.gov.sa/en/N2578248",
+      "observed_at": "2026-05-05T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "MODON 2025 performance release (SPA/MODON)",
+      "fresh_until": "2026-12-05T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MANUFACTURING",
+      "business_archetype": "PROJECT_ASSET_HEAVY",
+      "evidence_refs": [
+        "https://www.spa.gov.sa/en/N2578248",
+        "https://www.spa.gov.sa/en/w2403732"
+      ],
+      "facts": [
+        "MODON reported approximately SAR 30 billion in total investments in 2025, up 25%.",
+        "Facilities within MODON industrial cities reached 9,557, up 11%.",
+        "Technical investments exceeded SAR 7 billion, up 140%.",
+        "MODON signed an agreement to establish an AI center of excellence for industrial digital transformation."
+      ],
+      "inferences": [
+        "Rapid industrial digital investment raises demand for supplier-side governance and integration work.",
+        "MODON is an ecosystem actor, not a paying customer signal by itself."
+      ],
+      "unknowns": [
+        "Partner access path is not established."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "MODON ecosystem partner route; named factories with public digitization signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-mim-industrial-14228-facilities",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.mim.gov.sa/en",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "Ministry of Industry and Mineral Resources June 2026 indicators (official)",
+      "fresh_until": "2026-12-30T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MANUFACTURING",
+      "business_archetype": "PROJECT_ASSET_HEAVY",
+      "evidence_refs": [
+        "https://www.mim.gov.sa/en",
+        "https://www.spa.gov.sa/en/N2618287"
+      ],
+      "facts": [
+        "14,228 industrial facilities and 3,215 mining licenses were reported in June 2026.",
+        "322 new industrial licenses were issued in April 2026 and 188 factories entered production."
+      ],
+      "inferences": [
+        "A large, growing licensed industrial base gives a wide research surface for operations and quality diagnostics."
+      ],
+      "unknowns": [
+        "No individual facility performance evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Facility announcements with expansion, hiring or quality signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 1,
+        "data_availability": 2,
+        "repeatability": 5,
+        "readiness": 2,
+        "distribution_density": 5,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-sama-78-licensed-finance-companies",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.sama.gov.sa/en-us/mediacenter/news/pages/news-1167.aspx",
+      "observed_at": "2026-08-30T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "SAMA licensing announcement (official)",
+      "fresh_until": "2026-12-30T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "evidence_refs": [
+        "https://www.sama.gov.sa/en-us/mediacenter/news/pages/news-1167.aspx",
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/pages/news-1135.aspx"
+      ],
+      "facts": [
+        "SAMA-licensed finance companies reached 78 as of 30 August 2026.",
+        "SAMA commenced licensing fintech companies for open banking services on 26 March 2026."
+      ],
+      "inferences": [
+        "A fast-multiplying licensed fintech population needs governance, reporting and operations automation that can be diagnosed internally first."
+      ],
+      "unknowns": [
+        "No public pain or procurement evidence per company."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Licensed-company public product announcements; partner route through ecosystem events"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 1,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-cst-ai-adoption-45pct",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.spa.gov.sa/en/N2650429",
+      "observed_at": "2026-08-09T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "CST Saudi Internet Report 5th edition (SPA/CST)",
+      "fresh_until": "2026-12-09T00:00:00+03:00",
+      "signal_family": "TECHNOLOGY_OR_PLATFORM_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "KNOWLEDGE_DIGITAL",
+      "evidence_refs": [
+        "https://www.spa.gov.sa/en/N2650429",
+        "https://www.stats.gov.sa/en"
+      ],
+      "facts": [
+        "45.2% of Saudi internet users use AI tools, more than double the previous year.",
+        "The report notes a national AI year 2026 and broad demographic adoption."
+      ],
+      "inferences": [
+        "Rising personal AI adoption raises enterprise questions about governance, data and operating policy where Dealix diagnostics apply."
+      ],
+      "unknowns": [
+        "Enterprise adoption depth and governance maturity are not measured here."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Enterprise AI governance announcements; public policy documents"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-leap26-investments-15b-day-one",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.spa.gov.sa/en/N2668905",
+      "observed_at": "2026-09-04T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "SPA coverage of LEAP 2026 (official statements)",
+      "fresh_until": "2026-12-04T00:00:00+03:00",
+      "signal_family": "PARTNER_OR_ECOSYSTEM",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "KNOWLEDGE_DIGITAL",
+      "evidence_refs": [
+        "https://www.spa.gov.sa/en/N2668905",
+        "https://www.spa.gov.sa/en/N2668631"
+      ],
+      "facts": [
+        "LEAP 2026 announcements exceeded USD 15 billion on the opening day, mainly data centers and cloud services.",
+        "AWS confirmed a cloud infrastructure zone launch planned for December 2026.",
+        "CST announced the Cloud Computing Maturity Index."
+      ],
+      "inferences": [
+        "A dense cloud/AI ecosystem event surface is useful for partner research and capability alignment, not for cold outreach."
+      ],
+      "unknowns": [
+        "Which ecosystem actors are open to small specialist partners is unknown."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Ecosystem partner pages; event follow-up options assessed internally"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 1,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-tourism-q1-37m-visitors-82b",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.spa.gov.sa/en/N2555693",
+      "observed_at": "2026-04-08T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "Ministry of Tourism Q1 2026 preliminary data (SPA/MOT)",
+      "fresh_until": "2026-12-08T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "business_archetype": "CONSUMER_MULTI_SITE",
+      "evidence_refs": [
+        "https://www.spa.gov.sa/en/N2555693",
+        "https://mt.gov.sa/tourism-in-numbers"
+      ],
+      "facts": [
+        "Q1 2026 domestic tourists reached about 28.9 million, up 16% YoY.",
+        "Total domestic and international tourists in Q1 2026 reached about 37.2 million with SAR 82.7 billion spending.",
+        "Hospitality occupancy averaged 59% in Q1 2026.",
+        "Inbound tourism in 2025 reached 29.3 million visitors and SAR 176.6 billion spending."
+      ],
+      "inferences": [
+        "Multi-site hospitality operators face booking, support and occupancy operations that fit low-cost diagnostics."
+      ],
+      "unknowns": [
+        "No operator-level margin or system evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Hospitality group expansion announcements and hiring signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 4,
+        "buyer_access": 1,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-realestate-q1-112b-nonsaudi-law",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.spa.gov.sa/en/N2663909",
+      "observed_at": "2026-08-29T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "SPA Cityscape Global 2026 coverage; REGA/CBRE market data",
+      "fresh_until": "2026-12-29T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "REAL_ESTATE",
+      "business_archetype": "PROJECT_ASSET_HEAVY",
+      "evidence_refs": [
+        "https://www.spa.gov.sa/en/N2663909",
+        "https://www.argaam.com/en/article/articledetail/id/1930800"
+      ],
+      "facts": [
+        "National homeownership reached 66.24% in 2025, above the 65% annual target.",
+        "Q1 2026 real estate transactions reached SAR 112 billion, up 6.8% YoY.",
+        "July 2026 transaction value was SAR 35.5 billion, down 32% YoY, while rental deals rose 26%.",
+        "Implementing regulations for non-Saudi real estate ownership were published in June 2026."
+      ],
+      "inferences": [
+        "A cooling sales market with rising rentals shifts operator focus toward leasing, facilities and document operations."
+      ],
+      "unknowns": [
+        "No developer-level operations evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Developer and facilities-management announcements with operational signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-mining-round10-24-bidders",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.mim.gov.sa/en/media-center/news/saudi-ministry-qualifies-bidders-exploration-licenses-block-selection",
+      "observed_at": "2026-06-09T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "Ministry of Industry and Mineral Resources Round 10 announcement (official)",
+      "fresh_until": "2026-12-09T00:00:00+03:00",
+      "signal_family": "TENDER_OR_PROCUREMENT",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MINING_METALS",
+      "business_archetype": "PROJECT_ASSET_HEAVY",
+      "evidence_refs": [
+        "https://www.mim.gov.sa/en/media-center/news/saudi-ministry-qualifies-bidders-exploration-licenses-block-selection",
+        "https://www.spa.gov.sa/en/N2609434"
+      ],
+      "facts": [
+        "24 local and international bidders qualified for Round 10 exploration licenses across 13,000 km2.",
+        "Estimated mineral wealth is stated at USD 2.5 trillion.",
+        "Round 11 pre-qualification was extended across eight sites to 31 July 2026."
+      ],
+      "inferences": [
+        "Mining exploration growth creates document, safety and operational compliance load for license holders and their suppliers.",
+        "Tender research is not a relationship; bid action is L5."
+      ],
+      "unknowns": [
+        "Supplier needs of the bidders are not public."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Official tender documents on admitted procurement sources only"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 1,
+        "data_availability": 2,
+        "repeatability": 3,
+        "readiness": 2,
+        "distribution_density": 2,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-hrdf-560k-jobs-8b-training",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.arabnews.com/node/2652565",
+      "observed_at": "2026-07-28T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "HRDF announcement (Arab News; SPA-sourced)",
+      "fresh_until": "2026-12-28T00:00:00+03:00",
+      "signal_family": "HIRING_OR_ORG_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "business_archetype": "KNOWLEDGE_DIGITAL",
+      "evidence_refs": [
+        "https://www.arabnews.com/node/2652565",
+        "https://www.stats.gov.sa/documents/20117/2435273/Labor+Market+Statistics-+Q1+2026-EN+1.pdf"
+      ],
+      "facts": [
+        "HRDF helped more than 560,000 Saudis secure private-sector jobs in 2025, up 29% YoY, investing over SAR 8.296 billion.",
+        "Saudi unemployment was 6.4% in Q1 2026 with 2.55 million Saudis employed in the private sector.",
+        "HCDP operates 89 initiatives across 16 strategic objectives."
+      ],
+      "inferences": [
+        "Training and employment programs create high-volume intake, matching and follow-up operations suited to assessment and automation diagnostics.",
+        "Programs are institutions; access requires a legitimate partner or procurement route."
+      ],
+      "unknowns": [
+        "No verified partner route or budget evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "HCDP/HRDF partner and vendor public documents"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 1,
+        "data_availability": 2,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-health-workforce-localization-55pct",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.moh.gov.sa/en/ministry/mediacenter/news/pages/news-2026-05-23-001.aspx",
+      "observed_at": "2026-05-23T00:00:00+03:00",
+      "ingested_at": "2026-09-11T16:40:00+03:00",
+      "provenance_ref": "MOH/SCFHS health workforce release (official)",
+      "fresh_until": "2026-12-23T00:00:00+03:00",
+      "signal_family": "HIRING_OR_ORG_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "evidence_refs": [
+        "https://www.moh.gov.sa/en/ministry/mediacenter/news/pages/news-2026-05-23-001.aspx"
+      ],
+      "facts": [
+        "Saudi physician share rose from 31% (2018) to 40% (2026).",
+        "Saudi pharmacist share rose from 32% to 52%, with more than 25,000 Saudi pharmacists.",
+        "Private-sector localization rose to 55% in 2026."
+      ],
+      "inferences": [
+        "Rapid workforce localization creates scheduling, credentialing and training administration load in provider organizations."
+      ],
+      "unknowns": [
+        "No provider-level administrative burden measurement."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Provider group workforce announcements; health cluster public docs"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 1,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 3,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    }
+  ]
+}
