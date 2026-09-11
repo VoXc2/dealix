@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-09-10",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "objective": "Turn evidence-backed Dealix insight into qualified B2B conversations and measurable commercial movement without optimizing for posting volume.",
+  "primary_icps": [
+    "Saudi founders/CEOs/GMs with execution and revenue leakage",
+    "CIO/CTO/CDO/AI owners needing governed AI execution",
+    "Commercial and operations leaders with fragmented workflows",
+    "Foreign B2B technology vendors needing Saudi market access and partner routes",
+    "Saudi SIs/MSPs/partners needing proof-led AI execution capability"
+  ],
+  "priority_channels": [
+    {
+      "channel": "Founder LinkedIn",
+      "role": "PRIMARY_B2B_THOUGHT_LEADERSHIP",
+      "cadence": "3 posts/week + daily bounded engagement research",
+      "execution": "MANUAL_OR_APPROVAL_ASSISTED",
+      "content": ["founder POV", "Saudi market signal", "operator lesson", "proof methodology"]
+    },
+    {
+      "channel": "Dealix LinkedIn Page",
+      "role": "COMPANY_AUTHORITY_AND_PROOF",
+      "cadence": "2 posts/week",
+      "execution": "DRAFT_READY_PROVIDER_UNPROVEN",
+      "content": ["company thesis", "solution architecture", "research brief", "product/proof update"]
+    },
+    {
+      "channel": "dealix.me",
+      "role": "OWNED_CONVERSION_AND_KNOWLEDGE_HUB",
+      "cadence": "continuous",
+      "execution": "REPO_MANAGED_RELEASE_GATED",
+      "content": ["company", "strategic solutions", "Dealix OS", "proof", "research", "Execution Diagnostic"]
+    },
+    {
+      "channel": "Gmail",
+      "role": "WARM_PERMISSIONED_COMMERCIAL_FOLLOWUP",
+      "cadence": "event-driven",
+      "execution": "DRAFT_ONLY_UNLESS_EXACT_SEND_AUTHORITY",
+      "content": ["qualified follow-up", "diagnostic invitation", "proposal/next-step draft"]
+    },
+    {
+      "channel": "WhatsApp Business",
+      "role": "INBOUND_AND_OPTED_IN_CONVERSATIONS",
+      "cadence": "event-driven",
+      "execution": "INBOUND_FIRST_EXACT_ACTION_GATED",
+      "content": ["inbound reply", "qualified follow-up", "meeting/next-step coordination"]
+    },
+    {
+      "channel": "X",
+      "role": "AI_TECH_AND_MARKET_COMMENTARY",
+      "cadence": "3-5 short posts/week after provider connection",
+      "execution": "CONTENT_READY_PROVIDER_UNPROVEN",
+      "content": ["signal", "contrarian insight", "build note"]
+    },
+    {
+      "channel": "Instagram",
+      "role": "VISUAL_BRAND_AND_REPURPOSED_REACH",
+      "cadence": "2 assets/week after provider connection",
+      "execution": "CONTENT_READY_PROVIDER_UNPROVEN",
+      "content": ["carousel", "short video", "visual proof model"]
+    },
+    {
+      "channel": "TikTok / YouTube Shorts",
+      "role": "EXECUTIVE_EDUCATION_AND_REACH",
+      "cadence": "2 short videos/week after provider connection",
+      "execution": "CONTENT_READY_PROVIDER_UNPROVEN",
+      "content": ["60-second operator insight", "Saudi signal explainers", "system teardown"]
+    }
+  ],
+  "platform_stack": {
+    "brand_assets": "Canva Brand Kit / approved Dealix assets",
+    "planning_analytics": "Metricool after network connection is proven",
+    "web_conversion": "PostHog",
+    "seo_ai_visibility": "Ahrefs / Search Console when configured",
+    "workflow_bus": "n8n",
+    "canonical_execution": "GitHub + Airtable Company OS",
+    "crm_rule": "Do not create a parallel Dealix CRM; Airtable Company OS remains the operating mirror unless a deliberate migration is approved."
+  },
+  "content_pillars": [
+    {
+      "id": "PILLAR-01",
+      "name": "Executive Signal",
+      "purpose": "Translate a business/AI change into what a Saudi operator should decide next."
+    },
+    {
+      "id": "PILLAR-02",
+      "name": "Saudi Opportunity",
+      "purpose": "Turn official market, procurement and ecosystem signals into bounded opportunity analysis."
+    },
+    {
+      "id": "PILLAR-03",
+      "name": "Governed AI",
+      "purpose": "Explain controls, agent reliability, authority and evidence in practical operating language."
+    },
+    {
+      "id": "PILLAR-04",
+      "name": "Revenue Systems",
+      "purpose": "Show how revenue leakage, follow-up, decision latency and fragmented workflows become operating systems."
+    },
+    {
+      "id": "PILLAR-05",
+      "name": "Build + Proof",
+      "purpose": "Share verified engineering/process lessons without converting demos or synthetic output into customer proof."
+    },
+    {
+      "id": "PILLAR-06",
+      "name": "Strategic POV",
+      "purpose": "Publish a recognizable founder/company view that teaches instead of repeating generic AI news."
+    }
+  ],
+  "content_factory": {
+    "input": "MarketSignalReceipt OR verified first-party operational insight OR proof-safe build receipt",
+    "steps": [
+      "validate source and evidence class",
+      "extract business consequence",
+      "select ICP and content pillar",
+      "write one strong thesis",
+      "generate founder LinkedIn draft",
+      "generate company LinkedIn draft",
+      "generate short-form script",
+      "generate carousel outline",
+      "generate X short-form variant",
+      "generate SEO/article outline when depth justifies it",
+      "apply brand and truth firewall",
+      "route to review/approval queue",
+      "after authorized publication attach UTM/source identifiers",
+      "measure visit -> diagnostic -> qualified conversation -> discovery -> quote -> verified payment"
+    ],
+    "repurpose_rule": "ONE_VERIFIED_THESIS -> up to 6 channel-native assets; never copy-paste identical text across all channels.",
+    "default_external_action": "DRAFT_ONLY"
+  },
+  "weekly_editorial_system": {
+    "monday": "Saudi/industry signal + executive consequence",
+    "tuesday": "Founder POV / contrarian operator lesson",
+    "wednesday": "System teardown or governed AI practical lesson",
+    "thursday": "Revenue/operations workflow insight or proof methodology",
+    "friday": "Dealix build/proof note + week synthesis",
+    "rule": "Cadence is a capacity ceiling, not a quota. Do not publish weak content to fill a calendar."
+  },
+  "cta_hierarchy": [
+    "Start an Execution Diagnostic",
+    "Read the relevant strategic solution",
+    "Explore Dealix OS only when continuous operating-system fit exists",
+    "Qualified Discovery",
+    "Customer-Specific Quote"
+  ],
+  "measurement": {
+    "primary": [
+      "qualified conversations",
+      "Execution Diagnostics",
+      "Qualified Discoveries",
+      "customer-specific quotes",
+      "verified payments",
+      "customer-validated proof"
+    ],
+    "secondary": ["target-account reach", "profile/page visits", "qualified saves", "qualified comments", "website conversion", "content-assisted opportunities"],
+    "vanity_only": ["raw impressions", "raw follower count", "posting volume"]
+  },
+  "forbidden_shortcuts": [
+    "cold WhatsApp blast",
+    "mass LinkedIn connect/DM automation",
+    "public contact treated as consent",
+    "fake case studies or fabricated customer proof",
+    "guaranteed revenue/ROI claims",
+    "auto-publish before provider identity and approval state are proven",
+    "paid amplification without separate spend authority"
+  ]
+}

@@ -1,4 +1,4 @@
-"""Social drafts must not resurrect retired Dealix prices/offers/funnels."""
+"""Social drafts must not resurrect retired Dealix prices/offers/funnels or authority."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import pytest
 import yaml
 
 from dealix.commercial_ops.social_queue import (
+    CURRENT_LAUNCH_AUTHORITY,
     format_linkedin_draft,
     get_post_for_date,
     is_current_launch_safe_post,
@@ -22,15 +23,17 @@ def _safe_post(*, week: int = 1, day: int = 0) -> dict[str, object]:
     return {
         "week": week,
         "day": day,
+        "surface": "founder_linkedin",
         "pillar": "proof",
-        "title_ar": "من التشخيص إلى Pilot",
+        "title_ar": "من التشخيص إلى تنفيذ قابل للإثبات",
         "body_ar": (
-            "Free Mini Diagnostic → qualified discovery → customer-specific quote → "
-            "30-day Revenue Command Pilot → source-backed Proof."
+            "Execution Diagnostic → qualified discovery → customer-specific quote → "
+            "governed outcome sprint → source-backed Proof."
         ),
-        "cta_ar": "ابدأ Free Mini Diagnostic؛ لا Checkout أو إرسال تلقائي.",
+        "cta_ar": "ابدأ Execution Diagnostic؛ لا Checkout أو إرسال تلقائي.",
         "status": "draft",
-        "launch_authority": "revenue_command_pilot_30d",
+        "launch_authority": CURRENT_LAUNCH_AUTHORITY,
+        "external_publish_allowed": False,
     }
 
 
@@ -46,16 +49,22 @@ def test_today_picker_skips_retired_matching_slot_and_uses_safe_draft() -> None:
     safe = _safe_post(week=1, day=0)
     safe["title_ar"] = "Current authority"
     queue = {
-        "anchor_date": "2026-05-17",
+        "anchor_date": "2026-09-13",
         "cycle_weeks": 1,
         "posts": [unsafe, safe],
     }
 
-    selected = get_post_for_date(date(2026, 5, 17), queue=queue)
+    selected = get_post_for_date(date(2026, 9, 13), queue=queue)
 
     assert selected is not None
     assert selected["title_ar"] == "Current authority"
     assert "customer-specific quote" in selected["body_ar"]
+
+
+def test_today_picker_rejects_legacy_launch_authority_even_if_copy_is_safe() -> None:
+    legacy = _safe_post()
+    legacy["launch_authority"] = "revenue_command_pilot_30d"
+    assert get_post_for_date(queue={"cycle_weeks": 1, "posts": [legacy]}) is None
 
 
 def test_today_picker_does_not_reuse_already_published_post() -> None:
@@ -68,6 +77,13 @@ def test_today_picker_fails_closed_when_every_post_is_retired() -> None:
     unsafe = _safe_post()
     unsafe["aeo_slug"] = "first-paid-diagnostic"
     assert get_post_for_date(queue={"cycle_weeks": 1, "posts": [unsafe]}) is None
+
+
+def test_formatter_refuses_legacy_authority() -> None:
+    legacy = _safe_post()
+    legacy["launch_authority"] = "revenue_command_pilot_30d"
+    with pytest.raises(ValueError, match="legacy launch authority"):
+        format_linkedin_draft(legacy)
 
 
 def test_formatter_refuses_retired_offer() -> None:
@@ -116,9 +132,10 @@ def test_approval_targets_safe_replacement_after_published_history(tmp_path: Pat
 def test_expander_contains_only_current_authority_offer_language() -> None:
     text = (ROOT / "scripts/expand_social_queue_12w.py").read_text(encoding="utf-8")
 
-    assert "revenue_command_pilot_30d" in text
+    assert "corporate_brand_gtm_v1" in text
     assert "customer-specific quote" in text
-    assert "30-day Revenue Command Pilot" in text
+    assert "Execution Diagnostic" in text
+    assert "Dealix OS" in text
     assert "external_publish_allowed" in text
-    for token in ("4,999", "15,000", "2,999", "Sprint 499", "Data Pack 1500"):
+    for token in ("4,999", "15,000", "2,999", "Sprint 499", "Data Pack 1500", "Risk Score"):
         assert token not in text

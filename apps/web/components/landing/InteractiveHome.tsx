@@ -4,18 +4,45 @@ import Link from "next/link";
 import { useRef } from "react";
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 
+const corporatePillars = [
+  {
+    label: "STRATEGY",
+    title: "Strategy & Transformation",
+    text: "نحوّل أهداف النمو والتحول إلى رهانات مرتبة، operating model، اقتصاديات واضحة وخارطة تنفيذ قابلة للقياس.",
+    href: "/services#strategy",
+  },
+  {
+    label: "SYSTEMS",
+    title: "Systems & Automation",
+    text: "نبني طبقات AI وautomation وintegrations فوق الأدوات الحالية بدل فرض استبدال CRM أو ERP أو قنوات العمل.",
+    href: "/services#systems",
+  },
+  {
+    label: "INTELLIGENCE",
+    title: "Intelligence & Market Access",
+    text: "Saudi market intelligence، opportunity radar، partner routes وB2B decision support مبنية على evidence لا على ضوضاء السوق.",
+    href: "/services#intelligence",
+  },
+  {
+    label: "PRODUCTS",
+    title: "Products & Ventures",
+    text: "نحوّل الأنماط المتكررة المثبتة إلى منتجات وبرمجيات وواجهات API وأصول معرفة قابلة للتوسع.",
+    href: "/company#products",
+  },
+];
+
 const valueBlocks = [
-  { label: "Revenue", title: "حركة اقتصادية، لا نشاط شكلي", text: "نحوّل الإشارات التجارية والتشغيلية إلى أولوية واضحة، تشخيص قابل للتنفيذ، ثم خطوة يمكن قياس أثرها." },
-  { label: "Proof", title: "الدليل قبل الادعاء", text: "نفرّق بين activity وdelivery وoutcome وcustomer proof، ونبني baseline وreceipts يمكن مراجعتها." },
-  { label: "Command", title: "قرار يومي محكوم", text: "Company Brain + Opportunity Graph + Action Queue + approvals تتحول إلى مسار واحد بدل أدوات منفصلة." },
+  { label: "Revenue", title: "حركة اقتصادية، لا نشاط شكلي", text: "نربط الاستراتيجية والإشارات التجارية بأقرب next action يمكن أن يحرك Qualified Problem ثم Quote ثم Verified Payment." },
+  { label: "Proof", title: "الدليل قبل الادعاء", text: "نفرّق بين activity وdelivery وoutcome وCustomer Proof، ونبني baseline وreceipts يمكن مراجعتها." },
+  { label: "Command", title: "قرار يومي محكوم", text: "Company Brain + Opportunity Graph + Action Queue + approvals تتحول إلى مسار قيادة واحد بدل جزر أدوات منفصلة." },
 ];
 
 const executionPath = [
   { step: "01", title: "Execution Diagnostic", text: "نبدأ بمشكلة واحدة. نفصل evidence عن assumptions ونحدد أصغر تدخل يستحق الاختبار." },
   { step: "02", title: "Qualified Discovery", text: "نثبت أصحاب القرار، البيانات، النطاق، المخاطر ومعيار القبول قبل أي التزام تجاري." },
   { step: "03", title: "Customer-Specific Outcome Sprint", text: "ننفذ الحل الأنسب: Build / Adapt / Integrate / Partner، بنطاق وسعر خاص بالعميل بعد Discovery." },
-  { step: "04", title: "Proof Review", text: "نقارن النتيجة بالـbaseline ونوثق ما تحرك وما لم يتحرك بدون تحويل demo أو synthetic evidence إلى customer proof." },
-  { step: "05", title: "Dealix Runtime", text: "إذا ثبتت القيمة والتكرار، نوسع إلى تشغيل مستمر للمراقبة والتنفيذ والإثبات والتحسين." },
+  { step: "04", title: "Proof Review", text: "نقارن النتيجة بالـbaseline ونوثق ما تحرك وما لم يتحرك بدون تحويل demo أو synthetic evidence إلى Customer Proof." },
+  { step: "05", title: "Dealix Runtime", text: "إذا ثبتت القيمة والتكرار، يمكن أن يدخل Dealix OS كطبقة تشغيل مستمرة للمراقبة والتنفيذ والإثبات والتحسين." },
 ];
 
 const truthRules = [
@@ -44,10 +71,8 @@ export function InteractiveHome() {
 
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse" || pointerFrameRef.current !== null) return;
-
     const clientX = event.clientX;
     const clientY = event.clientY;
-
     pointerFrameRef.current = window.requestAnimationFrame(() => {
       pointerFrameRef.current = null;
       const hero = heroRef.current;
@@ -63,7 +88,6 @@ export function InteractiveHome() {
       window.cancelAnimationFrame(pointerFrameRef.current);
       pointerFrameRef.current = null;
     }
-
     const hero = heroRef.current;
     if (!hero) return;
     hero.style.setProperty("--dx-pointer-x", "72%");
@@ -74,9 +98,9 @@ export function InteractiveHome() {
     <div className="dx-home">
       <header className="dx-nav-wrap">
         <nav className="dx-nav" aria-label="التنقل الرئيسي">
-          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-logo" width={400} height={96} loading="eager" decoding="async" fetchPriority="high" /></Link>
-          <div className="dx-nav-links" role="list"><Link href="/services">القدرات</Link><Link href="/cases">الاستخدامات</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">الحوكمة</Link></div>
-          <Link href="/book" className="dx-nav-cta">التشخيص المجاني <span aria-hidden="true">↗</span></Link>
+          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — Saudi AI Systems Company" className="dx-logo" width={400} height={96} loading="eager" decoding="async" fetchPriority="high" /></Link>
+          <div className="dx-nav-links" role="list"><Link href="/company">الشركة</Link><Link href="/services">الحلول الاستراتيجية</Link><Link href="/dealix-os">Dealix OS</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">الحوكمة</Link></div>
+          <Link href="/book" className="dx-nav-cta">Execution Diagnostic <span aria-hidden="true">↗</span></Link>
         </nav>
       </header>
 
@@ -84,15 +108,15 @@ export function InteractiveHome() {
         <section ref={heroRef} onPointerMove={handlePointerMove} onPointerLeave={handlePointerLeave} className="dx-hero" aria-labelledby="dx-hero-title">
           <div className="dx-hero-grid" aria-hidden="true" /><div className="dx-hero-glow" aria-hidden="true" /><div className="dx-orb dx-orb-one" aria-hidden="true" /><div className="dx-orb dx-orb-two" aria-hidden="true" />
           <div className="dx-hero-copy">
-            <div className="dx-signal-pill"><span className="dx-live-dot" aria-hidden="true" />Saudi Business · Governed AI · Measurable Proof</div>
-            <h1 id="dx-hero-title">حوّل إشارات شركتك إلى<span className="dx-cyan-text"> تنفيذ حقيقي يمكن إثباته.</span></h1>
-            <p className="dx-hero-lead">Dealix هي <strong>AI Business Operating System</strong> تربط الإشارة بالقرار والتنفيذ والدليل فوق أدواتك الحالية — مع حوكمة واضحة للأفعال الحساسة وبدون تعقيد ظاهر على العميل.</p>
-            <div className="dx-actions" aria-label="الإجراءات الرئيسية"><Link href="/book" className="dx-btn dx-btn-primary">أعطِ Dealix workflow مكسورًا <span aria-hidden="true">→</span></Link><Link href="/pricing" className="dx-btn dx-btn-secondary">شاهد Engagement Path</Link></div>
-            <div className="dx-trust-line" aria-label="مبادئ التشغيل"><span>Founder-led externally</span><span>Evidence-first</span><span>Approval-aware</span><span>Saudi operating context</span></div>
+            <div className="dx-signal-pill"><span className="dx-live-dot" aria-hidden="true" />SAUDI B2B · STRATEGY · SYSTEMS · INTELLIGENCE · PRODUCTS</div>
+            <h1 id="dx-hero-title">نبني طبقة الذكاء والتنفيذ التي<span className="dx-cyan-text"> تنقل الشركات من القرار إلى النتيجة.</span></h1>
+            <p className="dx-hero-lead"><strong>Dealix شركة B2B للأنظمة الاستراتيجية والذكاء والتنفيذ.</strong> نصمم الاستراتيجية، نبني أنظمة AI وautomation، نلتقط intelligence من السوق، ثم نحوّل ما يثبت إلى منتجات قابلة للتوسع. <strong>Dealix OS هو منتجنا الرئيسي</strong> — AI Business Operating System — وليس حدود الشركة.</p>
+            <div className="dx-actions" aria-label="الإجراءات الرئيسية"><Link href="/book" className="dx-btn dx-btn-primary">ابدأ بمشكلة تنفيذ حقيقية <span aria-hidden="true">→</span></Link><Link href="/company" className="dx-btn dx-btn-secondary">استكشف Dealix كشركة</Link></div>
+            <div className="dx-trust-line" aria-label="مبادئ التشغيل"><span>Saudi-first B2B</span><span>Founder-led externally</span><span>Evidence-first</span><span>Approval-aware</span></div>
           </div>
 
           <div className="dx-command-card" aria-label="Dealix execution loop">
-            <div className="dx-command-head"><span>DEALIX EXECUTION LOOP</span><span className="dx-command-status"><i /> GOVERNED MODEL</span></div>
+            <div className="dx-command-head"><span>DEALIX COMPANY EXECUTION MODEL</span><span className="dx-command-status"><i /> GOVERNED MODEL</span></div>
             <div className="dx-flow">{systemFlow.map((item, index) => (
               <div className="dx-flow-row" key={item.label} style={{ "--dx-delay": `${index * 0.14}s` } as CSSProperties}>
                 <div className="dx-flow-index">0{index + 1}</div><div><span>{item.label}</span><strong>{item.title}</strong><p>{item.text}</p></div><div className="dx-flow-pulse" aria-hidden="true" />
@@ -102,29 +126,34 @@ export function InteractiveHome() {
           </div>
         </section>
 
-        <section className="dx-strip" aria-label="Dealix value system"><p>Revenue + Proof + Command</p><div className="dx-strip-line" aria-hidden="true"><span /></div><p>From Opportunity to Outcome</p></section>
+        <section className="dx-strip" aria-label="Dealix value system"><p>Strategy + Systems + Intelligence + Products</p><div className="dx-strip-line" aria-hidden="true"><span /></div><p>Revenue + Proof + Command</p></section>
 
-        <section className="dx-section" style={deferredSectionStyle} aria-labelledby="dx-value-title">
-          <div className="dx-section-head"><div><span className="dx-kicker">THE EXECUTION GAP</span><h2 id="dx-value-title">المشكلة ليست نقص أدوات. المشكلة أن القرار لا يتحول دائمًا إلى نتيجة.</h2></div><p>Dealix لا تستبدل CRM أو ERP أو WhatsApp أو فريقك. تعمل فوقها كطبقة تنفيذ تربط السياق الاقتصادي بالـnext action والدليل.</p></div>
-          <div className="dx-value-grid">{valueBlocks.map((item, index) => <article className="dx-value-card" key={item.label}><div className="dx-card-number">0{index + 1}</div><span className="dx-card-label">{item.label}</span><h3>{item.title}</h3><p>{item.text}</p><div className="dx-card-signal" aria-hidden="true"><span /></div></article>)}</div>
+        <section className="dx-section" style={deferredSectionStyle} aria-labelledby="dx-company-title">
+          <div className="dx-section-head"><div><span className="dx-kicker">ONE COMPANY · FOUR ENGINES</span><h2 id="dx-company-title">أكبر من منتج واحد. وأبسط من شبكة شركات مبعثرة.</h2></div><p>Dealix تجمع الاستراتيجية والتنفيذ والذكاء والمنتجات تحت شركة واحدة. كل مسار له buyer ونتيجة وproof gate، بينما Dealix OS يبقى المنتج البرمجي الرئيسي الذي يتوسع فقط عندما تثبت القيمة.</p></div>
+          <div className="dx-value-grid">{corporatePillars.slice(0, 3).map((item, index) => <article className="dx-value-card" key={item.label}><div className="dx-card-number">0{index + 1}</div><span className="dx-card-label">{item.label}</span><h3>{item.title}</h3><p>{item.text}</p><Link href={item.href} className="dx-text-link">استكشف المسار <span aria-hidden="true">↗</span></Link><div className="dx-card-signal" aria-hidden="true"><span /></div></article>)}</div>
         </section>
 
-        <section className="dx-system" style={deferredSectionStyle} aria-labelledby="dx-system-title">
-          <div className="dx-system-copy"><span className="dx-kicker dx-kicker-light">ONE GOVERNED PATH</span><h2 id="dx-system-title">واجهة بسيطة للعميل. آلة تنفيذ عميقة خلفها.</h2><p>لا نعرض عشرات الخدمات كقائمة مربكة. نبدأ بمشكلة تنفيذ واحدة ثم نختار أفضل طريق للحل والقياس.</p><Link href="/services" className="dx-text-link">استكشف قدرات Dealix <span aria-hidden="true">↗</span></Link></div>
+        <section className="dx-system" style={deferredSectionStyle} aria-labelledby="dx-product-title">
+          <div className="dx-system-copy"><span className="dx-kicker dx-kicker-light">FLAGSHIP PRODUCT</span><h2 id="dx-product-title">Dealix OS هو المنتج. Dealix هي الشركة التي تبني حوله منظومة قيمة كاملة.</h2><p>Dealix OS يوحّد Company Brain وOpportunity Graph وAction Queue وApproval Authority وProof Ledger في مسار Signal → Decision → Action → Proof فوق أدوات العميل الحالية.</p><Link href="/dealix-os" className="dx-text-link">استكشف Dealix OS <span aria-hidden="true">↗</span></Link></div>
           <div className="dx-path" role="list">{executionPath.map((item) => <article className="dx-path-item" key={item.step} role="listitem"><span>{item.step}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div>
         </section>
 
+        <section className="dx-section" style={deferredSectionStyle} aria-labelledby="dx-value-title">
+          <div className="dx-section-head"><div><span className="dx-kicker">THE ECONOMIC OPERATING SYSTEM</span><h2 id="dx-value-title">لا نقيس الشركة بعدد الـagents أو المنشورات. نقيسها بحركة اقتصادية ودليل.</h2></div><p>كل استراتيجية، automation أو محتوى يجب أن يخدم مسارًا يمكن تتبعه من Signal إلى Qualified Problem ثم تنفيذ وProof — بدون خلط activity مع business value.</p></div>
+          <div className="dx-value-grid">{valueBlocks.map((item, index) => <article className="dx-value-card" key={item.label}><div className="dx-card-number">0{index + 1}</div><span className="dx-card-label">{item.label}</span><h3>{item.title}</h3><p>{item.text}</p><div className="dx-card-signal" aria-hidden="true"><span /></div></article>)}</div>
+        </section>
+
         <section className="dx-section dx-proof-section" style={deferredSectionStyle} aria-labelledby="dx-proof-title">
-          <div className="dx-section-head"><div><span className="dx-kicker">TRUTH FIREWALL</span><h2 id="dx-proof-title">النظام لا يرقّي الحقيقة بلا دليل.</h2></div><p>أي score أو AI recommendation أو public signal يبقى أقل سلطة من consent، suppression، evidence وaction authority.</p></div>
+          <div className="dx-section-head"><div><span className="dx-kicker">TRUTH FIREWALL</span><h2 id="dx-proof-title">النمو السريع لا يعني ترقية الحقيقة بلا دليل.</h2></div><p>أي score أو AI recommendation أو public signal يبقى أقل سلطة من consent، suppression، evidence وaction authority.</p></div>
           <div className="dx-truth-grid">{truthRules.map(([left, right]) => <article className="dx-truth-card" key={left}><span>{left}</span><b aria-hidden="true">≠</b><strong>{right}</strong></article>)}</div>
         </section>
 
         <section className="dx-final-cta" style={deferredSectionStyle} aria-labelledby="dx-final-title">
-          <div className="dx-final-mark" aria-hidden="true"><img src="/dealix-mark.svg" alt="" /></div><span className="dx-kicker">START WITH ONE EXECUTABLE PROBLEM</span><h2 id="dx-final-title">عندك workflow مهم لا يتحول اليوم إلى تنفيذ وProof واضح؟</h2><p>ابدأ بـFree Execution Diagnostic. إذا لم توجد حالة قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Discovery وعرض خاص بالعميل.</p><div className="dx-actions dx-actions-center"><Link href="/book" className="dx-btn dx-btn-primary">ابدأ التشخيص المجاني</Link><Link href="/proof-vault" className="dx-btn dx-btn-ghost">شاهد منهج الإثبات</Link></div>
+          <div className="dx-final-mark" aria-hidden="true"><img src="/dealix-mark.svg" alt="" /></div><span className="dx-kicker">START WITH ONE EXECUTABLE BUSINESS PROBLEM</span><h2 id="dx-final-title">عندك نمو، عملية، سوق أو قرار مهم لا يتحول اليوم إلى نتيجة قابلة للإثبات؟</h2><p>ابدأ بـFree Execution Diagnostic. إذا لم توجد حالة قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Qualified Discovery ثم عرض customer-specific بدون fixed public pricing.</p><div className="dx-actions dx-actions-center"><Link href="/book" className="dx-btn dx-btn-primary">ابدأ التشخيص المجاني</Link><Link href="/services" className="dx-btn dx-btn-ghost">شاهد الحلول الاستراتيجية</Link></div>
         </section>
       </main>
 
-      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/pricing">Engagement Path</Link><Link href="/services">Services</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link><a href={`mailto:${founderEmail}`}>Founder Email</a><a href={founderPhoneHref}>Founder Phone</a></div><p>Founder Office: <a href={`mailto:${founderEmail}`}>{founderEmail}</a> · <a href={founderPhoneHref}>{founderPhone}</a></p><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · AI Business Operating System · Signal → Decision → Action → Proof</small></div></footer>
+      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — Saudi AI Systems Company" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/company">Company</Link><Link href="/services">Strategic Solutions</Link><Link href="/dealix-os">Dealix OS</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link><a href={`mailto:${founderEmail}`}>Founder Email</a><a href={founderPhoneHref}>Founder Phone</a></div><p>Founder Office: <a href={`mailto:${founderEmail}`}>{founderEmail}</a> · <a href={founderPhoneHref}>{founderPhone}</a></p><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · Strategy → Systems → Intelligence → Products · Signal → Decision → Action → Proof</small></div></footer>
     </div>
   );
 }

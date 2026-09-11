@@ -1,0 +1,167 @@
+.dx-corporate-page {
+  --dx-corp-ink: #0f172a;
+  --dx-corp-ink-2: #111c2f;
+  --dx-corp-teal: #164e63;
+  --dx-corp-teal-deep: #0b3443;
+  --dx-corp-cyan: #22d3ee;
+  --dx-corp-cyan-soft: #67e8f9;
+  --dx-corp-cloud: #f8fafc;
+  --dx-corp-slate: #94a3b8;
+  --dx-corp-gold: #d4af37;
+  width: min(1280px, 100%);
+  gap: clamp(20px, 3vw, 34px);
+  padding-top: clamp(28px, 6vw, 72px);
+}
+
+.dx-corporate-page > .card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(103, 232, 249, 0.13);
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(11, 52, 67, 0.48)),
+    radial-gradient(circle at 86% 12%, rgba(34, 211, 238, 0.09), transparent 34%);
+  box-shadow: 0 18px 60px rgba(2, 8, 23, 0.28);
+}
+
+.dx-corporate-page > .card:first-child {
+  min-height: 430px;
+  display: grid;
+  align-content: center;
+  isolation: isolate;
+  border-color: rgba(103, 232, 249, 0.2);
+}
+
+.dx-corporate-page > .card:first-child::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.36;
+  background-image:
+    linear-gradient(rgba(103, 232, 249, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103, 232, 249, 0.08) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.dx-corporate-page > .card:first-child::after {
+  content: "";
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  inset-inline-end: -110px;
+  top: -130px;
+  z-index: -1;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.12);
+  filter: blur(70px);
+}
+
+.dx-corporate-page h1 {
+  max-width: 980px;
+  margin-inline: auto;
+  font-family: "IBM Plex Sans Arabic", var(--font-display);
+  font-size: clamp(2.45rem, 6vw, 5.4rem);
+  line-height: 1.03;
+  letter-spacing: -0.045em;
+}
+
+.dx-corporate-page h2,
+.dx-corporate-page h3 {
+  font-family: "IBM Plex Sans Arabic", var(--font-display);
+}
+
+.dx-corporate-page .eyebrow {
+  color: var(--dx-corp-cyan-soft);
+  letter-spacing: 0.13em;
+}
+
+.dx-corporate-page .eyebrow::before {
+  content: "●";
+  color: var(--dx-corp-cyan);
+  filter: drop-shadow(0 0 9px rgba(34, 211, 238, 0.75));
+}
+
+.dx-corporate-page .cards {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px;
+}
+
+.dx-corporate-page .cards .card {
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 20px;
+  background:
+    linear-gradient(150deg, rgba(17, 28, 47, 0.92), rgba(15, 23, 42, 0.82));
+  box-shadow: none;
+  backdrop-filter: blur(12px);
+}
+
+.dx-corporate-page .cards .card:hover {
+  border-color: rgba(34, 211, 238, 0.34);
+  box-shadow: 0 18px 48px rgba(2, 8, 23, 0.24), 0 0 24px rgba(34, 211, 238, 0.05);
+}
+
+.dx-corporate-page .card-gold {
+  border-color: rgba(212, 175, 55, 0.26);
+  background:
+    linear-gradient(145deg, rgba(17, 28, 47, 0.94), rgba(55, 47, 16, 0.28)),
+    radial-gradient(circle at 18% 0%, rgba(212, 175, 55, 0.09), transparent 32%);
+}
+
+.dx-corporate-page .actions a:first-child {
+  background: linear-gradient(135deg, var(--dx-corp-cyan-soft), var(--dx-corp-cyan));
+  color: #082f49;
+  box-shadow: 0 10px 34px rgba(34, 211, 238, 0.18);
+}
+
+.dx-corporate-page .actions a:first-child:hover {
+  background: #a5f3fc;
+  box-shadow: 0 14px 42px rgba(34, 211, 238, 0.28);
+}
+
+.dx-corporate-page .actions a + a {
+  border-color: rgba(103, 232, 249, 0.2);
+  background: rgba(8, 47, 73, 0.22);
+}
+
+.dx-corporate-page .actions a + a:hover {
+  border-color: var(--dx-corp-cyan-soft);
+  color: var(--dx-corp-cyan-soft);
+}
+
+.dx-corporate-page strong {
+  color: #ecfeff;
+}
+
+.dx-corporate-page p,
+.dx-corporate-page li {
+  color: rgba(226, 232, 240, 0.72);
+}
+
+.dx-corporate-page > .card:not(:first-child) {
+  padding-block: clamp(26px, 5vw, 48px);
+}
+
+@media (max-width: 720px) {
+  .dx-corporate-page {
+    padding-inline: 16px;
+    padding-top: 22px;
+  }
+
+  .dx-corporate-page > .card:first-child {
+    min-height: auto;
+  }
+
+  .dx-corporate-page h1 {
+    font-size: clamp(2rem, 12vw, 3.45rem);
+  }
+
+  .dx-corporate-page .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dx-corporate-page .actions a {
+    width: 100%;
+  }
+}

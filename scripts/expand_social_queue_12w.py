@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Upsert current-authority Dealix social drafts for weeks 9-28.
+"""Upsert current Dealix corporate social drafts for weeks 1-28.
 
 This script mutates only the internal draft queue. It never publishes or sends.
 Historical published rows are preserved; stale draft/approved rows in canonical
-week/day slots are replaced and their approval is reset to ``draft``.
+week/day slots are replaced and approval resets to ``draft``.
 """
 
 from __future__ import annotations
@@ -17,83 +17,96 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "dealix/config/social_content_queue.yaml"
 DEFAULT_CYCLE_WEEKS = 28
-LAUNCH_AUTHORITY = "revenue_command_pilot_30d"
+MIN_CYCLE_WEEKS = 8
+LAUNCH_AUTHORITY = "corporate_brand_gtm_v1"
 CTA_AR = (
-    "Free Mini Diagnostic → qualified discovery → customer-specific quote. "
-    "لا Checkout تلقائي ولا إرسال خارجي تلقائي."
+    "Execution Diagnostic → qualified discovery → customer-specific quote. "
+    "لا Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي."
 )
 
-# Educational themes under one product. These are capability/operating themes,
-# not separate offers or claims that every capability is production-ready for
-# every customer today.
-WEEK_THEMES: tuple[tuple[int, str, str], ...] = (
-    (9, "رؤية الواقع", "Company Brain + Business Graph يجمعان السياق المطلوب لاتخاذ قرار أفضل دون استبدال كل أنظمة الشركة."),
-    (10, "Daily Executive Command", "الهدف ليس Dashboard إضافيًا؛ بل معرفة أهم فرصة وقرار وبلوكِر وخطوة تالية."),
-    (11, "Approval-first", "الذكاء الاصطناعي يجهز العمل، والإجراءات الحساسة تبقى خلف موافقة وحدود واضحة."),
-    (12, "Proof-backed", "Activity ليست Customer Value؛ كل Claim يحتاج baseline ومصدرًا وطريقة قياس ودليلًا مناسبًا."),
-    (13, "Revenue leakage", "نبحث عن فرص بلا owner أو next action أو evidence بدل إضافة حجم رسائل عشوائي."),
-    (14, "Buying committee", "الصفقة B2B تحتاج فهم من يقرر ومن يراجع ومن يستطيع إيقافها، لا Contact واحدًا فقط."),
-    (15, "Proposal + business case", "العرض الجيد يربط المشكلة والنطاق والقبول والدليل بدل وعود عامة."),
-    (16, "Negotiation guardrails", "أي concession يجب أن يقابله give-get واضح، مع حماية النطاق والاقتصاديات."),
-    (17, "Commercial finance", "قبل الالتزام نراجع القدرة والنطاق والهامش والمتطلبات بدل إغلاق صفقة غير قابلة للتسليم."),
-    (18, "Minimum-data Pilot", "ابدأ بأقل بيانات وصلاحيات ممكنة، ووسّع فقط إذا احتاج النطاق وبعد إغلاق البوابات المناسبة."),
-    (19, "Saudi bilingual context", "السياق العربي/الإنجليزي مهم في القرار التجاري، لكن اللغة لا تعني ادعاء امتثال أو نتيجة."),
-    (20, "Partner intelligence", "الشراكات تُبنى على fit ودور وقيمة مشتركة ودليل، لا على قوائم اتصالات جماعية."),
-    (21, "Customer-to-Value", "التسليم لا ينتهي عند النشاط؛ نربط onboarding والاستخدام والنتيجة والـProof."),
-    (22, "Decision Passport", "القرار الجيد يحمل source وconfidence وowner وexpiry وapproval بدل أن يصبح رأيًا مجهول المصدر."),
-    (23, "Proof Ledger", "Payment وRevenue وDelivery وCustomer Value وPublication Permission حالات منفصلة."),
-    (24, "Learning loop", "التعلم الحقيقي يأتي من النتائج والرفض والبلوكِرات والأدلة، مع مراجعة بشرية قبل تغيير playbooks."),
-    (25, "Model routing", "اختيار النموذج يعتمد على الحساسية والجودة والتكلفة والسياسة؛ ليس كل سياق مناسبًا لنفس المسار."),
-    (26, "Production trust", "Health endpoint وحده لا يثبت جاهزية المنتج؛ نحتاج release identity وfrontend ownership وبوابات تشغيل قابلة للتحقق."),
-    (27, "Tenant + privacy boundaries", "بيانات العميل لا تدخل لأن التكامل متاح تقنيًا؛ يلزم scope وغرض وصلاحيات وعزل وحدود احتفاظ مناسبة."),
-    (28, "Stop / expand / redesign", "نهاية الـPilot ليست Upsell تلقائيًا؛ القرار يأتي من الدليل: نتوقف أو نتوسع أو نعيد التصميم."),
+# Parent-company themes. Dealix OS remains the flagship product, not the entire
+# definition of Dealix. Themes are educational/strategic; they do not claim
+# production readiness, customer results, consent, certification, or revenue.
+WEEK_THEMES: tuple[tuple[int, str, str, str], ...] = (
+    (1, "Execution Gap", "الفجوة بين القرار والتنفيذ أهم من عدد أدوات AI.", "executive_signal"),
+    (2, "Dealix Company", "Strategy + Systems + Intelligence + Products تحت شركة واحدة؛ Dealix OS منتج رئيسي داخلها.", "strategic_pov"),
+    (3, "Governed AI", "Owner + authority + evidence + rollback قبل توسيع أي Agent.", "governed_ai"),
+    (4, "Revenue Systems", "تسرب المتابعة والقرار يحتاج operating system لا مزيدًا من volume.", "revenue_systems"),
+    (5, "Saudi Opportunity", "الإشارة الرسمية تتحول إلى فرضية تجارية قابلة للاختبار، لا buyer intent.", "saudi_opportunity"),
+    (6, "Proof Before Claim", "Capability evidence وdelivery وoutcome وCustomer Proof حالات مختلفة.", "build_proof"),
+    (7, "Saudi Market Access", "Market entry يبدأ evidence + route + partner fit + bounded validation.", "saudi_opportunity"),
+    (8, "Service to Product", "نحوّل المشكلة المتكررة المثبتة إلى product فقط عندما يبرر الدليل ذلك.", "strategic_pov"),
+    (9, "Strategy to Operating Model", "الاستراتيجية التي بلا owner وcadence وacceptance لا تتحول إلى تنفيذ.", "strategic_pov"),
+    (10, "Executive Command", "أفضل command room يقلل القرارات الضائعة بدل إضافة dashboard جديدة.", "executive_signal"),
+    (11, "Company Brain", "المعرفة تصبح مفيدة عندما ترتبط بقرار وsource وexpiry وnext action.", "systems_automation"),
+    (12, "Opportunity Graph", "الفرصة ليست lead؛ تحتاج evidence وstage وowner وprobability وnext action.", "revenue_systems"),
+    (13, "Follow-up Recovery", "قبل زيادة leads، افحص أين تسقط المتابعة الحالية ومن يملكها.", "revenue_systems"),
+    (14, "Buying Committee", "B2B enterprise قرار جماعي؛ contact واحد لا يساوي buying authority.", "revenue_systems"),
+    (15, "Proposal Architecture", "العرض الأقوى يربط problem → scope → acceptance → economics → proof.", "revenue_systems"),
+    (16, "Negotiation Guardrails", "أي concession يحتاج give-get واضحًا ويحمي النطاق والهامش.", "revenue_systems"),
+    (17, "AI Governance Readiness", "الحوكمة طبقة تشغيل يومية وليست policy PDF فقط.", "governed_ai"),
+    (18, "Agent Reliability", "Agent جيد يعني evals وtool authority وfallback وreceipts، لا prompt جميل فقط.", "governed_ai"),
+    (19, "Privacy by Workflow", "الغرض والصلاحية والاحتفاظ والعزل يجب أن تعيش داخل workflow.", "governed_ai"),
+    (20, "Partner Route", "الشراكة تحتاج buyer fit ودورًا اقتصاديًا وإثباتًا، لا قائمة logos.", "saudi_opportunity"),
+    (21, "Tender Intelligence", "Tender signal دليل طلب فقط؛ لا يعني qualification أو invitation أو award.", "saudi_opportunity"),
+    (22, "Customer Value", "التسليم لا ينتهي عند النشاط؛ يجب ربطه بالـbaseline والنتيجة والقبول.", "build_proof"),
+    (23, "Proof Ledger", "Payment وDelivery وOutcome وPublication Permission سجلات مستقلة.", "build_proof"),
+    (24, "Content as Distribution", "المحتوى الجيد يخلق perspective ومحادثة مؤهلة، لا مجرد impressions.", "strategic_pov"),
+    (25, "AI Model Economics", "اختيار النموذج قرار جودة/حساسية/تكلفة/سياسة وليس سباق benchmark فقط.", "systems_automation"),
+    (26, "Production Trust", "Build success أو HTTP 200 وحدهما لا يثبتان release صحيحًا.", "build_proof"),
+    (27, "Private SaaS Readiness", "Multi-tenant productization يأتي بعد proof متكرر وحدود tenant واضحة.", "systems_automation"),
+    (28, "Stop / Expand / Redesign", "نهاية أي Sprint ليست upsell تلقائيًا؛ الدليل يقرر الخطوة التالية.", "build_proof"),
 )
 
-PILLARS = ("founder_media", "proof", "objection", "trust", "proof")
+DAY_FORMATS: tuple[tuple[str, str], ...] = (
+    ("founder_linkedin", "founder_pov"),
+    ("company_linkedin", "company_architecture"),
+    ("linkedin", "operator_playbook"),
+    ("linkedin", "truth_firewall"),
+    ("linkedin", "conversion_cta"),
+)
 
 
-def _drafts_for_theme(week: int, theme: str, angle: str) -> list[dict[str, Any]]:
+def _drafts_for_theme(week: int, theme: str, angle: str, pillar: str) -> list[dict[str, Any]]:
     rows = (
         (
-            f"Dealix: {theme}",
-            f"Dealix منتج واحد: Saudi-first AI Business Operating System. {angle}",
-            f"week-{week}-dealix-{theme.lower().replace(' ', '-')}",
+            f"{theme}: الفكرة التي يجب أن تتغير قبل أي أتمتة",
+            f"{angle}\n\nفي Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext action وproof قبل اختيار التقنية.",
         ),
         (
-            f"كيف نثبت {theme}؟",
-            "نبدأ بـ baseline ومصدر ونفصل النشاط عن التسليم والقيمة والإيراد. Missing evidence يبقى Unknown، وليس نجاحًا.",
-            f"week-{week}-proof-method",
+            f"{theme} داخل نموذج Dealix",
+            f"{angle}\n\nDealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل مستمرة هي الحل المناسب.",
         ),
         (
-            "لماذا لا أتمتة بلا حدود؟",
-            "Approval-first يعني أن Dealix يستطيع التحليل والتجهيز داخليًا، بينما الإرسال والنشر والدفع وتغييرات الإنتاج تبقى خلف بوابات مستقلة.",
-            f"week-{week}-governed-automation",
+            f"5 أسئلة لتشخيص {theme}",
+            f"{angle}\n\n1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟ 5) ما الـproof الذي يثبت الحركة؟",
         ),
         (
-            f"حدود الثقة: {theme}",
-            "لا guaranteed revenue أو ROI، لا cold WhatsApp، لا LinkedIn automation جماعي، ولا Customer Proof بلا دليل وإذن نشر مناسب.",
-            f"week-{week}-trust-boundary",
+            f"Truth Firewall: {theme}",
+            "Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote ≠ Payment · Demo ≠ Customer Proof.\n\nالسرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.",
         ),
         (
-            "من التشخيص إلى Pilot",
-            "Free Mini Diagnostic → qualified discovery → customer-specific quote → 30-day Revenue Command Pilot → weekly/final Proof → stop / expand / redesign.",
-            f"week-{week}-pilot-path",
+            f"من {theme} إلى Execution Diagnostic",
+            f"{angle}\n\nلا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action، authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified Discovery ثم customer-specific scope.",
         ),
     )
 
     posts: list[dict[str, Any]] = []
-    for day, (title_ar, body_ar, slug) in enumerate(rows):
+    for day, ((surface, content_format), (title_ar, body_ar)) in enumerate(zip(DAY_FORMATS, rows, strict=True)):
         posts.append(
             {
                 "week": week,
                 "day": day,
-                "pillar": PILLARS[day],
+                "surface": surface,
+                "pillar": pillar,
+                "format": content_format,
                 "title_ar": title_ar,
-                "body_ar": f"{body_ar}\n\n#Dealix #BusinessOS #SaudiArabia",
+                "body_ar": body_ar,
                 "cta_ar": CTA_AR,
-                "aeo_slug": slug,
+                "aeo_slug": f"w{week}-{theme.lower().replace(' ', '-').replace('/', '-').replace('&', 'and')}-{day + 1}",
                 "status": "draft",
                 "launch_authority": LAUNCH_AUTHORITY,
+                "external_publish_allowed": False,
             }
         )
     return posts
@@ -101,14 +114,24 @@ def _drafts_for_theme(week: int, theme: str, angle: str) -> list[dict[str, Any]]
 
 def _canonical_posts(cycle_weeks: int) -> list[dict[str, Any]]:
     posts: list[dict[str, Any]] = []
-    for week, theme, angle in WEEK_THEMES:
+    for week, theme, angle, pillar in WEEK_THEMES:
         if week <= cycle_weeks:
-            posts.extend(_drafts_for_theme(week, theme, angle))
+            posts.extend(_drafts_for_theme(week, theme, angle, pillar))
     return posts
 
 
 def _content_signature(post: dict[str, Any]) -> tuple[str, ...]:
-    keys = ("pillar", "title_ar", "body_ar", "cta_ar", "aeo_slug", "launch_authority")
+    keys = (
+        "surface",
+        "pillar",
+        "format",
+        "title_ar",
+        "body_ar",
+        "cta_ar",
+        "aeo_slug",
+        "launch_authority",
+        "external_publish_allowed",
+    )
     return tuple(str(post.get(key) or "") for key in keys)
 
 
@@ -137,8 +160,6 @@ def _upsert_current_drafts(
 
         if editable is None:
             if matches:
-                # Keep historical published content as evidence; add a fresh
-                # current-authority draft for future use.
                 preserved_published += len(matches)
             posts.append(dict(canonical))
             added += 1
@@ -152,6 +173,7 @@ def _upsert_current_drafts(
             updated += 1
         else:
             posts[editable]["launch_authority"] = LAUNCH_AUTHORITY
+            posts[editable]["external_publish_allowed"] = False
 
     return posts, added, updated, preserved_published
 
@@ -165,8 +187,10 @@ def main() -> int:
         help=f"Set cycle_weeks in YAML (default {DEFAULT_CYCLE_WEEKS})",
     )
     args = parser.parse_args()
-    if args.cycle_weeks < 9 or args.cycle_weeks > DEFAULT_CYCLE_WEEKS:
-        parser.error(f"--cycle-weeks must be between 9 and {DEFAULT_CYCLE_WEEKS}")
+    if args.cycle_weeks < MIN_CYCLE_WEEKS or args.cycle_weeks > DEFAULT_CYCLE_WEEKS:
+        parser.error(
+            f"--cycle-weeks must be between {MIN_CYCLE_WEEKS} and {DEFAULT_CYCLE_WEEKS}"
+        )
 
     data = yaml.safe_load(QUEUE.read_text(encoding="utf-8")) or {}
     existing_posts = list(data.get("posts") or [])
@@ -177,8 +201,10 @@ def main() -> int:
     )
 
     data["posts"] = posts
+    data["anchor_date"] = "2026-09-13"
     data["cycle_weeks"] = args.cycle_weeks
     data["launch_authority"] = LAUNCH_AUTHORITY
+    data["content_model"] = "verified_signal_to_channel_native_draft"
     data["external_publish_allowed"] = False
     QUEUE.write_text(
         yaml.safe_dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False),

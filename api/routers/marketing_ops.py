@@ -45,8 +45,8 @@ class CalendarCreatePayload(BaseModel):
     channel: str = Field(..., min_length=1, max_length=64)
     title_ar: str = Field(..., min_length=1, max_length=300)
     body_draft_ar: str = Field(..., min_length=1, max_length=8000)
-    cta_label_ar: str = "اطلب Risk Score"
-    cta_path: str = "/dealix-diagnostic"
+    cta_label_ar: str = "ابدأ Execution Diagnostic"
+    cta_path: str = "/book"
     utm_campaign: str = ""
     utm_medium: str = "social"
     utm_source: str = "dealix"
@@ -56,7 +56,7 @@ class CalendarCreatePayload(BaseModel):
 class UtmBuildPayload(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    base_url: str = Field(default="https://dealix.ai")
+    base_url: str = Field(default="https://dealix.me")
     utm_source: str = "dealix"
     utm_medium: str = "social"
     utm_campaign: str = Field(..., min_length=1, max_length=120)
@@ -86,21 +86,31 @@ async def marketing_list_calendar(
     rows = st.list_calendar(limit=limit)
     social_items: list[dict[str, Any]] = []
     try:
-        from dealix.commercial_ops.social_queue import load_social_queue
+        from dealix.commercial_ops.social_queue import (
+            CURRENT_LAUNCH_AUTHORITY,
+            is_current_launch_safe_post,
+            load_social_queue,
+        )
 
         for post in load_social_queue().get("posts") or []:
             if not isinstance(post, dict):
+                continue
+            if str(post.get("launch_authority") or "") != CURRENT_LAUNCH_AUTHORITY:
+                continue
+            if not is_current_launch_safe_post(post):
                 continue
             social_items.append(
                 {
                     "id": f"social_w{post.get('week')}d{post.get('day')}",
                     "source": "social_content_queue.yaml",
                     "scheduled_date": post.get("calendar_date") or "",
-                    "channel": "linkedin",
+                    "channel": post.get("surface") or "linkedin",
                     "title_ar": post.get("title_ar") or "",
                     "body_draft_ar": post.get("body_ar") or "",
                     "status": post.get("status") or "draft",
                     "pillar": post.get("pillar"),
+                    "format": post.get("format"),
+                    "launch_authority": post.get("launch_authority"),
                 },
             )
     except Exception:
@@ -246,7 +256,7 @@ async def marketing_weekly_pack_apply(body: WeeklyPackApplyPayload) -> dict[str,
         st.upsert_calendar_slot(slot)
         created.append(slot.id)
 
-        base = os.getenv("DEALIX_PUBLIC_BASE_URL", "https://dealix.ai").rstrip("/")
+        base = os.getenv("DEALIX_PUBLIC_BASE_URL", "https://dealix.me").rstrip("/")
         path = slot.cta_path.lstrip("/")
         full = build_utm_url(
             f"{base}/{path}",
@@ -278,24 +288,28 @@ async def marketing_weekly_pack_apply(body: WeeklyPackApplyPayload) -> dict[str,
                     object_id=slot.id,
                     action_type="external_publish",
                     action_mode="approval_required",
-                    channel=slot.channel,
-                    summary_ar=f"مراجعة نشر: {slot.title_ar[:80]}",
-                    summary_en=f"Review publish draft: {slot.title_ar[:80]}",
-                    risk_level="medium",
-                    proof_impact="marketing_governed_publish",
+                    reason="Marketing Factory weekly pack: review content + UTM before any external publish.",
+                    context={
+                        "channel": slot.channel,
+                        "scheduled_date": slot.scheduled_date,
+                        "title_ar": slot.title_ar,
+                    },
                 )
-                saved = get_default_approval_store().create(apr)
-                approval_ids.append(getattr(saved, "id", "") or "")
+                approval = get_default_approval_store().create(apr)
+                approval_ids.append(approval.id)
             except Exception:
+                # Calendar creation remains valid even when optional approval
+                # center persistence is unavailable; external publish is still
+                # not executed by this endpoint.
                 pass
 
     _log_marketing_evidence(
-        event_type="weekly_content_pack_applied",
+        event_type="weekly_content_pack_generated",
         summary=f"slots={len(created)} approvals={len(approval_ids)}",
     )
     return {
-        "week_start": pack["week_start"],
-        "created_slot_ids": created,
-        "approval_ids": [a for a in approval_ids if a],
-        "policy_ar": "لا نشر خارجي تلقائي — الموافقة ثم النشر اليدوي فقط.",
+        "created_count": len(created),
+        "slot_ids": created,
+        "approval_ids": approval_ids,
+        "external_publish_executed": False,
     }

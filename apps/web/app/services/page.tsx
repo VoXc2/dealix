@@ -1,87 +1,139 @@
-import Link from "next/link";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 
-const services = [
+const solutionGroups = [
   {
-    title: "Revenue Command Room OS",
-    buyer: "CEO / Founder / Sales Director",
-    pain: "الفرص والعروض والمتابعات لا تتحول إلى قرار يومي.",
-    outcome: "غرفة قيادة تعرض hot accounts، follow-ups، proposals، وnext actions.",
-    sprint: "7 days",
+    id: "strategy",
+    label: "01 · STRATEGY & TRANSFORMATION",
+    title: "من الاستراتيجية إلى operating model قابل للتنفيذ",
+    buyer: "CEO / Founder / GM / Strategy / Transformation",
+    capabilities: [
+      "Growth & Revenue Strategy",
+      "AI Transformation Roadmap",
+      "Operating Model & Decision Architecture",
+      "Execution Diagnostic & Value Baseline",
+      "Executive Command System",
+    ],
+    outcome: "أولويات أقل، owners أوضح، economics قابلة للقياس، ومسار تنفيذ يربط القرار بالدليل.",
   },
   {
-    title: "Company Brain OS",
-    buyer: "CEO / Operations Director",
-    pain: "معرفة الشركة وقراراتها متناثرة بين ملفات ومحادثات وأشخاص.",
-    outcome: "ذاكرة تشغيلية وCEO daily decision وfuture radar.",
-    sprint: "14 days",
+    id: "systems",
+    label: "02 · SYSTEMS & AUTOMATION",
+    title: "AI systems وautomation فوق الأدوات الحالية",
+    buyer: "COO / CIO / CTO / Commercial / Operations",
+    capabilities: [
+      "Revenue Command & Follow-up Recovery",
+      "Company Brain & Knowledge Operations",
+      "Governed AI Agents & Workflow Automation",
+      "Connector Reliability & Integration Ops",
+      "Omnichannel Customer Experience Command",
+    ],
+    outcome: "خفض الأعمال اليدوية والتسرب التشغيلي مع approval boundaries وreceipts واضحة.",
   },
   {
-    title: "AI Sales Agent OS",
-    buyer: "Sales Director / Founder",
-    pain: "الردود والتأهيل والتفاوض تعتمد على اجتهاد كل شخص.",
-    outcome: "Sales agent بصوت الشركة، يكتب drafts، يؤهل، ويرتب اعتراضات وتفاوض.",
-    sprint: "7-14 days",
+    id: "intelligence",
+    label: "03 · INTELLIGENCE & MARKET ACCESS",
+    title: "ذكاء سوق سعودي يتحول إلى قرار تجاري",
+    buyer: "Growth / BD / Market Entry / Partners / Enterprise Sales",
+    capabilities: [
+      "Saudi Opportunity Radar",
+      "Saudi Market Access Sprint",
+      "Partner / Distributor Desk",
+      "Tender & B2G Intelligence",
+      "Sector & Regulatory Signal Monitoring",
+    ],
+    outcome: "تركيز البحث على الفرص والمسارات التي تستحق الوقت بدل تجميع leads أو أخبار بلا قرار.",
   },
   {
-    title: "Follow-up Recovery OS",
-    buyer: "Sales / Support / Clinics / Real Estate",
-    pain: "واتساب والإيميل ممتلئة بفرص لا يملكها أحد.",
-    outcome: "تصنيف، queue، drafts، SLA، ومتابعة يومية بدون إرسال غير محكوم.",
-    sprint: "7 days",
+    id: "trust",
+    label: "04 · TRUST, GOVERNANCE & PROOF",
+    title: "حوكمة وProof كطبقة تشغيل وليست ملف PDF",
+    buyer: "Risk / Compliance / AI Owner / IT / Delivery",
+    capabilities: [
+      "AI Governance Readiness",
+      "Agent Reliability & Control Assessment",
+      "PDPL/Data Operations Workflows",
+      "Proof Pack as a Service",
+      "Operational Evidence & Reliability Reviews",
+    ],
+    outcome: "حدود صلاحية وإثبات قابلة للمراجعة بدون ادعاء certification أو compliance غير مثبت.",
+  },
+];
+
+const products = [
+  {
+    title: "Dealix OS",
+    text: "المنتج الرئيسي: AI Business Operating System يربط Company Brain وOpportunity Graph وAction/Approval وProof Ledger فوق stack العميل.",
+    href: "/dealix-os",
+    ctaId: "services_product_dealix_os",
   },
   {
-    title: "AI Trust & Governance OS",
-    buyer: "CEO / Compliance / IT",
-    pain: "AI يُستخدم بلا سياسة أو مراجعة أو حدود بيانات.",
-    outcome: "سياسة AI، approval gates، data SOP، وسجل مراجعة.",
-    sprint: "7 days",
+    title: "Data & Intelligence Products",
+    text: "يتحول الرصد والـdecision intelligence المتكرر إلى feeds، subscriptions وenterprise intelligence عندما يثبت استخدام متكرر وقيمة اقتصادية.",
+    href: "/company#products",
+    ctaId: "services_product_intelligence",
   },
   {
-    title: "Client Delivery OS",
-    buyer: "Agencies / Consultancies / Service Firms",
-    pain: "التسليم، التقارير، proof، والتجديدات غير موحدة.",
-    outcome: "intake، scope cards، delivery board، proof pack، renewal prompts.",
-    sprint: "10-14 days",
+    title: "Productized Services",
+    text: "نحوّل المشاكل المتكررة المثبتة إلى diagnostics وsprints وmanaged operations ذات نطاق واضح قبل تحويلها إلى software.",
+    href: "/company#products",
+    ctaId: "services_productized_services",
   },
 ];
 
 export default function ServicesPage() {
   return (
-    <main>
+    <main className="dx-corporate-page">
       <section className="card dot-pattern" style={{ textAlign: "center" }}>
-        <p className="eyebrow">Dealix Service Arsenal</p>
-        <h1>خدمات AI Operating Systems للشركات السعودية</h1>
-        <p style={{ maxWidth: 760, margin: "0 auto" }}>
-          Dealix لا يبيع أداة واحدة. Dealix يبني أنظمة تشغيل للشركة: الإيراد، المتابعة، Sales Agents،
-          Company Brain، التسليم، والحوكمة — تبدأ بسبرنت صغير ثم تتحول إلى retainer وتشغيل شهري.
+        <p className="eyebrow">Strategic B2B Solutions</p>
+        <h1>Dealix ليست قائمة خدمات AI. هي طبقة استراتيجية وتنفيذية للشركات.</h1>
+        <p style={{ maxWidth: 860, margin: "0 auto" }}>
+          نعمل من المشكلة الاقتصادية أو التشغيلية إلى strategy، system، intelligence وproof. Dealix OS منتج داخل هذه المنظومة، وليس تعريف الشركة بالكامل.
         </p>
         <div className="actions" style={{ justifyContent: "center" }}>
-          <Link href="/book">احجز مراجعة تشغيلية</Link>
-          <Link href="/pricing">شاهد التسعير</Link>
+          <TrackedLink href="/book" ctaId="services_execution_diagnostic" surface="services_hero">ابدأ Execution Diagnostic</TrackedLink>
+          <TrackedLink href="/company" ctaId="services_to_company" surface="services_hero">افهم نموذج الشركة</TrackedLink>
         </div>
       </section>
 
-      <section className="cards">
-        {services.map((service) => (
-          <article className="card" key={service.title}>
-            <span className="badge badge-gold">{service.sprint}</span>
-            <h2 style={{ fontSize: "1.45rem", marginTop: "var(--sp-4)" }}>{service.title}</h2>
-            <p><strong>Buyer:</strong> {service.buyer}</p>
-            <p><strong>Pain:</strong> {service.pain}</p>
-            <p><strong>Outcome:</strong> {service.outcome}</p>
-          </article>
-        ))}
+      {solutionGroups.map((group) => (
+        <section className="card" id={group.id} key={group.id}>
+          <p className="eyebrow">{group.label}</p>
+          <h2>{group.title}</h2>
+          <p><strong>Buyer:</strong> {group.buyer}</p>
+          <div className="cards" style={{ marginTop: "var(--sp-5)" }}>
+            {group.capabilities.map((capability) => (
+              <article className="card" key={capability}>
+                <h3>{capability}</h3>
+              </article>
+            ))}
+          </div>
+          <p style={{ marginTop: "var(--sp-5)" }}><strong>Outcome:</strong> {group.outcome}</p>
+        </section>
+      ))}
+
+      <section className="card card-gold">
+        <p className="eyebrow">Products & Scalable Assets</p>
+        <h2>نبني الخدمات أولًا حول evidence، ثم نحوّل المتكرر إلى منتجات.</h2>
+        <div className="cards">
+          {products.map((product) => (
+            <article className="card" key={product.title}>
+              <h3>{product.title}</h3>
+              <p>{product.text}</p>
+              <TrackedLink href={product.href} ctaId={product.ctaId} surface="services_products">اعرف أكثر</TrackedLink>
+            </article>
+          ))}
+        </div>
       </section>
 
-      <section className="card card-gold" style={{ textAlign: "center" }}>
-        <p className="eyebrow">Best first step</p>
-        <h2>لا تبدأ بكل شيء. اختر ألم واحد ونثبته خلال 7 أيام.</h2>
-        <p style={{ maxWidth: 680, margin: "0 auto" }}>
-          إذا الشركة عندها واتساب مزدحم، عروض بلا متابعة، أو فريق مبيعات غير منظم، نبدأ بـRevenue أو Follow-up Sprint.
-          إذا الإدارة نفسها تحتاج ذاكرة وقرار يومي، نبدأ بـCompany Brain.
+      <section className="card" style={{ textAlign: "center" }}>
+        <p className="eyebrow">Engagement Path</p>
+        <h2>Diagnostic → Discovery → Customer-Specific Sprint → Proof → Retainer / Product</h2>
+        <p style={{ maxWidth: 740, margin: "0 auto" }}>
+          لا يوجد fixed public pricing أو promise موحد لكل شركة. السعر والنطاق يتبعان المشكلة والبيانات والـrisk والنتيجة المقبولة بعد Qualified Discovery.
         </p>
         <div className="actions" style={{ justifyContent: "center" }}>
-          <Link href="/book">ابدأ التشخيص</Link>
+          <TrackedLink href="/book" ctaId="services_bottom_diagnostic" surface="services_bottom">ابدأ التشخيص</TrackedLink>
+          <TrackedLink href="/proof-vault" ctaId="services_to_proof" surface="services_bottom">شاهد Proof Model</TrackedLink>
         </div>
       </section>
     </main>

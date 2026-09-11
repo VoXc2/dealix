@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "policy": "ONE_COMPANY_LAW_NO_DUPLICATE_CONTROL_PLANES",
+  "adopt_existing": [
+    "posthog-js",
+    "sentry-sdk"
+  ],
+  "adopt_incrementally": [
+    "opentelemetry"
+  ],
+  "adopt_dev_tools": [
+    "lighthouse-ci",
+    "pa11y",
+    "lychee"
+  ],
+  "adopt_vps_optional": [
+    "uptime-kuma"
+  ],
+  "adopt_when_needed": [
+    "react-email"
+  ],
+  "hold": [
+    "listmonk",
+    "growthbook",
+    "formbricks"
+  ],
+  "do_not_duplicate": [
+    "umami"
+  ],
+  "admission_checks": [
+    "license",
+    "maintenance",
+    "security",
+    "data_boundary",
+    "resource_cost",
+    "canonical_owner",
+    "rollback",
+    "duplicate_capability"
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-09-10",
+  "launch_window_days": 90,
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "commercial_loop": "Signal -> Qualified Problem -> Execution Diagnostic -> Discovery -> Customer-Specific Quote -> Verified Payment -> Delivery -> Customer-Validated Proof",
+  "launch_principles": [
+    "category before campaign: Dealix is the parent B2B company; Dealix OS is the flagship product",
+    "evidence-led account selection before volume",
+    "founder point of view before generic corporate posting",
+    "owned website conversion before paid acquisition",
+    "warm/permissioned commercial conversations before cold-channel scale",
+    "services validate recurring pain before productization",
+    "measure cash and proof movement, not posting volume"
+  ],
+  "waves": [
+    {
+      "id": "W0_FOUNDATION",
+      "days": "0-14",
+      "objective": "Make the market-facing company coherent and measurable before amplification.",
+      "owners": ["dealix-pm", "dealix-engineer", "dealix-content"],
+      "actions": [
+        "ship parent-company information architecture after Release Trust and stacked-PR acceptance",
+        "verify /company /services /dealix-os /book conversion surfaces",
+        "activate PostHog conversion events for company->service->diagnostic paths",
+        "establish Canva Brand/GTM workspace and reusable visual templates",
+        "verify social provider identities; do not auto-publish before canary evidence",
+        "regenerate canonical social queue under corporate_brand_gtm_v1"
+      ],
+      "exit_gate": "brand/site contracts accepted + conversion measurement proven + social providers classified truthfully"
+    },
+    {
+      "id": "W1_FOUNDER_CATEGORY",
+      "days": "1-30",
+      "objective": "Own a recognizable point of view around governed business execution instead of competing as a generic AI agency.",
+      "owners": ["dealix-content", "dealix-sales"],
+      "primary_surface": "Founder LinkedIn",
+      "supporting_surfaces": ["Dealix LinkedIn Page", "dealix.me", "X after provider proof"],
+      "themes": [
+        "Execution Gap",
+        "Governed AI",
+        "Revenue Systems",
+        "Proof Before Claim",
+        "Saudi Opportunity"
+      ],
+      "conversion": "Execution Diagnostic",
+      "exit_gate": "qualified conversations and diagnostics attributable to content/market signals; no fixed follower target"
+    },
+    {
+      "id": "W2_GOVERNED_AI",
+      "days": "7-45",
+      "objective": "Turn Saudi AI governance and cybersecurity demand into a bounded commercial diagnostic and implementation path.",
+      "owners": ["dealix-sales", "dealix-delivery", "dealix-engineer"],
+      "buyer_roles": ["CIO", "CTO", "CDO", "AI Owner", "Cybersecurity", "Risk", "Transformation"],
+      "entry_offer": "Governed AI Execution Diagnostic",
+      "problem_hypotheses": [
+        "agent/tool inventory lacks clear authority boundaries",
+        "AI workflows lack evidence/rollback/evaluation controls",
+        "third-party/model risks are not mapped to operating decisions",
+        "governance exists as documents but not machine-enforced workflows"
+      ],
+      "proof_boundary": "readiness/implementation evidence only; do not claim NCA certification or compliance unless independently established",
+      "exit_gate": "real qualified problem -> discovery -> customer-specific scope"
+    },
+    {
+      "id": "W3_MARKET_ACCESS_PARTNERS",
+      "days": "15-60",
+      "objective": "Build a Saudi B2B market-access and partner route for technology vendors and local service providers.",
+      "owners": ["dealix-sales", "dealix-pm"],
+      "buyer_roles": ["Regional GM", "Market Entry", "Partnerships", "Enterprise Sales", "SI/MSP leadership"],
+      "entry_offer": "Saudi Market Access Sprint",
+      "system": [
+        "official market signal",
+        "ICP/account evidence",
+        "partner map",
+        "buyer/problem hypothesis",
+        "permissioned route",
+        "meeting/discovery",
+        "customer-specific commercial path"
+      ],
+      "exit_gate": "validated partner/buyer route or explicit no-go evidence"
+    },
+    {
+      "id": "W4_FATOORA_TECHNICAL_OPS",
+      "days": "20-75",
+      "objective": "Validate a technical integration-operations wedge around Phase Two e-invoicing readiness without acting as tax adviser.",
+      "owners": ["dealix-sales", "dealix-delivery", "dealix-engineer"],
+      "buyer_roles": ["CFO/Finance Systems", "IT", "ERP Owner", "Operations"],
+      "entry_offer": "Fatoora Technical Readiness & Exception Operations Diagnostic",
+      "scope_boundary": [
+        "system integration readiness",
+        "data/field mapping workflow",
+        "reconciliation and exception operations",
+        "operational monitoring and proof",
+        "exclude tax/legal advice and unsupported compliance certification"
+      ],
+      "exit_gate": "qualified technical problem + authority + system evidence + buyer access"
+    },
+    {
+      "id": "W5_PROOF_EXPANSION",
+      "days": "30-90",
+      "objective": "Turn delivery evidence into repeatability, referrals, retainers and productization.",
+      "owners": ["dealix-delivery", "dealix-sales", "dealix-content", "dealix-pm"],
+      "actions": [
+        "baseline every accepted engagement",
+        "produce weekly/final proof packs",
+        "seek explicit customer permission before public proof",
+        "extract reusable playbooks from repeated accepted outcomes",
+        "promote only repeated patterns toward Dealix OS/data-product/productized-service layers"
+      ],
+      "exit_gate": "customer-validated proof + repeatable delivery evidence"
+    }
+  ],
+  "channel_allocation": {
+    "founder_linkedin": "primary category creation and relationship surface",
+    "company_linkedin": "company authority, architecture, research and proof-safe updates",
+    "website": "owned conversion and knowledge hub",
+    "email": "warm/permissioned commercial continuation",
+    "whatsapp_business": "inbound and opted-in conversation continuation",
+    "x": "AI/technology signal amplification after provider proof",
+    "instagram": "visual repurposing after provider proof",
+    "tiktok_youtube_shorts": "executive education/reach after provider proof",
+    "paid_media": "off by default; separate spend authority and proven organic message required"
+  },
+  "scorecard": [
+    "qualified_conversations",
+    "execution_diagnostics",
+    "qualified_discoveries",
+    "customer_specific_quotes",
+    "verified_payments",
+    "time_to_first_value",
+    "customer_validated_proof",
+    "referrals_expansion",
+    "content_assisted_pipeline"
+  ]
+}

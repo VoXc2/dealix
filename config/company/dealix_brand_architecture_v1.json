@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-09-10",
+  "company": {
+    "name": "Dealix",
+    "category": "Saudi B2B Strategy, Systems, Intelligence & Products Company",
+    "positioning_ar": "شركة B2B سعودية تبني الاستراتيجية والأنظمة والذكاء والمنتجات لتحويل إشارات الأعمال إلى تنفيذ محكوم ونتائج قابلة للإثبات.",
+    "positioning_en": "Saudi B2B strategy, systems, intelligence and product company turning business signals into governed execution and measurable proof.",
+    "company_is_not": [
+      "a generic AI agency",
+      "a generic automation shop",
+      "a CRM clone",
+      "a single software product"
+    ]
+  },
+  "brand_architecture": {
+    "model": "BRANDED_HOUSE_WITH_FLAGSHIP_PRODUCT",
+    "parent_brand": "Dealix",
+    "practices": [
+      "Strategy & Transformation",
+      "Systems & Automation",
+      "Intelligence & Market Access",
+      "Trust, Governance & Proof"
+    ],
+    "product_layer": {
+      "flagship": "Dealix OS",
+      "category": "AI Business Operating System",
+      "rule": "Dealix OS is a product of Dealix; it must never be used as the complete definition of the parent company."
+    }
+  },
+  "message_hierarchy": [
+    "Dealix company promise: from business signal to governed execution and measurable proof",
+    "Strategic practices: Strategy, Systems, Intelligence, Trust/Proof",
+    "Flagship product: Dealix OS — AI Business Operating System",
+    "Commercial wedge: Revenue + Proof + Command",
+    "Entry motion: Execution Diagnostic -> Qualified Discovery -> Customer-Specific Outcome Sprint -> Proof Review"
+  ],
+  "visual_identity": {
+    "design_character": ["precise", "premium", "Saudi-enterprise", "technical", "evidence-led", "calm-confidence"],
+    "palette": {
+      "ink": "#0F172A",
+      "ink_2": "#111C2F",
+      "teal": "#164E63",
+      "teal_deep": "#0B3443",
+      "cyan": "#22D3EE",
+      "cyan_soft": "#67E8F9",
+      "cloud": "#F8FAFC",
+      "slate": "#475569",
+      "gold": "#D4AF37"
+    },
+    "typography": {
+      "arabic": "IBM Plex Sans Arabic",
+      "latin": "Inter / system sans",
+      "technical": "IBM Plex Mono"
+    },
+    "graphic_language": [
+      "signal grids",
+      "execution paths",
+      "proof receipts",
+      "subtle cyan data glow",
+      "deep ink command surfaces",
+      "high whitespace enterprise layouts"
+    ],
+    "avoid": [
+      "neon cyberpunk overload",
+      "generic robot imagery",
+      "fake dashboards presented as customer proof",
+      "stock-photo-first identity",
+      "unsubstantiated Saudi-first or market-leader claims"
+    ]
+  },
+  "truth_firewall": [
+    "research != relationship",
+    "public contact != consent",
+    "draft != sent",
+    "quote != invoice",
+    "invoice != payment",
+    "synthetic/demo != customer proof"
+  ]
+}
