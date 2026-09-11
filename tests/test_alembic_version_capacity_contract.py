@@ -26,6 +26,20 @@ def test_predeploy_does_not_execute_capacity_check_or_upgrade() -> None:
     assert "exit 75" in PREDEPLOY
 
 
+
+
+
+def test_capacity_checker_is_bounded_and_errors_are_redacted() -> None:
+    assert "DEFAULT_CONNECT_TIMEOUT_SECONDS" in CHECKER
+    assert "DEFAULT_COMMAND_TIMEOUT_SECONDS" in CHECKER
+    assert "DEFAULT_TOTAL_TIMEOUT_SECONDS" in CHECKER
+    assert "asyncio.wait_for" in CHECKER
+    assert "error_type={type(exc).__name__}" in CHECKER
+    assert "ALEMBIC_VERSION_CAPACITY_DETAIL=REDACTED" in CHECKER
+    assert "str(exc)" not in CHECKER
+    assert "repr(exc)" not in CHECKER
+
+
 def test_read_only_checker_has_no_schema_mutation() -> None:
     upper = CHECKER.upper()
     assert "ALTER TABLE" not in upper
