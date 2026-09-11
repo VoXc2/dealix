@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from dealix.commercial.relationship_graph import RelationshipGraph, RelationshipRecord, RelationshipStage
 from dealix.commercial.financial_os import FinancialOS, FinancialRecord, FinancialState
 from dealix.commercial.probability_engine import ProbBand
+from dealix.commercial.truth_types import EconomicTruth, TruthClass
 
 UNKNOWN = "UNKNOWN"
 
@@ -30,7 +31,17 @@ class RealisticMoneyNowCandidate(BaseModel):
     owner: str = "dealix-sales"
     founder_minutes: int = 15
     kill_condition: str = UNKNOWN
-    is_real: bool = False
+    is_real: bool = False  # relationship is real; economic value is not verified
+    value_truth_class: TruthClass = TruthClass.ESTIMATED
+
+    def expected_value_truth(self) -> EconomicTruth:
+        """Expected gross profit as economic truth — ESTIMATED range, never verified revenue."""
+        return EconomicTruth(
+            value=self.expected_gross_profit_sar,
+            truth_class=self.value_truth_class,
+            source="realistic_money_now",
+            evidence_ref=self.buyer_evidence if self.buyer_evidence != UNKNOWN else "",
+        )
 
 class RealisticMoneyNowEngine:
     def rank(self, graph: RelationshipGraph, financial: FinancialOS) -> list[RealisticMoneyNowCandidate]:
@@ -59,6 +70,7 @@ class RealisticMoneyNowEngine:
                 founder_minutes=15,
                 kill_condition="No reply after 2 follow-ups with value-add → PAUSE",
                 is_real=True,
+                value_truth_class=TruthClass.ESTIMATED,
             ))
         # Realistic: if no real relationships, return empty with honest UNKNOWN, not fake
         if not candidates:

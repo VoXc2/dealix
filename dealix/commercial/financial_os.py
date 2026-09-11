@@ -14,6 +14,12 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from dealix.commercial.truth_types import (
+    EconomicTruth,
+    ensure_verified_payment,
+    ensure_verified_revenue,
+)
+
 UNKNOWN = "UNKNOWN"
 
 # ─── Financial States ──────────────────────────────────────────────────
@@ -144,6 +150,12 @@ class FinancialOS:
         # Never equate quote with cash — state must be explicit
         if rec.state in (FinancialState.QUOTE_VALUE, FinancialState.INVOICE_VALUE) and rec.verified_at:
             raise ValueError("quote/invoice cannot be verified cash without PAYMENT_VERIFIED state")
+        if rec.state == FinancialState.PAYMENT_RECEIVED_UNVERIFIED and rec.verified_at:
+            raise ValueError("payment_received_unverified cannot carry verified_at")
+        if rec.state == FinancialState.PAYMENT_VERIFIED and not rec.verified_at:
+            raise ValueError("PAYMENT_VERIFIED requires verified_at")
+        if rec.state == FinancialState.REVENUE_RECOGNIZED and (not rec.verified_at or rec.evidence_ref == UNKNOWN):
+            raise ValueError("REVENUE_RECOGNIZED requires verified_at and evidence_ref")
         self.records.append(rec)
 
     def verified_cash(self) -> float:
@@ -249,5 +261,61 @@ class FinancialOS:
             financial_unknowns=unknowns,
             next_financial_action="load first verified payment evidence before forecasting" if not verified else "review receivables aging",
         )
+
+    def verify_payment_authority(self, truth: EconomicTruth) -> float:
+        """Canonical payment authority — delegates to ensure_verified_payment."""
+        return ensure_verified_payment(truth)
+
+    def verify_revenue_authority(self, truth: EconomicTruth) -> float:
+        """Canonical revenue authority — separate from payment (Payment != Revenue)."""
+        return ensure_verified_revenue(truth)
+
+    def real_pipeline_total(self, records: list[FinancialRecord] | None = None) -> float:
+        """Documented pipeline only: quote/invoice/due/pending. Never opportunity estimates."""
+        recs = records if records is not None else self.records
+        return sum(
+            r.amount_sar
+            for r in recs
+            if r.state
+            in (
+                FinancialState.QUOTE_VALUE,
+                FinancialState.INVOICE_VALUE,
+                FinancialState.PAYMENT_DUE,
+                FinancialState.PAYMENT_PENDING,
+            )
+        )
+
+    def estimated_pipeline_total(self, records: list[FinancialRecord] | None = None) -> float:
+        """Estimated pipeline: opportunity/expected values, probability-weighted, never verified cash."""
+        recs = records if records is not None else self.records
+        return sum(
+            r.amount_sar * r.probability
+            for r in recs
+            if r.state
+            in (
+                FinancialState.OPPORTUNITY_VALUE,
+                FinancialState.EXPECTED_CONTRACT_VALUE,
+                FinancialState.PROBABILITY_ADJUSTED_VALUE,
+            )
+        )
+
+    def classified_totals(self) -> dict[str, float]:
+        """Return truth-classified financial totals — never mix categories."""
+        return {
+            "verified_payment": self.verified_cash(),
+            "recognized_revenue": self._recognized_revenue_total(),
+            "real_pipeline": self.real_pipeline_total(),
+            "estimated_pipeline": self.estimated_pipeline_total(),
+            "quotes_outstanding": self.quotes_outstanding(),
+            "receivables": self.receivables(),
+        }
+
+    def _recognized_revenue_total(self) -> float:
+        recs = self.records
+        total = 0.0
+        for r in recs:
+            if r.state == FinancialState.REVENUE_RECOGNIZED:
+                total += r.amount_sar
+        return total
 
 __all__ = ["FinancialOS", "FinancialState", "FinancialRecord", "CashForecast", "FinancialCommandView", "OfferEconomics", "UNKNOWN"]

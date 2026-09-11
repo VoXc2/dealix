@@ -84,6 +84,12 @@ class SaaSControlPlane:
         return round((len(self.tenants) * sectors_covered * len(self.entitlements)) / 10, 2) if self.tenants else 0.0
 
     def to_dict(self) -> dict[str, Any]:
-        return {"tenants": len(self.tenants), "entitlements": len(self.entitlements), "billing": len(self.billing), "control_score": self.market_control_score()}
+        return {
+            "tenants": len(self.tenants),
+            "entitlements": len(self.entitlements),
+            "billing": len(self.billing),
+            "control_score": self.market_control_score(),
+            "control_score_basis": "structural_counts_not_financial",
+        }
 
 __all__ = ["SaaSControlPlane", "Tenant", "TenantTier", "SaaSEntitlement", "BillingRecord", "UNKNOWN"]

@@ -71,7 +71,7 @@ def main() -> int:
     from datetime import UTC, datetime
     fos.add_record(FinancialRecord(record_id="q1", state=FinancialState.QUOTE_VALUE, amount_sar=10000, probability=0.5))
     assert fos.verified_cash() == 0, "quote should not be cash"
-    fos.add_record(FinancialRecord(record_id="p1", state=FinancialState.PAYMENT_VERIFIED, amount_sar=5000, probability=1.0))
+    fos.add_record(FinancialRecord(record_id="p1", state=FinancialState.PAYMENT_VERIFIED, amount_sar=5000, probability=1.0, verified_at=datetime.now(UTC).isoformat(), evidence_ref="ev_universal_diag"))
     assert fos.verified_cash() == 5000
     print("Financial truth PASS")
     # DeepWIP
