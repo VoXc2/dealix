@@ -324,4 +324,6 @@ from dealix.commercial.marketplace_strategy import MarketplaceCandidate, Marketp
 from dealix.commercial.saas_foundation import BillingRecord, SaaSControlPlane, SaaSEntitlement, Tenant, TenantTier
 # SaaS Onboarding — expanded launch
 from dealix.commercial.saas_onboarding import OnboardingSession, OnboardingStep, SaaSOnboardingEngine
+# Launch Readiness — expanded launch verification
+from dealix.commercial.launch_readiness import LaunchReadiness, check as check_launch_readiness
 
