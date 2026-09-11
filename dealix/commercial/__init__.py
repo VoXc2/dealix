@@ -359,4 +359,6 @@ from dealix.commercial.sales_automation_hermes_openclaw import SalesAutomationEn
 # Communication & Social — self, complete, site ready, all platforms
 from dealix.commercial.communication_negotiation import CommunicationNegotiationEngine, CommunicationTask, NegotiationState
 from dealix.commercial.social_automation import ALL_PLATFORMS, SocialPlatform, get_all_platforms
+# Hermes Sector Diagnostic — in every sector Hermes can diagnose and convince
+from dealix.commercial.hermes_sector_diagnostic import HermesSectorDiagnostic
 
