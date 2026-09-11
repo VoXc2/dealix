@@ -148,12 +148,12 @@ const POLICY_CARDS: PolicyCard[] = [
 const METRIC_CARDS: MetricCard[] = [
   {
     id: "uptime",
-    valueAr: "99.9%",
-    valueEn: "99.9%",
-    labelAr: "وقت التشغيل",
-    labelEn: "Uptime",
-    descAr: "على مدار 90 يوماً الماضية",
-    descEn: "Over the past 90 days",
+    valueAr: "99.9% هدف",
+    valueEn: "99.9% Target",
+    labelAr: "هدف وقت التشغيل",
+    labelEn: "Uptime Target",
+    descAr: "هدف مستوى الخدمة (SLO) — يقاس عبر المراقبة المستمرة",
+    descEn: "Service level objective (SLO) — measured via continuous monitoring",
     icon: "S",
     color: "text-emerald-500",
   },
