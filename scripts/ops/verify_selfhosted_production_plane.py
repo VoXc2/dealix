@@ -15,10 +15,12 @@ def main() -> int:
         "127.0.0.1:18000:8000",
         "127.0.0.1:13000:3000",
         'profiles: ["local-db"]',
-        "/opt/dealix/control/secrets/selfhost.env",
-        "/opt/dealix/control/secrets/selfhost-web.env",
-        "/opt/dealix/control/secrets/selfhost-postgres.env",
-        "dealix-postgres:/var/lib/postgresql/data",
+        "POSTGRES_HOST_AUTH_METHOD: trust",
+        "dealix-postgres-canary:/var/lib/postgresql/data",
+        "APP_ENV: ${DEALIX_APP_ENV:-development}",
+        "DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}",
+        "EXTERNAL_SEND_ENABLED: \"false\"",
+        "PAYMENT_EXECUTION: \"0\"",
         "restart: unless-stopped",
     ]
     required_runner = [
@@ -38,11 +40,13 @@ def main() -> int:
     forbidden = [
         "0.0.0.0:18000:8000",
         "0.0.0.0:13000:3000",
+        "15432:5432",
         "docker compose down -v",
         "railway up",
         "railway redeploy",
         "railway variables",
         "RAILWAY_TOKEN",
+        "APP_ENV: production",
     ]
     present_forbidden = [x for x in forbidden if x in compose or x in runner]
 
