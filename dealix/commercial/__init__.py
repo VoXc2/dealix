@@ -315,4 +315,6 @@ from dealix.commercial.omnichannel_orchestrator import ChannelId, OmnichannelMes
 from dealix.commercial.arm_registry import ALL_ARMS, ArmHealth, CapabilityArm, get_active_arms
 # Low-touch products — automated delivery
 from dealix.commercial.low_touch_products.diagnostic_product import DiagnosticProductEngine
+# Content Factory — proof atomization
+from dealix.commercial.content_factory import ContentAtom, ContentFactory
 
