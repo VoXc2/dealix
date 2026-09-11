@@ -290,3 +290,6 @@ from dealix.commercial.channel_registry import Channel, ChannelRegistry, Channel
 from dealix.commercial.consent_registry import ConsentRecord, ConsentRegistry, ConsentState
 from dealix.commercial.relationship_graph import RelationshipGraph, RelationshipRecord, RelationshipStage
 
+# Phase B — Website Intelligence
+from dealix.commercial.ai_concierge import AIConcierge, ConciergeRequest, ConciergeResponse
+from dealix.commercial.diagnostic_self_serve import DiagnosticInput, DiagnosticOutput, SelfServeDiagnostic
