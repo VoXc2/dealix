@@ -336,4 +336,6 @@ from dealix.commercial.remaining_plans_executor import RemainingPlansExecutor
 from dealix.commercial.final_expanded_launch import FinalExpandedLaunch
 # Legacy Adapters — best-form integration, One Company
 from dealix.commercial.legacy_adapters import LEGACY_PROOF_AVAILABLE, get_proof_ledger
+# Next Expansion — continuous, never stops
+from dealix.commercial.next_expansion import NextExpansion
 
