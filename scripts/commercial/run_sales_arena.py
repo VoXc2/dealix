@@ -8,12 +8,17 @@ import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from dealix.company_os.sales_arena import run_sales_arena
+from dealix.company_os.sales_arena import (
+    ArenaRun,
+    DEFAULT_CHALLENGES,
+    run_sales_arena,
+)
 
 
 def _parse_args() -> argparse.Namespace:
@@ -26,6 +31,47 @@ def _parse_args() -> argparse.Namespace:
         default=Path("reports/company_targeting/sales_arena"),
     )
     return parser.parse_args()
+
+
+async def _run_isolated_arena(*, router: Any | None = None) -> ArenaRun:
+    """Run each adversarial challenge with a fresh conversation context.
+
+    The five cases are independent evaluation cases, not one customer thread.
+    Replaying previous model answers into later cases increases CPU inference
+    latency and makes scores order-dependent. Each turn therefore receives only
+    its own scenario evidence + challenge while still using the same router.
+    """
+
+    turns = []
+    first_run: ArenaRun | None = None
+    for challenge in DEFAULT_CHALLENGES:
+        run = await run_sales_arena(router=router, challenges=(challenge,))
+        if first_run is None:
+            first_run = run
+        turns.extend(run.turns)
+
+    if first_run is None:
+        raise RuntimeError("sales_arena_has_no_challenges")
+
+    passed = sum(turn.passed for turn in turns)
+    average = round(sum(turn.total_score for turn in turns) / max(1, len(turns)), 2)
+    recommendation = (
+        "eligible_for_founder_loopback"
+        if passed == len(turns) and average >= 85
+        else "keep_in_shadow_mode"
+    )
+    return ArenaRun(
+        arena_version=first_run.arena_version,
+        scenario_id=first_run.scenario_id,
+        mode=first_run.mode,
+        provider_available=first_run.provider_available,
+        turns=tuple(turns),
+        average_score=average,
+        passed_turns=passed,
+        total_turns=len(turns),
+        production_recommendation=recommendation,
+        external_actions_performed=0,
+    )
 
 
 def _markdown(payload: dict) -> str:
@@ -112,7 +158,7 @@ def main() -> int:
     args = _parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     try:
-        run = asyncio.run(run_sales_arena())
+        run = asyncio.run(_run_isolated_arena())
     except RuntimeError as exc:
         if str(exc) != "no_llm_provider_configured":
             raise
