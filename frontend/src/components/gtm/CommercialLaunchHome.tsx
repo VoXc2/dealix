@@ -58,19 +58,19 @@ const FEATURES = [
 ];
 
 const LOGOS = [
-  { initials: "NA", name: "نماء للاستثمار" },
-  { initials: "RS", name: "رؤية للخدمات" },
-  { initials: "WA", name: "واحة التقنية" },
-  { initials: "SA", name: "سامي للتجارة" },
-  { initials: "MB", name: "مسار البناء" },
-  { initials: "DF", name: "دار الفهد" },
+  { initials: "✓", name: "تشخيص 7 أيام" },
+  { initials: "✓", name: "Proof Pack" },
+  { initials: "✓", name: "موافقة أولاً" },
+  { initials: "✓", name: "Audit Log" },
+  { initials: "✓", name: "PDPL أصيل" },
+  { initials: "✓", name: "ZATCA جاهز" },
 ];
 
 const STATS = [
-  { valueAr: "٣٫٢×", valueEn: "3.2x", labelAr: "نمو الإيرادات", labelEn: "Revenue Growth", target: 3.2 },
-  { valueAr: "+٥٠٠", valueEn: "+500", labelAr: "عميل راضٍ", labelEn: "Happy Clients", target: 500 },
-  { valueAr: "٩٩٫٩٪", valueEn: "99.9%", labelAr: "وقت التشغيل", labelEn: "Uptime", target: 99.9 },
-  { valueAr: "٤٨س", valueEn: "48h", labelAr: "وقت الإعداد", labelEn: "Setup Time", target: 48 },
+  { valueAr: "L0-L5", valueEn: "L0-L5", labelAr: "مستويات الأدلة", labelEn: "Evidence Levels", target: 5 },
+  { valueAr: "موافقة", valueEn: "Approval", labelAr: "بوابة موافقة لكل إرسال", labelEn: "Approval gate per send", target: 1 },
+  { valueAr: "Audit", valueEn: "Audit", labelAr: "سجل تدقيق كامل", labelEn: "Full audit log", target: 1 },
+  { valueAr: "AR+EN", valueEn: "AR+EN", labelAr: "عربي + إنجليزي أصيل", labelEn: "Native AR+EN", target: 2 },
 ];
 
 const PRICING = [
@@ -91,10 +91,10 @@ const PRICING = [
   {
     tierAr: "النمو",
     tierEn: "Growth",
-    priceAr: "٢,٩٩٩ ر.س",
-    priceEn: "2,999 SAR",
-    periodAr: "شهرياً",
-    periodEn: "per month",
+    priceAr: "السعر بعد جلسة الاكتشاف",
+    priceEn: "Quote after discovery",
+    periodAr: "بعد نطاق موثق",
+    periodEn: "after a documented scope",
     featuresAr: ["كل ميزات المبدئي", "CRM محكوم", "تقارير أسبوعية", "دعم أولوية", "لوحة تحليلية", "امتثال ZATCA"],
     featuresEn: ["Everything in Starter", "Governed CRM", "Weekly reports", "Priority support", "Analytics dashboard", "ZATCA compliance"],
     popular: true,
@@ -120,30 +120,30 @@ const PRICING = [
 
 const TESTIMONIALS = [
   {
-    nameAr: "أحمد الغامدي",
-    nameEn: "Ahmad Al-Ghamdi",
-    companyAr: "واحة التقنية، الرياض",
-    companyEn: "Oasis Tech, Riyadh",
-    quoteAr: "كشف Dealix تسرّب إيراد بنسبة 18% لم نكن نعلم بوجوده. أول Proof Pack كان يستحق أضعاف تكلفته.",
-    quoteEn: "Dealix uncovered 18% revenue leakage we didn't know existed. The first Proof Pack was worth many times its cost.",
+    nameAr: "منهجية الإثبات",
+    nameEn: "Proof Methodology",
+    companyAr: "L0-L5 فصل النشاط عن القيمة",
+    companyEn: "L0-L5 activity vs value separation",
+    quoteAr: "كل تنفيذ يحمل دليلاً: مصدر، موافقة، سجل تدقيق. لا نرقّي عميلاً إلى CAPTURED REVENUE قبل PAYMENT_VERIFIED.",
+    quoteEn: "Every execution carries evidence: source, approval, audit log. No promotion to captured revenue before PAYMENT_VERIFIED.",
     stars: 5,
   },
   {
-    nameAr: "سارة المطيري",
-    nameEn: "Sara Al-Mutairi",
-    companyAr: "مسار البناء، جدة",
-    companyEn: "Masar Construction, Jeddah",
-    quoteAr: "جهّزنا لـ ZATCA Wave 24 في أقل من أسبوعين. الفريق احترافي والنتائج قابلة للقياس.",
-    quoteEn: "They had us ZATCA Wave 24 ready in under two weeks. Professional team, measurable results.",
+    nameAr: "حوكمة PDPL",
+    nameEn: "PDPL Governance",
+    companyAr: "موافقة قبل أي إرسال خارجي",
+    companyEn: "Approval before any external send",
+    quoteAr: "Dealix داخلي يبني المسودات؛ الخارجي يبقى خلف Approval Center. لا scraping ولا تواصل بارد.",
+    quoteEn: "Dealix builds drafts internally; external stays behind Approval Center. No scraping, no cold outreach.",
     stars: 5,
   },
   {
-    nameAr: "محمد القحطاني",
-    nameEn: "Mohammed Al-Qahtani",
-    companyAr: "دار الفهد للخدمات، الدمام",
-    companyEn: "Dar Al-Fahd Services, Dammam",
-    quoteAr: "لوحة التحكم التحليلية غيّرت طريقة اتخاذ قراراتنا. بيانات واضحة، governance محكم.",
-    quoteEn: "The analytics dashboard transformed how we make decisions. Clear data, tight governance.",
+    nameAr: "مسار التوسع",
+    nameEn: "Expansion Path",
+    companyAr: "تشخيص → Pilot 30 يوم → Proof → توسع",
+    companyEn: "Diagnostic → 30-day Pilot → Proof → Expand",
+    quoteAr: "وسّع فقط بعد Proof Pack أسبوعي وقبول عميل موثق. كل توسع له kill/stop-loss واضح.",
+    quoteEn: "Expand only after weekly Proof Pack and documented client acceptance. Every expansion has a clear kill/stop-loss.",
     stars: 5,
   },
 ];
@@ -406,7 +406,7 @@ export function CommercialLaunchHome() {
       {/* ------------------------------------------------------------------ */}
       <section className="bg-navy-600 border-y border-white/5 py-10 overflow-hidden">
         <p className="text-center text-xs font-semibold text-white/40 uppercase tracking-widest mb-6">
-          {isAr ? "يثق بنا" : "Trusted by"}
+          {isAr ? "ماذا نبني" : "What we build"}
         </p>
         <div className="relative">
           <motion.div
@@ -631,10 +631,10 @@ export function CommercialLaunchHome() {
         >
           <motion.div variants={fadeUp} className="text-center mb-12">
             <p className="text-gold-400 text-sm font-semibold uppercase tracking-widest mb-3">
-              {isAr ? "آراء عملائنا" : "Client Stories"}
+              {isAr ? "كيف نثبت القيمة" : "How we prove value"}
             </p>
             <h2 className="text-3xl md:text-4xl font-bold">
-              {isAr ? "ما يقوله عملاؤنا" : "What our clients say"}
+              {isAr ? "منهجية الإثبات المُحكَمة" : "Governed proof methodology"}
             </h2>
           </motion.div>
 

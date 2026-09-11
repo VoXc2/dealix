@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from dealix.commercial.economic_cell import (
     EconomicCell,
@@ -51,12 +51,15 @@ class StateTransition(BaseModel):
     decided_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
     notes: str = ""
 
-    def __post_init__(self) -> None:
-        if not self.transition_id:
-            payload = self.model_dump(mode="json", exclude={"transition_id", "decided_at"})
-            object.__setattr__(self, "transition_id", hashlib.sha256(
+    @model_validator(mode="before")
+    @classmethod
+    def generate_transition_id(cls, data: Any) -> Any:
+        if isinstance(data, dict) and not data.get("transition_id"):
+            payload = {k: v for k, v in data.items() if k not in {"transition_id", "decided_at"}}
+            data["transition_id"] = hashlib.sha256(
                 json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
-            ).hexdigest()[:16])
+            ).hexdigest()[:16]
+        return data
 
 
 # ─── Promotion Gate Evaluators ────────────────────────────────────────
