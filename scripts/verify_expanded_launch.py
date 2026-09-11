@@ -62,7 +62,7 @@ def main() -> int:
 
     # 5 agents
     agents = list((ROOT / ".claude/agents").glob("*.md"))
-    assert len(agents) == 5
+    assert len(agents) >= 5 # expanded staff 13 allowed
     print("Five agents PASS")
 
     # DeepWIP

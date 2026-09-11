@@ -100,7 +100,9 @@ def main() -> int:
     # Actually check workspace
     agents = list(Path(" .claude/agents".replace(" ", "")).glob("*.md")) if False else list(Path("/opt/dealix/workspace/dealix/.claude/agents").glob("*.md"))
     print(f"Agents {len(agents)}: {[a.name for a in agents]}")
-    assert len(agents) == 5, f"expected 5 got {len(agents)}"
+    assert len(agents) >= 5, f"expected at least 5 got {len(agents)}"
+    # Core 5 must exist, expanded staff (13) allowed per EXPANDED_STAFF_REGISTRY
+    assert {"dealix-pm.md","dealix-sales.md","dealix-delivery.md","dealix-engineer.md","dealix-content.md"}.issubset({a.name for a in agents})
     print("Five agents PASS")
     # OpenCode
     import json
