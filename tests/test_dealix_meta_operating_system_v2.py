@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import subprocess
@@ -98,7 +98,7 @@ def test_command_room_requires_meta_control_before_agents() -> None:
     assert "DEALIX_META_CONTROL_BOUND" in text
     assert "DEALIX_PERMANENT_AGENT_ID" in text
     assert "DEALIX_UNIVERSAL_L5" in text
-    assert "META_CONTROL_BOUND_TO_ALL_AGENT_LANES=true" in text
+    assert "META_CONTROL_BOUND_TO_ALL_EXECUTED_AGENT_LANES=true" in text
     for agent in CANONICAL_AGENTS:
         assert agent in text
 
@@ -121,3 +121,4 @@ def test_runtime_receipt_does_not_overclaim_future_controls() -> None:
     assert "TARGET_ARCHITECTURE_NOT_CLAIMED_ACTIVE" in text
     assert "TRIGGERED_FUTURE_OPTION_NOT_ACTIVE" in text
     assert "EXTERNAL_EFFECTS=NONE_BY_META_CONTROL" in text
+
