@@ -16,6 +16,7 @@ if [[ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
 fi
 
 export DEALIX_GIT_SHA="$EXPECTED_SHA"
+export COMPOSE_PROJECT_NAME="dealix-selfhost-${EXPECTED_SHA:0:12}"
 docker compose -f "$COMPOSE_FILE" --profile ingress-canary up -d ingress
 
 probe_host() {
@@ -55,5 +56,6 @@ if ss -ltn | grep -Eq '(^|[[:space:]])0\.0\.0\.0:18081([[:space:]]|$)'; then
 fi
 
 echo "SELFHOST_INGRESS_CANARY=PASS"
+echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
 echo "INGRESS=http://127.0.0.1:18081"
 echo "PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER"
