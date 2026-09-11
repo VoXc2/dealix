@@ -4,6 +4,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 import dealix.company_os.founder_reply_bot as bot
 from dealix.company_os.founder_reply_bot import InboundConversationEvent
 
@@ -75,6 +77,31 @@ def test_binding_price_or_discount_is_never_promoted_to_action_packet(monkeypatc
     )
     result = bot.prepare_founder_reply(
         _event(message_text="What is your price?"),
+        now=datetime(2026, 9, 10, 0, 0, tzinfo=UTC),
+    )
+
+    assert result.material_commitment_detected is True
+    assert result.requires_human_review is True
+    assert result.approval_packet is None
+    assert result.provider_execution_allowed is False
+    assert result.next_action == "FOUNDER_REVIEW_MATERIAL_COMMERCIAL_TERM"
+
+
+@pytest.mark.parametrize(
+    "model_text",
+    [
+        "We can do this for $10,000.",
+        "The fee is 10,000 USD.",
+        "We accept Net 30 terms.",
+        "We agree to the payment terms.",
+        "السعر 10,000 ريال.",
+        "نقبل شروط الدفع صافي 30.",
+    ],
+)
+def test_material_currency_or_legal_terms_always_require_founder_review(monkeypatch, model_text: str) -> None:
+    monkeypatch.setattr(bot, "route_task", lambda *args, **kwargs: _decision(model_text))
+    result = bot.prepare_founder_reply(
+        _event(message_text="Can you confirm the commercial terms?"),
         now=datetime(2026, 9, 10, 0, 0, tzinfo=UTC),
     )
 
