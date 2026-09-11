@@ -77,8 +77,13 @@ def templates_as_packets() -> dict[str, dict[str, Any]]:
         packets[tid] = {
             "agent": tpl.get("agent"),
             "cadence": tpl.get("cadence") or "daily",
+            "priority": tpl.get("priority") or "P1",
+            "title_ar": tpl.get("title_ar"),
+            "arm_ids": tpl.get("arm_ids") or [],
             "inputs": tpl.get("inputs") or [],
             "outputs": tpl.get("outputs") or [],
+            "success_metrics": tpl.get("success_metrics") or [],
+            "guardrails": tpl.get("guardrails") or [],
             "verify_commands": tpl.get("verify_commands") or [],
         }
     return packets

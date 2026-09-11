@@ -18,12 +18,15 @@ def main() -> int:
     p.add_argument("--cadence", choices=("daily", "weekly", "all"), default="daily")
     args = p.parse_args()
 
-    if not PACKETS_YAML.is_file():
-        print(f"MISSING: {PACKETS_YAML}", file=sys.stderr)
-        return 1
+    from dealix.commercial_ops.founder_agent_tasks import templates_as_packets
 
-    data = yaml.safe_load(PACKETS_YAML.read_text(encoding="utf-8")) or {}
-    packets = data.get("packets") or {}
+    packets = templates_as_packets()
+    if not packets and PACKETS_YAML.is_file():
+        data = yaml.safe_load(PACKETS_YAML.read_text(encoding="utf-8")) or {}
+        packets = data.get("packets") or {}
+    if not packets:
+        print("MISSING: canonical agent task queue and legacy packets are empty", file=sys.stderr)
+        return 1
 
     print("== Dealix agent work packets ==")
     print("  guide: docs/ops/AGENT_DAILY_WORK_PACKETS_AR.md")
@@ -38,6 +41,13 @@ def main() -> int:
             continue
         agent = spec.get("agent") or "?"
         print(f"## {packet_id} → {agent} ({cadence})")
+        arms = spec.get("arm_ids") or []
+        if arms:
+            print(f"  ARMS: {', '.join(arms)}")
+        for metric in spec.get("success_metrics") or []:
+            print(f"  KPI: {metric}")
+        for guard in spec.get("guardrails") or []:
+            print(f"  GUARD: {guard}")
         for inp in spec.get("inputs") or []:
             print(f"  IN:  {inp}")
         for out in spec.get("outputs") or []:
