@@ -21,3 +21,24 @@ def test_source_bound_unmapped_target_stays_radar_only():
 
 def test_complete_evidence_mapping_can_enter_deep_wip():
     assert m.classify(base(),ARMS,DIMS)==('DEEP_WIP_ELIGIBLE',[])
+
+def test_select_deep_hard_caps_at_three():
+    rows=[{'candidate_id':str(i),'status':'DEEP_WIP_ELIGIBLE'} for i in range(5)]
+    assert len(m.select_deep(rows,3))==3
+    assert [x['candidate_id'] for x in m.select_deep(rows,3)]==['0','1','2']
+
+def test_legacy_target_scores_feed_radar_metrics_without_new_commercial_facts(tmp_path):
+    old_candidates,old_targets=m.DEFAULT_CANDIDATES,m.DEFAULT_TARGETS
+    try:
+        m.DEFAULT_CANDIDATES=tmp_path/'missing.json'
+        m.DEFAULT_TARGETS=tmp_path/'targets.json'
+        m.DEFAULT_TARGETS.write_text(json.dumps([{
+            'id':'legacy-1','source':'evidence://legacy','evidence_refs':['ev'],
+            'evidence_score':70,'urgency_score':60,'access_score':40,'fit_score':80
+        }]))
+        rows,_=m.candidate_source(None)
+        assert rows[0]['metrics']=={'evidence_strength':70,'urgency':60,'buyer_access':40,'strategic_reuse':80}
+        assert rows[0]['validated_problem'] is False
+        assert rows[0]['relationship_state']=='RESEARCH'
+    finally:
+        m.DEFAULT_CANDIDATES, m.DEFAULT_TARGETS = old_candidates,old_targets
