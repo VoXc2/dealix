@@ -98,3 +98,24 @@ def test_next_axis_and_progress() -> None:
     assert asmt.next_axis([]) == AXIS_ORDER[0]
     assert asmt.progress([]) == (0, 10)
     assert asmt.next_axis(list(AXIS_ORDER)) is None
+
+
+def test_customer_facing_recommendations_never_expose_legacy_fixed_price_offers() -> None:
+    for idx in range(4):
+        answers = _answers(idx)
+        score = asmt.score_assessment(answers)
+        rec = asmt.recommend_offer(score, answers)
+        assert rec["offer_id"] in {"free_mini_diagnostic", "revenue_command_pilot_30d"}
+        rendered = str(rec)
+        for retired_price in ("1500", "2999", "7500"):
+            assert retired_price not in rendered
+
+
+def test_high_readiness_routes_to_discovery_then_customer_specific_pilot_quote() -> None:
+    answers = _answers(0)
+    score = asmt.score_assessment(answers)
+    rec = asmt.recommend_offer(score, answers)
+    assert rec["offer_id"] == "revenue_command_pilot_30d"
+    rationale = " ".join(rec["rationale_ar"])
+    assert "customer-specific quote" in rationale
+    assert "discovery" in rationale

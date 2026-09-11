@@ -1,0 +1,249 @@
+{
+  "schema_version": 2,
+  "effective_date": "2026-09-11",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "precedence": "OVERRIDES_CONFLICTING_LOWER_LEVEL_OPERATING_LOGIC",
+  "replaces_existing_constitution": false,
+  "objective": "AUTONOMOUS_BUSINESS_THROUGHPUT",
+  "permanent_agents": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content"
+  ],
+  "deep_wip_max": 3,
+  "decision_quality": {
+    "distinctions": ["DATA", "EVIDENCE", "BELIEF", "PREDICTION", "DECISION", "ACTION", "RESULT"],
+    "material_decision_fields": ["decision_id", "decision", "decision_owner", "evidence", "assumptions", "confidence", "expected_result", "expected_value", "downside", "reversibility", "decision_deadline", "prediction", "actual_result", "calibration_error"],
+    "prediction_is_fact": false,
+    "inference_is_customer_evidence": false
+  },
+  "economic_dispatcher": {
+    "normalization": {"min": 0.0, "max": 1.0},
+    "value_weights": {
+      "cash_impact": 0.30,
+      "customer_value": 0.20,
+      "proof_value": 0.15,
+      "constraint_relief": 0.15,
+      "founder_time_saved": 0.10,
+      "strategic_reuse": 0.10
+    },
+    "execution_drag_weights": {
+      "time_cost": 0.25,
+      "cash_cost": 0.20,
+      "failure_risk": 0.20,
+      "irreversibility": 0.15,
+      "complexity_cost": 0.10,
+      "maintenance_cost": 0.10
+    },
+    "confidence_factor": ["EVIDENCE_CONFIDENCE", "DATA_FRESHNESS"],
+    "priority_multipliers": ["CONFIDENCE_FACTOR", "CONSTRAINT_FIT", "URGENCY_FACTOR"],
+    "drag_floor": 0.20,
+    "close_score_threshold": 0.10,
+    "tie_breakers": ["HIGHER_REVERSIBILITY", "FASTER_FEEDBACK", "HIGHER_CUSTOMER_LEARNING", "LOWER_FOUNDER_ATTENTION", "STRONGER_PROOF_POTENTIAL"],
+    "score_is_decision_aid_not_truth": true
+  },
+  "value_of_information": {
+    "enabled": true,
+    "formula": "EXPECTED_DECISION_LOSS_AVOIDED - INFORMATION_COST",
+    "research_first_when_voi_exceeds_immediate_execution_advantage": true,
+    "anti_procrastination": true
+  },
+  "reversibility": {
+    "classes": ["R0", "R1", "R2", "R3", "R4", "R5"],
+    "descriptions": {
+      "R0": "READ_ONLY",
+      "R1": "INSTANTLY_REVERSIBLE",
+      "R2": "REVERSIBLE_WITH_SMALL_COST",
+      "R3": "REVERSIBLE_WITH_MATERIAL_COST",
+      "R4": "DIFFICULT_TO_REVERSE",
+      "R5": "EFFECTIVELY_IRREVERSIBLE"
+    },
+    "high_uncertainty_r4_r5": "DEFAULT_HOLD",
+    "high_confidence_r0_r1": "DEFAULT_EXECUTE"
+  },
+  "state_machines": {
+    "opportunity": ["RESEARCH_ONLY", "KNOWN", "INTERACTION", "QUALIFIED_PROBLEM", "DIAGNOSTIC", "DISCOVERY", "QUOTE_READY", "QUOTED", "PAYMENT_PENDING", "PAID", "DELIVERY", "PROOF", "EXPANSION"],
+    "production": ["SOURCE_ACCEPTED", "BUILD_ACCEPTED", "RELEASE_CANDIDATE", "DEPLOYED", "HEALTHY", "RELEASE_PARITY_PROVEN", "BUSINESS_FLOW_PROVEN", "PRODUCTION_GREEN"],
+    "production_degraded_states": ["DEGRADED", "ROLLBACK_ACTIVE"],
+    "financial": ["OPPORTUNITY_VALUE", "QUOTE", "ACCEPTED_COMMERCIAL_TERMS", "INVOICE", "PAYMENT_REQUESTED", "PAYMENT_PENDING", "PAYMENT_VERIFIED", "CASH_AVAILABLE", "REVENUE_RECOGNITION_STATE"],
+    "transition_requires": ["from_state", "to_state", "required_evidence", "authority", "side_effect", "receipt"],
+    "illegal_transition_action": "BLOCK"
+  },
+  "identity": {
+    "separate_agent_and_workload_identity": true,
+    "material_binding_fields": ["agent_id", "workload_id", "environment", "code_version", "policy_version", "tool", "authority"],
+    "target_authority_equation": ["LOGICAL_AGENT_IDENTITY", "CRYPTOGRAPHIC_WORKLOAD_IDENTITY", "POLICY", "EXECUTION_AUTHORITY"],
+    "near_term": ["SIGNED_RUNTIME_IDENTITY", "RELEASE_SHA_BINDING", "SERVICE_IDENTITY", "SHORT_LIVED_CREDENTIALS", "PROCESS_ISOLATION", "SECRET_SCOPING"],
+    "spiffe_spire": {"status": "TRIGGERED_OPTION_ONLY", "auto_install": false, "scale_triggers": ["MULTIPLE_HOSTS", "MULTIPLE_TENANTS", "CUSTOMER_CONTROLLED_ENVIRONMENTS", "EXTERNAL_AGENT_FEDERATION", "HIGH_VALUE_ENTERPRISE_ACTIONS"]}
+  },
+  "runtime_control": {
+    "hooks": ["IDENTIFY", "INSPECT", "TRACE", "ALLOW", "DENY", "PAUSE", "CANCEL", "RATE_LIMIT", "BUDGET", "REVOKE", "KILL"],
+    "enforcement_points": ["BEFORE_TOOL_CALL", "BEFORE_EXTERNAL_ACTION", "BEFORE_PRIVILEGE_ESCALATION", "BEFORE_DATA_ACCESS", "BEFORE_MATERIAL_COMMITMENT"],
+    "prompt_policy_only_is_sufficient": false,
+    "runtime_policy_required": true
+  },
+  "policy_receipt": {
+    "fields": ["policy_decision_id", "agent_id", "workload_id", "resource", "requested_action", "risk", "policy_version", "decision", "reason", "authority_source", "timestamp"],
+    "decisions": ["ALLOW", "DENY", "REQUIRE_APPROVAL", "REQUIRE_MORE_EVIDENCE", "RATE_LIMIT", "QUARANTINE"]
+  },
+  "planes": ["INTELLIGENCE_PLANE", "CONTROL_PLANE", "EXECUTION_PLANE", "DATA_PLANE", "PROOF_PLANE"],
+  "plane_ownership": {
+    "INTELLIGENCE_PLANE": ["LLM", "REASONING", "RANKING", "PLANNING"],
+    "CONTROL_PLANE": ["IDENTITY", "POLICY", "AUTHORIZATION", "BUDGETS", "SCHEDULER", "KILL_SWITCHES"],
+    "EXECUTION_PLANE": ["TOOLS", "WORKERS", "CONNECTORS", "JOBS"],
+    "DATA_PLANE": ["COMPANY_BRAIN", "CUSTOMER_DATA", "GRAPHS", "OPERATIONAL_STATE"],
+    "PROOF_PLANE": ["RECEIPTS", "AUDIT", "OUTCOMES", "CUSTOMER_VALIDATION"]
+  },
+  "mcp": {
+    "architecture": ["AGENT", "DEALIX_MCP_GATEWAY", "AUTHENTICATE_WORKLOAD", "RESOLVE_TENANT", "AUTHORIZE", "APPLY_POLICY", "APPLY_COST_RATE_BUDGET", "TOOL", "RECEIPT", "TELEMETRY"],
+    "prefer_stateless_where_practical": true,
+    "protocol_session_is_business_state": false,
+    "protocol_session_is_customer_state": false,
+    "protocol_session_is_authority_state": false,
+    "protocol_session_is_economic_state": false
+  },
+  "durable_tasks": {
+    "fields": ["task_id", "creator", "owner", "state", "expected_output", "budget", "deadline", "checkpoint", "cancel_policy", "authority", "evidence", "result"],
+    "states": ["QUEUED", "RUNNING", "WAITING", "BLOCKED", "CANCELLING", "CANCELLED", "FAILED", "SUCCEEDED"],
+    "survives": ["MODEL_RESTART", "PROCESS_RESTART", "AGENT_RESTART", "MCP_RECONNECT", "PROVIDER_FAILOVER"]
+  },
+  "a2a": {
+    "internal_five_agents_transport": "COMPANY_OS",
+    "external_use": "WHEN_JUSTIFIED",
+    "agent_card_is_authority": false,
+    "requirements": ["VERIFIED_AGENT_CARD", "TRUSTED_ISSUER_OR_SOURCE", "CAPABILITY_VALIDATION", "TENANT_MAPPING", "POLICY_EVALUATION", "SCOPED_CREDENTIALS", "RATE_LIMITS", "ECONOMIC_LIMITS", "AUDIT", "REVOCATION"]
+  },
+  "telemetry": {
+    "standard": "OPENTELEMETRY_COMPATIBLE_WHERE_PRACTICAL",
+    "observe": ["AGENT_INVOCATION", "MODEL_CALLS", "TOOL_CALLS", "RETRIEVAL", "POLICY", "APPROVAL", "PROVIDER_CALLS", "BUSINESS_RESULT"],
+    "dealix_attributes": ["dealix.opportunity.id", "dealix.customer.id", "dealix.action.id", "dealix.proof.id", "dealix.authority.level", "dealix.policy.decision", "dealix.business.outcome", "dealix.cash.impact"],
+    "sensitive_payload_default": false
+  },
+  "business_observability": {
+    "flow": ["MARKET_SIGNAL", "OPPORTUNITY", "DIAGNOSTIC", "QUOTE", "PAYMENT", "DELIVERY", "PROOF"],
+    "cycle_metrics": ["TIME_SIGNAL_TO_INTERACTION", "TIME_INTERACTION_TO_PROBLEM", "TIME_PROBLEM_TO_QUOTE", "TIME_QUOTE_TO_PAYMENT", "TIME_PAYMENT_TO_VALUE", "TIME_VALUE_TO_PROOF"]
+  },
+  "budgets": {
+    "dimensions": ["TOKENS", "API_COST", "CPU", "RAM", "EXECUTION_TIME", "TOOL_CALLS", "SEARCHES", "CRAWL_PAGES", "EMAIL_DRAFTS", "CUSTOMER_ACTIONS", "PARALLELISM", "RETRY_COUNT"],
+    "exhaustion_state": "BUDGET_BLOCKED",
+    "agent_self_grant_unlimited_budget": false
+  },
+  "marginal_value": {"stop_or_replan_when_marginal_value_below_cost": true},
+  "stop_loss": {
+    "dimensions": ["TIME_STOP", "COST_STOP", "RISK_STOP", "EVIDENCE_STOP", "CUSTOMER_STOP"],
+    "immortal_initiatives_allowed": false
+  },
+  "customer_trust_budget": {
+    "consume": ["UNNECESSARY_MESSAGES", "MISSED_COMMITMENTS", "POOR_HANDOFFS", "INCORRECT_CLAIMS", "UNRELIABLE_PRODUCT", "SLOW_RESPONSE", "REPEATED_QUESTIONS", "UNEXPLAINED_AI_ACTIONS"],
+    "increase": ["ACCURACY", "RELIABILITY", "CLARITY", "SPEED", "EVIDENCE", "TRANSPARENCY", "CONSISTENT_DELIVERY"]
+  },
+  "relationship_graph": {
+    "contact_is_relationship": false,
+    "states": ["NONE", "PUBLIC_ONLY", "PAST_INTERACTION", "PERMISSIONED", "ACTIVE_CONVERSATION", "WORKING_RELATIONSHIP", "CUSTOMER", "PARTNER"],
+    "promotion_requires_evidence": true
+  },
+  "customer_memory": {
+    "tenant_scoped": true,
+    "purpose_scoped": true,
+    "permission_aware": true,
+    "retention_aware": true,
+    "source_attributed": true,
+    "record_fields": ["source", "purpose", "tenant", "sensitivity", "retention", "access_scope", "last_validation"]
+  },
+  "proof_compounding": {
+    "dimensions": ["CUSTOMER_VALIDATION", "ECONOMIC_RELEVANCE", "REPEATABILITY", "PUBLIC_PERMISSION", "ICP_RELEVANCE", "PRODUCT_REUSE", "SALES_REUSE"]
+  },
+  "repeatability": {
+    "dimensions": ["buyer_repeatability", "problem_repeatability", "workflow_repeatability", "integration_repeatability", "delivery_repeatability", "policy_repeatability", "proof_repeatability", "margin_repeatability"],
+    "productization_is_evidence_gated": true
+  },
+  "automation_roi": {
+    "fields": ["build_hours", "maintenance_hours", "runtime_cost", "failures", "founder_minutes_saved", "team_minutes_saved", "cycle_time_saved", "customer_value", "economic_value"],
+    "negative_roi_action": "KILL_OR_REDESIGN"
+  },
+  "agent_scorecard": {
+    "metrics": ["accepted_outcomes", "truth_accuracy", "prediction_calibration", "economic_value", "customer_value", "policy_compliance", "proof_quality", "cycle_time", "cost", "escalation_quality", "error_rate", "rollback_success"],
+    "forbidden_reward_metrics": ["tool_calls", "message_count", "token_usage", "tasks_generated"]
+  },
+  "autonomy": {
+    "promotion_evidence": ["SUCCESSFUL_EXECUTIONS", "LOW_ERROR_RATE", "HIGH_POLICY_COMPLIANCE", "RELIABLE_ROLLBACK", "STABLE_INPUTS", "CLEAR_FAILURE_MODE", "BOUNDED_IMPACT", "AUDITABLE_RECEIPTS"],
+    "bounded_promotions": ["L1_TO_L2", "L2_TO_L3", "L3_TO_LIMITED_L4"],
+    "universal_l5_autonomy": false,
+    "degrade_on": ["NEW_FAILURE", "DATA_DRIFT", "MODEL_CHANGE", "PROVIDER_CHANGE", "POLICY_CHANGE", "SECURITY_INCIDENT", "UNEXPECTED_CUSTOMER_RESULT", "LOW_CALIBRATION", "MISSING_EVIDENCE", "NEW_RISK"]
+  },
+  "model_lifecycle": ["DISCOVERED", "EVALUATION", "APPROVED_INTERNAL", "APPROVED_BOUNDED_PRODUCTION", "PRODUCTION", "DEPRECATED", "RETIRED"],
+  "shadow_execution": {"material_effect": false, "compare_current_vs_candidate": true},
+  "canary_autonomy": ["OFF", "SHADOW", "CANARY", "BOUNDED", "STANDARD"],
+  "invariants": [
+    "PERMANENT_AGENTS == 5",
+    "DEEP_WIP <= 3",
+    "PUBLIC_CONTACT != CONSENT",
+    "QUOTE != PAYMENT",
+    "PRODUCTION_GREEN_REQUIRES_CURRENT_EVIDENCE",
+    "NO_CROSS_TENANT_ACCESS",
+    "NO_AGENT_SELF_AUTHORITY",
+    "NO_PUBLIC_LOCAL_LLM_ADMIN",
+    "NO_SECRET_IN_REPO",
+    "NO_DUPLICATE_CANONICAL_SCHEDULER"
+  ],
+  "control_tests": ["AGENT_CANNOT_SELF_PROMOTE", "AGENT_CANNOT_BYPASS_APPROVAL", "WRONG_TENANT_DENIED", "EXPIRED_AUTHORITY_DENIED", "DUPLICATE_ACTION_SUPPRESSED", "ROLLBACK_WORKS", "BUDGET_STOPS_ACTION", "SUPPRESSION_LIST_HONORED", "STALE_EVIDENCE_REJECTED", "FAKE_PROOF_REJECTED", "PROVIDER_OUTAGE_CONTAINED", "MALICIOUS_TOOL_RESULT_CONTAINED", "PROMPT_INJECTION_CANNOT_ESCALATE_PRIVILEGE"],
+  "company_twin": {
+    "is_company_brain": false,
+    "fields": ["current_constraint", "agents", "systems", "services", "customers", "opportunities", "cash_states", "active_wip", "risks", "proof", "tools", "costs", "policies", "approvals", "strategic_options"],
+    "uses": ["SIMULATION", "PLANNING", "EXECUTIVE_COMMAND", "SCENARIO_TESTING"]
+  },
+  "strategic_reasoning": {
+    "counterfactuals": ["DO_NOTHING", "CHEAPEST_THING", "DOUBLE_DOWN", "ASSUMPTION_WRONG", "TEN_X_SUCCESS", "LARGE_COMPETITOR_COPIES"],
+    "premortem_required_for_material_projects": true,
+    "red_team_business_assumptions": true
+  },
+  "market_timing": {
+    "signals": ["REGULATORY_DEADLINE", "BUDGET_CYCLE", "NEW_TECHNOLOGY", "ORGANIZATIONAL_CHANGE", "FUNDING", "NEW_LEADERSHIP", "NEW_FACILITY", "VENDOR_FAILURE", "PUBLIC_TENDER", "EXPANSION", "COST_PRESSURE", "COMPLIANCE_REQUIREMENT"],
+    "why_now_requires_evidence": true
+  },
+  "saudi_operating_graph": {
+    "domains": ["ARABIC_ENGLISH_ENTERPRISE_WORKFLOWS", "SAUDI_BUYING_PROCESSES", "LOCAL_PROCUREMENT", "PDPL", "NCA", "SDAIA", "CST", "DGA", "ZATCA", "ETIMAD", "SECTOR_PATTERNS", "PARTNER_ECOSYSTEMS", "ENTERPRISE_TECH_STACKS", "LOCAL_OBJECTIONS", "COMMERCIAL_NORMS", "IMPLEMENTATION_CONSTRAINTS"]
+  },
+  "regulatory_radar": {
+    "classes": ["NO_EFFECT", "WATCH", "PRODUCT_IMPACT", "CUSTOMER_IMPACT", "SECURITY_IMPACT", "MARKETING_IMPACT", "B2G_IMPACT", "URGENT"],
+    "action_fields": ["owner", "affected_systems", "affected_customers", "deadline", "evidence", "required_action"]
+  },
+  "demand_radar": {
+    "market_hype_is_purchase_signal": false,
+    "purchase_evidence": ["BUDGET", "PROCUREMENT", "RFP_TENDER", "CUSTOMER_CONVERSATION", "CONTRACT", "HIRING", "MIGRATION", "REGULATORY_DEADLINE", "KNOWN_OPERATIONAL_PAIN", "VENDOR_REPLACEMENT", "ACTIVE_PROJECT"],
+    "metric": "DEMAND_CONFIDENCE"
+  },
+  "category_control": {
+    "category": "AI BUSINESS OPERATING SYSTEM",
+    "customer_comprehension_test": ["PROBLEM", "VALUE", "OUTCOME", "NEXT_STEP"],
+    "corporate_vision": "BROAD",
+    "commercial_conversation": "NARROW"
+  },
+  "customer_acquisition_ladder": ["MARKET_SIGNAL", "USEFUL_INSIGHT", "PERMISSIONED_INTERACTION", "DIAGNOSTIC", "DISCOVERY", "PROPOSAL", "PILOT", "DELIVERY", "PROOF"],
+  "growth_loops": {
+    "A": ["CUSTOMER_RESULT", "PROOF", "CONTENT", "QUALIFIED_DEMAND", "CUSTOMER"],
+    "B": ["DELIVERY", "PLAYBOOK", "AUTOMATION", "LOWER_COST", "BETTER_MARGIN", "MORE_DELIVERY"],
+    "C": ["MARKET_SIGNAL", "OPPORTUNITY_GRAPH", "CONVERSATION", "LEARNING", "BETTER_TARGETING"],
+    "D": ["CUSTOMER_WORKFLOW", "REPEATABILITY", "PRODUCT", "DATA", "BETTER_PRODUCT"],
+    "E": ["PARTNER", "ACCESS", "DELIVERY", "PROOF", "STRONGER_PARTNER_NETWORK"]
+  },
+  "flywheel": ["BETTER_TRUTH", "BETTER_DECISIONS", "BETTER_ACTIONS", "BETTER_CUSTOMER_OUTCOMES", "BETTER_PROOF", "BETTER_SALES", "MORE_CUSTOMERS", "MORE_OPERATING_DATA", "BETTER_PLAYBOOKS", "MORE_AUTOMATION", "LOWER_COST", "FASTER_VALUE", "STRONGER_TRUST", "BETTER_TRUTH"],
+  "commanders_intent": {
+    "infer_when_exact_instruction_absent": true,
+    "inputs": ["NORTH_STAR", "CURRENT_CONSTRAINT", "ECONOMIC_DISPATCHER", "AUTHORITY", "EVIDENCE", "CUSTOMER_IMPACT"],
+    "never_override": ["TRUTH", "POLICY", "AUTHORITY"]
+  },
+  "minimum_founder_surface": ["APPROVE", "REJECT", "CHOOSE", "NEGOTIATE", "RELATIONSHIP", "STRATEGY"],
+  "self_healing": {
+    "allowed": ["RESTART_BOUNDED_INTERNAL_JOB", "RETRY_SAFE_IDEMPOTENT_ACTION", "REBUILD_DISPOSABLE_CACHE", "RECREATE_TEMPORARY_WORKTREE", "FAIL_OVER_MODEL", "REPAIR_INTERNAL_GENERATED_ARTIFACT", "QUARANTINE_FAILED_WORKFLOW"],
+    "forbidden": ["PRODUCTION_DB_MUTATION", "SECRET_REPLACEMENT", "DNS_CHANGE", "EXTERNAL_COMMITMENT", "PAYMENT", "PRIVILEGE_EXPANSION", "APPROVAL_BYPASS"]
+  },
+  "l5": {
+    "universal_authority": false,
+    "exact_action_bound": true,
+    "material_effects_default": false
+  },
+  "section_coverage": ["LXXI", "LXXII", "LXXIII", "LXXIV", "LXXV", "LXXVI", "LXXVII", "LXXVIII", "LXXIX", "LXXX", "LXXXI", "LXXXII", "LXXXIII", "LXXXIV", "LXXXV", "LXXXVI", "LXXXVII", "LXXXVIII", "LXXXIX", "XC", "XCI", "XCII", "XCIII", "XCIV", "XCV", "XCVI", "XCVII", "XCVIII", "XCIX", "C", "CI", "CII", "CIII", "CIV", "CV", "CVI", "CVII", "CVIII", "CIX", "CX", "CXI", "CXII", "CXIII", "CXIV", "CXV", "CXVI", "CXVII", "CXVIII", "CXIX", "CXX"]
+}

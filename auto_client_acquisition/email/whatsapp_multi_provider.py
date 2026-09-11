@@ -18,6 +18,7 @@ Environment variables:
     GREEN_API_INSTANCE_ID, GREEN_API_TOKEN
     ULTRAMSG_INSTANCE_ID, ULTRAMSG_TOKEN
     FONNTE_TOKEN
+    WHATSAPP_GRAPH_API_VERSION
 
 Canonical Meta names:
     WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN
@@ -45,6 +46,8 @@ from dataclasses import asdict, dataclass
 from typing import Any, Awaitable, Callable
 
 import httpx
+
+from integrations.whatsapp import meta_graph_base_url
 
 log = logging.getLogger(__name__)
 
@@ -186,7 +189,7 @@ async def _send_via_meta_cloud(
     phone_id, token = _meta_credentials()
     if not (phone_id and token):
         return None
-    url = f"https://graph.facebook.com/v20.0/{phone_id}/messages"
+    url = f"{meta_graph_base_url()}/{phone_id}/messages"
     try:
         r = await client.post(
             url,
@@ -208,9 +211,7 @@ async def _send_via_meta_cloud(
         body = r.json() or {}
         msgs = body.get("messages") or []
         return WhatsAppSendResult(
-            status="ok",
-            provider="meta_cloud",
-            message_id=msgs[0].get("id") if msgs else None,
+            status="ok", provider="meta_cloud", message_id=msgs[0].get("id") if msgs else None
         )
     return WhatsAppSendResult(
         status="http_error",
@@ -274,7 +275,7 @@ def runtime_provider_chain() -> list[tuple[str, ProviderFn]]:
 async def send_whatsapp_smart(phone: str, message: str) -> WhatsAppSendResult:
     """Send through the governed provider selected for this runtime."""
     if os.getenv("WHATSAPP_MOCK_MODE", "").lower() in {"true", "1", "yes"}:
-        log.info("whatsapp_mock_mode phone=%s msg_len=%d", phone, len(message))
+        log.info("whatsapp_mock_mode phone_prefix=%s msg_len=%d", _normalize_phone(phone)[:5], len(message))
         return WhatsAppSendResult(status="mock", provider="mock")
 
     normalized = _normalize_phone(phone)

@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import os
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -20,6 +22,24 @@ from core.errors import IntegrationError
 from core.logging import get_logger
 
 logger = get_logger(__name__)
+
+DEFAULT_GRAPH_API_VERSION = "v26.0"
+_GRAPH_API_VERSION_RE = re.compile(r"^v\d+\.\d+$")
+
+
+def meta_graph_api_version() -> str:
+    """Return the configured Meta Graph API version with fail-closed validation."""
+    version = os.getenv("WHATSAPP_GRAPH_API_VERSION", DEFAULT_GRAPH_API_VERSION).strip()
+    if not version:
+        version = DEFAULT_GRAPH_API_VERSION
+    if not _GRAPH_API_VERSION_RE.fullmatch(version):
+        raise IntegrationError("WHATSAPP_GRAPH_API_VERSION must look like v26.0")
+    return version
+
+
+def meta_graph_base_url() -> str:
+    """Canonical versioned Meta Graph API base URL used by WhatsApp transports."""
+    return f"https://graph.facebook.com/{meta_graph_api_version()}"
 
 
 @dataclass
@@ -33,7 +53,9 @@ class WhatsAppMessageResult:
 class WhatsAppClient:
     """Thin async client for WhatsApp Cloud API."""
 
-    BASE_URL = "https://graph.facebook.com/v20.0"
+    @property
+    def base_url(self) -> str:
+        return meta_graph_base_url()
 
     def __init__(self) -> None:
         self.settings = get_settings()
@@ -71,7 +93,7 @@ class WhatsAppClient:
             return WhatsAppMessageResult(success=False, error="whatsapp_allow_live_send_false")
 
         phone_id = self.settings.whatsapp_phone_number_id
-        url = f"{self.BASE_URL}/{phone_id}/messages"
+        url = f"{self.base_url}/{phone_id}/messages"
         payload = {
             "messaging_product": "whatsapp",
             "to": to.lstrip("+"),
@@ -89,7 +111,7 @@ class WhatsAppClient:
             messages = data.get("messages", [])
             if messages:
                 message_id = messages[0].get("id")
-            logger.info("whatsapp_sent", to=to, message_id=message_id)
+            logger.info("whatsapp_sent", to_prefix=to[:6], message_id=message_id)
             return WhatsAppMessageResult(success=True, message_id=message_id, raw=data)
         except httpx.HTTPStatusError as e:
             logger.exception("whatsapp_send_failed", status=e.response.status_code)
@@ -113,7 +135,7 @@ class WhatsAppClient:
             return WhatsAppMessageResult(success=False, error="whatsapp_allow_live_send_false")
 
         phone_id = self.settings.whatsapp_phone_number_id
-        url = f"{self.BASE_URL}/{phone_id}/messages"
+        url = f"{self.base_url}/{phone_id}/messages"
         payload = {
             "messaging_product": "whatsapp",
             "to": to.lstrip("+"),

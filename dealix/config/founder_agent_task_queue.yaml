@@ -1,27 +1,67 @@
-version: "1.0"
+version: "1.1"
+doctrine: "FIVE_PERSISTENT_AGENTS_ALL_44_ARMS_DAILY"
 tasks:
   - id: pm_morning
     agent: dealix-pm
     cadence: daily
     priority: P0
-    title_ar: "تنسيق صباحي"
+    title_ar: "حاكم الاقتصاد والمحفظة اليومية"
+    arm_ids: [ARM-002, ARM-006, ARM-010, ARM-040, ARM-042, ARM-043, ARM-044]
+    inputs: [company_brain, opportunity_graph, approval_queue, proof_ledger, economic_truth]
+    outputs: [top_3_deep_wip, approval_compaction, arm_promote_kill_hold, founder_minutes, daily_receipt]
+    success_metrics: [deep_wip_lte_3, verified_cash_only, evidence_backed_priority, founder_burden_down]
+    guardrails: [no_invented_probability, no_blanket_l5, research_not_relationship, quote_not_payment]
+    verify_commands:
+      - "python scripts/verify_company_agent_operating_registry.py"
+      - "python scripts/commercial/run_probability_revenue_engine_v1.py"
   - id: sales_touches
     agent: dealix-sales
     cadence: daily
     priority: P0
-  - id: engineer_gates
-    agent: dealix-engineer
-    cadence: daily
-    priority: P0
+    title_ar: "Signal → Interaction → Diagnostic → Cash"
+    arm_ids: [ARM-001, ARM-003, ARM-004, ARM-011, ARM-012, ARM-020, ARM-021, ARM-022, ARM-025, ARM-026, ARM-027, ARM-034, ARM-036]
+    inputs: [market_radar, gmail_inbound_replies, opportunity_graph, referrals, events, procurement_signals]
+    outputs: [evidence_backed_shortlist, why_them_why_now, problem_hypotheses, diagnostic_inputs, discovery_inputs, quote_inputs]
+    success_metrics: [real_interactions, qualified_problems, diagnostics, discoveries, customer_specific_quotes, verified_payment]
+    guardrails: [no_cold_whatsapp, no_mass_linkedin, public_contact_not_consent, no_auto_send, no_fake_pipeline]
+    verify_commands:
+      - "python scripts/commercial/run_probability_revenue_engine_v1.py"
+      - "python scripts/verify_first_paid_diagnostic_tracker.py"
   - id: delivery_proof
     agent: dealix-delivery
     cadence: daily
     priority: P1
+    title_ar: "Capability → Outcome → Customer-validated Proof"
+    arm_ids: [ARM-005, ARM-007, ARM-009, ARM-016, ARM-017, ARM-018, ARM-024, ARM-028]
+    inputs: [qualified_problem, approved_scope, delivery_capacity, acceptance_evidence, proof_ledger]
+    outputs: [baseline, smallest_intervention, acceptance_tests, margin_hypothesis, weekly_proof_plan, stop_expand_condition]
+    success_metrics: [time_to_first_value, acceptance_pass_rate, evidence_completeness, rework_down, gross_margin_evidence]
+    guardrails: [synthetic_not_customer_proof, no_unapproved_scope, no_regulated_capability_claim]
+    verify_commands:
+      - "python scripts/verify_first_paid_diagnostic_tracker.py"
+      - "python scripts/commercial/run_weekly_proof_pack.py --help"
+  - id: engineer_gates
+    agent: dealix-engineer
+    cadence: daily
+    priority: P0
+    title_ar: "Production Trust + AI Runtime + Bounded Self-Improvement"
+    arm_ids: [ARM-008, ARM-014, ARM-015, ARM-019, ARM-023, ARM-029, ARM-030, ARM-031, ARM-032, ARM-033, ARM-035, ARM-037]
+    inputs: [live_runtime_receipts, exact_main_head, model_router, provider_quota_circuits, test_security_evidence]
+    outputs: [trust_gates, runtime_incident_actions, model_route_receipt, bounded_patch, tests, draft_pr_ready_proof]
+    success_metrics: [trust_gates_closed, regressions_prevented, eval_pass_rate, model_cost_latency, founder_minutes_saved]
+    guardrails: [isolated_worktree_only, no_main_merge, no_deploy, no_dns_db_secret_payment_mutation, fail_closed]
+    verify_commands:
+      - "python scripts/ops/verify_server_agent_operating_model_v1.py"
+      - "python scripts/verify_company_agent_operating_registry.py"
   - id: content_draft
     agent: dealix-content
     cadence: daily
     priority: P1
-  - id: compliance_pdpl
-    agent: dealix-compliance
-    cadence: daily
-    priority: P0
+    title_ar: "Verified Evidence → Demand Assets"
+    arm_ids: [ARM-013, ARM-038, ARM-039, ARM-041]
+    inputs: [verified_first_party_learning, saudi_official_signals, buyer_questions, proof_safe_receipts, brand_v2]
+    outputs: [founder_linkedin_draft, company_page_draft, short_video_script, carousel_aeo_seed, x_variant, attribution_map]
+    success_metrics: [qualified_conversations, diagnostic_starts, discovery_attribution, proof_reuse, zero_unsupported_claims]
+    guardrails: [no_public_publish, no_fake_case_study, no_unsupported_claim, evidence_class_required]
+    verify_commands:
+      - "python scripts/queue_content_drafts_for_approval.py --dry-run"
