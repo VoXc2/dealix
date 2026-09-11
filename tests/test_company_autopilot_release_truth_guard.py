@@ -176,4 +176,6 @@ def test_guard_contains_release_identity_invariants() -> None:
     assert "immutable_release_identity_missing" in source
     assert "running_release_not_equal_current_main" in source
     assert "DEALIX_DISABLE_TRANSITION_NOTIFY" in source
+    assert 'ISSUE_NUMBER="${DEALIX_ISSUE_NUMBER:-1604}"' in source
+    assert 'ISSUE_NUMBER="${DEALIX_ISSUE_NUMBER:-1119}"' not in source
     assert 'transition_notify production GREEN "Public API/site probes are responding."' not in source
