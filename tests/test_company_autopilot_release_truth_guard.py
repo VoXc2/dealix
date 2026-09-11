@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 import subprocess
 import textwrap
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTOPILOT = ROOT / "scripts/ops/dealix_company_autopilot.sh"
@@ -46,6 +45,13 @@ def _run_production_truth(
           *" rev-parse origin/main") printf '%s\n' "$FAKE_EXPECTED_SHA" ;;
           *) echo "unexpected fake git invocation: $args" >&2; exit 90 ;;
         esac
+        ''',
+    )
+    _write_executable(
+        fake_bin / "gh",
+        r'''#!/usr/bin/env bash
+        # Acceptance tests must never publish transition receipts.
+        exit 1
         ''',
     )
     _write_executable(
