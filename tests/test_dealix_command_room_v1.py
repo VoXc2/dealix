@@ -6,6 +6,8 @@ import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import pytest
+
 from dealix.commercial.external_execution_gate import (
     build_external_action_packet,
     canonical_content_sha256,
@@ -125,6 +127,11 @@ def test_requested_followup_can_only_become_eligible_for_exact_action_approval()
     assert decision.reasons == []
 
 
+def test_delegation_requires_recipient_or_conversation_scope() -> None:
+    with pytest.raises(ValueError, match="at least one recipient or conversation scope"):
+        _session(recipients=[], conversation_ids=[])
+
+
 def test_new_recipient_outside_delegation_scope_is_blocked() -> None:
     now = datetime.now(UTC)
     decision = evaluate_founder_delegation(
@@ -174,7 +181,7 @@ def test_message_budget_exhaustion_blocks_delegation() -> None:
     decision = evaluate_founder_delegation(
         session=_session(now=now, max_messages=2),
         packet=_packet(expires=now + timedelta(minutes=15)),
-        usage=DelegationUsage(messages_committed=2),
+        usage=DelegationUsage(),
         now=now,
         conversation_id="thread-001",
     )
