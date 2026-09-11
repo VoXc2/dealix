@@ -28,6 +28,14 @@ export default async function MarketControlPage({ params }: { params: Promise<{ 
             </Link>
           ))}
         </div>
+        <div className="mt-6 flex gap-3">
+          <Link href={`/${locale}/onboarding`} className="inline-block bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-400">
+            {isAr ? "ابدأ التأهيل" : "Start Onboarding"}
+          </Link>
+          <Link href={`/${locale}/solutions`} className="inline-block border border-white/20 text-white px-6 py-3 rounded-xl font-bold hover:bg-white/10">
+            {isAr ? "استكشف الحلول" : "Explore Solutions"}
+          </Link>
+        </div>
         <div className="mt-10 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-6">
           <h3 className="font-bold text-emerald-400">{isAr ? "كل الأذرع مفعلة" : "All Arms Activated"}</h3>
           <p className="text-sm text-white/70 mt-2">44 arms (42 ACTIVE) — pm 20, engineer 9, content 7, sales 5, delivery 3 — Large Capability Surface بدون 44 مشروع</p>
