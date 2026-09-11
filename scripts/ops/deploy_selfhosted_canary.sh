@@ -20,6 +20,7 @@ if [[ "$CURRENT_SHA" != "$EXPECTED_SHA" ]]; then
 fi
 
 export DEALIX_GIT_SHA="$CURRENT_SHA"
+export COMPOSE_PROJECT_NAME="dealix-selfhost-${CURRENT_SHA:0:12}"
 export DEALIX_APP_ENV="${DEALIX_APP_ENV:-development}"
 export DEALIX_ORCHESTRATOR_BACKEND="${DEALIX_ORCHESTRATOR_BACKEND:-postgres}"
 export DEALIX_DATABASE_URL="${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}"
@@ -106,6 +107,7 @@ fi
 
 echo "SELFHOST_CANARY=PASS"
 echo "GIT_SHA=$CURRENT_SHA"
+echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
 echo "WEB=http://127.0.0.1:13000"
 echo "API=http://127.0.0.1:18000"
 echo "PUBLIC_CUTOVER=NOT_EXECUTED"
