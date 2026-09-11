@@ -1,0 +1,71 @@
+name: dealix-selfhost
+
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+    env_file:
+      - /opt/dealix/control/secrets/selfhost.env
+    environment:
+      PORT: "8000"
+      APP_ENV: production
+      GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+    ports:
+      - "127.0.0.1:18000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [dealix]
+
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: Dockerfile
+    env_file:
+      - /opt/dealix/control/secrets/selfhost-web.env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "127.0.0.1:13000:3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [dealix]
+
+  postgres:
+    image: postgres:16-bookworm
+    profiles: ["local-db"]
+    env_file:
+      - /opt/dealix/control/secrets/selfhost-postgres.env
+    volumes:
+      - dealix-postgres:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:15432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [dealix]
+
+networks:
+  dealix:
+    name: dealix-selfhost
+
+volumes:
+  dealix-postgres:
+    name: dealix-postgres
