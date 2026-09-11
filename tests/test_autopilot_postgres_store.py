@@ -72,7 +72,7 @@ def test_get_autopilot_store_does_not_fallback_or_create_on_unreachable_postgres
 
 
 def test_postgres_store_upsert_and_get_lead() -> None:
-    store = AutopilotPostgresStore(database_url="sqlite:///:memory:")
+    store = AutopilotPostgresStore(database_url="sqlite:///:memory:", create_tables=True)
     lead = FunnelLeadRecord(
         id=uid("lead"),
         company="Test Co",
