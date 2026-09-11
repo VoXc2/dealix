@@ -89,6 +89,9 @@ def candidate_source(path:Path|None)->tuple[list[dict[str,Any]],str]:
                   'arm_id':t.get('arm_id'),'sector_id':t.get('sector_id'),'buyer_group_id':t.get('buyer_group_id'),
                   'problem_class':t.get('problem_class'),'company_name':t.get('company_name'),'segment':t.get('segment'),'pain_hypothesis':t.get('pain_hypothesis'),'buyer_role':t.get('buyer_role'),'source':t.get('source'),'evidence_refs':t.get('evidence_refs') or [],
                   'buyer_access_evidence_refs':t.get('buyer_access_evidence_refs') or [],
+                  'economic_evidence_refs':t.get('economic_evidence_refs') or [],
+                  'stop_loss_triggered':bool(t.get('stop_loss_triggered',False)),
+                  'stop_loss_evidence_refs':t.get('stop_loss_evidence_refs') or [],
                   'relationship_state':t.get('relationship_state','RESEARCH'),'suppression_state':t.get('suppression_state','CLEAR'),
                   'commercial_stage':t.get('commercial_stage','RESEARCH'),'validated_problem':bool(t.get('validated_problem',False)),
                   'portfolio':t.get('portfolio','MONEY_NOW'),
@@ -121,11 +124,22 @@ def suggest_mapping(row:dict[str,Any])->dict[str,Any]:
     arm=str(row.get('arm_id') or '').strip() or PROBLEM_ARM_HINTS.get(problem or '') or SECTOR_ARM_HINTS.get(sector or '')
     return {'arm_id':arm,'sector_id':sector,'problem_class':problem,'buyer_group_id':row.get('buyer_group_id'),'origin':'DETERMINISTIC_HYPOTHESIS_NOT_EVIDENCE'}
 
+def economic_ready(row:dict[str,Any])->bool:
+    refs=[x for x in (row.get('economic_evidence_refs') or []) if str(x).strip()]
+    m=row.get('metrics') if isinstance(row.get('metrics'),dict) else {}
+    return bool(refs) and clamp(m.get('economic_impact'))>0 and max(clamp(m.get('gross_margin')),clamp(m.get('collection_probability')))>0
+
 def select_deep(ranked:list[dict[str,Any]],limit:int)->list[dict[str,Any]]:
     return [r for r in ranked if r.get('status')=='DEEP_WIP_ELIGIBLE'][:max(0,int(limit))]
 
 def classify(row:dict[str,Any],arms:dict[str,dict[str,Any]],registry:dict[str,Any])->tuple[str,list[str]]:
-    hard=[]; mapping=[]; aid=str(row.get('arm_id') or '').strip()
+    hard=[]; mapping=[]
+    if bool(row.get('stop_loss_triggered')):
+        stop_refs=[x for x in (row.get('stop_loss_evidence_refs') or []) if str(x).strip()]
+        if stop_refs:
+            return 'STOP_OR_DEMOTE',['STOP_LOSS_EVIDENCED']
+        hard.append('STOP_LOSS_EVIDENCE_REQUIRED')
+    aid=str(row.get('arm_id') or '').strip()
     arm=arms.get(aid) if aid else None
     if aid and not arm: hard.append('UNKNOWN_ARM_ID')
     elif arm and arm.get('state') in {'BLOCKED','STOPPED'}: hard.append('ARM_STATE_BLOCKS_ACTIVATION')
@@ -150,6 +164,7 @@ def classify(row:dict[str,Any],arms:dict[str,dict[str,Any]],registry:dict[str,An
     has_access=bool(access_refs) or stage in REAL_STAGES or rel in {'REAL_INTERACTION','VERIFIED_RELATIONSHIP','INBOUND'}
     if not validated: mapping.append('VALIDATED_PROBLEM_REQUIRED')
     if not has_access: mapping.append('BUYER_ACCESS_EVIDENCE_REQUIRED')
+    if not economic_ready(row): mapping.append('ECONOMIC_EVIDENCE_REQUIRED')
     if not mapping: return 'DEEP_WIP_ELIGIBLE',[]
     return 'RADAR_ONLY',mapping
 
@@ -157,19 +172,25 @@ def main()->int:
     ap=argparse.ArgumentParser(); ap.add_argument('--candidate-file',type=Path); ap.add_argument('--output-root',type=Path,default=OUT_ROOT); args=ap.parse_args()
     if not REGISTRY.is_file() or not DIMENSIONS.is_file(): print('PRESIDENT_PORTFOLIO_COMMAND=BLOCKED_REGISTRY_MISSING'); return 2
     reg=load(REGISTRY); dims=load(DIMENSIONS); arms={a['id']:a for a in reg['arms']}; violations=tripwire(); rows,source=candidate_source(args.candidate_file)
-    ranked=[]; blocked=[]; source_rows={str(r.get('candidate_id') or 'UNKNOWN'):r for r in rows}
+    ranked=[]; blocked=[]; stopped=[]; source_rows={str(r.get('candidate_id') or 'UNKNOWN'):r for r in rows}
     for raw in rows:
         status,gaps=classify(raw,arms,dims); s,pos,neg=score(raw)
-        rec={'candidate_id':str(raw.get('candidate_id') or 'UNKNOWN'),'company_name':raw.get('company_name'),'segment':raw.get('segment'),'pain_hypothesis':raw.get('pain_hypothesis'),'arm_id':raw.get('arm_id'),'sector_id':raw.get('sector_id'),'buyer_group_id':raw.get('buyer_group_id'),'problem_class':raw.get('problem_class'),'portfolio':raw.get('portfolio','MONEY_NOW'),'status':status,'economic_priority_score':s,'score_semantics':'PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY','evidence_refs':raw.get('evidence_refs') or [],'evidence_gaps':gaps,'positive_metrics':pos,'negative_metrics':neg,'material_authority':False}
-        (ranked if status!='BLOCKED_OR_EVIDENCE_GAP' else blocked).append(rec)
+        rec={'candidate_id':str(raw.get('candidate_id') or 'UNKNOWN'),'company_name':raw.get('company_name'),'segment':raw.get('segment'),'pain_hypothesis':raw.get('pain_hypothesis'),'arm_id':raw.get('arm_id'),'sector_id':raw.get('sector_id'),'buyer_group_id':raw.get('buyer_group_id'),'problem_class':raw.get('problem_class'),'portfolio':raw.get('portfolio','MONEY_NOW'),'status':status,'economic_priority_score':s,'score_semantics':'PRIORITIZATION_HEURISTIC_NOT_PURCHASE_PROBABILITY','evidence_refs':raw.get('evidence_refs') or [],'economic_evidence_refs':raw.get('economic_evidence_refs') or [],'stop_loss_evidence_refs':raw.get('stop_loss_evidence_refs') or [],'evidence_gaps':gaps,'positive_metrics':pos,'negative_metrics':neg,'material_authority':False}
+        if status=='STOP_OR_DEMOTE': stopped.append(rec)
+        elif status=='BLOCKED_OR_EVIDENCE_GAP': blocked.append(rec)
+        else: ranked.append(rec)
     ranked.sort(key=lambda x:(-x['economic_priority_score'],x['candidate_id']))
     deep=select_deep(ranked,int(reg['deep_wip_max']))
     enrichment=[{'candidate_id':r['candidate_id'],'score':r['economic_priority_score'],'gaps':r['evidence_gaps'],'suggested_mapping':suggest_mapping(source_rows.get(r['candidate_id'],{})),'owner_agent':'dealix-pm'} for r in ranked if r['status']=='RADAR_ONLY'][:10]
-    for r in deep: r['selected_deep_wip']=True
+    for r in deep:
+        r['selected_deep_wip']=True; r['portfolio_decision']='EXECUTE_DEEP'
     for r in ranked:
         if 'selected_deep_wip' not in r: r['selected_deep_wip']=False
+        if 'portfolio_decision' not in r: r['portfolio_decision']='QUEUE_ELIGIBLE' if r['status']=='DEEP_WIP_ELIGIBLE' else 'ENRICH'
+    for r in stopped: r['selected_deep_wip']=False; r['portfolio_decision']='STOP_OR_DEMOTE'
+    for r in blocked: r['selected_deep_wip']=False; r['portfolio_decision']='BLOCK'
     now=datetime.now(UTC); out=args.output_root/now.strftime('%Y-%m-%d'); out.mkdir(parents=True,exist_ok=True)
-    payload={'schema':'dealix.president-portfolio-command.v1','generated_at':now.isoformat(),'mode':'draft-only','north_star':reg['north_star'],'portfolio_doctrine':dims['portfolio_doctrine'],'candidate_source':source,'radar_surface':{'canonical_arms':len(reg['arms']),'sectors':len(dims['sectors']),'buyer_groups':len(dims['buyer_groups']),'factories':len(dims['factories']),'monetization_rails':len(dims['monetization_rails']),'distribution_rails':len(dims['distribution_rails']),'minimum_addressable_capability_cells':dims['addressable_cell_contract']['minimum_addressable_surface'],'capability_cells_are_not_opportunities':True},'tripwire_violations':violations,'ranked_candidates':ranked,'deep_wip_selection':deep,'portfolio_enrichment_queue':enrichment,'blocked_or_evidence_gap':blocked,'deep_wip_limit':reg['deep_wip_max'],'founder_required_actions':[],'next_autonomous_action':(f"Execute internal L0-L4 preparation for {deep[0]['candidate_id']} and preserve evidence/authority gates." if deep else (f"Enrich highest-ranked RADAR_ONLY candidate {ranked[0]['candidate_id']} with explicit arm/sector/buyer/problem mapping and evidence gaps." if ranked else 'Ingest source-bound candidate evidence; no synthetic opportunities created.')),'material_authority':dims['authority']}
+    payload={'schema':'dealix.president-portfolio-command.v1','generated_at':now.isoformat(),'mode':'draft-only','north_star':reg['north_star'],'portfolio_doctrine':dims['portfolio_doctrine'],'candidate_source':source,'radar_surface':{'canonical_arms':len(reg['arms']),'sectors':len(dims['sectors']),'buyer_groups':len(dims['buyer_groups']),'factories':len(dims['factories']),'monetization_rails':len(dims['monetization_rails']),'distribution_rails':len(dims['distribution_rails']),'minimum_addressable_capability_cells':dims['addressable_cell_contract']['minimum_addressable_surface'],'capability_cells_are_not_opportunities':True},'tripwire_violations':violations,'ranked_candidates':ranked,'deep_wip_selection':deep,'portfolio_enrichment_queue':enrichment,'stop_or_demote':stopped,'blocked_or_evidence_gap':blocked,'deep_wip_limit':reg['deep_wip_max'],'founder_required_actions':[],'next_autonomous_action':(f"Execute internal L0-L4 preparation for {deep[0]['candidate_id']} and preserve evidence/authority gates." if deep else (f"Record STOP/DEMOTE state for {stopped[0]['candidate_id']} from evidenced stop-loss; do not execute externally." if stopped else (f"Enrich highest-ranked RADAR_ONLY candidate {ranked[0]['candidate_id']} with explicit arm/sector/buyer/problem/economic evidence gaps." if ranked else 'Ingest source-bound candidate evidence; no synthetic opportunities created.'))),'material_authority':dims['authority']}
     (out/'president_command.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     lines=['# Dealix President Portfolio Command','',f"Source: `{source}`",f"Verdict: `{'HALTED_BY_ENV_TRIPWIRE' if violations else 'SAFE_INTERNAL_RANKING'}`",'',f"Radar: {len(reg['arms'])} arms x {len(dims['sectors'])} sectors x {len(dims['buyer_groups'])} buyer groups; addressability is not pipeline.",'','## Deep WIP <= 3']
     if deep:
@@ -180,6 +201,6 @@ def main()->int:
     if not blocked: lines.append('- none')
     lines+=['','## Authority','- No external send, publish, tender, payment, merge, deploy, DNS/DB/secret/identity mutation is executed by this command.']
     (out/'president_command.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
-    print(json.dumps({'ok':not violations,'source':source,'ranked':len(ranked),'deep_wip':len(deep),'blocked':len(blocked),'output':str(out)},ensure_ascii=False))
+    print(json.dumps({'ok':not violations,'source':source,'ranked':len(ranked),'deep_wip':len(deep),'stopped':len(stopped),'blocked':len(blocked),'output':str(out)},ensure_ascii=False))
     return 0 if not violations else 2
 if __name__=='__main__': raise SystemExit(main())
