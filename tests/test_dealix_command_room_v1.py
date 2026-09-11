@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
-import sys
 import json
+import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -31,6 +32,15 @@ CANONICAL_AGENTS = {
     "dealix-engineer",
     "dealix-content",
 }
+
+
+def _load_runner():
+    spec = importlib.util.spec_from_file_location("dealix_command_room_runner_test", RUNNER)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def _iso(value: datetime) -> str:
@@ -181,7 +191,7 @@ def test_message_budget_exhaustion_blocks_delegation() -> None:
     decision = evaluate_founder_delegation(
         session=_session(now=now, max_messages=2),
         packet=_packet(expires=now + timedelta(minutes=15)),
-        usage=DelegationUsage(),
+        usage=DelegationUsage(messages_committed=2),
         now=now,
         conversation_id="thread-001",
     )
@@ -232,15 +242,34 @@ def test_command_room_runner_and_installer_do_not_create_live_effect_authority()
     assert "systemctl start" not in installer
 
 
-def test_default_command_room_executes_exactly_all_five_canonical_agents() -> None:
-    spec = importlib.util.spec_from_file_location("dealix_command_room_runner_test", RUNNER)
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    owners = [owner for _, owner, _, _ in module.RUNNERS]
-    assert set(owners) == CANONICAL_AGENTS
-    assert len(owners) == len(CANONICAL_AGENTS)
-    labels = {label for label, _, _, _ in module.RUNNERS}
-    assert "weekly_proof_pack" in labels
-    assert "content_factory" in labels
+def test_weekly_proof_pack_is_opt_in_and_stays_on_canonical_delivery_agent() -> None:
+    module = _load_runner()
+    default_specs = module.runner_specs(include_proof_pack=False)
+    weekly_specs = module.runner_specs(include_proof_pack=True)
+
+    assert "weekly_proof_pack" not in {label for label, _, _, _ in default_specs}
+    weekly = [item for item in weekly_specs if item[0] == "weekly_proof_pack"]
+    assert len(weekly) == 1
+    assert weekly[0][1] == "dealix-delivery"
+    assert all(owner in CANONICAL_AGENTS for _, owner, _, _ in weekly_specs)
+    assert "content_factory" in {label for label, _, _, _ in default_specs}
+
+
+def test_command_room_loads_hash_bound_master_prompt_before_agent_lane(tmp_path: Path) -> None:
+    module = _load_runner()
+    prompt = tmp_path / "master.md"
+    prompt.write_text("MASTER DIRECTIVE\nDo governed work.", encoding="utf-8")
+    sha = hashlib.sha256(prompt.read_bytes()).hexdigest()
+    env = {
+        "DEALIX_MASTER_PROMPT_BOUND": "1",
+        "DEALIX_COMPANY_MASTER_PROMPT": str(prompt),
+        "DEALIX_COMPANY_MASTER_PROMPT_SHA256": sha,
+    }
+    state = module.load_bound_master_prompt(env)
+    assert state["bound"] is True
+    assert state["sha256"] == sha
+    assert state["bytes"] == len(prompt.read_bytes())
+
+    env["DEALIX_COMPANY_MASTER_PROMPT_SHA256"] = "0" * 64
+    with pytest.raises(RuntimeError, match="SHA mismatch"):
+        module.load_bound_master_prompt(env)
