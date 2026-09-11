@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -34,7 +35,7 @@ def fail(reason: str, rc: int = 2) -> int:
 
 def git_head() -> str:
     result = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, capture_output=True, check=False)
-    value = result.stdout.strip()
+    value = result.stdout.strip().lower()
     return value if result.returncode == 0 and len(value) == 40 else "unknown"
 
 
@@ -61,8 +62,8 @@ def write_receipt(payload: dict[str, Any]) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     rendered = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     (OUT / "latest.json").write_text(rendered, encoding="utf-8")
-    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
-    (OUT / f"{stamp}.json").write_text(rendered, encoding="utf-8")
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
+    (OUT / f"{stamp}-{payload['invocation_id'][:12]}.json").write_text(rendered, encoding="utf-8")
 
 
 def _command_room_run_id(stdout: str) -> str:
@@ -94,6 +95,10 @@ def main() -> int:
     if verify.returncode != 0:
         return fail("MASTER_BINDING_INVALID", int(verify.returncode or 1))
 
+    launch_head = git_head()
+    if launch_head == "unknown":
+        return fail("REPOSITORY_HEAD_UNRESOLVED")
+
     binding = json.loads(BINDING.read_text(encoding="utf-8"))
     try:
         runtime_binding, binding_hash, binding_mode = resolve_artifact(
@@ -113,10 +118,11 @@ def main() -> int:
             path_env=str(binding["meta_control_env"]),
             sha_env=str(binding["meta_control_sha_env"]),
         )
-    except Exception as exc:  # noqa: BLE001 - fail-closed binding boundary
+    except Exception as exc:  # noqa: BLE001
         print(f"MASTER_BINDING_ERROR={type(exc).__name__}:{exc}", file=sys.stderr)
         return fail("RUNTIME_ARTIFACT_HASH_MISMATCH")
 
+    invocation_id = uuid.uuid4().hex
     env = dict(os.environ)
     env[str(binding["binding_env"])] = str(runtime_binding)
     env[str(binding["binding_sha_env"])] = binding_hash
@@ -126,6 +132,8 @@ def main() -> int:
     env[str(binding["meta_control_sha_env"])] = meta_hash
     env["DEALIX_MASTER_PROMPT_BOUND"] = "1"
     env["DEALIX_META_CONTROL_BOUND"] = "1"
+    env["DEALIX_COMMAND_ROOM_INVOCATION_ID"] = invocation_id
+    env["DEALIX_EXPECTED_REPOSITORY_HEAD"] = launch_head
     env["DEALIX_UNIVERSAL_L5"] = "0"
     env["DEALIX_EXTERNAL_SEND"] = "0"
     env["PUBLIC_PUBLISH"] = "0"
@@ -149,28 +157,36 @@ def main() -> int:
         print(result.stderr, file=sys.stderr, end="" if result.stderr.endswith("\n") else "\n")
 
     command_room_run_id = _command_room_run_id(result.stdout)
-    command_room_receipt: dict[str, Any] = {}
     prompt_binding_verified = False
     receipt_error = ""
     try:
         command_room_receipt = _load_exact_command_room_receipt(command_room_run_id)
         master_state = command_room_receipt.get("master_prompt") or {}
         prompt_binding_verified = bool(
-            master_state.get("required_by_launcher") is True
+            command_room_receipt.get("invocation_id") == invocation_id
+            and command_room_receipt.get("repository_head") == launch_head
+            and master_state.get("active_sha256") == prompt_hash
             and master_state.get("all_executed_lanes_bound") is True
         )
-    except Exception as exc:  # noqa: BLE001 - exact receipt is an authority boundary
+        if not prompt_binding_verified:
+            raise RuntimeError("command-room receipt binding mismatch")
+    except Exception as exc:  # noqa: BLE001
         receipt_error = type(exc).__name__
 
+    finish_head = git_head()
+    head_stable = finish_head == launch_head
     effective_rc = int(result.returncode)
-    if effective_rc == 0 and not prompt_binding_verified:
+    if effective_rc == 0 and (not prompt_binding_verified or not head_stable):
         effective_rc = 78
 
     receipt = {
-        "schema_version": "dealix.master-company-cycle.v2",
+        "schema_version": "dealix.master-company-cycle.v3",
+        "invocation_id": invocation_id,
         "started_at": started,
         "finished_at": now_iso(),
-        "repository_head": git_head(),
+        "repository_head_start": launch_head,
+        "repository_head_finish": finish_head,
+        "repository_head_stable": head_stable,
         "north_star": binding["north_star"],
         "binding_generation": binding["binding_generation"],
         "runtime_binding_mode": binding["runtime_binding_mode"],
@@ -195,10 +211,12 @@ def main() -> int:
     }
     write_receipt(receipt)
     print(f"MASTER_COMPANY_CYCLE_RC={effective_rc}")
+    print(f"MASTER_INVOCATION_ID={invocation_id}")
     print(f"MASTER_BINDING_SHA256={binding_hash}")
     print(f"MASTER_PROMPT_SHA256={prompt_hash}")
     print(f"META_CONTROL_SHA256={meta_hash}")
     print(f"MASTER_PROMPT_BOUND={str(prompt_binding_verified).lower()}")
+    print(f"REPOSITORY_HEAD_STABLE={str(head_stable).lower()}")
     print("META_CONTROL_BOUND=true")
     print("PERMANENT_AGENTS=5")
     print("ARMS_TOTAL=44")
