@@ -79,6 +79,21 @@ services:
       retries: 10
     networks: [dealix]
 
+  ingress:
+    image: caddy:2.11.4-alpine
+    profiles: ["ingress-canary"]
+    ports:
+      - "127.0.0.1:18081:80"
+    volumes:
+      - ./Caddyfile.canary:/etc/caddy/Caddyfile:ro
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: [dealix]
+
 networks:
   dealix:
     name: dealix-selfhost
