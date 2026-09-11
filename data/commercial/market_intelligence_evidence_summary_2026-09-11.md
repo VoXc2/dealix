@@ -42,4 +42,3 @@ Truth class: PATTERN_RESEARCH_RANKING · counts_as_pipeline: False · ceiling: R
 - No named company was contacted; no external send or publish occurred.
 - Scores are internal research prioritization, never purchase probability.
 - Tender/procurement findings do not authorize bids (L5).
-
