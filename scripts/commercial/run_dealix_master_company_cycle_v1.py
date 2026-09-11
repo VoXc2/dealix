@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BINDING = ROOT / "config" / "company" / "dealix_master_prompt_binding_v1.json"
 VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_master_prompt_binding_v1.py"
 COMMAND_ROOM = ROOT / "scripts" / "commercial" / "run_dealix_command_room_v1.py"
+COMMAND_ROOM_OUT = ROOT / "reports" / "company_os" / "command_room"
 OUT = ROOT / "reports" / "company_os" / "master_company_cycle"
 
 
@@ -62,6 +63,27 @@ def write_receipt(payload: dict[str, Any]) -> None:
     (OUT / "latest.json").write_text(rendered, encoding="utf-8")
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     (OUT / f"{stamp}.json").write_text(rendered, encoding="utf-8")
+
+
+def _command_room_run_id(stdout: str) -> str:
+    for line in stdout.splitlines():
+        if line.startswith("COMMAND_ROOM_RUN="):
+            value = line.split("=", 1)[1].strip()
+            if value:
+                return value
+    return ""
+
+
+def _load_exact_command_room_receipt(run_id: str) -> dict[str, Any]:
+    if not run_id:
+        raise RuntimeError("command-room run id missing")
+    path = COMMAND_ROOM_OUT / f"{run_id}.json"
+    if not path.is_file():
+        raise RuntimeError("exact command-room receipt missing")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if data.get("run_id") != run_id:
+        raise RuntimeError("command-room receipt run id mismatch")
+    return data
 
 
 def main() -> int:
@@ -113,7 +135,37 @@ def main() -> int:
         env[str(key)] = "0"
 
     started = now_iso()
-    result = subprocess.run([sys.executable, str(COMMAND_ROOM), *sys.argv[1:]], cwd=ROOT, env=env, check=False)
+    result = subprocess.run(
+        [sys.executable, str(COMMAND_ROOM), *sys.argv[1:]],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.stdout:
+        print(result.stdout, end="" if result.stdout.endswith("\n") else "\n")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="" if result.stderr.endswith("\n") else "\n")
+
+    command_room_run_id = _command_room_run_id(result.stdout)
+    command_room_receipt: dict[str, Any] = {}
+    prompt_binding_verified = False
+    receipt_error = ""
+    try:
+        command_room_receipt = _load_exact_command_room_receipt(command_room_run_id)
+        master_state = command_room_receipt.get("master_prompt") or {}
+        prompt_binding_verified = bool(
+            master_state.get("required_by_launcher") is True
+            and master_state.get("all_executed_lanes_bound") is True
+        )
+    except Exception as exc:  # noqa: BLE001 - exact receipt is an authority boundary
+        receipt_error = type(exc).__name__
+
+    effective_rc = int(result.returncode)
+    if effective_rc == 0 and not prompt_binding_verified:
+        effective_rc = 78
+
     receipt = {
         "schema_version": "dealix.master-company-cycle.v2",
         "started_at": started,
@@ -131,25 +183,29 @@ def main() -> int:
         "permanent_agent_count": len(binding["permanent_agents"]),
         "governed_arm_count": binding["expected_arm_count"],
         "deep_wip_max": binding["deep_wip_max"],
+        "command_room_run_id": command_room_run_id,
         "command_room_rc": result.returncode,
-        "status": "PASS" if result.returncode == 0 else "DEGRADED",
+        "command_room_receipt_error": receipt_error,
+        "master_prompt_bound_to_all_executed_agent_lanes": prompt_binding_verified,
+        "effective_rc": effective_rc,
+        "status": "PASS" if effective_rc == 0 else "DEGRADED",
         "universal_l5": False,
         "material_external_effects_executed": False,
         "kill_switches_forced_off": binding["required_kill_switches"],
     }
     write_receipt(receipt)
-    print(f"MASTER_COMPANY_CYCLE_RC={result.returncode}")
+    print(f"MASTER_COMPANY_CYCLE_RC={effective_rc}")
     print(f"MASTER_BINDING_SHA256={binding_hash}")
     print(f"MASTER_PROMPT_SHA256={prompt_hash}")
     print(f"META_CONTROL_SHA256={meta_hash}")
-    print("MASTER_PROMPT_BOUND=true")
+    print(f"MASTER_PROMPT_BOUND={str(prompt_binding_verified).lower()}")
     print("META_CONTROL_BOUND=true")
     print("PERMANENT_AGENTS=5")
     print("ARMS_TOTAL=44")
     print("UNIVERSAL_L5=false")
     print("MATERIAL_EXTERNAL_EFFECTS=DISABLED_BY_ENTRYPOINT")
     print(f"MASTER_RECEIPT={OUT / 'latest.json'}")
-    return int(result.returncode)
+    return effective_rc
 
 
 if __name__ == "__main__":
