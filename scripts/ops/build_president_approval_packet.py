@@ -119,7 +119,7 @@ def build_items(main_sha: str, chain: dict[int, str], evidence: dict[str, Any], 
             "action_type": "MERGE_PROTECTED_MAIN",
             "target": "github.com/Dealix-sa/dealix main",
             "environment": "production",
-            "why_now": "PR chain #1700-#1702 is locally verified and stacked; main has not absorbed the truth/diagnostic fixes.",
+            "why_now": "PR chain #1700-#1703 is locally verified and stacked; main has not absorbed the truth/diagnostic/ops fixes.",
             "economic_upside": "Unblocks release parity and the free diagnostic product; no direct cash movement.",
             "risk": "medium",
             "exact_mutation": f"merge {chain_payload} into main (fast-forward if possible)",
@@ -263,7 +263,7 @@ def main() -> int:
 
     main_sha = git_rev("origin/main")
     chain = {}
-    for number in (1700, 1701, 1702):
+    for number in (1700, 1701, 1702, 1703):
         value = pr_head(number)
         if value != "UNKNOWN":
             chain[number] = value
