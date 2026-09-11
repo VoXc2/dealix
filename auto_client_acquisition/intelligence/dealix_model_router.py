@@ -17,7 +17,10 @@ caller knows it's a draft awaiting founder.
 """
 from __future__ import annotations
 
+import hashlib
+import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Literal
 
 from auto_client_acquisition.intelligence.confidence import (
@@ -47,6 +50,8 @@ RouterStatus = Literal[
     "blocked_by_privacy",          # privacy policy refused cloud + local unavailable
     "blocked_by_cost",             # cost cap exceeded; aborted
 ]
+
+_BOUND_TRUE = {"1", "true", "yes"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,6 +103,38 @@ def _privacy_allows_cloud(privacy: PrivacyLevel) -> bool:
     return privacy != "founder_only"
 
 
+def _compose_bound_master_prompt(prompt: str) -> str:
+    """Prepend the verified Company Master Prompt when the canonical cycle bound it.
+
+    The launcher publishes only a path + SHA. The router re-reads and verifies the
+    artifact at the point where model behavior is created, so a claimed binding
+    cannot silently degrade into an unused environment variable.
+    """
+    if os.getenv("DEALIX_MASTER_PROMPT_BOUND", "").strip().lower() not in _BOUND_TRUE:
+        return prompt
+
+    path_value = os.getenv("DEALIX_COMPANY_MASTER_PROMPT", "").strip()
+    declared_sha = os.getenv("DEALIX_COMPANY_MASTER_PROMPT_SHA256", "").strip().lower()
+    if not path_value or len(declared_sha) != 64:
+        raise RuntimeError("bound master prompt path/SHA is incomplete")
+
+    path = Path(path_value)
+    if not path.is_file():
+        raise RuntimeError("bound master prompt artifact is missing")
+    raw = path.read_bytes()
+    actual_sha = hashlib.sha256(raw).hexdigest()
+    if actual_sha != declared_sha:
+        raise RuntimeError("bound master prompt SHA mismatch")
+    try:
+        directive = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise RuntimeError("bound master prompt is not UTF-8") from exc
+    if not directive.strip():
+        raise RuntimeError("bound master prompt is empty")
+
+    return f"{directive.rstrip()}\n\n---\n\nCURRENT AGENT TASK\n{prompt}"
+
+
 def route_task(
     task: DealixTask,
     *,
@@ -114,15 +151,17 @@ def route_task(
     Strategy (Article 11 — local-first):
       1. Look up TaskRequirements from registry
       2. Hard-block if cost cap or privacy violated
-      3. Try local model first (cheap, private, fast)
-      4. If local response actionable → return ok_local
-      5. If local low-confidence + cloud allowed → cloud fallback
-      6. If local unavailable + cloud allowed + privacy permits → cloud
-      7. If everything fails → degraded_to_human (caller routes to founder)
+      3. Apply the hash-bound Company Master Prompt when the canonical cycle bound it
+      4. Try local model first (cheap, private, fast)
+      5. If local response actionable → return ok_local
+      6. If local low-confidence + cloud allowed → cloud fallback
+      7. If local unavailable + cloud allowed + privacy permits → cloud
+      8. If everything fails → degraded_to_human (caller routes to founder)
 
     Args:
         task: Canonical DealixTask name (must be in registry)
-        prompt: Full prompt to send (caller assembles system + user)
+        prompt: Task prompt; the router composes the verified bound company directive
+            when the canonical master cycle is active.
         language: Output language preference
         json_mode: Request structured JSON output
         customer_handle: For audit log + observability (optional)
@@ -157,11 +196,17 @@ def route_task(
             requirements=req,
         )
 
-    # Step 3: try local first
+    # Step 3: model-backed work must consume the verified bound directive.
+    try:
+        model_prompt = _compose_bound_master_prompt(prompt)
+    except RuntimeError:
+        return _human_handoff(task, req, ["master_prompt_binding_invalid"])
+
+    # Step 4: try local first
     local_result: LocalModelResponse | LocalModelUnavailable | None = None
     if is_local_configured():
         local_result = local_generate(
-            prompt=prompt,
+            prompt=model_prompt,
             json_mode=json_mode,
             timeout_seconds=max(1.0, min(float(local_timeout_seconds), 60.0)),
             max_tokens=max(16, min(int(local_max_tokens), 2048)),
@@ -170,7 +215,7 @@ def route_task(
     else:
         fallback_reasons.append("local_not_configured")
 
-    # Step 4: local succeeded — score confidence
+    # Step 5: local succeeded — score confidence
     if isinstance(local_result, LocalModelResponse):
         confidence = from_text_signals(local_result.text, expected_json=json_mode)
         if confidence.is_actionable:
@@ -183,7 +228,6 @@ def route_task(
                 estimated_output_tokens=local_result.estimated_output_tokens,
                 requirements=req,
             )
-        # Local returned but confidence too low → consider cloud fallback
         fallback_reasons.append(f"local_low_confidence({confidence.level})")
         if not cloud_fallback_enabled or not _privacy_allows_cloud(req.privacy_level):
             return RouterDecision(
@@ -197,11 +241,9 @@ def route_task(
                 requirements=req,
             )
 
-    # Step 5: local unavailable
     elif isinstance(local_result, LocalModelUnavailable):
         fallback_reasons.append(f"local_unavailable: {local_result.reason}")
 
-    # Step 6: privacy gate — block cloud if founder_only
     if not _privacy_allows_cloud(req.privacy_level):
         return RouterDecision(
             task=task, status="blocked_by_privacy",
@@ -212,21 +254,14 @@ def route_task(
             requirements=req,
         )
 
-    # Step 7: cloud fallback (if allowed)
     if not cloud_fallback_enabled:
         fallback_reasons.append("cloud_fallback_disabled_by_caller")
         return _human_handoff(task, req, fallback_reasons)
 
-    # Cloud invocation: defer to existing core/llm/router.py via thin wrapper.
-    # The actual cloud call is intentionally NOT made here in this Wave 12
-    # commit — the router returns a "would call cloud" decision to keep
-    # this module testable without API keys. The follow-up commit wires
-    # core/llm/router.py.
-    cloud_decision = _attempt_cloud_call_stub(task=task, prompt=prompt, req=req)
+    cloud_decision = _attempt_cloud_call_stub(task=task, prompt=model_prompt, req=req)
     if cloud_decision is not None:
         return cloud_decision
 
-    # Step 8: everything failed → human handoff
     return _human_handoff(task, req, fallback_reasons)
 
 
@@ -239,7 +274,6 @@ def _attempt_cloud_call_stub(
     for now returns None so the router falls through to human_handoff
     in test environments without API keys.
     """
-    import os
     has_cloud_creds = any(
         os.environ.get(key) for key in (
             "ANTHROPIC_API_KEY", "OPENAI_API_KEY",
@@ -248,8 +282,6 @@ def _attempt_cloud_call_stub(
     )
     if not has_cloud_creds:
         return None
-    # When wired: invoke core/llm/router.route_llm() with task-appropriate
-    # tier (req.tier) + prompt + language. For now, marker-only.
     return None
 
 
@@ -271,16 +303,7 @@ def _human_handoff(
 
 
 def status_summary() -> dict[str, object]:
-    """Layer status (for /api/v1/intelligence/status endpoint).
-
-    Returns a dict the founder can read at a glance:
-    - tasks registered count
-    - local backend configured?
-    - local backend reachable?
-    - cloud creds present?
-    """
-    import os
-
+    """Layer status (for /api/v1/intelligence/status endpoint)."""
     from auto_client_acquisition.intelligence.dealix_task_registry import all_tasks
     from auto_client_acquisition.intelligence.local_model_client import (
         _detect_provider,
@@ -312,5 +335,6 @@ def status_summary() -> dict[str, object]:
             "no_secrets_logged": True,
             "fail_fast_to_human_on_unknown_task": True,
             "no_silent_cloud_call_without_local_first": True,
+            "bound_master_prompt_consumed_by_model_router": True,
         },
     }
