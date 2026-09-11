@@ -311,4 +311,6 @@ from dealix.commercial.universal_diagnostic_factory import DiagnosticDepth, Diag
 # Sector Companies & Omnichannel
 from dealix.commercial.sector_company_factory import SECTOR_INTEL, SectorCompany, SectorCompanyFactory
 from dealix.commercial.omnichannel_orchestrator import ChannelId, OmnichannelMessage, OmnichannelOrchestrator
+# Arm Registry — 44+ capability arms, all activated
+from dealix.commercial.arm_registry import ALL_ARMS, ArmHealth, CapabilityArm, get_active_arms
 
