@@ -27,9 +27,9 @@ def main() -> int:
         "DEALIX_EXPECTED_SHA",
         "DEALIX_SELFHOST_LOCAL_DB",
         "exact-head mismatch",
-        "RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1",
-        "DEALIX_DB_MIGRATION_AUTHORIZED=1",
-        "api bash /app/scripts/railway_predeploy.sh",
+        "DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1",
+        "bootstrap_fresh_database.py --confirm-empty-bootstrap",
+        "check_alembic_version_capacity.py",
         "SELFHOST_CANARY=PASS",
         "PUBLIC_CUTOVER=NOT_EXECUTED",
         "LOCAL_POSTGRES=CANARY_ONLY",
@@ -47,6 +47,7 @@ def main() -> int:
         "railway variables",
         "RAILWAY_TOKEN",
         "APP_ENV: production",
+        "api bash /app/scripts/railway_predeploy.sh",
     ]
     present_forbidden = [x for x in forbidden if x in compose or x in runner]
 
