@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTOPILOT = ROOT / "scripts" / "ops" / "dealix_company_autopilot.sh"
+LEGACY = ROOT / "scripts" / "ops" / "dealix_company_autopilot_legacy.sh"
 INSTALLER = ROOT / "scripts" / "ops" / "install_dealix_company_autopilot.sh"
 DISPATCHER = ROOT / "scripts" / "ops" / "dealix_vps_control.sh"
 BRIDGE = ROOT / "scripts" / "ops" / "dealix_vps_issue_bridge.py"
@@ -14,8 +15,13 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def operational_text() -> str:
+    """The release-truth wrapper delegates non-production modes to legacy."""
+    return text(AUTOPILOT) + "\n" + text(LEGACY)
+
+
 def test_autopilot_has_hard_external_safety_flags() -> None:
-    body = text(AUTOPILOT)
+    body = operational_text()
     required = (
         "DEALIX_EXTERNAL_OUTREACH_ENABLED=false",
         "EXTERNAL_OUTREACH_ENABLED=false",
@@ -29,7 +35,7 @@ def test_autopilot_has_hard_external_safety_flags() -> None:
 
 
 def test_autopilot_does_not_contain_l5_execution_primitives() -> None:
-    body = text(AUTOPILOT)
+    body = operational_text()
     forbidden = (
         "gh pr merge",
         "git push --force",
@@ -45,7 +51,7 @@ def test_autopilot_does_not_contain_l5_execution_primitives() -> None:
 
 
 def test_autopilot_runtime_checks_are_strict_and_redacted() -> None:
-    body = text(AUTOPILOT)
+    body = operational_text()
     assert "is_http_ok" in body
     assert "^[23][0-9][0-9]$" in body
     assert "=~ ^2|3" not in body
@@ -55,7 +61,7 @@ def test_autopilot_runtime_checks_are_strict_and_redacted() -> None:
 
 
 def test_autopilot_reuses_existing_github_schedules_instead_of_duplicate_morning_run() -> None:
-    body = text(AUTOPILOT)
+    body = operational_text()
     installer = text(INSTALLER)
     assert "workflow_success_today daily-revenue-machine.yml" in body
     assert "workflow_success_today governed-full-ops-daily.yml" in body
@@ -110,7 +116,7 @@ def test_installer_makes_local_ai_8k_hardening_reinstall_safe() -> None:
 
 
 def test_local_ai_is_local_only_and_releases_model() -> None:
-    body = text(AUTOPILOT)
+    body = operational_text()
     assert "http://127.0.0.1:11434/api/chat" in body
     assert '"num_ctx": 8192' in body
     assert '"keep_alive": "10m"' in body

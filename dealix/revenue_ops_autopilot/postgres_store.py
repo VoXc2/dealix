@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, String, create_engine, select, text
+from sqlalchemy import JSON, DateTime, String, create_engine, inspect, select, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from sqlalchemy.orm.attributes import flag_modified
@@ -53,18 +53,28 @@ class AutopilotPostgresStore(AutopilotJSONStore):
         *,
         engine: Engine | None = None,
         database_url: str | None = None,
-        create_tables: bool = True,
+        create_tables: bool = False,
     ) -> None:
         # Reentrant because read helpers can be called from inherited methods.
         self._lock = threading.RLock()
         if engine is None:
             url = database_url or "sqlite:///:memory:"
-            engine = create_engine(url, future=True, pool_pre_ping=True)
+            connect_args = {"connect_timeout": 3} if url.startswith("postgresql") else {}
+            engine = create_engine(
+                url, future=True, pool_pre_ping=True, connect_args=connect_args
+            )
         self._engine = engine
         self._sessionmaker = sessionmaker(self._engine, expire_on_commit=False, future=True)
         if create_tables:
             _AutopilotStoreBase.metadata.create_all(self._engine)
         self._path = Path("/dev/null")
+
+    def required_schema_ready(self) -> bool:
+        """Read-only check that the Alembic-owned snapshot table already exists."""
+        try:
+            return inspect(self._engine).has_table(AutopilotStoreSnapshotORM.__tablename__)
+        except Exception:
+            return False
 
     def _read_raw(self) -> dict[str, Any]:
         with self._lock, self._sessionmaker() as session:

@@ -331,7 +331,9 @@ def _build_autopilot_store() -> AutopilotJSONStore | Any:
         url = sync_database_url_from_env()
         if url:
             try:
-                return AutopilotPostgresStore(database_url=url, create_tables=True)
+                candidate = AutopilotPostgresStore(database_url=url, create_tables=False)
+                if candidate.required_schema_ready():
+                    return candidate
             except Exception:
                 pass
     return AutopilotJSONStore()

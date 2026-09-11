@@ -206,7 +206,7 @@ flowchart LR
 
 **قبل Paid:** 3–5 اجتماعات تشخيص · KPI من CRM · [PAID_LAUNCH_AFTER_SOFT_PASS_AR.md](PAID_LAUNCH_AFTER_SOFT_PASS_AR.md) · [PAID_LAUNCH_TRACKER_AR.md](PAID_LAUNCH_TRACKER_AR.md) · [LAUNCH_GATES.md](../LAUNCH_GATES.md)
 
-**إنتاج:** `railway_prod_bootstrap.sh` → `official_launch_verify.sh` → `OFFICIAL_LAUNCH_VERDICT=PASS`
+**إنتاج:** `railway_prod_bootstrap.sh` (legacy HOLD-only; no DDL/seed/API mutation) → `official_launch_verify.sh` → `OFFICIAL_LAUNCH_VERDICT=PASS`
 
 ---
 

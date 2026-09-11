@@ -157,7 +157,7 @@ bash scripts/run_founder_commercial_day.sh
 
 ## 10) البنية والنشر (Railway)
 
-- **النشر الرسمي:** `bash scripts/railway_prod_bootstrap.sh` (Alembic + بذرة War Room مرة واحدة) ثم `bash scripts/official_launch_verify.sh` → `OFFICIAL_LAUNCH_VERDICT=PASS`.
+- **النشر الرسمي:** `bash scripts/railway_prod_bootstrap.sh` (legacy HOLD-only; no DDL/seed/API mutation) ثم `bash scripts/official_launch_verify.sh` → `OFFICIAL_LAUNCH_VERDICT=PASS`.
 - **مصفوفة المتغيّرات:** `python3 scripts/railway_launch_env_check.py`.
 - **Alembic:** CI يفرض head واحد — شغّل `alembic heads` قبل `upgrade head`.
 - **smoke إنتاج:** `bash scripts/founder_production_smoke.sh` (مرّر `DEALIX_API_BASE`).

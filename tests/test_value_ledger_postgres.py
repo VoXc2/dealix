@@ -43,11 +43,43 @@ def test_value_ledger_public_api_uses_sqlite_postgres_backend(
 
     monkeypatch.setenv("DEALIX_VALUE_LEDGER_PATH", str(tmp_path / "value.jsonl"))
     monkeypatch.setenv("VALUE_LEDGER_BACKEND", "postgres")
-    monkeypatch.setenv("DEALIX_VALUE_LEDGER_SYNC_DATABASE_URL", "sqlite:///:memory:")
+    db_url = f"sqlite:///{tmp_path / 'value.db'}"
+    PostgresValueLedgerStore(database_url=db_url, create_tables=True)
+    monkeypatch.setenv("DEALIX_VALUE_LEDGER_SYNC_DATABASE_URL", db_url)
     reset_postgres_value_ledger_singleton_for_test()
     try:
         ev = vl.add_event(customer_id="c1", kind="k", amount=2.0, tier="estimated")
         rows = vl.list_events(customer_id="c1")
         assert any(r.event_id == ev.event_id for r in rows)
+    finally:
+        reset_postgres_value_ledger_singleton_for_test()
+
+
+def test_value_ledger_singleton_missing_schema_fails_closed_without_ddl(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+    from auto_client_acquisition.value_os.value_ledger_postgres import (
+        get_postgres_value_ledger_store,
+        reset_postgres_value_ledger_singleton_for_test,
+    )
+    url = f"sqlite:///{tmp_path / 'missing.db'}"
+    monkeypatch.setenv("DEALIX_VALUE_LEDGER_SYNC_DATABASE_URL", url)
+    reset_postgres_value_ledger_singleton_for_test()
+    assert get_postgres_value_ledger_store() is None
+    eng = sa.create_engine(url, future=True)
+    assert sa.inspect(eng).has_table("value_ledger_events") is False
+
+
+def test_value_ledger_unreachable_postgres_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    from auto_client_acquisition.value_os.value_ledger_postgres import (
+        get_postgres_value_ledger_store,
+        reset_postgres_value_ledger_singleton_for_test,
+    )
+
+    monkeypatch.setenv(
+        "DEALIX_VALUE_LEDGER_SYNC_DATABASE_URL",
+        "postgresql+asyncpg://invalid:invalid@127.0.0.1:59999/nope",
+    )
+    reset_postgres_value_ledger_singleton_for_test()
+    try:
+        assert get_postgres_value_ledger_store() is None
     finally:
         reset_postgres_value_ledger_singleton_for_test()

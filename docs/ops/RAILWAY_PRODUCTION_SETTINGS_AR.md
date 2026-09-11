@@ -44,10 +44,11 @@ curl -fsS https://api.dealix.me/api/v1/meta
 
 - **config-as-code:** [`railway.toml`](../../railway.toml) يشغّل `bash /app/scripts/railway_predeploy.sh` قبل كل نشر.
 - **افتراضي (آمن):** السكربت يطبع `SKIP` ولا يشغّل ترحيلاً.
-- **ترحيل تلقائي عند النشر:** يتطلب `RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1` + `DEALIX_DB_MIGRATION_AUTHORIZED=1` + `DATABASE_URL`. لا يكفي flag قديم وحده لتفويض DDL.
+- **Automatic production migration:** disabled fail-closed. `RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1` expresses migration intent only and blocks pre-deploy; DDL requires a separate one-shot executor plus an exact action-bound approval receipt binding environment, revision payload, expiry, idempotency key, and `ACTION_HASH`.
 - **خطأ شائع في UI:** `echo "no migration needed"` — **استبدله** بـ `bash /app/scripts/railway_predeploy.sh` أو اترك الحقل فارغاً ليأخذ `railway.toml`.
-- **مرة واحدة:** `bash scripts/railway_prod_bootstrap.sh`
-- **بذرة أول مرة (اختياري):** `bash scripts/railway_prod_bootstrap.sh` بعد أول نشر ناجح.
+- **Legacy bootstrap:** `bash scripts/railway_prod_bootstrap.sh` is fail-closed (exit 75) and performs no migration, seed, or API mutation.
+- **Material bootstrap/seed:** requires a separate one-shot executor with an exact action-bound approval receipt; no legacy script or persistent environment flag grants authority.
+- **Prepare only:** `python scripts/ops/prepare_railway_migration_packet.py ...` يبني حزمة `PENDING_EXACT_L5_AUTHORITY` مرتبطة بـ release SHA + Railway project/environment/service + Alembic head + provider-scoped structured SUCCESS `--backup-receipt` matching Railway project/environment/service + existing repo rollback artifact + expiry + idempotency + `ACTION_HASH`. الباني لا يتصل بقاعدة البيانات ويُبقي `execution_allowed=false`.
 
 تحقق محلي (ومحاكاة انحراف لوحة Railway):
 
@@ -69,7 +70,6 @@ python scripts/verify_railway_production_config.py --ui-restart-max-retries 10
 | متغير | الغرض |
 |--------|--------|
 | `DATABASE_URL` | Postgres (مرجع `${{Postgres.DATABASE_URL}}`) |
-| `DEALIX_DB_MIGRATION_AUTHORIZED` | بوابة تفويض منفصلة؛ يجب أن تساوي `1` مع migration flag قبل أي Alembic DDL |
 | `APP_SECRET_KEY` | جلسات وتوقيع |
 | `ENVIRONMENT` | `production` |
 | `CORS_ORIGINS` | دومينات الفرونت |

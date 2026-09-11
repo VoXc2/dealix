@@ -21,7 +21,7 @@ py -3 scripts/verify_commercial_launch_ready.py --with-frontend-build
 
 | خطوة | أمر |
 |------|-----|
-| Bootstrap DB + War Room seed | `bash scripts/railway_prod_bootstrap.sh` |
+| Legacy bootstrap authority check (HOLD-only) | `bash scripts/railway_prod_bootstrap.sh` |
 | فحص env | `python3 scripts/railway_launch_env_check.py` |
 | إطلاق رسمي | `bash scripts/official_launch_verify.sh` → `OFFICIAL_LAUNCH_VERDICT=PASS` |
 | تنفيذ كامل A–D | `bash scripts/launch_execution_railway.sh` |

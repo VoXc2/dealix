@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,7 +21,8 @@ def _read(path: str) -> str:
 
 def test_railway_config_matches_canonical_runtime_contract() -> None:
     canonical = _read("dealix/config/railway_ui_canonical.yaml")
-    toml = _read("railway.toml")
+    toml_text = _read("railway.toml")
+    toml = tomllib.loads(toml_text)
     railway_json = json.loads(_read("railway.json"))
     dockerfile = _read("Dockerfile")
 
@@ -28,10 +30,10 @@ def test_railway_config_matches_canonical_runtime_contract() -> None:
     assert "start_command_canonical: /app/start.sh" in canonical
     assert "restart_max_retries: 3" in canonical
 
-    assert re.search(r"(?m)^\s*startCommand\s*=", toml) is None
+    assert re.search(r"(?m)^\s*startCommand\s*=", toml_text) is None
     assert railway_json["deploy"]["startCommand"] is None
 
-    assert 'builder = "DOCKERFILE"' in toml
+    assert toml["build"]["builder"] == "DOCKERFILE"
     assert railway_json["build"]["builder"] == "DOCKERFILE"
     assert railway_json["build"]["dockerfilePath"] == "Dockerfile"
 
@@ -52,44 +54,52 @@ def test_railway_config_matches_canonical_runtime_contract() -> None:
         "/prompts/**",
     } <= watch_patterns
 
-    assert 'healthcheckPath = "/healthz"' in toml
+    assert toml["deploy"]["healthcheckPath"] == "/healthz"
     assert railway_json["deploy"]["healthcheckPath"] == "/healthz"
-    assert "healthcheckTimeout = 300" in toml
+    assert toml["deploy"]["healthcheckTimeout"] == 300
     assert railway_json["deploy"]["healthcheckTimeout"] == 300
 
-    assert 'restartPolicyType = "ON_FAILURE"' in toml
+    assert toml["deploy"]["restartPolicyType"] == "ON_FAILURE"
     assert railway_json["deploy"]["restartPolicyType"] == "ON_FAILURE"
-    assert "restartPolicyMaxRetries = 3" in toml
+    assert toml["deploy"]["restartPolicyMaxRetries"] == 3
     assert railway_json["deploy"]["restartPolicyMaxRetries"] == 3
-    assert "numReplicas = 1" in toml
+    assert toml["deploy"]["numReplicas"] == 1
     assert railway_json["deploy"]["numReplicas"] == 1
 
-    assert "/app/scripts/railway_predeploy.sh" in toml
-    assert "/app/scripts/railway_predeploy.sh" in railway_json["deploy"]["preDeployCommand"]
+    assert toml["deploy"]["preDeployCommand"] == railway_json["deploy"][
+        "preDeployCommand"
+    ]
     assert "/app/start.sh" in dockerfile
 
 
 def test_forbidden_direct_uvicorn_start_command_is_absent() -> None:
-    toml = _read("railway.toml")
+    toml_text = _read("railway.toml")
     railway_json = json.loads(_read("railway.json"))
 
-    assert "uvicorn api.main:app" not in toml
+    assert "uvicorn api.main:app" not in toml_text
     assert railway_json["deploy"]["startCommand"] is None
 
 
 def test_health_contract_is_healthz_not_retired_health_alias() -> None:
-    """Railway's production readiness contract is the explicit /healthz path."""
-    toml = _read("railway.toml")
+    toml = tomllib.loads(_read("railway.toml"))
     railway_json = json.loads(_read("railway.json"))
 
-    assert 'healthcheckPath = "/healthz"' in toml
+    assert toml["deploy"]["healthcheckPath"] == "/healthz"
     assert railway_json["deploy"]["healthcheckPath"] == "/healthz"
 
 
-def test_predeploy_uses_bash_for_bash_only_script() -> None:
-    toml = _read("railway.toml")
+def test_predeploy_uses_one_bash_command_array() -> None:
+    toml = tomllib.loads(_read("railway.toml"))
     railway_json = json.loads(_read("railway.json"))
-    assert "bash /app/scripts/railway_predeploy.sh" in toml
-    assert "bash /app/scripts/railway_predeploy.sh" in railway_json["deploy"]["preDeployCommand"]
-    assert "then sh /app/scripts/railway_predeploy.sh" not in toml
-    assert "then sh /app/scripts/railway_predeploy.sh" not in railway_json["deploy"]["preDeployCommand"]
+
+    for commands in (
+        toml["deploy"]["preDeployCommand"],
+        railway_json["deploy"]["preDeployCommand"],
+    ):
+        assert isinstance(commands, list)
+        assert len(commands) == 1
+        command = commands[0]
+        assert "bash /app/scripts/railway_predeploy.sh" in command
+        assert "then sh /app/scripts/railway_predeploy.sh" not in command
+        assert "[ -f /app/scripts/railway_predeploy.sh ]" in command
+        assert "[ -x /app/scripts/railway_predeploy.sh ]" not in command

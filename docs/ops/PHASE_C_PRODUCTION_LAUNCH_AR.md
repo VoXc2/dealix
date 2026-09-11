@@ -21,7 +21,7 @@ bash scripts/official_launch_verify.sh --api-base "$DEALIX_API_BASE" --admin-key
 ## قبل التشغيل
 
 1. راجع [LAUNCH_GATES.md](../LAUNCH_GATES.md) — Moyasar live، DPA، PDPL.
-2. Bootstrap إنتاج (مرة): `bash scripts/railway_prod_bootstrap.sh`
+2. Bootstrap إنتاج (مرة): `bash scripts/railway_prod_bootstrap.sh` (legacy HOLD-only; no DDL/seed/API mutation)
 3. انسخ [DEPLOYMENT.md](../../DEPLOYMENT.md) — `APP_SECRET_KEY`، `DATABASE_URL`، `ENVIRONMENT=production`.
 
 ## ما يبقى يدوياً بعد المرحلة ج

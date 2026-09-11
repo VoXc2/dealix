@@ -11,7 +11,7 @@ import threading
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import DateTime, Float, String, Text, create_engine, delete, select
+from sqlalchemy import DateTime, Float, String, Text, create_engine, delete, inspect, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
@@ -62,12 +62,19 @@ class PostgresValueLedgerStore:
     ) -> None:
         if engine is None:
             url = database_url or "sqlite:///:memory:"
-            engine = create_engine(url, future=True)
+            connect_args = {"connect_timeout": 3} if url.startswith("postgresql") else {}
+            engine = create_engine(url, future=True, connect_args=connect_args)
         self._engine = engine
         self._sessionmaker = sessionmaker(self._engine, expire_on_commit=False, future=True)
         self._lock = threading.Lock()
         if create_tables:
             _ValueLedgerBase.metadata.create_all(self._engine)
+
+    def required_schema_ready(self) -> bool:
+        try:
+            return inspect(self._engine).has_table(ValueLedgerEventORM.__tablename__)
+        except Exception:
+            return False
 
     def insert_event(self, row: dict[str, Any]) -> None:
         occurred_raw = str(row.get("occurred_at") or "")
@@ -158,12 +165,20 @@ def get_postgres_value_ledger_store() -> PostgresValueLedgerStore | None:
         if _store_singleton is not None:
             return _store_singleton
         try:
-            eng = create_engine(url, future=True, pool_pre_ping=True)
+            connect_args = {"connect_timeout": 3} if url.startswith("postgresql") else {}
+            eng = create_engine(
+                url, future=True, pool_pre_ping=True, connect_args=connect_args
+            )
             eng.connect().close()
         except Exception:
             return None
         _engine_singleton = eng
-        _store_singleton = PostgresValueLedgerStore(engine=_engine_singleton, create_tables=True)
+        candidate = PostgresValueLedgerStore(engine=_engine_singleton, create_tables=False)
+        if not candidate.required_schema_ready():
+            _engine_singleton.dispose()
+            _engine_singleton = None
+            return None
+        _store_singleton = candidate
         return _store_singleton
 
 

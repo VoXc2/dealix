@@ -27,7 +27,7 @@ def _read(path: Path) -> str:
 CANONICAL_PREDEPLOY = "bash /app/scripts/railway_predeploy.sh"
 CANONICAL_PREDEPLOY_MARKER = "/app/scripts/railway_predeploy.sh"
 CANONICAL_PREDEPLOY_COMMAND = (
-    "if [ -x /app/scripts/railway_predeploy.sh ]; then "
+    "if [ -f /app/scripts/railway_predeploy.sh ]; then "
     "bash /app/scripts/railway_predeploy.sh; else echo "
     "'RAILWAY_PREDEPLOY: no predeploy script'; fi"
 )
@@ -39,8 +39,8 @@ BAD_UI_PREDEPLOY_SNIPPETS = (
 )
 
 
-def _extract_predeploy_command(text: str) -> str | None:
-    """Parse a Railway config and return deploy.preDeployCommand exactly."""
+def _extract_predeploy_commands(text: str) -> tuple[str, ...] | None:
+    """Parse a Railway config and return deploy.preDeployCommand structurally."""
     raw = (text or "").strip()
     if not raw:
         return None
@@ -56,14 +56,97 @@ def _extract_predeploy_command(text: str) -> str | None:
     deploy = config.get("deploy")
     if not isinstance(deploy, dict):
         return None
-    command = deploy.get("preDeployCommand")
-    return command.strip() if isinstance(command, str) else None
+    commands = deploy.get("preDeployCommand")
+    if not isinstance(commands, list) or not commands:
+        return None
+    if not all(isinstance(command, str) for command in commands):
+        return None
+    normalized = tuple(command.strip() for command in commands)
+    return normalized if all(normalized) else None
 
 
 def _has_canonical_predeploy(text: str) -> bool:
-    """Require the parsed repo preDeployCommand to match the canonical wrapper exactly."""
-    return _extract_predeploy_command(text) == CANONICAL_PREDEPLOY_COMMAND
+    """Require one exact canonical Bash command in the documented array schema."""
+    return _extract_predeploy_commands(text) == (CANONICAL_PREDEPLOY_COMMAND,)
 
+
+def _evidence_value(value: str | None) -> str | None:
+    text = (value or "").strip()
+    return text or None
+
+
+def classify_release_evidence(
+    *,
+    github_context_state: str | None,
+    railway_deployment_status: str | None,
+    expected_deployment_id: str | None = None,
+    observed_deployment_id: str | None = None,
+    expected_project_id: str | None = None,
+    observed_project_id: str | None = None,
+    expected_service_id: str | None = None,
+    observed_service_id: str | None = None,
+    expected_environment_id: str | None = None,
+    observed_environment_id: str | None = None,
+    expected_sha: str | None = None,
+    deployed_sha: str | None = None,
+    live_sha: str | None = None,
+) -> dict[str, Any]:
+    """Classify release evidence only when provider success is identity-bound."""
+    github_state = (github_context_state or "").strip().lower() or None
+    railway_status = (railway_deployment_status or "").strip().upper() or None
+    provider_success = railway_status == "SUCCESS"
+
+    identity_values = {
+        "expected_deployment_id": _evidence_value(expected_deployment_id),
+        "observed_deployment_id": _evidence_value(observed_deployment_id),
+        "expected_project_id": _evidence_value(expected_project_id),
+        "observed_project_id": _evidence_value(observed_project_id),
+        "expected_service_id": _evidence_value(expected_service_id),
+        "observed_service_id": _evidence_value(observed_service_id),
+        "expected_environment_id": _evidence_value(expected_environment_id),
+        "observed_environment_id": _evidence_value(observed_environment_id),
+        "expected_sha": _evidence_value(expected_sha),
+        "deployed_sha": _evidence_value(deployed_sha),
+        "live_sha": _evidence_value(live_sha),
+    }
+    identity_complete = all(identity_values.values())
+    identity_bound = bool(
+        identity_complete
+        and identity_values["expected_deployment_id"] == identity_values["observed_deployment_id"]
+        and identity_values["expected_project_id"] == identity_values["observed_project_id"]
+        and identity_values["expected_service_id"] == identity_values["observed_service_id"]
+        and identity_values["expected_environment_id"] == identity_values["observed_environment_id"]
+        and identity_values["expected_sha"] == identity_values["deployed_sha"]
+        and identity_values["expected_sha"] == identity_values["live_sha"]
+    )
+    sha_values = (identity_values["expected_sha"], identity_values["deployed_sha"], identity_values["live_sha"])
+    sha_format_valid = all(isinstance(v, str) and re.fullmatch(r"[0-9a-f]{40}", v) for v in sha_values)
+    identity_bound = identity_bound and sha_format_valid
+    release_valid = provider_success and identity_bound
+
+    if provider_success and not identity_complete:
+        reason = "RAILWAY_SUCCESS_IDENTITY_BINDING_INCOMPLETE"
+    elif provider_success and not identity_bound:
+        reason = "RAILWAY_SUCCESS_IDENTITY_MISMATCH"
+    elif release_valid:
+        reason = "RAILWAY_DEPLOYMENT_SUCCESS"
+    elif railway_status == "SKIPPED":
+        reason = "RAILWAY_DEPLOYMENT_SKIPPED_NOT_RELEASE_EVIDENCE"
+    elif railway_status is None:
+        reason = "RAILWAY_DEPLOYMENT_STATUS_MISSING"
+    else:
+        reason = f"RAILWAY_DEPLOYMENT_NOT_SUCCESS:{railway_status}"
+
+    return {
+        "github_context_state": github_state,
+        "railway_deployment_status": railway_status,
+        "github_context_is_release_authority": False,
+        "provider_deployment_success": provider_success,
+        "identity_binding_complete": identity_complete,
+        "identity_binding_valid": identity_bound,
+        "release_evidence_valid": release_valid,
+        "reason": reason,
+    }
 
 def check_repo_railway_config() -> dict[str, Any]:
     """Validate railway.toml, Dockerfile CMD, and predeploy script."""
@@ -76,7 +159,9 @@ def check_repo_railway_config() -> dict[str, Any]:
     elif 'healthcheckPath = "/healthz"' not in toml:
         issues.append('railway.toml must set healthcheckPath = "/healthz"')
     if not _has_canonical_predeploy(toml):
-        issues.append(f"railway.toml preDeployCommand must invoke {CANONICAL_PREDEPLOY_MARKER}")
+        issues.append(
+            "railway.toml preDeployCommand must be one canonical Bash command array"
+        )
     if "startCommand" in toml and "NO startCommand" not in toml:
         warnings.append("railway.toml should not set startCommand (use Dockerfile CMD)")
 
@@ -84,29 +169,37 @@ def check_repo_railway_config() -> dict[str, Any]:
     if jsn and "/healthz" not in jsn:
         issues.append("railway.json healthcheckPath should be /healthz")
     if jsn and not _has_canonical_predeploy(jsn):
-        issues.append(f"railway.json preDeployCommand must invoke {CANONICAL_PREDEPLOY_MARKER}")
+        issues.append(
+            "railway.json preDeployCommand must be one canonical Bash command array"
+        )
 
     docker = _read(DOCKERFILE)
     if "/app/start.sh" not in docker:
         issues.append("Dockerfile must CMD /app/start.sh")
-    if 'healthz' not in docker and '/health' in docker:
+    if "healthz" not in docker and "/health" in docker:
         warnings.append("Dockerfile HEALTHCHECK should prefer /healthz")
 
     if not PREDEPLOY_SH.is_file():
         issues.append("missing scripts/railway_predeploy.sh")
     elif "RUN_RAILWAY_PRE_DEPLOY_MIGRATE" not in _read(PREDEPLOY_SH):
-        warnings.append("railway_predeploy.sh should gate migrations on RUN_RAILWAY_PRE_DEPLOY_MIGRATE")
+        warnings.append(
+            "railway_predeploy.sh should gate migrations on "
+            "RUN_RAILWAY_PRE_DEPLOY_MIGRATE"
+        )
 
     for cfg_name, cfg_text in (("railway.toml", toml), ("railway.json", jsn)):
         if not cfg_text:
             continue
         if "railway_predeploy" not in cfg_text:
-            issues.append(f"{cfg_name} must set preDeployCommand to railway_predeploy.sh")
+            issues.append(
+                f"{cfg_name} must set preDeployCommand to railway_predeploy.sh"
+            )
         lowered = cfg_text.lower()
         for bad in BAD_UI_PREDEPLOY_SNIPPETS:
             if bad in lowered:
                 issues.append(
-                    f"{cfg_name} must not use echo no-migration stub — use {CANONICAL_PREDEPLOY}"
+                    f"{cfg_name} must not use echo no-migration stub — "
+                    f"use {CANONICAL_PREDEPLOY}"
                 )
                 break
 
@@ -120,7 +213,13 @@ def check_repo_railway_config() -> dict[str, Any]:
     }
 
 
-def probe_get(api_base: str, path: str, *, timeout_sec: float = 12.0, max_bytes: int = 4096) -> dict[str, Any]:
+def probe_get(
+    api_base: str,
+    path: str,
+    *,
+    timeout_sec: float = 12.0,
+    max_bytes: int = 4096,
+) -> dict[str, Any]:
     """GET {api_base}{path} — returns status without raising."""
     base = (api_base or "").strip().rstrip("/")
     if not base:
@@ -139,7 +238,13 @@ def probe_get(api_base: str, path: str, *, timeout_sec: float = 12.0, max_bytes:
                 "snippet": body[:200],
             }
     except urllib.error.HTTPError as exc:
-        return {"probed": True, "url": url, "status": exc.code, "ok": False, "error": str(exc)}
+        return {
+            "probed": True,
+            "url": url,
+            "status": exc.code,
+            "ok": False,
+            "error": str(exc),
+        }
     except Exception as exc:
         return {"probed": True, "url": url, "ok": False, "error": str(exc)}
 
@@ -152,7 +257,12 @@ def probe_healthz(api_base: str, timeout_sec: float = 12.0) -> dict[str, Any]:
 def probe_trust_layer(api_base: str, timeout_sec: float = 12.0) -> dict[str, Any]:
     """Probe GTM trust endpoints on production API."""
     paths = ("/healthz", "/version", "/api/v1/meta", "/health")
-    probes = {p.strip("/").replace("/", "_") or "root": probe_get(api_base, p, timeout_sec=timeout_sec) for p in paths}
+    probes = {
+        p.strip("/").replace("/", "_") or "root": probe_get(
+            api_base, p, timeout_sec=timeout_sec
+        )
+        for p in paths
+    }
     healthz = probes.get("healthz") or {}
     snippet = (healthz.get("snippet") or "").lower()
     deploy_stale = healthz.get("ok") and "version" not in snippet
@@ -162,7 +272,8 @@ def probe_trust_layer(api_base: str, timeout_sec: float = 12.0) -> dict[str, Any
     return {
         "probes": probes,
         "deploy_stale_hint_ar": (
-            "النشر الحي قديم — /healthz بلا version أو /version غير منشور. انتظر CI + Railway deploy."
+            "النشر الحي قديم — /healthz بلا version أو /version غير منشور. "
+            "انتظر CI + Railway deploy."
             if deploy_stale or version_missing or meta_missing
             else ""
         ),
@@ -195,7 +306,7 @@ def analyze_railway_production(
 
 
 def parse_railway_ui_predeploy_drift(predeploy: str) -> str | None:
-    """Return Arabic hint if Railway UI pre-deploy drifts from railway.toml."""
+    """Return Arabic hint if Railway UI pre-deploy drifts from repo authority."""
     cmd = (predeploy or "").strip()
     if not cmd:
         return None
