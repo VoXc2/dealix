@@ -3,7 +3,8 @@
 
 This is the VPS-facing executive entrypoint. It does not replace the Company OS;
 it verifies the V2 meta-control kernel and command-room contract, then delegates
-work to exactly five canonical agents through existing Company OS runners.
+work only through the five canonical agent identities and existing Company OS
+runners.
 
 No provider side effect is executed here. External conversation effects remain
 owned by the existing exact-action-bound external execution gate.
@@ -29,6 +30,7 @@ META_CONTROL = ROOT / "scripts" / "commercial" / "run_dealix_meta_control_v2.py"
 META_RECEIPT = ROOT / "reports" / "company_os" / "meta_control" / "latest.json"
 OUT = ROOT / "reports" / "company_os" / "command_room"
 
+# Daily work only. Weekly proof assembly is explicitly opt-in below.
 RUNNERS: list[tuple[str, str, list[str], str]] = [
     (
         "company_os",
@@ -49,18 +51,19 @@ RUNNERS: list[tuple[str, str, list[str], str]] = [
         "critical",
     ),
     (
-        "weekly_proof_pack",
-        "dealix-delivery",
-        ["scripts/commercial/run_weekly_proof_pack.py", "--client", "dealix", "--mode", "draft-only"],
-        "critical",
-    ),
-    (
         "content_factory",
         "dealix-content",
         ["scripts/dealix_content_factory_daily.py"],
         "critical",
     ),
 ]
+
+WEEKLY_PROOF_RUNNER: tuple[str, str, list[str], str] = (
+    "weekly_proof_pack",
+    "dealix-delivery",
+    ["scripts/commercial/run_weekly_proof_pack.py", "--client", "dealix", "--mode", "draft-only"],
+    "critical",
+)
 
 FORBIDDEN_LIVE_FLAGS = {
     "DEALIX_EXTERNAL_SEND": {"1", "true", "yes"},
@@ -70,6 +73,7 @@ FORBIDDEN_LIVE_FLAGS = {
     "PAYMENT_EXECUTION": {"1", "true", "yes"},
     "PRODUCTION_MUTATION": {"1", "true", "yes"},
 }
+_BOUND_TRUE = {"1", "true", "yes"}
 
 
 def stamp() -> str:
@@ -131,6 +135,43 @@ def safe_agent_env(meta_sha: str, owner_agent: str) -> dict[str, str]:
     return env
 
 
+def load_bound_master_prompt(env: dict[str, str]) -> dict[str, Any]:
+    """Load and verify the master prompt before an agent lane starts.
+
+    This deliberately reads the artifact rather than trusting inherited env
+    markers. The model router independently re-verifies and consumes the same
+    prompt at model-inference time.
+    """
+    if env.get("DEALIX_MASTER_PROMPT_BOUND", "").strip().lower() not in _BOUND_TRUE:
+        return {"bound": False, "sha256": "", "bytes": 0}
+
+    path_value = env.get("DEALIX_COMPANY_MASTER_PROMPT", "").strip()
+    declared_sha = env.get("DEALIX_COMPANY_MASTER_PROMPT_SHA256", "").strip().lower()
+    if not path_value or len(declared_sha) != 64:
+        raise RuntimeError("master prompt path/SHA incomplete")
+    path = Path(path_value)
+    if not path.is_file():
+        raise RuntimeError("master prompt artifact missing")
+    raw = path.read_bytes()
+    actual_sha = hashlib.sha256(raw).hexdigest()
+    if actual_sha != declared_sha:
+        raise RuntimeError("master prompt SHA mismatch")
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise RuntimeError("master prompt is not UTF-8") from exc
+    if not text.strip():
+        raise RuntimeError("master prompt is empty")
+    return {"bound": True, "sha256": actual_sha, "bytes": len(raw)}
+
+
+def runner_specs(*, include_proof_pack: bool) -> list[tuple[str, str, list[str], str]]:
+    specs = list(RUNNERS)
+    if include_proof_pack:
+        specs.append(WEEKLY_PROOF_RUNNER)
+    return specs
+
+
 def load_config() -> dict[str, Any]:
     return json.loads(CONFIG.read_text(encoding="utf-8"))
 
@@ -167,6 +208,7 @@ def write_outputs(payload: dict[str, Any]) -> None:
         f"- Channels: `{len(payload['channels'])}`",
         f"- V2 Meta-Control: **{payload['meta_control']['status']}**",
         f"- V2 SHA256: `{payload['meta_control']['sha256']}`",
+        f"- Executed lanes bound to Master Prompt: **{payload['master_prompt']['all_executed_lanes_bound']}**",
         "",
         "## CEO Now",
     ]
@@ -175,7 +217,7 @@ def write_outputs(payload: dict[str, Any]) -> None:
     lines.extend(["", "## Agent lanes"])
     for lane in payload["lanes"]:
         lines.append(
-            f"- **{lane['owner_agent']} / {lane['label']}** — rc={lane['rc']} — {lane['status']} — V2 bound={lane['meta_control_bound']}"
+            f"- **{lane['owner_agent']} / {lane['label']}** — rc={lane['rc']} — {lane['status']} — V2 bound={lane['meta_control_bound']} — master bound={lane['master_prompt_bound']}"
         )
     lines.extend([
         "",
@@ -233,11 +275,30 @@ def main() -> int:
 
     config = load_config()
     meta_receipt = load_meta_receipt()
-    runner_specs = list(RUNNERS)
-    _ = args.include_proof_pack
+    specs = runner_specs(include_proof_pack=args.include_proof_pack)
 
     lanes: list[dict[str, Any]] = []
-    for label, owner, argv, criticality in runner_specs:
+    for label, owner, argv, criticality in specs:
+        env = safe_agent_env(meta_sha, owner)
+        try:
+            prompt_binding = load_bound_master_prompt(env)
+        except RuntimeError as exc:
+            lanes.append({
+                "label": label,
+                "owner_agent": owner,
+                "criticality": criticality,
+                "rc": 78,
+                "status": "BLOCKED_MASTER_PROMPT_BINDING_INVALID",
+                "stdout_tail": "",
+                "stderr_tail": type(exc).__name__,
+                "meta_control_bound": True,
+                "meta_control_sha256": meta_sha,
+                "master_prompt_bound": False,
+                "master_prompt_sha256": "",
+                "universal_l5": False,
+            })
+            continue
+
         if not (ROOT / argv[0]).is_file():
             lanes.append({
                 "label": label,
@@ -249,20 +310,26 @@ def main() -> int:
                 "stderr_tail": argv[0],
                 "meta_control_bound": True,
                 "meta_control_sha256": meta_sha,
+                "master_prompt_bound": prompt_binding["bound"],
+                "master_prompt_sha256": prompt_binding["sha256"],
             })
             continue
-        receipt = run(label, argv, env=safe_agent_env(meta_sha, owner))
+        receipt = run(label, argv, env=env)
         receipt.update(
             owner_agent=owner,
             criticality=criticality,
             status="PASS" if receipt["rc"] == 0 else "DEGRADED",
             meta_control_bound=True,
             meta_control_sha256=meta_sha,
+            master_prompt_bound=prompt_binding["bound"],
+            master_prompt_sha256=prompt_binding["sha256"],
+            master_prompt_bytes=prompt_binding["bytes"],
             universal_l5=False,
         )
         lanes.append(receipt)
 
     degraded = [lane for lane in lanes if lane["rc"] != 0]
+    all_executed_lanes_bound = bool(lanes) and all(bool(lane.get("master_prompt_bound")) for lane in lanes)
     payload: dict[str, Any] = {
         "schema_version": "dealix.command-room-receipt.v2",
         "run_id": stamp(),
@@ -275,6 +342,10 @@ def main() -> int:
             "preflight": meta_preflight,
             "runtime_receipt": meta_receipt,
         },
+        "master_prompt": {
+            "required_by_launcher": os.getenv("DEALIX_MASTER_PROMPT_BOUND", "").strip().lower() in _BOUND_TRUE,
+            "all_executed_lanes_bound": all_executed_lanes_bound,
+        },
         "agents": config["canonical_agents"],
         "channels": config["channels"],
         "command_surfaces": config["command_surfaces"],
@@ -282,10 +353,11 @@ def main() -> int:
         "views": config["views"],
         "lanes": lanes,
         "ceo_now": [
-            "V2 Meta-Operating Control Kernel is a mandatory preflight for all five canonical agent lanes.",
+            "V2 Meta-Operating Control Kernel is a mandatory preflight for every executed canonical agent lane.",
+            "The hash-bound Company Master Prompt is loaded before each executed lane and consumed by model-backed work through the canonical Model Router.",
             "Production Trust remains the first engineering gate until exact-release evidence is green.",
             "Revenue agent continuously ranks evidence-backed opportunities and prepares the next commercial movement.",
-            "Delivery and Proof lanes capture customer evidence without promoting synthetic evidence.",
+            "Delivery proof assembly runs only when explicitly requested by the weekly proof cadence.",
             "Founder attention is reserved for exceptions and exact material authority packets.",
         ],
         "external_execution": {
@@ -300,7 +372,9 @@ def main() -> int:
     print(f"COMMAND_ROOM={payload['status']}")
     print(f"COMMAND_ROOM_RUN={payload['run_id']}")
     print(f"META_CONTROL_SHA256={meta_sha}")
-    print("META_CONTROL_BOUND_TO_ALL_AGENT_LANES=true")
+    print("META_CONTROL_BOUND_TO_ALL_EXECUTED_AGENT_LANES=true")
+    print(f"MASTER_PROMPT_BOUND_TO_ALL_EXECUTED_AGENT_LANES={str(all_executed_lanes_bound).lower()}")
+    print(f"WEEKLY_PROOF_PACK_INCLUDED={str(args.include_proof_pack).lower()}")
     print(f"COMMAND_ROOM_REPORT={OUT / 'latest.md'}")
     print("EXTERNAL_EFFECTS=NONE_BY_THIS_RUNNER")
     return 1 if degraded else 0
