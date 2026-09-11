@@ -354,4 +354,6 @@ from dealix.commercial.execute_15_plans import Execute15Plans
 from dealix.commercial.master_20_plans import PLANS_20, Master20Executor
 # Slack & Telegram L5 — governed
 from dealix.commercial.slack_telegram_l5 import SlackL5Packet, TelegramL5Packet, action_hash
+# Sales Automation via Hermes + OpenClaw — real, whole market
+from dealix.commercial.sales_automation_hermes_openclaw import SalesAutomationEngine, SalesAutomationTask
 
