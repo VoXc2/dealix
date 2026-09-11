@@ -145,6 +145,7 @@ from api.routers import founder_launch_status as founder_launch_status_router
 from api.routers import kpi_dashboard as kpi_dashboard_router
 from api.routers import market_intelligence as market_intelligence_router
 from api.routers import onboarding as onboarding_router
+from api.routers import solutions as solutions_router
 
 # Enterprise Foundation Core — platform_core enterprise-loop proof endpoints
 from api.routers import platform_foundation as platform_foundation_router
@@ -450,6 +451,7 @@ def create_app() -> FastAPI:
     app.include_router(customer_health_scoring_router.router)
     app.include_router(market_intelligence_router.router)
     app.include_router(onboarding_router.router)
+    app.include_router(solutions_router.router, prefix="/api/v1")
     app.include_router(ceo_brief_router.router)
     app.include_router(customer_onboarding_router.router)
     app.include_router(intelligence_health_router.router)
