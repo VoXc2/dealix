@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import subprocess
@@ -121,4 +121,3 @@ def test_runtime_receipt_does_not_overclaim_future_controls() -> None:
     assert "TARGET_ARCHITECTURE_NOT_CLAIMED_ACTIVE" in text
     assert "TRIGGERED_FUTURE_OPTION_NOT_ACTIVE" in text
     assert "EXTERNAL_EFFECTS=NONE_BY_META_CONTROL" in text
-
