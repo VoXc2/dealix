@@ -70,15 +70,57 @@ def _has_canonical_predeploy(text: str) -> bool:
     return _extract_predeploy_commands(text) == (CANONICAL_PREDEPLOY_COMMAND,)
 
 
+def _evidence_value(value: str | None) -> str | None:
+    text = (value or "").strip()
+    return text or None
+
+
 def classify_release_evidence(
-    *, github_context_state: str | None, railway_deployment_status: str | None
+    *,
+    github_context_state: str | None,
+    railway_deployment_status: str | None,
+    expected_deployment_id: str | None = None,
+    observed_deployment_id: str | None = None,
+    expected_service_id: str | None = None,
+    observed_service_id: str | None = None,
+    expected_environment_id: str | None = None,
+    observed_environment_id: str | None = None,
+    expected_sha: str | None = None,
+    deployed_sha: str | None = None,
+    live_sha: str | None = None,
 ) -> dict[str, Any]:
-    """Classify release evidence without promoting GitHub status projections."""
+    """Classify release evidence only when provider success is identity-bound."""
     github_state = (github_context_state or "").strip().lower() or None
     railway_status = (railway_deployment_status or "").strip().upper() or None
     provider_success = railway_status == "SUCCESS"
 
-    if provider_success:
+    identity_values = {
+        "expected_deployment_id": _evidence_value(expected_deployment_id),
+        "observed_deployment_id": _evidence_value(observed_deployment_id),
+        "expected_service_id": _evidence_value(expected_service_id),
+        "observed_service_id": _evidence_value(observed_service_id),
+        "expected_environment_id": _evidence_value(expected_environment_id),
+        "observed_environment_id": _evidence_value(observed_environment_id),
+        "expected_sha": _evidence_value(expected_sha),
+        "deployed_sha": _evidence_value(deployed_sha),
+        "live_sha": _evidence_value(live_sha),
+    }
+    identity_complete = all(identity_values.values())
+    identity_bound = bool(
+        identity_complete
+        and identity_values["expected_deployment_id"] == identity_values["observed_deployment_id"]
+        and identity_values["expected_service_id"] == identity_values["observed_service_id"]
+        and identity_values["expected_environment_id"] == identity_values["observed_environment_id"]
+        and identity_values["expected_sha"] == identity_values["deployed_sha"]
+        and identity_values["expected_sha"] == identity_values["live_sha"]
+    )
+    release_valid = provider_success and identity_bound
+
+    if provider_success and not identity_complete:
+        reason = "RAILWAY_SUCCESS_IDENTITY_BINDING_INCOMPLETE"
+    elif provider_success and not identity_bound:
+        reason = "RAILWAY_SUCCESS_IDENTITY_MISMATCH"
+    elif release_valid:
         reason = "RAILWAY_DEPLOYMENT_SUCCESS"
     elif railway_status == "SKIPPED":
         reason = "RAILWAY_DEPLOYMENT_SKIPPED_NOT_RELEASE_EVIDENCE"
@@ -92,10 +134,11 @@ def classify_release_evidence(
         "railway_deployment_status": railway_status,
         "github_context_is_release_authority": False,
         "provider_deployment_success": provider_success,
-        "release_evidence_valid": provider_success,
+        "identity_binding_complete": identity_complete,
+        "identity_binding_valid": identity_bound,
+        "release_evidence_valid": release_valid,
         "reason": reason,
     }
-
 
 def check_repo_railway_config() -> dict[str, Any]:
     """Validate railway.toml, Dockerfile CMD, and predeploy script."""

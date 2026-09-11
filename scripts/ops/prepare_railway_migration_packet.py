@@ -25,6 +25,7 @@ SCHEMA = "dealix.railway-migration-packet.v1"
 ACTION_TYPE = "PRODUCTION_DB_MIGRATION"
 MAX_TTL_MINUTES = 60
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
+BACKUP_RECEIPT_SCHEMA = "dealix.railway-backup-receipt.v1"
 
 
 def _canonical_json(value: dict[str, Any]) -> str:
@@ -47,6 +48,69 @@ def _validate_ref(value: str, *, field: str) -> str:
         raise ValueError(f"{field} must reference concrete non-synthetic evidence")
     return text
 
+
+def _validate_backup_receipt(
+    receipt: dict[str, Any],
+    *,
+    project_id: str,
+    environment_id: str,
+    service_id: str,
+    created_at: datetime,
+) -> tuple[str, str]:
+    if not isinstance(receipt, dict):
+        raise ValueError("backup_receipt must be a JSON object")
+    if receipt.get("schema_version") != BACKUP_RECEIPT_SCHEMA:
+        raise ValueError("backup_receipt schema_version mismatch")
+    if str(receipt.get("provider") or "").strip().lower() != "railway":
+        raise ValueError("backup_receipt provider must be railway")
+    if str(receipt.get("status") or "").strip().upper() != "SUCCESS":
+        raise ValueError("backup_receipt status must be SUCCESS")
+    expected = {
+        "project_id": project_id,
+        "environment_id": environment_id,
+        "service_id": service_id,
+    }
+    for field, value in expected.items():
+        if str(receipt.get(field) or "").strip() != value:
+            raise ValueError(f"backup_receipt {field} mismatch")
+    backup_id = _validate_ref(str(receipt.get("backup_id") or ""), field="backup_receipt.backup_id")
+    provider_ref = _validate_ref(
+        str(receipt.get("provider_ref") or ""), field="backup_receipt.provider_ref"
+    )
+    completed_at = _parse_aware(
+        str(receipt.get("completed_at") or ""), field="backup_receipt.completed_at"
+    )
+    if completed_at > created_at:
+        raise ValueError("backup_receipt completed_at cannot be after packet creation")
+    normalized = {
+        "schema_version": BACKUP_RECEIPT_SCHEMA,
+        "provider": "railway",
+        "status": "SUCCESS",
+        **expected,
+        "backup_id": backup_id,
+        "provider_ref": provider_ref,
+        "completed_at": completed_at.isoformat().replace("+00:00", "Z"),
+    }
+    digest = hashlib.sha256(_canonical_json(normalized).encode("utf-8")).hexdigest()
+    return f"railway-backup:{backup_id}", digest
+
+
+def _validate_rollback_artifact(value: str, *, repo: Path) -> tuple[str, str]:
+    ref = _validate_ref(value, field="rollback_ref")
+    path_text = ref.split("#", 1)[0].strip()
+    path = Path(path_text)
+    if path.is_absolute():
+        raise ValueError("rollback_ref must be repository-relative")
+    root = repo.resolve()
+    candidate = (root / path).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise ValueError("rollback_ref must resolve inside repository") from exc
+    if not candidate.is_file():
+        raise ValueError("rollback_ref artifact not found")
+    digest = hashlib.sha256(candidate.read_bytes()).hexdigest()
+    return ref, digest
 
 def _parse_aware(value: str, *, field: str) -> datetime:
     text = value.strip()
@@ -85,10 +149,11 @@ def build_packet(
     release_sha: str,
     builder_source_sha: str,
     alembic_heads: list[str],
-    backup_ref: str,
+    backup_receipt: dict[str, Any],
     rollback_ref: str,
     created_at: datetime,
     ttl_minutes: int,
+    repo_root: Path | None = None,
 ) -> dict[str, Any]:
     if len(alembic_heads) != 1 or not alembic_heads[0].strip():
         raise ValueError("exactly one concrete Alembic head is required")
@@ -99,11 +164,20 @@ def build_packet(
     project_id = _validate_ref(project_id, field="project_id")
     environment_id = _validate_ref(environment_id, field="environment_id")
     service_id = _validate_ref(service_id, field="service_id")
-    backup_ref = _validate_ref(backup_ref, field="backup_ref")
-    rollback_ref = _validate_ref(rollback_ref, field="rollback_ref")
     if created_at.tzinfo is None:
         raise ValueError("created_at must include timezone")
     created = created_at.astimezone(UTC)
+    repo = (repo_root or REPO_ROOT).resolve()
+    backup_ref, backup_receipt_sha256 = _validate_backup_receipt(
+        backup_receipt,
+        project_id=project_id,
+        environment_id=environment_id,
+        service_id=service_id,
+        created_at=created,
+    )
+    rollback_ref, rollback_artifact_sha256 = _validate_rollback_artifact(
+        rollback_ref, repo=repo
+    )
     expires = created + timedelta(minutes=ttl_minutes)
     revision = alembic_heads[0].strip()
     target = f"railway:{project_id}:{environment_id}:{service_id}"
@@ -117,7 +191,9 @@ def build_packet(
         "environment_id": environment_id,
         "service_id": service_id,
         "backup_ref": backup_ref,
+        "backup_receipt_sha256": backup_receipt_sha256,
         "rollback_ref": rollback_ref,
+        "rollback_artifact_sha256": rollback_artifact_sha256,
         "expires_at": expires.isoformat().replace("+00:00", "Z"),
         "idempotency_key": idempotency_key,
     }
@@ -141,7 +217,9 @@ def build_packet(
         "alembic_heads": [revision],
         "operation": f"alembic upgrade {revision}",
         "backup_ref": backup_ref,
+        "backup_receipt_sha256": backup_receipt_sha256,
         "rollback_ref": rollback_ref,
+        "rollback_artifact_sha256": rollback_artifact_sha256,
         "created_at": created.isoformat().replace("+00:00", "Z"),
         "expires_at": expires.isoformat().replace("+00:00", "Z"),
         "idempotency_key": idempotency_key,
@@ -152,14 +230,13 @@ def build_packet(
         "automatic_predeploy_authority": False,
     }
 
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-id", required=True)
     parser.add_argument("--environment-id", required=True)
     parser.add_argument("--service-id", required=True)
     parser.add_argument("--release-sha")
-    parser.add_argument("--backup-ref", required=True)
+    parser.add_argument("--backup-receipt", required=True)
     parser.add_argument("--rollback-ref", required=True)
     parser.add_argument("--ttl-minutes", type=int, default=15)
     parser.add_argument("--repo", default=str(REPO_ROOT))
@@ -173,12 +250,30 @@ def main() -> int:
         release_sha = _validate_sha(args.release_sha or source_sha, field="release_sha")
         if release_sha != source_sha:
             raise ValueError("release_sha_must_equal_builder_source_sha")
+        backup_path = Path(args.backup_receipt).expanduser()
+        if not backup_path.is_absolute():
+            backup_path = (repo / backup_path).resolve()
+        if not backup_path.is_file():
+            raise ValueError("backup_receipt artifact not found")
+        try:
+            backup_receipt = json.loads(backup_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ValueError("backup_receipt must be readable valid JSON") from exc
+        if not isinstance(backup_receipt, dict):
+            raise ValueError("backup_receipt must be a JSON object")
         heads = _alembic_heads(repo)
         packet = build_packet(
-            project_id=args.project_id, environment_id=args.environment_id, service_id=args.service_id,
-            release_sha=release_sha, builder_source_sha=source_sha, alembic_heads=heads,
-            backup_ref=args.backup_ref, rollback_ref=args.rollback_ref,
-            created_at=datetime.now(UTC), ttl_minutes=args.ttl_minutes,
+            project_id=args.project_id,
+            environment_id=args.environment_id,
+            service_id=args.service_id,
+            release_sha=release_sha,
+            builder_source_sha=source_sha,
+            alembic_heads=heads,
+            backup_receipt=backup_receipt,
+            rollback_ref=args.rollback_ref,
+            created_at=datetime.now(UTC),
+            ttl_minutes=args.ttl_minutes,
+            repo_root=repo,
         )
     except ValueError as exc:
         reason = re.sub(r"[^a-zA-Z0-9_.:-]+", "_", str(exc)).strip("_")
@@ -189,7 +284,6 @@ def main() -> int:
     else:
         print(rendered, end="")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

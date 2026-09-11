@@ -14,10 +14,19 @@ echo "=== A: Railway env check ==="
 python3 scripts/railway_launch_env_check.py || true
 
 if [[ "$SKIP_BOOTSTRAP" != "1" ]] && [[ -n "${DATABASE_URL:-}" ]]; then
-  echo "=== A4: Production bootstrap ==="
+  echo "=== A4: Legacy production bootstrap authority check ==="
+  set +e
   bash scripts/railway_prod_bootstrap.sh
+  bootstrap_rc=$?
+  set -e
+  if [[ "$bootstrap_rc" -eq 75 ]]; then
+    echo "RAILWAY_BOOTSTRAP=HOLD acknowledged; continuing non-material verification only"
+  elif [[ "$bootstrap_rc" -ne 0 ]]; then
+    echo "RAILWAY_BOOTSTRAP=FAIL rc=${bootstrap_rc}" >&2
+    exit "$bootstrap_rc"
+  fi
 else
-  echo "SKIP bootstrap (set DATABASE_URL to run)"
+  echo "SKIP bootstrap (set DATABASE_URL to run authority check)"
 fi
 
 if [[ "$SKIP_VERIFY" != "1" ]]; then

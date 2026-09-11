@@ -41,7 +41,25 @@ def test_get_autopilot_store_postgres_backend_with_sqlite(
     assert isinstance(store, AutopilotPostgresStore)
 
 
-def test_get_autopilot_store_falls_back_to_json_on_postgres_error(
+def test_postgres_backend_env_cannot_auto_create_schema(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import dealix.revenue_ops_autopilot.postgres_store as postgres_store
+
+    seen: dict[str, bool] = {}
+
+    class StubPostgresStore:
+        def __init__(self, *, database_url: str, create_tables: bool = True) -> None:
+            seen["create_tables"] = create_tables
+
+    monkeypatch.setattr(postgres_store, "AutopilotPostgresStore", StubPostgresStore)
+    monkeypatch.setenv("DEALIX_AUTOPILOT_STORE_BACKEND", "postgres")
+    monkeypatch.setenv("DATABASE_URL", "sqlite:///:memory:")
+    store = get_autopilot_store()
+    assert isinstance(store, StubPostgresStore)
+    assert seen["create_tables"] is False
+
+def test_get_autopilot_store_does_not_fallback_or_create_on_unreachable_postgres(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("DEALIX_AUTOPILOT_STORE_BACKEND", "postgres")
@@ -50,8 +68,7 @@ def test_get_autopilot_store_falls_back_to_json_on_postgres_error(
         "postgresql+asyncpg://invalid:invalid@127.0.0.1:59999/nope",
     )
     store = get_autopilot_store()
-    assert isinstance(store, AutopilotJSONStore)
-    assert not isinstance(store, AutopilotPostgresStore)
+    assert isinstance(store, AutopilotPostgresStore)
 
 
 def test_postgres_store_upsert_and_get_lead() -> None:

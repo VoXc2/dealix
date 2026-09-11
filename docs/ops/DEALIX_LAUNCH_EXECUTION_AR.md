@@ -85,7 +85,7 @@ python3 scripts/dealix_founder_daily_brief.py --out data/founder_briefs/today.md
 ```bash
 # املأ مفاتيح الإنتاج أولًا (APP_SECRET_KEY, DATABASE_URL, ...)
 python3 scripts/railway_launch_env_check.py        # تحقّق من اكتمال المفاتيح
-bash scripts/railway_prod_bootstrap.sh             # Alembic + بذرة War Room (مرة واحدة)
+bash scripts/railway_prod_bootstrap.sh             # legacy HOLD-only; no DDL/seed/API mutation
 bash scripts/official_launch_verify.sh             # يجب أن يطبع OFFICIAL_LAUNCH_VERDICT=PASS
 ```
 

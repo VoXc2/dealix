@@ -793,7 +793,7 @@ py -3 scripts/expand_commercial_operating_stack.py
 | خطوة | أمر / وثيقة |
 |------|-------------|
 | فحص env API | `python scripts/railway_launch_env_check.py` |
-| Bootstrap DB + War Room | `bash scripts/railway_prod_bootstrap.sh` |
+| Legacy bootstrap authority check (HOLD-only) | `bash scripts/railway_prod_bootstrap.sh` |
 | إطلاق رسمي | `bash scripts/official_launch_verify.sh` → `OFFICIAL_LAUNCH_VERDICT` |
 | تنفيذ A–D | `bash scripts/launch_execution_railway.sh` |
 | دليل Railway | [RAILWAY_DEPLOY_GUIDE_AR.md](../RAILWAY_DEPLOY_GUIDE_AR.md) · [PHASE_C_PRODUCTION_LAUNCH_AR.md](../ops/PHASE_C_PRODUCTION_LAUNCH_AR.md) |

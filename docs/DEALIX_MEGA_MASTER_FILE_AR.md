@@ -982,7 +982,7 @@ python scripts/export_release_manifest.py
 python scripts/export_dependency_inventory.py
 
 # النشر
-bash scripts/railway_prod_bootstrap.sh
+bash scripts/railway_prod_bootstrap.sh  # legacy HOLD-only; no DDL/seed/API mutation
 bash scripts/launch_execution_railway.sh
 
 # الاختبار

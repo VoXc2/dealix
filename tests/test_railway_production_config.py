@@ -162,12 +162,54 @@ def test_missing_railway_status_fails_closed() -> None:
     assert evidence["reason"] == "RAILWAY_DEPLOYMENT_STATUS_MISSING"
 
 
-def test_railway_success_is_provider_release_evidence() -> None:
+def _bound_success(**overrides: str) -> dict[str, object]:
+    kwargs = {
+        "github_context_state": "failure",
+        "railway_deployment_status": "SUCCESS",
+        "expected_deployment_id": "dep-123",
+        "observed_deployment_id": "dep-123",
+        "expected_service_id": "svc-123",
+        "observed_service_id": "svc-123",
+        "expected_environment_id": "env-123",
+        "observed_environment_id": "env-123",
+        "expected_sha": "a" * 40,
+        "deployed_sha": "a" * 40,
+        "live_sha": "a" * 40,
+    }
+    kwargs.update(overrides)
+    return classify_release_evidence(**kwargs)
+
+
+def test_railway_success_is_release_evidence_only_when_identity_bound() -> None:
+    evidence = _bound_success()
+    assert evidence["github_context_is_release_authority"] is False
+    assert evidence["provider_deployment_success"] is True
+    assert evidence["identity_binding_complete"] is True
+    assert evidence["identity_binding_valid"] is True
+    assert evidence["release_evidence_valid"] is True
+    assert evidence["reason"] == "RAILWAY_DEPLOYMENT_SUCCESS"
+
+
+def test_railway_success_without_identity_binding_fails_closed() -> None:
     evidence = classify_release_evidence(
         github_context_state="failure",
         railway_deployment_status="success",
     )
-    assert evidence["github_context_is_release_authority"] is False
     assert evidence["provider_deployment_success"] is True
-    assert evidence["release_evidence_valid"] is True
-    assert evidence["reason"] == "RAILWAY_DEPLOYMENT_SUCCESS"
+    assert evidence["identity_binding_complete"] is False
+    assert evidence["release_evidence_valid"] is False
+    assert evidence["reason"] == "RAILWAY_SUCCESS_IDENTITY_BINDING_INCOMPLETE"
+
+
+def test_railway_success_from_other_deployment_fails_closed() -> None:
+    evidence = _bound_success(observed_deployment_id="dep-old")
+    assert evidence["identity_binding_valid"] is False
+    assert evidence["release_evidence_valid"] is False
+    assert evidence["reason"] == "RAILWAY_SUCCESS_IDENTITY_MISMATCH"
+
+
+def test_railway_success_with_stale_live_sha_fails_closed() -> None:
+    evidence = _bound_success(live_sha="b" * 40)
+    assert evidence["identity_binding_valid"] is False
+    assert evidence["release_evidence_valid"] is False
+    assert evidence["reason"] == "RAILWAY_SUCCESS_IDENTITY_MISMATCH"
