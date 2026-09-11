@@ -94,8 +94,15 @@ def test_binding_price_or_discount_is_never_promoted_to_action_packet(monkeypatc
         "The fee is 10,000 USD.",
         "We accept Net 30 terms.",
         "We agree to the payment terms.",
+        "We agree to the contract.",
+        "We accept your offer.",
+        "Payment is due within 30 days.",
+        "The fee is 10k USD.",
+        "The fee is $10k.",
         "السعر 10,000 ريال.",
         "نقبل شروط الدفع صافي 30.",
+        "نوافق على العقد.",
+        "الفاتورة مستحقة خلال 30 يومًا.",
     ],
 )
 def test_material_currency_or_legal_terms_always_require_founder_review(monkeypatch, model_text: str) -> None:
@@ -110,6 +117,18 @@ def test_material_currency_or_legal_terms_always_require_founder_review(monkeypa
     assert result.approval_packet is None
     assert result.provider_execution_allowed is False
     assert result.next_action == "FOUNDER_REVIEW_MATERIAL_COMMERCIAL_TERM"
+
+
+def test_nonbinding_process_language_does_not_become_material(monkeypatch) -> None:
+    safe = "After discovery we can prepare a customer-specific quote for your review."
+    monkeypatch.setattr(bot, "route_task", lambda *args, **kwargs: _decision(safe))
+    result = bot.prepare_founder_reply(
+        _event(message_text="How does pricing work?"),
+        now=datetime(2026, 9, 10, 0, 0, tzinfo=UTC),
+    )
+    assert result.material_commitment_detected is False
+    assert result.approval_packet is not None
+    assert result.provider_execution_allowed is False
 
 
 def test_suppression_or_channel_evidence_gap_blocks_packet(monkeypatch) -> None:
