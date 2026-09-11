@@ -166,25 +166,23 @@ def main() -> int:
     parser.add_argument("--output")
     args = parser.parse_args()
     repo = Path(args.repo).resolve()
-    source_sha, dirty = _repo_context(repo)
-    if dirty:
-        raise SystemExit("MIGRATION_PACKET=HOLD reason=dirty_source_worktree")
-    release_sha = _validate_sha(args.release_sha or source_sha, field="release_sha")
-    if release_sha != source_sha:
-        raise SystemExit("MIGRATION_PACKET=HOLD reason=release_sha_must_equal_builder_source_sha")
-    heads = _alembic_heads(repo)
-    packet = build_packet(
-        project_id=args.project_id,
-        environment_id=args.environment_id,
-        service_id=args.service_id,
-        release_sha=release_sha,
-        builder_source_sha=source_sha,
-        alembic_heads=heads,
-        backup_ref=args.backup_ref,
-        rollback_ref=args.rollback_ref,
-        created_at=datetime.now(UTC),
-        ttl_minutes=args.ttl_minutes,
-    )
+    try:
+        source_sha, dirty = _repo_context(repo)
+        if dirty:
+            raise ValueError("dirty_source_worktree")
+        release_sha = _validate_sha(args.release_sha or source_sha, field="release_sha")
+        if release_sha != source_sha:
+            raise ValueError("release_sha_must_equal_builder_source_sha")
+        heads = _alembic_heads(repo)
+        packet = build_packet(
+            project_id=args.project_id, environment_id=args.environment_id, service_id=args.service_id,
+            release_sha=release_sha, builder_source_sha=source_sha, alembic_heads=heads,
+            backup_ref=args.backup_ref, rollback_ref=args.rollback_ref,
+            created_at=datetime.now(UTC), ttl_minutes=args.ttl_minutes,
+        )
+    except ValueError as exc:
+        reason = re.sub(r"[^a-zA-Z0-9_.:-]+", "_", str(exc)).strip("_")
+        raise SystemExit(f"MIGRATION_PACKET=HOLD reason={reason}") from None
     rendered = json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     if args.output:
         Path(args.output).write_text(rendered, encoding="utf-8")
