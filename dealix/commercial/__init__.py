@@ -344,4 +344,6 @@ from dealix.commercial.ai_sector_expansion import AI_GENERATED_SECTORS, AISector
 from dealix.commercial.best_free_diagnostic import BEST_OFFERS, BestFreeDiagnosticEngine, BestFreeDiagnosticOffer
 # Best Offers — best in market, all sectors
 from dealix.commercial.best_offers_catalog import BestOfferCatalog
+# Realistic Money-Now — real relationships, realistic value
+from dealix.commercial.realistic_money_now import RealisticMoneyNowCandidate, RealisticMoneyNowEngine
 
