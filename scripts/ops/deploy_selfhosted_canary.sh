@@ -48,18 +48,36 @@ fi
 
 docker compose -f "$COMPOSE_FILE" up -d api web
 
-for url in http://127.0.0.1:18000/healthz http://127.0.0.1:13000/healthz; do
-  ok=0
+verify_release() {
+  local url="$1"
+  local service="$2"
+  local body=""
   for _ in $(seq 1 30); do
-    if curl -fsS "$url" >/dev/null; then ok=1; break; fi
+    if body="$(curl -fsS "$url" 2>/dev/null)"; then
+      if python3 - "$EXPECTED_SHA" "$service" "$body" <<'PY'
+import json, sys
+expected, service, raw = sys.argv[1:]
+try:
+    data = json.loads(raw)
+except Exception:
+    raise SystemExit(1)
+if data.get("status") != "ok" or data.get("service") != service or data.get("git_sha") != expected:
+    raise SystemExit(1)
+PY
+      then
+        printf 'CANARY_RELEASE=PASS service=%s sha=%s\n' "$service" "$EXPECTED_SHA"
+        return 0
+      fi
+    fi
     sleep 2
   done
-  if [[ "$ok" != 1 ]]; then
-    echo "FAIL: canary health failed: $url" >&2
-    docker compose -f "$COMPOSE_FILE" ps >&2 || true
-    exit 67
-  fi
-done
+  echo "FAIL: canary release mismatch: $url expected_service=$service expected_sha=$EXPECTED_SHA" >&2
+  docker compose -f "$COMPOSE_FILE" ps >&2 || true
+  return 67
+}
+
+verify_release http://127.0.0.1:18000/healthz dealix-api
+verify_release http://127.0.0.1:13000/healthz dealix-web
 
 END_SHA="$(git rev-parse HEAD)"
 if [[ "$END_SHA" != "$EXPECTED_SHA" ]]; then
