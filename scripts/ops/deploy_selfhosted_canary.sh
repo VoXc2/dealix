@@ -38,9 +38,13 @@ if [[ "$USE_LOCAL_DB" == "1" ]]; then
   docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
     pg_isready -U dealix_canary -d dealix_canary >/dev/null
 
-  docker compose -f "$COMPOSE_FILE" --profile local-db run --rm \
-    -e DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1 \
-    api python /app/scripts/ops/bootstrap_fresh_database.py --confirm-empty-bootstrap
+  if ! docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
+    psql -U dealix_canary -d dealix_canary -Atc \
+    "select to_regclass('public.alembic_version') is not null" | grep -qx t; then
+    docker compose -f "$COMPOSE_FILE" --profile local-db run --rm \
+      -e DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1 \
+      api python /app/scripts/ops/bootstrap_fresh_database.py --confirm-empty-bootstrap
+  fi
 
   docker compose -f "$COMPOSE_FILE" --profile local-db run --rm \
     api python /app/scripts/ops/check_alembic_version_capacity.py
@@ -76,7 +80,8 @@ PY
   return 67
 }
 
-verify_release http://127.0.0.1:18000/healthz dealix-api
+curl -fsS http://127.0.0.1:18000/healthz >/dev/null
+verify_release http://127.0.0.1:18000/version dealix-api
 verify_release http://127.0.0.1:13000/healthz dealix-web
 
 END_SHA="$(git rev-parse HEAD)"
