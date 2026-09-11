@@ -62,7 +62,8 @@ class PostgresValueLedgerStore:
     ) -> None:
         if engine is None:
             url = database_url or "sqlite:///:memory:"
-            engine = create_engine(url, future=True)
+            connect_args = {"connect_timeout": 3} if url.startswith("postgresql") else {}
+            engine = create_engine(url, future=True, connect_args=connect_args)
         self._engine = engine
         self._sessionmaker = sessionmaker(self._engine, expire_on_commit=False, future=True)
         self._lock = threading.Lock()
@@ -164,7 +165,10 @@ def get_postgres_value_ledger_store() -> PostgresValueLedgerStore | None:
         if _store_singleton is not None:
             return _store_singleton
         try:
-            eng = create_engine(url, future=True, pool_pre_ping=True)
+            connect_args = {"connect_timeout": 3} if url.startswith("postgresql") else {}
+            eng = create_engine(
+                url, future=True, pool_pre_ping=True, connect_args=connect_args
+            )
             eng.connect().close()
         except Exception:
             return None

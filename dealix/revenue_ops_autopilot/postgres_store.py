@@ -59,7 +59,10 @@ class AutopilotPostgresStore(AutopilotJSONStore):
         self._lock = threading.RLock()
         if engine is None:
             url = database_url or "sqlite:///:memory:"
-            engine = create_engine(url, future=True, pool_pre_ping=True)
+            connect_args = {"connect_timeout": 3} if url.startswith("postgresql") else {}
+            engine = create_engine(
+                url, future=True, pool_pre_ping=True, connect_args=connect_args
+            )
         self._engine = engine
         self._sessionmaker = sessionmaker(self._engine, expire_on_commit=False, future=True)
         if create_tables:

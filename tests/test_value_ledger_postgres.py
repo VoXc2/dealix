@@ -66,3 +66,20 @@ def test_value_ledger_singleton_missing_schema_fails_closed_without_ddl(monkeypa
     assert get_postgres_value_ledger_store() is None
     eng = sa.create_engine(url, future=True)
     assert sa.inspect(eng).has_table("value_ledger_events") is False
+
+
+def test_value_ledger_unreachable_postgres_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    from auto_client_acquisition.value_os.value_ledger_postgres import (
+        get_postgres_value_ledger_store,
+        reset_postgres_value_ledger_singleton_for_test,
+    )
+
+    monkeypatch.setenv(
+        "DEALIX_VALUE_LEDGER_SYNC_DATABASE_URL",
+        "postgresql+asyncpg://invalid:invalid@127.0.0.1:59999/nope",
+    )
+    reset_postgres_value_ledger_singleton_for_test()
+    try:
+        assert get_postgres_value_ledger_store() is None
+    finally:
+        reset_postgres_value_ledger_singleton_for_test()
