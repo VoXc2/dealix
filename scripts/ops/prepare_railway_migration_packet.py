@@ -40,8 +40,11 @@ def _validate_sha(value: str, *, field: str) -> str:
 
 def _validate_ref(value: str, *, field: str) -> str:
     text = value.strip()
-    if not text or text.upper().startswith("UNKNOWN") or text.upper() in {"TBD", "TODO"}:
-        raise ValueError(f"{field} must reference concrete evidence")
+    upper = text.upper()
+    lower = text.lower()
+    placeholders = ("synthetic:", "synthetic://", "demo:", "demo://", "fake:", "fake://", "example:", "example://")
+    if not text or upper.startswith("UNKNOWN") or upper in {"TBD", "TODO"} or lower.startswith(placeholders):
+        raise ValueError(f"{field} must reference concrete non-synthetic evidence")
     return text
 
 
@@ -98,6 +101,8 @@ def build_packet(
     service_id = _validate_ref(service_id, field="service_id")
     backup_ref = _validate_ref(backup_ref, field="backup_ref")
     rollback_ref = _validate_ref(rollback_ref, field="rollback_ref")
+    if created_at.tzinfo is None:
+        raise ValueError("created_at must include timezone")
     created = created_at.astimezone(UTC)
     expires = created + timedelta(minutes=ttl_minutes)
     revision = alembic_heads[0].strip()
@@ -164,7 +169,9 @@ def main() -> int:
     source_sha, dirty = _repo_context(repo)
     if dirty:
         raise SystemExit("MIGRATION_PACKET=HOLD reason=dirty_source_worktree")
-    release_sha = args.release_sha or source_sha
+    release_sha = _validate_sha(args.release_sha or source_sha, field="release_sha")
+    if release_sha != source_sha:
+        raise SystemExit("MIGRATION_PACKET=HOLD reason=release_sha_must_equal_builder_source_sha")
     heads = _alembic_heads(repo)
     packet = build_packet(
         project_id=args.project_id,

@@ -46,6 +46,8 @@ def test_packet_requires_single_head_and_real_evidence_refs() -> None:
         build_packet(**{**BASE, "backup_ref": "UNKNOWN"})
     with pytest.raises(ValueError, match="rollback_ref"):
         build_packet(**{**BASE, "rollback_ref": "TBD"})
+    with pytest.raises(ValueError, match="backup_ref"):
+        build_packet(**{**BASE, "backup_ref": "synthetic://backup"})
 
 
 def test_packet_ttl_is_bounded() -> None:
@@ -53,3 +55,8 @@ def test_packet_ttl_is_bounded() -> None:
         build_packet(**{**BASE, "ttl_minutes": 0})
     with pytest.raises(ValueError, match="ttl_minutes"):
         build_packet(**{**BASE, "ttl_minutes": 61})
+
+
+def test_packet_rejects_naive_created_at() -> None:
+    with pytest.raises(ValueError, match="created_at"):
+        build_packet(**{**BASE, "created_at": datetime(2026, 9, 11, 0, 0)})
