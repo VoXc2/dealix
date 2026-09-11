@@ -667,6 +667,34 @@ export function CommercialLaunchHome() {
       </section>
 
       {/* ------------------------------------------------------------------ */}
+      {/* BEST OFFERS — BEST IN MARKET                                            */}
+      <section className="py-20 px-4 max-w-6xl mx-auto">
+        <div className="text-center mb-10">
+          <p className="text-gold-400 text-sm font-semibold uppercase tracking-widest mb-3">
+            {isAr ? "أفضل العروض في السوق" : "Best Offers in Market"}
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            {isAr ? "تشخيص مجاني يديره 5 وكلاء" : "Free Diagnostic Managed by 5 Agents"}
+          </h2>
+          <p className="text-white/50 mt-3 text-sm">
+            {isAr ? "3 عروض — مجاني 7 أيام، جاهزية AI، فاتورة — كلها يديرها 5 وكلاء، 6 قنوات" : "3 offers — free 7d, AI readiness, Fatoora — all managed by 5 agents, 6 channels"}
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            { ar: "تشخيص مجاني 7 أيام — Proof Pack", en: "Free 7-Day Diagnostic — Proof Pack", valAr: "كشف تسرّب 18% + خريطة اختناق", valEn: "18% leakage + bottleneck map", agents: "pm, sales, delivery, engineer, content" },
+            { ar: "تقييم جاهزية AI مجاني", en: "Free AI Readiness Scan", valAr: "حوكمة AI + اقتصاديات", valEn: "AI governance + economics", agents: "engineer, pm" },
+            { ar: "فحص جاهزية ZATCA مجاني", en: "Free ZATCA Readiness Check", valAr: "تشخيص فاتورة + تكامل", valEn: "Fatoora diagnostic + integration", agents: "engineer" },
+          ].map((offer) => (
+            <div key={offer.en} className="rounded-2xl border border-gold-500/20 bg-gradient-to-br from-gold-500/10 to-white/5 p-6 backdrop-blur">
+              <h3 className="font-bold text-gold-400">{isAr ? offer.ar : offer.en}</h3>
+              <p className="text-sm text-white/60 mt-1">{isAr ? offer.valAr : offer.valEn}</p>
+              <p className="text-xs text-white/40 mt-3">{offer.agents} • {isAr ? "مجاني" : "Free"} • {isAr ? "أفضل في السوق" : "Best in market"}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* TESTIMONIALS                                                        */}
       {/* ------------------------------------------------------------------ */}
       <section
