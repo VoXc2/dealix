@@ -114,6 +114,7 @@ def evidence_for(entity_token: str, evidence: dict[str, Any]) -> list[str]:
 def build_items(main_sha: str, chain: dict[int, str], evidence: dict[str, Any], deployed_sha: str = "UNKNOWN") -> list[dict[str, Any]]:
     pr_lines = [f"#{number}:{value.split('|')[0]}" for number, value in sorted(chain.items())]
     chain_payload = "+".join(pr_lines) or "UNKNOWN"
+    tip_sha = chain[max(chain)].split("|")[0] if chain else "UNKNOWN"
     raw_items = [
         {
             "action_type": "MERGE_PROTECTED_MAIN",
@@ -131,25 +132,29 @@ def build_items(main_sha: str, chain: dict[int, str], evidence: dict[str, Any], 
             "action_type": "DEPLOY_RELEASE",
             "target": "api.dealix.me + dealix.me",
             "environment": "production",
-            "why_now": "API_RELEASE_PARITY=FAIL: deployed build is behind main, so production truth cannot be claimed.",
+            "why_now": "API_RELEASE_PARITY=FAIL: deployed build is behind the accepted release tip, so production truth cannot be claimed.",
             "economic_upside": "Unlocks trustworthy production surface for paid diagnostics and delivery.",
             "risk": "high",
-            "exact_mutation": f"deploy release SHA {main_sha} via the approved Railway/Runner path",
+            "exact_mutation": f"deploy post-merge main via the approved Railway/Runner path; after fast-forward merge of the #1705 chain, origin/main is expected to equal {tip_sha} — verify the exact SHA at deploy time",
             "rollback": f"redeploy previous release SHA {deployed_sha}",
-            "evidence": [f"expected={main_sha}", f"deployed={deployed_sha}", "sentinel: HTTP_WEB=200 HTTP_API=200"],
-            "payload": main_sha,
+            "evidence": [f"current_main={main_sha}", f"accepted_tip={tip_sha}", f"deployed={deployed_sha}", "sentinel: HTTP_WEB=200 HTTP_API=200"],
+            "payload": tip_sha,
         },
         {
             "action_type": "FIX_TLS_SAN",
             "target": "www.dealix.me",
             "environment": "production",
-            "why_now": "TLS certificate has no SAN for www.dealix.me; curl fails closed.",
+            "why_now": "www.dealix.me is a DNS-only CNAME to the Railway edge (apex is Cloudflare-proxied); TLS fails because the origin presents *.up.railway.app, which does not cover www, while Cloudflare's existing edge cert (CN=dealix.me, SAN *.dealix.me) already covers it.",
             "economic_upside": "Removes a trust warning on the public funnel.",
-            "risk": "medium",
-            "exact_mutation": "issue/renew certificate with DNS SANs dealix.me, www.dealix.me, api.dealix.me and reload edge",
-            "rollback": "restore previous certificate bundle",
-            "evidence": ["sentinel: HTTP_WWW=000", "curl: no alternative certificate subject name matches target host name 'www.dealix.me'"],
-            "payload": "www.dealix.me SAN",
+            "risk": "low",
+            "exact_mutation": "Cloudflare zone dealix.me: set the `www` CNAME (target e2adtsx4.up.railway.app) to Proxied, then add one redirect rule www.dealix.me/* -> https://dealix.me/$1 (301). No certificate purchase; no Railway change.",
+            "rollback": "set the www CNAME back to DNS-only and remove the redirect rule",
+            "evidence": [
+                "www.dealix.me CNAME -> e2adtsx4.up.railway.app (DNS-only); apex dealix.me is Cloudflare-proxied",
+                "curl -k https://www.dealix.me/ -> HTTP 200 (Railway routes Host correctly; only TLS termination is missing)",
+                "apex edge cert CN=dealix.me SAN dealix.me,*.dealix.me (Cloudflare/GTS) — already covers www",
+            ],
+            "payload": "www cloudflare proxy + 301 redirect",
         },
         {
             "action_type": "EXTERNAL_SEND",
