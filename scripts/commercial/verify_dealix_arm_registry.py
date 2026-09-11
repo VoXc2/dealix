@@ -31,6 +31,8 @@ def main():
   if by_id[arm_id]['promotion_gate']!='REGULATED_PARTNER_GATE': fail(f'regulated_gate:{arm_id}')
  if set((d.get('special_boundaries') or {}).keys()) < {'ARM-016','ARM-023','ARM-024','ARM-028','ARM-042'}: fail('special_boundaries')
  if c.get('schema')!='dealix.portfolio-candidate-contract.v1' or c.get('promotion_law',{}).get('deep_wip_limit')!=3 or c.get('material_authority') is not False: fail('candidate_contract')
+ if 'economic_evidence_refs' not in set(c.get('commercial_truth') or []) or 'stop_loss_evidence_refs' not in set(c.get('commercial_truth') or []): fail('candidate_economic_truth')
+ if c.get('kill_law',{}).get('score_alone_may_kill') is not False or c.get('kill_law',{}).get('evidenced_result')!='STOP_OR_DEMOTE': fail('candidate_kill_law')
  catalogs={'sector_ids':set(d['sectors']),'buyer_group_ids':set(d['buyer_groups']),'factory_ids':set(d['factories']),'monetization_rail_ids':set(d['monetization_rails']),'distribution_rail_ids':set(d['distribution_rails']),'procurement_rail_ids':set(d['procurement_rails'])}
  for name,pf in profiles.items():
   for field,allowed in catalogs.items():
