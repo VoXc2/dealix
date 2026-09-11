@@ -8,6 +8,29 @@ import { motion, useInView, useAnimation, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+const ORGANIZATION_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Dealix",
+  url: "https://dealix.me",
+  logo: "https://dealix.me/brand/logo-mark.svg",
+  description: "Saudi-first AI Business Operating System — governed revenue operations, PDPL native, ZATCA ready, approval-first.",
+  foundingDate: "2024",
+  areaServed: { "@type": "Country", name: "Saudi Arabia" },
+  sameAs: [],
+};
+
+const SOFTWARE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Dealix Revenue Operating System",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "SAR", description: "Quote after discovery — no fixed pricing before scope" },
+  featureList: "Evidence-governed revenue ops, L0-L5 proof ledger, approval-first automation, bilingual AR/EN, PDPL/ZATCA ready",
+};
+
+
 // ---------------------------------------------------------------------------
 // Static data
 // ---------------------------------------------------------------------------
@@ -243,6 +266,14 @@ export function CommercialLaunchHome() {
 
   return (
     <div dir={dir} className="min-h-screen bg-navy-500 text-white overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SOFTWARE_JSON_LD) }}
+      />
       {/* ------------------------------------------------------------------ */}
       {/* HERO                                                                */}
       {/* ------------------------------------------------------------------ */}
