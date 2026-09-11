@@ -369,4 +369,6 @@ from dealix.commercial.delix_service_preparation import CompanyProfile, DelixSer
 from dealix.commercial.saudi_sector_targeting import SaudiSectorTarget, SaudiSectorTargetingEngine
 # Modern Data Pipeline — all types, first-by-first, comprehensive, daily targeting
 from dealix.commercial.modern_data_pipeline import ModernDataPipeline, ModernDataRecord, ModernDataType
+# Daily Benefit Maximizer — best form, daily, comprehensive
+from dealix.commercial.daily_benefit_maximizer import DailyBenefit, DailyBenefitMaximizer
 
