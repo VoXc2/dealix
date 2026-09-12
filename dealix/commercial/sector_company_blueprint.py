@@ -242,6 +242,158 @@ class SectorCompanyBlueprint(BaseModel):
     is_customer_fact: bool = False
     generated_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
 
+    # ------------------------------------------------------------------
+    # Backward-compatible read interface.
+    #
+    # The V5 contract stores richer sector context in nested models, but
+    # existing Dealix consumers still rely on the legacy flat accessors.
+    # These properties intentionally derive from the canonical nested truth
+    # instead of creating a second source of truth.
+    # ------------------------------------------------------------------
+
+    @property
+    def ar_name(self) -> str:
+        return str(getattr(self.market, "ar_name", UNKNOWN))
+
+    @property
+    def en_name(self) -> str:
+        return str(getattr(self.market, "en_name", UNKNOWN))
+
+    @property
+    def economic_score(self) -> str:
+        # Pattern knowledge must never fabricate an economic score.
+        return UNKNOWN
+
+    @property
+    def market_score(self) -> str:
+        return UNKNOWN
+
+    @property
+    def delivery_readiness(self) -> str:
+        value = getattr(self.delivery_proof, "delivery_readiness", UNKNOWN)
+        return str(value or UNKNOWN)
+
+    @property
+    def proof_readiness(self) -> str:
+        value = getattr(self.delivery_proof, "proof_readiness", UNKNOWN)
+        return str(value or UNKNOWN)
+
+    @property
+    def buyers(self) -> list[BuyerCell]:
+        """Legacy buyer-cell view derived from the nested buyer-role contract."""
+        raw = getattr(self.buyer_roles, "roles", None)
+
+        if raw is None:
+            raw = getattr(self.buyer_roles, "buyer_roles", None)
+
+        if raw is None and hasattr(self.buyer_roles, "model_dump"):
+            payload = self.buyer_roles.model_dump()
+            raw = (
+                payload.get("roles")
+                or payload.get("buyer_roles")
+                or payload.get("buyers")
+                or []
+            )
+
+        roles: list[str] = []
+        for item in raw or []:
+            if isinstance(item, str):
+                roles.append(item)
+            elif isinstance(item, dict):
+                role = item.get("role") or item.get("name")
+                if role:
+                    roles.append(str(role))
+            else:
+                role = getattr(item, "role", None) or getattr(item, "name", None)
+                if role:
+                    roles.append(str(role))
+
+        if not roles:
+            intel = SECTOR_INTEL.get(Sector(self.sector_id), {})
+            roles = list(intel.get("buyers", []))
+
+        if not roles:
+            roles = ["ceo"]
+
+        return [
+            BuyerCell(
+                role=role,
+                segment=("b2g" if self.sector_id == Sector.GOVERNMENT_B2G.value else "enterprise"),
+            )
+            for role in roles
+        ]
+
+    @property
+    def top_problems(self) -> list[str]:
+        raw = getattr(self.problems, "problems", None)
+
+        if raw is None and hasattr(self.problems, "model_dump"):
+            payload = self.problems.model_dump()
+            raw = payload.get("problems") or payload.get("top_problems") or []
+
+        if raw:
+            return [str(x) for x in raw]
+
+        intel = SECTOR_INTEL.get(Sector(self.sector_id), {})
+        return list(intel.get("problems", []))
+
+
+    # ------------------------------------------------------------------
+    # V5 legacy read compatibility.
+    # Canonical truth remains in the nested V5 models above.
+    # These accessors are projections only, not duplicate truth fields.
+    # ------------------------------------------------------------------
+
+    @property
+    def regulator_validation_status(self) -> str:
+        """Legacy projection of governed regulator verification state."""
+        value = getattr(
+            self.market,
+            "regulator_validation_status",
+            "REQUIRES_OFFICIAL_VERIFICATION",
+        )
+        return str(value or "REQUIRES_OFFICIAL_VERIFICATION")
+
+    @property
+    def digital_maturity(self) -> str:
+        """Legacy field remains UNKNOWN unless canonical evidence defines it."""
+        return UNKNOWN
+
+    @property
+    def ai_maturity(self) -> str:
+        """Legacy projection from the canonical technology readiness contract."""
+        value = getattr(self.technology, "ai_readiness", UNKNOWN)
+        return str(value or UNKNOWN)
+
+    @property
+    def problem_cells(self) -> list[Any]:
+        """Legacy problem-cell view derived from nested problem truth."""
+        cells = getattr(self.problems, "problem_cells", None)
+
+        if cells is not None:
+            return list(cells)
+
+        if hasattr(self.problems, "model_dump"):
+            payload = self.problems.model_dump()
+            raw = payload.get("problem_cells") or []
+
+            # The nested canonical model normally returns typed cells above.
+            # Do not fabricate replacements when only serialized data exists.
+            return list(raw)
+
+        return []
+
+
+    @property
+    def isic_sections(self) -> list[str]:
+        """Legacy ISIC projection from the canonical nested market context."""
+        value = getattr(self.market, "isic_sections", None)
+
+        if value is None and hasattr(self.market, "model_dump"):
+            value = self.market.model_dump().get("isic_sections", [])
+
+        return [str(section) for section in (value or [])]
+
     def to_dict(self) -> dict[str, Any]:
         return self.model_dump(mode="json")
 
