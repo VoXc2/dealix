@@ -61,8 +61,10 @@ BATCHABLE_TASK_CLASSES = frozenset({
     'CLASSIFICATION', 'DIAGNOSTIC_REASONING',
 })
 COMPLEXITY_BUMP = {'low': 0, 'medium': 0, 'high': 1, 'critical': 2}
-MAX_DAILY_INCLUDED_JOBS = 6
-MAX_DAILY_STRONG_JOBS = 2
+# Local advisory reserve — NOT provider quota. Provider limits are 13k-26k/5h per Go docs; headroom remains UNKNOWN.
+# These counters exist only for local telemetry (daily_envelope) and never gate valid included work.
+MAX_DAILY_INCLUDED_JOBS = 6  # advisory local reserve; provider is authoritative
+MAX_DAILY_STRONG_JOBS = 2  # advisory
 RESERVED_INCLUDED_JOBS = 2
 OFF_PEAK_HOURS = (0, 8)
 UNKNOWN = 'UNKNOWN'
