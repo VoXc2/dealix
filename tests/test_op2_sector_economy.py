@@ -62,3 +62,14 @@ def test_ranking_recomputes_deterministically_from_wave() -> None:
     rebuilt = economy.build_ranking()
     stored = _ranking()
     assert [c["sector_id"] for c in rebuilt["cells"]] == [c["sector_id"] for c in stored["cells"]]
+
+
+def test_all_twenty_sectors_have_evidence_backed_economic_vectors() -> None:
+    from dealix.commercial.economic_cell import Sector
+
+    payload = _ranking()
+    assert len(payload["cells"]) == len(list(Sector)) == 20
+    assert {cell["sector_id"] for cell in payload["cells"]} == {sector.value for sector in Sector}
+    for cell in payload["cells"]:
+        vector = cell["vector"]
+        assert all(value != economy.UNKNOWN for value in vector.values()), cell["sector_id"]

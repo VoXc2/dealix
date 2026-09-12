@@ -52,3 +52,13 @@ def test_authority_and_allowed_use_are_research_only() -> None:
     for signal in _wave()["signals"]:
         assert signal["authority"] == runner.AUTHORITY
         assert signal["allowed_use"] == ["INTERNAL_RESEARCH_ONLY"]
+
+
+def test_canonical_sector_overrides_are_bounded() -> None:
+    from dealix.commercial.economic_cell import Sector
+
+    allowed = {sector.value for sector in Sector}
+    for signal in _wave()["signals"]:
+        override = signal.get("canonical_sector_id")
+        if override:
+            assert override in allowed

@@ -1,6 +1,6 @@
 {
   "schema": "dealix.op2-sector-diagnostic-routes.v1",
-  "generated_at": "2026-09-12T05:39:47.038952+00:00",
+  "generated_at": "2026-09-12T06:21:03.400890+00:00",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
     "relationship": false,
@@ -14,9 +14,818 @@
   },
   "warnings": [],
   "route_count": 20,
-  "evidence_backed_count": 4,
-  "pattern_only_count": 16,
+  "evidence_backed_count": 20,
+  "pattern_only_count": 0,
   "routes": [
+    {
+      "sector_id": "retail_commerce_ecommerce",
+      "ar_name": "تجارة تجزئة وإلكترونية",
+      "en_name": "Retail & E-commerce",
+      "buyer": "ecommerce director / COO / customer operations lead",
+      "problem": "Conversion leakage, order exceptions, returns, support backlog and reconciliation",
+      "research_rank_score": 7812.5,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A05",
+          "A08",
+          "A09",
+          "A27"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Commerce Operations Diagnostic",
+          "Support Automation"
+        ],
+        "procurement_paths": [
+          "direct"
+        ],
+        "compliance_constraints": [
+          "MC",
+          "ZATCA",
+          "PDPL"
+        ],
+        "distribution_channels": [
+          "website_inbound",
+          "seo",
+          "founder_content"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::order->fulfillment",
+          "proof::return->refund"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-mc-retail-commerce-registrations"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "logistics_supply_chain",
+      "ar_name": "لوجستي",
+      "en_name": "Logistics",
+      "buyer": "COO / logistics operations / last-mile director",
+      "problem": "High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load",
+      "research_rank_score": 5208.3333,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A27",
+          "A28",
+          "A10",
+          "A05"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Supply Chain Diagnostic",
+          "Automation"
+        ],
+        "procurement_paths": [
+          "supplier portals"
+        ],
+        "compliance_constraints": [],
+        "distribution_channels": [
+          "supplier_portals",
+          "events_conferences"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::shipment→delivery",
+          "proof::exception→resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-gastat-logistics-june-sts"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.stats.gov.sa/en/search-publication",
+          "https://mot.gov.sa/ar/logistics-sectors"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "tourism_hospitality",
+      "ar_name": "سياحة وضيافة",
+      "en_name": "Tourism & Hospitality",
+      "buyer": "general manager / revenue manager / guest operations",
+      "problem": "Booking leakage, guest-response load, occupancy/revenue operations and service exceptions",
+      "research_rank_score": 2560.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A01",
+          "A08",
+          "A09",
+          "A27"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Guest Operations Diagnostic",
+          "Revenue Command"
+        ],
+        "procurement_paths": [
+          "private"
+        ],
+        "compliance_constraints": [
+          "Ministry_of_Tourism",
+          "PDPL",
+          "ZATCA"
+        ],
+        "distribution_channels": [
+          "events_conferences",
+          "partner_referrals",
+          "website_inbound"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::booking->stay",
+          "proof::guest_issue->resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-gastat-tourism-q1-release"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.stats.gov.sa/en/search-publication",
+          "https://www.stats.gov.sa/en/w/methodology-and-quality-report-for-tourism-establishment-statistics-4.0"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "professional_services",
+      "ar_name": "خدمات مهنية",
+      "en_name": "Professional Services",
+      "buyer": "managing partner / COO / commercial director",
+      "problem": "Lead-to-proposal delay, utilization leakage, delivery coordination and billing evidence",
+      "research_rank_score": 2048.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A01",
+          "A02",
+          "A03",
+          "A15"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Revenue Leakage",
+          "Proposal Automation"
+        ],
+        "procurement_paths": [
+          "direct"
+        ],
+        "compliance_constraints": [],
+        "distribution_channels": [
+          "founder_content",
+          "referral",
+          "website_inbound"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::lead→proposal→cash"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-gastat-professional-services-sts"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.stats.gov.sa/en/search-publication"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "mobility_automotive",
+      "ar_name": "تنقل وسيارات",
+      "en_name": "Mobility & Automotive",
+      "buyer": "fleet director / aftersales director / service operations",
+      "problem": "Vehicle uptime, service backlog, parts exceptions and maintenance coordination",
+      "research_rank_score": 2048.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A10",
+          "A27",
+          "A28",
+          "A05"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Fleet Operations Diagnostic",
+          "Service Automation"
+        ],
+        "procurement_paths": [
+          "supplier portals+private"
+        ],
+        "compliance_constraints": [
+          "TGA",
+          "SASO",
+          "ZATCA"
+        ],
+        "distribution_channels": [
+          "supplier_portals",
+          "events_conferences",
+          "website_inbound"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::vehicle->service",
+          "proof::parts->fulfillment",
+          "proof::issue->resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-gastat-mobility-vehicle-repair-growth"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.stats.gov.sa/en/w/news/209"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "education_training",
+      "ar_name": "تعليم وتدريب",
+      "en_name": "Education & Training",
+      "buyer": "training director / COO / enrollment operations",
+      "problem": "Enrollment leakage, training scheduling, learner support and employer outcome evidence",
+      "research_rank_score": 2048.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A05",
+          "A08",
+          "A06",
+          "A12"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Enrollment Operations Diagnostic",
+          "Learning Support Automation"
+        ],
+        "procurement_paths": [
+          "direct+government"
+        ],
+        "compliance_constraints": [
+          "ETEC",
+          "Ministry_of_Education",
+          "PDPL"
+        ],
+        "distribution_channels": [
+          "website_inbound",
+          "partner_referrals",
+          "procurement_portals"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::lead->enrollment",
+          "proof::enrollment->completion",
+          "proof::support->resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-hrdf-training-employment-scale"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "telecom_media_marketing",
+      "ar_name": "اتصالات وإعلام وتسويق",
+      "en_name": "Telecom, Media & Marketing",
+      "buyer": "CIO / customer operations / CMO",
+      "problem": "Customer support scale, content operations, campaign attribution and digital-service reliability",
+      "research_rank_score": 682.6667,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A05",
+          "A08",
+          "A09",
+          "A12"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Growth Operations Diagnostic",
+          "AI Governance"
+        ],
+        "procurement_paths": [
+          "direct+enterprise"
+        ],
+        "compliance_constraints": [
+          "CST",
+          "GAMR",
+          "PDPL"
+        ],
+        "distribution_channels": [
+          "website_inbound",
+          "seo",
+          "events_conferences"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::campaign->lead",
+          "proof::content->publish",
+          "proof::support->resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-cst-ict-market-199b"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.cst.gov.sa/en/media-center/news/N2026070101"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "industrial_manufacturing",
+      "ar_name": "صناعي",
+      "en_name": "Industrial",
+      "buyer": "plant operations / quality / supply-chain director",
+      "problem": "Downtime, quality exceptions, inventory visibility and manual operating evidence",
+      "research_rank_score": 682.6667,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A10",
+          "A11",
+          "A27",
+          "A05"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Operations Diagnostic",
+          "Quality"
+        ],
+        "procurement_paths": [
+          "supplier portals"
+        ],
+        "compliance_constraints": [
+          "quality"
+        ],
+        "distribution_channels": [
+          "supplier_portals",
+          "events_conferences"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::order→cash",
+          "proof::inventory→fulfillment"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-gastat-manufacturing-revenue-growth"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.stats.gov.sa/en/w/news/209"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "construction_epc",
+      "ar_name": "إنشاءات/EPC",
+      "en_name": "Construction/EPC",
+      "buyer": "project controls / contracts / operations director",
+      "problem": "RFI, submittal, change-order, document-control and project exception cycle time",
+      "research_rank_score": 682.6667,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A10",
+          "A28",
+          "A29",
+          "A15"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Project Controls",
+          "Document Intelligence"
+        ],
+        "procurement_paths": [
+          "Etimad+private"
+        ],
+        "compliance_constraints": [
+          "document_control"
+        ],
+        "distribution_channels": [
+          "events_conferences",
+          "partner_referrals",
+          "website_inbound"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::project→cash",
+          "proof::variation→payment"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-sca-construction-project-awards"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://sca.sa/ar"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
     {
       "sector_id": "finance_fintech_insurance",
       "ar_name": "مالي/تأمين",
@@ -25,6 +834,8 @@
       "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
       "research_rank_score": 547.7333,
       "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
       "maturity_status": "INTERNAL_READY",
       "diagnostic_entry": {
         "factory": "dealix.commercial.universal_diagnostic_factory",
@@ -114,6 +925,373 @@
       "counts_as_revenue": false
     },
     {
+      "sector_id": "export_import_rhq",
+      "ar_name": "تصدير واستيراد ومقرات إقليمية",
+      "en_name": "Export, Import & RHQ",
+      "buyer": "regional COO / supply-chain / finance / compliance",
+      "problem": "Cross-border document control, customs/origin workflows, landed-cost visibility and regional reporting",
+      "research_rank_score": 512.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A03",
+          "A04",
+          "A15",
+          "A28"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Trade Operations Diagnostic",
+          "Document Intelligence"
+        ],
+        "procurement_paths": [
+          "direct+partner"
+        ],
+        "compliance_constraints": [
+          "MISA",
+          "ZATCA",
+          "PDPL"
+        ],
+        "distribution_channels": [
+          "partner_referrals",
+          "website_inbound",
+          "events_conferences"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::order->customs->delivery",
+          "proof::quote->cash"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-misa-rhq-trade-operations"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf",
+          "https://coo.mim.gov.sa/"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "creative_sports_gaming",
+      "ar_name": "إبداع ورياضة وألعاب",
+      "en_name": "Creative, Sports & Gaming",
+      "buyer": "commercial director / club COO / marketing director",
+      "problem": "Sponsorship pipeline, fan/member support, event operations and content execution",
+      "research_rank_score": 432.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A01",
+          "A05",
+          "A08",
+          "A09"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Commercial Revenue Diagnostic",
+          "Content Operations Automation"
+        ],
+        "procurement_paths": [
+          "direct+events"
+        ],
+        "compliance_constraints": [
+          "GEA",
+          "Ministry_of_Sport",
+          "GAMR",
+          "PDPL"
+        ],
+        "distribution_channels": [
+          "founder_content",
+          "events_conferences",
+          "website_inbound"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::campaign->revenue",
+          "proof::event->engagement",
+          "proof::content->publish"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-sports-law-investment"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "agriculture_food_water",
+      "ar_name": "زراعة وأغذية ومياه",
+      "en_name": "Agriculture, Food & Water",
+      "buyer": "operations / quality / sustainability director",
+      "problem": "Resource efficiency, traceability, loss, quality exceptions and asset monitoring",
+      "research_rank_score": 384.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A10",
+          "A27",
+          "A28",
+          "A45"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Traceability Diagnostic",
+          "Operations Automation"
+        ],
+        "procurement_paths": [
+          "supplier portals+private"
+        ],
+        "compliance_constraints": [
+          "MEWA",
+          "SFDA",
+          "SWA"
+        ],
+        "distribution_channels": [
+          "supplier_portals",
+          "events_conferences",
+          "partner_referrals"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::source->quality->delivery",
+          "proof::exception->resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-mewa-agri-water-tech-investment"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "associations_nonprofits",
+      "ar_name": "جمعيات وغير ربحية",
+      "en_name": "Associations & Nonprofits",
+      "buyer": "executive director / operations / fundraising or membership lead",
+      "problem": "Member/donor lifecycle, service-case coordination, reporting burden and impact evidence",
+      "research_rank_score": 243.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A01",
+          "A06",
+          "A08",
+          "A15"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Mission Operations Diagnostic",
+          "Member and Donor Automation"
+        ],
+        "procurement_paths": [
+          "direct+grants"
+        ],
+        "compliance_constraints": [
+          "NCNPO",
+          "PDPL"
+        ],
+        "distribution_channels": [
+          "partner_referrals",
+          "website_inbound",
+          "events_conferences"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::donor->receipt->report",
+          "proof::member->service",
+          "proof::case->resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-ncnp-nonprofit-scale"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
       "sector_id": "technology_saas_si",
       "ar_name": "تقنية/SaaS",
       "en_name": "Technology/SaaS",
@@ -121,6 +1299,8 @@
       "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
       "research_rank_score": 240.075,
       "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
       "maturity_status": "INTERNAL_READY",
       "diagnostic_entry": {
         "factory": "dealix.commercial.universal_diagnostic_factory",
@@ -210,6 +1390,97 @@
       "counts_as_revenue": false
     },
     {
+      "sector_id": "mining_metals",
+      "ar_name": "تعدين ومعادن",
+      "en_name": "Mining & Metals",
+      "buyer": "mine operations / maintenance / procurement director",
+      "problem": "Maintenance downtime, production exceptions, grade/asset data fragmentation and procurement cycle time",
+      "research_rank_score": 120.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A10",
+          "A11",
+          "A27",
+          "A28"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Mining Operations Diagnostic",
+          "Maintenance Intelligence"
+        ],
+        "procurement_paths": [
+          "supplier portals+private"
+        ],
+        "compliance_constraints": [
+          "MIM",
+          "NCA",
+          "PDPL"
+        ],
+        "distribution_channels": [
+          "supplier_portals",
+          "events_conferences",
+          "partner_referrals"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::mine->process",
+          "proof::maintenance->return_to_service"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-gastat-mining-revenue-growth"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://www.stats.gov.sa/en/w/news/209"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
       "sector_id": "real_estate_proptech",
       "ar_name": "عقار/FM",
       "en_name": "Real Estate/FM",
@@ -217,6 +1488,8 @@
       "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
       "research_rank_score": 81.0,
       "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
       "maturity_status": "INTERNAL_READY",
       "diagnostic_entry": {
         "factory": "dealix.commercial.universal_diagnostic_factory",
@@ -296,6 +1569,184 @@
       "counts_as_revenue": false
     },
     {
+      "sector_id": "energy_utilities_oil_gas",
+      "ar_name": "طاقة/نفط",
+      "en_name": "Energy/Oil&Gas",
+      "buyer": "energy manager / facilities / operations director",
+      "problem": "Energy audit evidence, measurement and verification, opportunity qualification and savings tracking",
+      "research_rank_score": 64.0,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A11",
+          "A13",
+          "A18",
+          "A43"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "Private AI",
+          "Cyber Readiness"
+        ],
+        "procurement_paths": [
+          "Aramco supplier"
+        ],
+        "compliance_constraints": [
+          "NCA",
+          "cyber"
+        ],
+        "distribution_channels": [
+          "partner_referrals",
+          "events_conferences"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::operations→maintenance"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-seec-energy-efficiency-marketplace"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://foras.seec.gov.sa/"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "government_b2g",
+      "ar_name": "حكومي/B2G",
+      "en_name": "Government/B2G",
+      "buyer": "procurement / digital transformation / program owner",
+      "problem": "Tender discovery, bid/no-bid evidence, requirements traceability, and compliant delivery proof",
+      "research_rank_score": 57.6,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A28",
+          "A36",
+          "A13",
+          "A15"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "B2G Readiness",
+          "Tender Intelligence"
+        ],
+        "procurement_paths": [
+          "Etimad"
+        ],
+        "compliance_constraints": [
+          "PDPL",
+          "NCA"
+        ],
+        "distribution_channels": [
+          "procurement_portals",
+          "etimad_intelligence",
+          "partner_referrals"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::tender→bid",
+          "proof::procure→pay"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-etimad-government-procurement-snapshot"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://portal.etimad.sa/en-us/home/gettenderssection"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
       "sector_id": "healthcare",
       "ar_name": "صحي",
       "en_name": "Healthcare",
@@ -303,6 +1754,8 @@
       "problem": "AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products",
       "research_rank_score": 8.736,
       "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
       "maturity_status": "INTERNAL_READY",
       "diagnostic_entry": {
         "factory": "dealix.commercial.universal_diagnostic_factory",
@@ -379,1368 +1832,6 @@
           "https://www.sfda.gov.sa/en/news/5316783",
           "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide"
         ]
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "tourism_hospitality",
-      "ar_name": "سياحة وضيافة",
-      "en_name": "Tourism & Hospitality",
-      "buyer": "general_manager",
-      "problem": "booking_leakage",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A01",
-          "A08",
-          "A09",
-          "A27"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Guest Operations Diagnostic",
-          "Revenue Command"
-        ],
-        "procurement_paths": [
-          "private"
-        ],
-        "compliance_constraints": [
-          "Ministry_of_Tourism",
-          "PDPL",
-          "ZATCA"
-        ],
-        "distribution_channels": [
-          "events_conferences",
-          "partner_referrals",
-          "website_inbound"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::booking->stay",
-          "proof::guest_issue->resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "telecom_media_marketing",
-      "ar_name": "اتصالات وإعلام وتسويق",
-      "en_name": "Telecom, Media & Marketing",
-      "buyer": "cmo",
-      "problem": "campaign_attribution_gap",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A05",
-          "A08",
-          "A09",
-          "A12"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Growth Operations Diagnostic",
-          "AI Governance"
-        ],
-        "procurement_paths": [
-          "direct+enterprise"
-        ],
-        "compliance_constraints": [
-          "CST",
-          "GAMR",
-          "PDPL"
-        ],
-        "distribution_channels": [
-          "website_inbound",
-          "seo",
-          "events_conferences"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::campaign->lead",
-          "proof::content->publish",
-          "proof::support->resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "retail_commerce_ecommerce",
-      "ar_name": "تجارة تجزئة وإلكترونية",
-      "en_name": "Retail & E-commerce",
-      "buyer": "ecommerce_director",
-      "problem": "conversion_leakage",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A05",
-          "A08",
-          "A09",
-          "A27"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Commerce Operations Diagnostic",
-          "Support Automation"
-        ],
-        "procurement_paths": [
-          "direct"
-        ],
-        "compliance_constraints": [
-          "MC",
-          "ZATCA",
-          "PDPL"
-        ],
-        "distribution_channels": [
-          "website_inbound",
-          "seo",
-          "founder_content"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::order->fulfillment",
-          "proof::return->refund"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "professional_services",
-      "ar_name": "خدمات مهنية",
-      "en_name": "Professional Services",
-      "buyer": "ceo",
-      "problem": "revenue_leakage",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A01",
-          "A02",
-          "A03",
-          "A15"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Revenue Leakage",
-          "Proposal Automation"
-        ],
-        "procurement_paths": [
-          "direct"
-        ],
-        "compliance_constraints": [],
-        "distribution_channels": [
-          "founder_content",
-          "referral",
-          "website_inbound"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::lead→proposal→cash"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "mobility_automotive",
-      "ar_name": "تنقل وسيارات",
-      "en_name": "Mobility & Automotive",
-      "buyer": "fleet_director",
-      "problem": "maintenance_downtime",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A10",
-          "A27",
-          "A28",
-          "A05"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Fleet Operations Diagnostic",
-          "Service Automation"
-        ],
-        "procurement_paths": [
-          "supplier portals+private"
-        ],
-        "compliance_constraints": [
-          "TGA",
-          "SASO",
-          "ZATCA"
-        ],
-        "distribution_channels": [
-          "supplier_portals",
-          "events_conferences",
-          "website_inbound"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::vehicle->service",
-          "proof::parts->fulfillment",
-          "proof::issue->resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "mining_metals",
-      "ar_name": "تعدين ومعادن",
-      "en_name": "Mining & Metals",
-      "buyer": "operations_director",
-      "problem": "maintenance_downtime",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A10",
-          "A11",
-          "A27",
-          "A28"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Mining Operations Diagnostic",
-          "Maintenance Intelligence"
-        ],
-        "procurement_paths": [
-          "supplier portals+private"
-        ],
-        "compliance_constraints": [
-          "MIM",
-          "NCA",
-          "PDPL"
-        ],
-        "distribution_channels": [
-          "supplier_portals",
-          "events_conferences",
-          "partner_referrals"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::mine->process",
-          "proof::maintenance->return_to_service"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "logistics_supply_chain",
-      "ar_name": "لوجستي",
-      "en_name": "Logistics",
-      "buyer": "operations_director",
-      "problem": "inventory_exception",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A27",
-          "A28",
-          "A10",
-          "A05"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Supply Chain Diagnostic",
-          "Automation"
-        ],
-        "procurement_paths": [
-          "supplier portals"
-        ],
-        "compliance_constraints": [],
-        "distribution_channels": [
-          "supplier_portals",
-          "events_conferences"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::shipment→delivery",
-          "proof::exception→resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "industrial_manufacturing",
-      "ar_name": "صناعي",
-      "en_name": "Industrial",
-      "buyer": "operations_director",
-      "problem": "quality_failure",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A10",
-          "A11",
-          "A27",
-          "A05"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Operations Diagnostic",
-          "Quality"
-        ],
-        "procurement_paths": [
-          "supplier portals"
-        ],
-        "compliance_constraints": [
-          "quality"
-        ],
-        "distribution_channels": [
-          "supplier_portals",
-          "events_conferences"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::order→cash",
-          "proof::inventory→fulfillment"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "government_b2g",
-      "ar_name": "حكومي/B2G",
-      "en_name": "Government/B2G",
-      "buyer": "procurement_director",
-      "problem": "procurement_delay",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A28",
-          "A36",
-          "A13",
-          "A15"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "B2G Readiness",
-          "Tender Intelligence"
-        ],
-        "procurement_paths": [
-          "Etimad"
-        ],
-        "compliance_constraints": [
-          "PDPL",
-          "NCA"
-        ],
-        "distribution_channels": [
-          "procurement_portals",
-          "etimad_intelligence",
-          "partner_referrals"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::tender→bid",
-          "proof::procure→pay"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "export_import_rhq",
-      "ar_name": "تصدير واستيراد ومقرات إقليمية",
-      "en_name": "Export, Import & RHQ",
-      "buyer": "supply_chain_director",
-      "problem": "customs_document_delay",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A03",
-          "A04",
-          "A15",
-          "A28"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Trade Operations Diagnostic",
-          "Document Intelligence"
-        ],
-        "procurement_paths": [
-          "direct+partner"
-        ],
-        "compliance_constraints": [
-          "MISA",
-          "ZATCA",
-          "PDPL"
-        ],
-        "distribution_channels": [
-          "partner_referrals",
-          "website_inbound",
-          "events_conferences"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::order->customs->delivery",
-          "proof::quote->cash"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "energy_utilities_oil_gas",
-      "ar_name": "طاقة/نفط",
-      "en_name": "Energy/Oil&Gas",
-      "buyer": "cto",
-      "problem": "operational_exception_overload",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A11",
-          "A13",
-          "A18",
-          "A43"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Private AI",
-          "Cyber Readiness"
-        ],
-        "procurement_paths": [
-          "Aramco supplier"
-        ],
-        "compliance_constraints": [
-          "NCA",
-          "cyber"
-        ],
-        "distribution_channels": [
-          "partner_referrals",
-          "events_conferences"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::operations→maintenance"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "education_training",
-      "ar_name": "تعليم وتدريب",
-      "en_name": "Education & Training",
-      "buyer": "training_director",
-      "problem": "enrollment_leakage",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A05",
-          "A08",
-          "A06",
-          "A12"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Enrollment Operations Diagnostic",
-          "Learning Support Automation"
-        ],
-        "procurement_paths": [
-          "direct+government"
-        ],
-        "compliance_constraints": [
-          "ETEC",
-          "Ministry_of_Education",
-          "PDPL"
-        ],
-        "distribution_channels": [
-          "website_inbound",
-          "partner_referrals",
-          "procurement_portals"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::lead->enrollment",
-          "proof::enrollment->completion",
-          "proof::support->resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "creative_sports_gaming",
-      "ar_name": "إبداع ورياضة وألعاب",
-      "en_name": "Creative, Sports & Gaming",
-      "buyer": "commercial_director",
-      "problem": "sponsorship_pipeline_leakage",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A01",
-          "A05",
-          "A08",
-          "A09"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Commercial Revenue Diagnostic",
-          "Content Operations Automation"
-        ],
-        "procurement_paths": [
-          "direct+events"
-        ],
-        "compliance_constraints": [
-          "GEA",
-          "Ministry_of_Sport",
-          "GAMR",
-          "PDPL"
-        ],
-        "distribution_channels": [
-          "founder_content",
-          "events_conferences",
-          "website_inbound"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::campaign->revenue",
-          "proof::event->engagement",
-          "proof::content->publish"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "construction_epc",
-      "ar_name": "إنشاءات/EPC",
-      "en_name": "Construction/EPC",
-      "buyer": "project_director",
-      "problem": "project_delay",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A10",
-          "A28",
-          "A29",
-          "A15"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Project Controls",
-          "Document Intelligence"
-        ],
-        "procurement_paths": [
-          "Etimad+private"
-        ],
-        "compliance_constraints": [
-          "document_control"
-        ],
-        "distribution_channels": [
-          "events_conferences",
-          "partner_referrals",
-          "website_inbound"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::project→cash",
-          "proof::variation→payment"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "associations_nonprofits",
-      "ar_name": "جمعيات وغير ربحية",
-      "en_name": "Associations & Nonprofits",
-      "buyer": "executive_director",
-      "problem": "donor_member_lifecycle_gap",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A01",
-          "A06",
-          "A08",
-          "A15"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Mission Operations Diagnostic",
-          "Member and Donor Automation"
-        ],
-        "procurement_paths": [
-          "direct+grants"
-        ],
-        "compliance_constraints": [
-          "NCNPO",
-          "PDPL"
-        ],
-        "distribution_channels": [
-          "partner_referrals",
-          "website_inbound",
-          "events_conferences"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::donor->receipt->report",
-          "proof::member->service",
-          "proof::case->resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "agriculture_food_water",
-      "ar_name": "زراعة وأغذية ومياه",
-      "en_name": "Agriculture, Food & Water",
-      "buyer": "operations_director",
-      "problem": "traceability_gap",
-      "research_rank_score": 0.0,
-      "market_evidence_status": "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A10",
-          "A27",
-          "A28",
-          "A45"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "Traceability Diagnostic",
-          "Operations Automation"
-        ],
-        "procurement_paths": [
-          "supplier portals+private"
-        ],
-        "compliance_constraints": [
-          "MEWA",
-          "SFDA",
-          "SWA"
-        ],
-        "distribution_channels": [
-          "supplier_portals",
-          "events_conferences",
-          "partner_referrals"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::source->quality->delivery",
-          "proof::exception->resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "fresh official market signal",
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [],
-        "deadlines": [],
-        "evidence_refs": []
       },
       "truth_class": "PATTERN_RESEARCH_ROUTING",
       "allowed_use": [

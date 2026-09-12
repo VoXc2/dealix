@@ -2,7 +2,7 @@
   "schema": "dealix.market-signal-set.v1",
   "wave_id": "op2-market-intelligence-wave-2026-09-12",
   "lane": "OP2",
-  "generated_at": "2026-09-12T05:55:00+03:00",
+  "generated_at": "2026-09-12T09:18:34+03:00",
   "scope": "dealix_company",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
@@ -18,7 +18,7 @@
     "execution": false,
     "production": false
   },
-  "notes": "Fresh OP2 Saudi market-intelligence wave. Public/regulatory signals only. A market signal is NOT an opportunity, relationship, consent, quote, or revenue. Authority flags are all false; promotion is owned by canonical downstream state owners only.",
+  "notes": "Fresh OP2 Saudi market-intelligence wave expanded across the canonical 20-sector Company OS. Public/regulatory/statistical signals only. A market signal is NOT buyer demand, opportunity, relationship, consent, quote, payment, or revenue. Authority flags remain false.",
   "signals": [
     {
       "signal_id": "op2-2026-zatca-wave25-einvoicing",
@@ -785,6 +785,1083 @@
         "execution": false,
         "production": false
       }
+    },
+    {
+      "signal_id": "op2-2026-etimad-government-procurement-snapshot",
+      "source_id": "ETIMAD_PUBLIC_PROCUREMENT",
+      "source_ref": "https://portal.etimad.sa/en-us/home/gettenderssection",
+      "observed_at": "2026-09-12T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for government_b2g; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-12T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "AVIATION_DEFENSE",
+      "business_archetype": "PUBLIC_SECTOR_PROCUREMENT",
+      "authority_ref": "Etimad / Ministry of Finance",
+      "buyer": "procurement / digital transformation / program owner",
+      "problem": "Tender discovery, bid/no-bid evidence, requirements traceability, and compliant delivery proof",
+      "trigger": "Etimad publicly exposes a large active government-tender surface with IT among major activity categories.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://portal.etimad.sa/en-us/home/gettenderssection"
+      ],
+      "facts": [
+        "Etimad is the Saudi public procurement platform and publicly lists active and awarded competitions.",
+        "The current public dashboard exposes IT, operation/maintenance, building contracting and equipment trading among major tender categories."
+      ],
+      "inferences": [
+        "A governed tender-intelligence and partner/no-bid workflow is commercially relevant to B2G research."
+      ],
+      "unknowns": [
+        "No specific tender is qualified for Dealix and no bid authority is granted."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Select only open tenders with exact scope, deadline, buyer and eligibility evidence.",
+        "Apply partner-or-no-bid posture before any submission."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 5,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "government_b2g",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-sca-construction-project-awards",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://sca.sa/ar",
+      "observed_at": "2026-07-19T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for construction_epc; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-19T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MANUFACTURING",
+      "business_archetype": "PROJECT_BASED_ENTERPRISE",
+      "authority_ref": "Saudi Contractors Authority",
+      "buyer": "project controls / contracts / operations director",
+      "problem": "RFI, submittal, change-order, document-control and project exception cycle time",
+      "trigger": "Saudi Contractors Authority reported more than SAR 29B of projects awarded in June 2026 and a continuing future-project pipeline.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://sca.sa/ar"
+      ],
+      "facts": [
+        "The Saudi Contractors Authority states construction is a major non-oil sector and publishes current project-market activity.",
+        "Its July 2026 homepage/news highlights more than SAR 29B of projects awarded during June 2026."
+      ],
+      "inferences": [
+        "Project volume creates a repeatable research case for governed document and project-control automation."
+      ],
+      "unknowns": [
+        "No contractor has confirmed a Dealix need, budget, or access to project systems."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify contractors with active awarded-project evidence and public digital/project-control signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "construction_epc",
+      "canonical_mapping_note": "Broad radar registry lacks a construction family; MANUFACTURING is only the admitted parent bridge, while canonical_sector_id is authoritative for Company OS routing.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-manufacturing-revenue-growth",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for industrial_manufacturing; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MANUFACTURING",
+      "business_archetype": "INDUSTRIAL_ENTERPRISE",
+      "authority_ref": "GASTAT",
+      "buyer": "plant operations / quality / supply-chain director",
+      "problem": "Downtime, quality exceptions, inventory visibility and manual operating evidence",
+      "trigger": "GASTAT reported manufacturing operating revenues up 9.6% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "facts": [
+        "GASTAT reported a 9.6% year-on-year increase in manufacturing operating revenues in May 2026.",
+        "Manufacturing operating revenues also rose 0.6% month on month in May 2026."
+      ],
+      "inferences": [
+        "Growth increases the value of scalable quality, maintenance and inventory operating workflows, but does not prove demand from any named factory."
+      ],
+      "unknowns": [
+        "No named manufacturer relationship, budget or deployment baseline exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Find named manufacturers with measurable maintenance, quality or inventory transformation signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "industrial_manufacturing",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-logistics-june-sts",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "observed_at": "2026-08-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for logistics_supply_chain; research-only canonical-sector bridge",
+      "fresh_until": "2026-11-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "HIGH_VOLUME_OPERATIONS",
+      "authority_ref": "GASTAT / Transport General Authority",
+      "buyer": "COO / logistics operations / last-mile director",
+      "problem": "High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load",
+      "trigger": "GASTAT June 2026 short-term business tables report strong transportation/storage operating-revenue growth; TGA reporting also shows rapid delivery-order expansion.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication",
+        "https://mot.gov.sa/ar/logistics-sectors"
+      ],
+      "facts": [
+        "GASTAT published Short-Term Business Indicators Statistics for June 2026 on 20 August 2026.",
+        "The June table reports transportation and storage operating-revenue index growth of 18.4% year on year and 0.8% month on month."
+      ],
+      "inferences": [
+        "High transaction density and measurable exceptions make logistics a strong automation-research lane."
+      ],
+      "unknowns": [
+        "No named logistics operator has provided operational data or consent."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Qualify operators with public SLA, fleet, fulfillment or support transformation signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 5,
+        "buyer_access": 4,
+        "data_availability": 5,
+        "repeatability": 5,
+        "readiness": 5,
+        "distribution_density": 5,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "logistics_supply_chain",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-seec-energy-efficiency-marketplace",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://foras.seec.gov.sa/",
+      "observed_at": "2026-09-12T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for energy_utilities_oil_gas; research-only canonical-sector bridge",
+      "fresh_until": "2027-03-12T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ENERGY",
+      "business_archetype": "ASSET_INTENSIVE_REGULATED",
+      "authority_ref": "Saudi Energy Efficiency Center",
+      "buyer": "energy manager / facilities / operations director",
+      "problem": "Energy audit evidence, measurement and verification, opportunity qualification and savings tracking",
+      "trigger": "SEEC operates a live opportunity platform matching facilities with licensed energy-service providers and requiring audit and measurement/verification outputs.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://foras.seec.gov.sa/"
+      ],
+      "facts": [
+        "SEEC Foras allows facility owners to publish energy-efficiency opportunities and licensed providers to compete.",
+        "The platform explicitly includes Level-1 energy audits and annual savings measurement/verification reporting."
+      ],
+      "inferences": [
+        "The workflow is evidence-heavy and measurable, making governed diagnostic and proof automation research-relevant."
+      ],
+      "unknowns": [
+        "Dealix is not evidenced as a licensed energy-service provider; partner eligibility must be verified before any market action."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Map licensed partners and position Dealix only as governed automation/backend where legally and commercially appropriate."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 5,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 2,
+        "regulatory_friction": 5,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "energy_utilities_oil_gas",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-mining-revenue-growth",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for mining_metals; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MINING_METALS",
+      "business_archetype": "ASSET_INTENSIVE_INDUSTRIAL",
+      "authority_ref": "GASTAT",
+      "buyer": "mine operations / maintenance / procurement director",
+      "problem": "Maintenance downtime, production exceptions, grade/asset data fragmentation and procurement cycle time",
+      "trigger": "GASTAT reported mining and quarrying operating revenues up 38.7% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "facts": [
+        "Mining and quarrying had the highest May 2026 operating-revenue increase reported by GASTAT at 38.7% year on year.",
+        "Mining and quarrying rose 10.2% month on month in May 2026."
+      ],
+      "inferences": [
+        "The activity level supports a high-value research lane for maintenance and operations intelligence."
+      ],
+      "unknowns": [
+        "No mine operator is a Dealix relationship or qualified opportunity."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify operators and contractors with public maintenance/digital-mining transformation signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "mining_metals",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-mc-retail-commerce-registrations",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx",
+      "observed_at": "2026-07-09T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for retail_commerce_ecommerce; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-09T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "HIGH_VOLUME_DIGITAL_COMMERCE",
+      "authority_ref": "Ministry of Commerce",
+      "buyer": "ecommerce director / COO / customer operations lead",
+      "problem": "Conversion leakage, order exceptions, returns, support backlog and reconciliation",
+      "trigger": "The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026, with wholesale and retail among leading activities.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx"
+      ],
+      "facts": [
+        "The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026.",
+        "Wholesale and retail was among the leading activities for registrations issued that month."
+      ],
+      "inferences": [
+        "Dense commerce activity supports repeatable low-friction diagnostics around order, customer-support and revenue leakage."
+      ],
+      "unknowns": [
+        "No specific merchant purchase intent or first-party conversion baseline exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize merchants with opt-in/inbound signals and observable operational pain before discovery."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 5,
+        "buyer_access": 4,
+        "data_availability": 5,
+        "repeatability": 5,
+        "readiness": 5,
+        "distribution_density": 5,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "retail_commerce_ecommerce",
+      "canonical_mapping_note": "ICT is the admitted radar bridge for e-commerce; canonical_sector_id preserves retail/e-commerce truth in the Company OS.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-tourism-q1-release",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "observed_at": "2026-07-05T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for tourism_hospitality; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-05T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "business_archetype": "GUEST_EXPERIENCE_OPERATIONS",
+      "authority_ref": "GASTAT / Ministry of Tourism",
+      "buyer": "general manager / revenue manager / guest operations",
+      "problem": "Booking leakage, guest-response load, occupancy/revenue operations and service exceptions",
+      "trigger": "GASTAT published Tourism Establishments Statistics for Q1 2026 and continues quarterly monitoring of occupancy, room rates, stay length and tourism employment.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication",
+        "https://www.stats.gov.sa/en/w/methodology-and-quality-report-for-tourism-establishment-statistics-4.0"
+      ],
+      "facts": [
+        "GASTAT published Tourism Establishments Statistics for Q1 2026 on 5 July 2026.",
+        "The official tourism-establishment statistics track occupancy, average daily room rate, length of stay and tourism employment."
+      ],
+      "inferences": [
+        "These measurable operating indicators support a governed hospitality diagnostic without implying demand from any property."
+      ],
+      "unknowns": [
+        "No hotel or tourism operator has shared first-party performance data with Dealix."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify operators with public expansion, guest-experience or revenue-operations signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "tourism_hospitality",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-professional-services-sts",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for professional_services; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "business_archetype": "KNOWLEDGE_SERVICE_FIRM",
+      "authority_ref": "GASTAT",
+      "buyer": "managing partner / COO / commercial director",
+      "problem": "Lead-to-proposal delay, utilization leakage, delivery coordination and billing evidence",
+      "trigger": "GASTAT May 2026 short-term business tables show positive operating-revenue movement for professional, scientific and technical activities.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "facts": [
+        "GASTAT short-term business tables for May 2026 include professional, scientific and technical activities.",
+        "The published table reports an operating-revenue index of 114.9, with approximately 1.0% year-on-year and 0.5% month-on-month growth."
+      ],
+      "inferences": [
+        "Professional services have short, measurable lead-to-cash and delivery workflows that can support fast diagnostics."
+      ],
+      "unknowns": [
+        "No named firm is a qualified Dealix opportunity."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize firms with clear proposal throughput, utilization or collections signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "professional_services",
+      "canonical_mapping_note": "HUMAN_CAPITAL_INNOVATION is the closest admitted radar family for knowledge services; canonical_sector_id is the Company OS authority.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-cst-ict-market-199b",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.cst.gov.sa/en/media-center/news/N2026070101",
+      "observed_at": "2026-07-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for telecom_media_marketing; research-only canonical-sector bridge",
+      "fresh_until": "2027-01-01T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "DIGITAL_HIGH_SCALE",
+      "authority_ref": "Communications, Space and Technology Commission",
+      "buyer": "CIO / customer operations / CMO",
+      "problem": "Customer support scale, content operations, campaign attribution and digital-service reliability",
+      "trigger": "CST reported the Saudi ICT market reached SAR 199B by end-2025 with 8% five-year CAGR and 100% internet penetration.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/media-center/news/N2026070101"
+      ],
+      "facts": [
+        "CST reported Saudi Arabia ranked first globally in the ITU ICT Development Index 2026.",
+        "CST states the ICT market reached SAR 199 billion by end-2025 with an 8% CAGR over five years."
+      ],
+      "inferences": [
+        "Large digital usage and market scale create repeatable customer/content/operations automation research lanes."
+      ],
+      "unknowns": [
+        "No telecom or media buyer has confirmed purchase intent."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Find opt-in or public transformation signals at operators, agencies and media businesses."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "telecom_media_marketing",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-hrdf-training-employment-scale",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/",
+      "observed_at": "2026-02-05T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for education_training; research-only canonical-sector bridge",
+      "fresh_until": "2027-02-05T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "business_archetype": "TRAINING_AND_EMPLOYMENT_ECOSYSTEM",
+      "authority_ref": "Human Resources Development Fund (HRDF)",
+      "buyer": "training director / COO / enrollment operations",
+      "problem": "Enrollment leakage, training scheduling, learner support and employer outcome evidence",
+      "trigger": "HRDF reported more than 562,000 citizens employed through its programs in 2025, with more than 226,000 establishments benefiting and 45 sector training agreements.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/"
+      ],
+      "facts": [
+        "HRDF reported support contributing to employment of more than 562,000 citizens in private-sector establishments during 2025.",
+        "More than 226,000 establishments benefited from HRDF services, and 45 specific training agreements linked to employment were signed."
+      ],
+      "inferences": [
+        "Scale and outcome orientation support measurable enrollment, learner-support and employer-reporting automation research."
+      ],
+      "unknowns": [
+        "No training provider has consented to outreach or shared conversion data."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify licensed training providers with inbound/partner signals and measurable enrollment pain."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "education_training",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-mewa-agri-water-tech-investment",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx",
+      "observed_at": "2026-06-21T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for agriculture_food_water; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-21T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "AGRICULTURE_FOOD",
+      "business_archetype": "RESOURCE_INTENSIVE_OPERATIONS",
+      "authority_ref": "Ministry of Environment, Water and Agriculture",
+      "buyer": "operations / quality / sustainability director",
+      "problem": "Resource efficiency, traceability, loss, quality exceptions and asset monitoring",
+      "trigger": "MEWA identified smart irrigation, protected agriculture, aquaculture, food-loss reduction, AI/IoT sensing and digital twins as investment-ready technology areas.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx"
+      ],
+      "facts": [
+        "MEWA highlighted scalable investment opportunities in smart irrigation, protected agriculture, aquaculture, food preservation and food-loss reduction.",
+        "MEWA also identified AI-enabled IoT sensing, digital twins, smart monitoring and drones as high-readiness technologies across agriculture, water and environmental domains."
+      ],
+      "inferences": [
+        "Operational sensing and traceability create measurable workflows for diagnostics and governed automation."
+      ],
+      "unknowns": [
+        "No farm, food producer or water operator is qualified as a Dealix buyer."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize operators with public technology adoption, traceability or efficiency projects."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "agriculture_food_water",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-mobility-vehicle-repair-growth",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for mobility_automotive; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "FLEET_AND_SERVICE_OPERATIONS",
+      "authority_ref": "GASTAT",
+      "buyer": "fleet director / aftersales director / service operations",
+      "problem": "Vehicle uptime, service backlog, parts exceptions and maintenance coordination",
+      "trigger": "GASTAT reported wholesale/retail trade and repair of motor vehicles and motorcycles operating revenues up 3.6% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "facts": [
+        "GASTAT reported 3.6% year-on-year operating-revenue growth for wholesale/retail trade and repair of motor vehicles and motorcycles in May 2026.",
+        "The activity also increased 1.3% month on month."
+      ],
+      "inferences": [
+        "Vehicle-service and fleet workflows have measurable uptime and cycle-time outcomes suitable for a free diagnostic."
+      ],
+      "unknowns": [
+        "No dealer, fleet or workshop relationship is established."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize fleets/dealers with public service expansion, backlog or digital-service signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "mobility_automotive",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-misa-rhq-trade-operations",
+      "source_id": "INVEST_SAUDI_OFFICIAL",
+      "source_ref": "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for export_import_rhq; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-30T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "MULTINATIONAL_AND_TRADE_OPERATIONS",
+      "authority_ref": "Ministry of Investment / Ministry of Industry and Mineral Resources",
+      "buyer": "regional COO / supply-chain / finance / compliance",
+      "problem": "Cross-border document control, customs/origin workflows, landed-cost visibility and regional reporting",
+      "trigger": "MISA 2026 investor guidance maintains a formal RHQ registration path, while MIM operates electronic Certificate of Origin issuance/tracking for exporters.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf",
+        "https://coo.mim.gov.sa/"
+      ],
+      "facts": [
+        "MISA 2026 investor guidance includes the Regional Headquarters license for multinational companies managing MENA operations from Saudi Arabia.",
+        "The Ministry of Industry and Mineral Resources provides electronic Certificate of Origin issuance and tracking for local exporters and manufacturers."
+      ],
+      "inferences": [
+        "RHQ and export/import operations create repeatable document, compliance and reporting workflows."
+      ],
+      "unknowns": [
+        "No multinational or exporter is a qualified Dealix opportunity."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Use current GASTAT trade releases and public RHQ/export signals to identify named research targets."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "export_import_rhq",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-sports-law-investment",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5",
+      "observed_at": "2026-06-11T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for creative_sports_gaming; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-11T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "business_archetype": "SPORTS_AND_EXPERIENCE_ECONOMY",
+      "authority_ref": "Ministry of Sport",
+      "buyer": "commercial director / club COO / marketing director",
+      "problem": "Sponsorship pipeline, fan/member support, event operations and content execution",
+      "trigger": "Saudi Sports Law entered into force in June 2026 and explicitly supports commercial/sports investment; privatization is opening additional private-sector operating surfaces.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5"
+      ],
+      "facts": [
+        "The Saudi Sports Law entered into force on 11 June 2026 and establishes a comprehensive governance framework for the sports sector.",
+        "The Ministry states the law supports and encourages investment through commercial and sports-related investment transactions."
+      ],
+      "inferences": [
+        "Commercialization and professionalization raise the value of governed sponsorship, fan and operating workflows."
+      ],
+      "unknowns": [
+        "No club, federation or sports entity is a Dealix relationship."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Target only public/inbound commercial or operations signals; do not treat investment activity as consent."
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "creative_sports_gaming",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-ncnp-nonprofit-scale",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for associations_nonprofits; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-30T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "business_archetype": "MISSION_DRIVEN_ORGANIZATION",
+      "authority_ref": "National Center for Non-Profit Sector",
+      "buyer": "executive director / operations / fundraising or membership lead",
+      "problem": "Member/donor lifecycle, service-case coordination, reporting burden and impact evidence",
+      "trigger": "NCNPS reported more than 7,200 nonprofit organizations by end-2025, 1.7M volunteers and a 1.4% GDP contribution.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1"
+      ],
+      "facts": [
+        "NCNPS reported more than 7,200 nonprofit organizations by end-2025.",
+        "The sector reached 1.7 million volunteers and a 1.4% contribution to GDP according to the 2025 annual report."
+      ],
+      "inferences": [
+        "Sector scale and reporting/beneficiary complexity support governed member, donor and impact-reporting automation research."
+      ],
+      "unknowns": [
+        "No nonprofit entity has opted in or been qualified as a buyer."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize associations/nonprofits with public digitization, service-scale or reporting signals and appropriate procurement capacity."
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "associations_nonprofits",
+      "canonical_mapping_note": "HUMAN_CAPITAL_INNOVATION is the closest admitted broad radar family; canonical_sector_id controls Company OS routing.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
     }
-  ]
+  ],
+  "canonical_sector_bridge_policy": "canonical_sector_id is a validated bridge from the broad 15-family radar taxonomy to the canonical 20-sector Company OS. It is research-only and cannot create relationship, consent, opportunity, pipeline, quote, payment, or revenue."
 }

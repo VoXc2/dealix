@@ -139,6 +139,105 @@ DEFAULT_VECTOR: dict[str, dict[str, str]] = {
         "automation": "order_and_support_automation",
         "time_to_cash": "fast_7_30d",
     },
+    "construction_epc": {
+        "offer": "PROJECT_CONTROL_AND_SUBMITTAL_AUTOMATION",
+        "channel": "direct_project_controls",
+        "monetization": "PAID_SPRINT",
+        "delivery": "project_control_workspace",
+        "proof": "cycle_time_and_exception_pack",
+        "automation": "submittal_rfi_change_pipeline",
+        "time_to_cash": "medium_30_60d",
+    },
+    "energy_utilities_oil_gas": {
+        "offer": "ENERGY_OPERATIONS_AND_EVIDENCE_AUTOMATION",
+        "channel": "partner_or_direct_operations",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "governed_operations_workspace",
+        "proof": "energy_control_evidence_pack",
+        "automation": "audit_measurement_exception_pipeline",
+        "time_to_cash": "slow_90d_plus",
+    },
+    "mining_metals": {
+        "offer": "MAINTENANCE_AND_PRODUCTION_INTELLIGENCE",
+        "channel": "supplier_portal_plus_operations",
+        "monetization": "PAID_SPRINT",
+        "delivery": "maintenance_intelligence_workspace",
+        "proof": "downtime_and_resolution_pack",
+        "automation": "maintenance_exception_pipeline",
+        "time_to_cash": "medium_30_60d",
+    },
+    "tourism_hospitality": {
+        "offer": "GUEST_AND_REVENUE_OPERATIONS_AUTOMATION",
+        "channel": "direct_general_manager",
+        "monetization": "PAID_SPRINT",
+        "delivery": "guest_operations_workspace",
+        "proof": "booking_support_resolution_pack",
+        "automation": "booking_guest_support_pipeline",
+        "time_to_cash": "fast_7_30d",
+    },
+    "professional_services": {
+        "offer": "LEAD_TO_CASH_AND_DELIVERY_AUTOMATION",
+        "channel": "direct_managing_partner",
+        "monetization": "PAID_SPRINT",
+        "delivery": "professional_service_workspace",
+        "proof": "proposal_cycle_and_utilization_pack",
+        "automation": "lead_proposal_delivery_pipeline",
+        "time_to_cash": "fast_7_30d",
+    },
+    "telecom_media_marketing": {
+        "offer": "CUSTOMER_AND_CONTENT_OPERATIONS_AUTOMATION",
+        "channel": "direct_growth_or_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "growth_operations_workspace",
+        "proof": "support_content_attribution_pack",
+        "automation": "campaign_content_support_pipeline",
+        "time_to_cash": "medium_30_60d",
+    },
+    "agriculture_food_water": {
+        "offer": "TRACEABILITY_AND_RESOURCE_EFFICIENCY_DIAGNOSTIC",
+        "channel": "partner_or_operations",
+        "monetization": "PAID_SPRINT",
+        "delivery": "traceability_workspace",
+        "proof": "loss_quality_resource_pack",
+        "automation": "traceability_quality_exception_pipeline",
+        "time_to_cash": "medium_30_60d",
+    },
+    "mobility_automotive": {
+        "offer": "FLEET_SERVICE_AND_PARTS_AUTOMATION",
+        "channel": "direct_fleet_or_aftersales",
+        "monetization": "PAID_SPRINT",
+        "delivery": "fleet_service_workspace",
+        "proof": "uptime_service_cycle_pack",
+        "automation": "service_parts_exception_pipeline",
+        "time_to_cash": "fast_7_30d",
+    },
+    "export_import_rhq": {
+        "offer": "TRADE_DOCUMENT_AND_LANDED_COST_AUTOMATION",
+        "channel": "partner_or_supply_chain",
+        "monetization": "PAID_SPRINT",
+        "delivery": "trade_operations_workspace",
+        "proof": "document_cycle_and_exception_pack",
+        "automation": "document_customs_exception_pipeline",
+        "time_to_cash": "medium_30_60d",
+    },
+    "creative_sports_gaming": {
+        "offer": "COMMERCIAL_AND_FAN_OPERATIONS_AUTOMATION",
+        "channel": "direct_commercial_director",
+        "monetization": "PAID_SPRINT",
+        "delivery": "commercial_operations_workspace",
+        "proof": "sponsorship_engagement_pack",
+        "automation": "sponsorship_content_fan_pipeline",
+        "time_to_cash": "fast_7_30d",
+    },
+    "associations_nonprofits": {
+        "offer": "MEMBER_DONOR_AND_REPORTING_AUTOMATION",
+        "channel": "partner_or_executive_director",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "mission_operations_workspace",
+        "proof": "member_donor_reporting_pack",
+        "automation": "member_donor_case_pipeline",
+        "time_to_cash": "medium_30_60d",
+    },
 }
 
 _DEFAULT = {
@@ -165,10 +264,15 @@ def build_aggregates(wave: dict[str, Any]) -> dict[str, dict[str, Any]]:
     aggregates: dict[str, dict[str, Any]] = {}
     for signal in wave.get("signals", []) or []:
         family = str(signal.get("sector_family", UNKNOWN))
-        mapping = SECTOR_FAMILY_TO_CANONICAL.get(family)
-        if mapping is None:
-            continue
-        canonical, mapping_note = mapping
+        canonical_override = str(signal.get("canonical_sector_id") or "").strip()
+        if canonical_override:
+            canonical = canonical_override
+            mapping_note = f"{family}->{canonical}:explicit_canonical_sector_id"
+        else:
+            mapping = SECTOR_FAMILY_TO_CANONICAL.get(family)
+            if mapping is None:
+                continue
+            canonical, mapping_note = mapping
         row = aggregates.setdefault(
             canonical,
             {

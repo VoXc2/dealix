@@ -62,13 +62,17 @@ def test_all_twenty_canonical_sectors_are_routed() -> None:
     payload = _payload()
     assert payload["route_count"] == len(list(Sector)) == 20
     assert {route["sector_id"] for route in payload["routes"]} == {sector.value for sector in Sector}
-    assert payload["evidence_backed_count"] >= 1
-    assert payload["pattern_only_count"] >= 1
+    assert payload["evidence_backed_count"] == 20
+    assert payload["pattern_only_count"] == 0
     for route in payload["routes"]:
+        assert route["market_evidence_status"] == "EVIDENCE_BACKED"
+        assert route["market_evidence_scope"] == "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+        assert route["buyer_demand_status"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
         assert route["commercial_pattern"]["offer_ladder"]
         assert route["commercial_pattern"]["acceptance_criteria"]
-        if route["market_evidence_status"] != "EVIDENCE_BACKED":
-            assert "fresh official market signal" in route["discovery_prep"]["evidence_gaps"]
+        assert "fresh official market signal" not in route["discovery_prep"]["evidence_gaps"]
+        assert route["counts_as_pipeline"] is False
+        assert route["counts_as_revenue"] is False
 
 
 def test_former_generic_sectors_have_specific_commercial_intelligence() -> None:

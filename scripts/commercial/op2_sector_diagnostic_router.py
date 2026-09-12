@@ -108,8 +108,10 @@ def build_routes() -> dict[str, Any]:
     # Group wave signals by canonical sector, preserving evidence refs.
     per_sector: dict[str, list[dict[str, Any]]] = {}
     for signal in wave.get("signals", []) or []:
-        canonical = SECTOR_FAMILY_TO_CANONICAL.get(str(signal.get("sector_family")))
-        if canonical:
+        canonical = str(signal.get("canonical_sector_id") or "").strip()
+        if not canonical:
+            canonical = SECTOR_FAMILY_TO_CANONICAL.get(str(signal.get("sector_family"))) or ""
+        if canonical in blueprints:
             per_sector.setdefault(canonical, []).append(signal)
 
     routes: list[dict[str, Any]] = []
@@ -133,6 +135,12 @@ def build_routes() -> dict[str, Any]:
                 "problem": cell.get("problem", first_problem) if cell else first_problem,
                 "research_rank_score": cell.get("research_rank_score", 0.0) if cell else 0.0,
                 "market_evidence_status": "EVIDENCE_BACKED" if evidence_backed else "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
+                "market_evidence_scope": (
+                    "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+                    if evidence_backed
+                    else "PATTERN_ONLY_NO_FRESH_PUBLIC_SIGNAL"
+                ),
+                "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
                 "maturity_status": blueprint.maturity_status,
                 "diagnostic_entry": {
                     "factory": "dealix.commercial.universal_diagnostic_factory",

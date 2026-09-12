@@ -20,6 +20,11 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from dealix.commercial.economic_cell import Sector
+
 WAVE_PATH = REPO_ROOT / "data" / "commercial" / "op2_market_intelligence_wave_v1.json"
 RADAR_PATH = REPO_ROOT / "data" / "commercial" / "universal_market_radar_v1.json"
 PLAYBOOK_PATH = REPO_ROOT / "data" / "commercial" / "universal_market_playbooks_v1.json"
@@ -67,6 +72,7 @@ def validate_wave(wave: dict[str, Any], radar_meta: dict[str, Any], playbooks: d
     source_ids = {row["source_id"] for row in radar_meta["source_registry"]}
     sector_ids = {row["id"] for row in playbooks["sector_families"]}
     regulators: set[str] = set()
+    canonical_sector_ids = {sector.value for sector in Sector}
 
     for signal in signals:
         signal_id = str(signal.get("signal_id"))
@@ -75,6 +81,9 @@ def validate_wave(wave: dict[str, Any], radar_meta: dict[str, Any], playbooks: d
             errors.append(f"{signal_id}: source_id not admitted by canonical registry")
         if signal.get("sector_family") not in sector_ids:
             errors.append(f"{signal_id}: sector_family not admitted by canonical playbooks")
+        canonical_sector_id = str(signal.get("canonical_sector_id") or "").strip()
+        if canonical_sector_id and canonical_sector_id not in canonical_sector_ids:
+            errors.append(f"{signal_id}: canonical_sector_id not admitted by canonical 20-sector registry")
         if signal.get("authority") != runner.AUTHORITY:
             errors.append(f"{signal_id}: authority over-claims (must be all-false)")
         factors = signal.get("priority_factors") or {}
