@@ -123,6 +123,30 @@ def test_dispatch_fails_closed_for_model_work_when_quota_is_exhausted():
     assert plan.budget.model_capacity_available is False
 
 
+def test_paid_model_requires_explicit_approval_reference_and_live_capacity():
+    registry = _registry()
+    agent = "dealix.group.revenue"
+    paid = WorkItem("paid", agent, 90, 10, requires_paid_model=True)
+    normal = ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 2)
+    exhausted = ResourceSnapshot(0.2, 8192, 0.0, 0.0, 0.0, 0.0, 2)
+
+    no_reference = AgentDispatcher(ResourceGovernor(paid_spill_allowed=True)).dispatch(
+        [paid], registry=registry, snapshot=normal
+    )
+    assert no_reference.rejected["paid"] == "paid_spill_blocked"
+
+    approved = AgentDispatcher(
+        ResourceGovernor(paid_spill_allowed=True, paid_approval_reference="approval:paid-model-test")
+    ).dispatch([paid], registry=registry, snapshot=normal)
+    assert [item.work_id for item in approved.selected] == ["paid"]
+    assert approved.budget.paid_model_allowed is True
+
+    quota_blocked = AgentDispatcher(
+        ResourceGovernor(paid_spill_allowed=True, paid_approval_reference="approval:paid-model-test")
+    ).dispatch([paid], registry=registry, snapshot=exhausted)
+    assert quota_blocked.rejected["paid"] == "model_quota_exhausted"
+
+
 def test_dispatch_blocks_paid_spill_material_effect_and_unknown_agent():
     registry = _registry()
     valid_agent = "dealix.group.revenue"
