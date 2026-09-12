@@ -71,9 +71,7 @@ def test_registry_rejects_orphan_agent():
 
 def test_resource_governor_is_host_capacity_aware_and_throttles_pressure():
     governor = ResourceGovernor(max_workers=12, max_repo_writers=3)
-    normal = governor.budget(
-        ResourceSnapshot(0.30, 8192, 0.05, 0.10, 1.0, 1.0, 4)
-    )
+    normal = governor.budget(ResourceSnapshot(0.30, 8192, 0.05, 0.10, 1.0, 1.0, 4))
     explicit_two_cpu = governor.budget(
         ResourceSnapshot(0.30, 8192, 0.05, 0.10, 1.0, 1.0, 4, cpu_count=2)
     )
@@ -91,15 +89,15 @@ def test_dispatch_prioritizes_economic_value_and_respects_writer_budget():
     registry = _registry()
     agent = "dealix.group.revenue"
     items = [
-        WorkItem("high", agent, 95, 15, 5, repo_writer=False),
+        WorkItem("high", agent, 95, 15, 5),
         WorkItem("writer-1", agent, 80, 20, 5, repo_writer=True),
         WorkItem("writer-2", agent, 75, 20, 5, repo_writer=True),
-        WorkItem("low", agent, 20, 20, 20, repo_writer=False),
+        WorkItem("low", agent, 20, 20, 20),
     ]
     plan = AgentDispatcher(ResourceGovernor(max_workers=3, max_repo_writers=1)).dispatch(
         items,
         registry=registry,
-        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 1),
+        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 1, cpu_count=3),
     )
     selected = [item.work_id for item in plan.selected]
     assert selected[0] == "high"
@@ -107,28 +105,71 @@ def test_dispatch_prioritizes_economic_value_and_respects_writer_budget():
     assert plan.rejected["writer-2"] == "worktree_capacity"
 
 
-def test_dispatch_fails_closed_for_model_work_when_quota_is_exhausted():
+def test_model_work_fails_closed_when_provider_or_model_quota_is_unknown_or_exhausted():
     registry = _registry()
     agent = "dealix.group.revenue"
-    plan = AgentDispatcher().dispatch(
-        [
-            WorkItem("model-job", agent, 95, 10, requires_model=True),
-            WorkItem("deterministic-job", agent, 50, 10),
-        ],
-        registry=registry,
-        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 0.0, 0.0, 2, cpu_count=4),
+    dispatcher = AgentDispatcher()
+    item = WorkItem("model", agent, 95, 10, requires_model=True, model_cost_authority="explicit_free")
+
+    unknown_provider = dispatcher.dispatch(
+        [item], registry=registry,
+        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, None, 1.0, 1, cpu_count=4),
     )
-    assert [item.work_id for item in plan.selected] == ["deterministic-job"]
-    assert plan.rejected["model-job"] == "model_quota_exhausted"
-    assert plan.budget.model_capacity_available is False
+    assert unknown_provider.rejected["model"] == "provider_quota_unknown"
+
+    unknown_model = dispatcher.dispatch(
+        [item], registry=registry,
+        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, None, 1, cpu_count=4),
+    )
+    assert unknown_model.rejected["model"] == "model_quota_unknown"
+
+    provider_exhausted = dispatcher.dispatch(
+        [item], registry=registry,
+        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 0.0, 1.0, 1, cpu_count=4),
+    )
+    assert provider_exhausted.rejected["model"] == "provider_quota_exhausted"
+
+    model_exhausted = dispatcher.dispatch(
+        [item], registry=registry,
+        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 0.0, 1, cpu_count=4),
+    )
+    assert model_exhausted.rejected["model"] == "model_quota_exhausted"
+
+
+def test_free_or_included_model_requires_verified_cost_authority():
+    registry = _registry()
+    agent = "dealix.group.revenue"
+    dispatcher = AgentDispatcher()
+    snapshot = ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 2, cpu_count=4)
+
+    unknown = dispatcher.dispatch(
+        [WorkItem("unknown-cost", agent, 90, 10, requires_model=True)],
+        registry=registry,
+        snapshot=snapshot,
+    )
+    assert unknown.rejected["unknown-cost"] == "model_cost_authority_unknown"
+
+    explicit_free = dispatcher.dispatch(
+        [WorkItem("free", agent, 90, 10, requires_model=True, model_cost_authority="explicit_free")],
+        registry=registry,
+        snapshot=snapshot,
+    )
+    assert [item.work_id for item in explicit_free.selected] == ["free"]
+
+    included = dispatcher.dispatch(
+        [WorkItem("included", agent, 90, 10, requires_model=True, model_cost_authority="included_subscription")],
+        registry=registry,
+        snapshot=snapshot,
+    )
+    assert [item.work_id for item in included.selected] == ["included"]
 
 
 def test_paid_model_requires_explicit_approval_reference_and_live_capacity():
     registry = _registry()
     agent = "dealix.group.revenue"
     paid = WorkItem("paid", agent, 90, 10, requires_paid_model=True)
-    normal = ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 2)
-    exhausted = ResourceSnapshot(0.2, 8192, 0.0, 0.0, 0.0, 0.0, 2)
+    normal = ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 2, cpu_count=4)
+    exhausted = ResourceSnapshot(0.2, 8192, 0.0, 0.0, 0.0, 1.0, 2, cpu_count=4)
 
     no_reference = AgentDispatcher(ResourceGovernor(paid_spill_allowed=True)).dispatch(
         [paid], registry=registry, snapshot=normal
@@ -144,7 +185,7 @@ def test_paid_model_requires_explicit_approval_reference_and_live_capacity():
     quota_blocked = AgentDispatcher(
         ResourceGovernor(paid_spill_allowed=True, paid_approval_reference="approval:paid-model-test")
     ).dispatch([paid], registry=registry, snapshot=exhausted)
-    assert quota_blocked.rejected["paid"] == "model_quota_exhausted"
+    assert quota_blocked.rejected["paid"] == "provider_quota_exhausted"
 
 
 def test_dispatch_blocks_paid_spill_material_effect_and_unknown_agent():
@@ -158,7 +199,7 @@ def test_dispatch_blocks_paid_spill_material_effect_and_unknown_agent():
     plan = AgentDispatcher().dispatch(
         items,
         registry=registry,
-        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 2),
+        snapshot=ResourceSnapshot(0.2, 8192, 0.0, 0.0, 1.0, 1.0, 2, cpu_count=4),
     )
     assert not plan.selected
     assert plan.rejected == {
