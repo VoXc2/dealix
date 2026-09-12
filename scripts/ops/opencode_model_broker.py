@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DEALIX_OPENCODE_MODEL_BROKER — identity-stable, no-secret model availability.
+"""DEALIX_OPENCODE_MODEL_BROKER — identity-stable, no-secret free selector.
 
 Reconciles the runtime free-model selector into repo source. It:
 
@@ -7,7 +7,11 @@ Reconciles the runtime free-model selector into repo source. It:
   live catalog is complete (root sees a smaller/empty catalog and can hit
   ``PermissionDenied`` on ``/root/opencode.jsonc``);
 * stores model *availability* only — never credentials, auth files, or tokens;
-* selects the first healthy free model with a bounded, tool-free probe.
+* selects the first healthy explicitly-free model with a bounded, tool-free probe;
+* never promotes a merely-known non-free model into the free selector.
+
+Included subscription models such as the ``opencode-go/*`` namespace are routed
+by ``go_resource_broker.py``. This module remains deliberately free-only.
 
 All subprocesses are passed the exact argv built here; the tool never starts a
 network listener. State is written under the runtime opencode control dir so the
@@ -22,9 +26,16 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+OPS_DIR = Path(__file__).resolve().parent
+if str(OPS_DIR) not in sys.path:
+    sys.path.insert(0, str(OPS_DIR))
+
+from model_cost_policy import explicit_free_models, is_explicit_free_model
 
 STATE_DIR = Path(os.environ.get("DEALIX_OPENCODE_STATE_DIR", "/opt/dealix/control/opencode/state"))
 READONLY_DIR = Path(os.environ.get("DEALIX_OPENCODE_READONLY_DIR", "/opt/dealix/control/opencode/readonly"))
@@ -140,9 +151,9 @@ def refresh(state_dir: Path = STATE_DIR) -> dict[str, Any]:
     if not models:
         rc, output = run_opencode(["models"], timeout=60)
         models = parse_catalog(output)
-    free_models = [model for model in models if "free" in model.lower()]
+    free_models = explicit_free_models(models)
     payload = {
-        "schema": "dealix.opencode.model-availability.v1",
+        "schema": "dealix.opencode.model-availability.v2",
         "refreshed_at": datetime.now(UTC).isoformat(),
         "refresh_rc": rc,
         "refreshed_live": REFRESH_MARKER in output or bool(models),
@@ -150,6 +161,8 @@ def refresh(state_dir: Path = STATE_DIR) -> dict[str, Any]:
         "free_count": len(free_models),
         "models": models,
         "free_models": free_models,
+        "blocked_non_free_count": len(models) - len(free_models),
+        "auto_select_policy": "explicit_free_only",
         "credentials_stored": False,
     }
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -166,19 +179,25 @@ def load_availability(state_dir: Path = STATE_DIR) -> dict[str, Any]:
             return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             pass
-    return {"schema": "dealix.opencode.model-availability.v1", "models": [], "free_models": []}
+    return {
+        "schema": "dealix.opencode.model-availability.v2",
+        "models": [],
+        "free_models": [],
+        "auto_select_policy": "explicit_free_only",
+    }
 
 
 def candidate_order(availability: dict[str, Any], current: str | None) -> list[str]:
-    free = list(availability.get("free_models") or [])
-    known = list(availability.get("models") or [])
+    models = list(availability.get("models") or [])
+    declared_free = list(availability.get("free_models") or [])
+    free = explicit_free_models([*declared_free, *models])
     ordered: list[str] = []
-    if current:
+    if current and is_explicit_free_model(current):
         ordered.append(current)
     for model in PREFERRED_FREE:
         if model in free and model not in ordered:
             ordered.append(model)
-    for model in free + known:
+    for model in free:
         if model not in ordered:
             ordered.append(model)
     return ordered
@@ -190,13 +209,28 @@ def select(state_dir: Path = STATE_DIR, dry_run: bool = False) -> dict[str, Any]
     current = selected_path.read_text(encoding="utf-8").strip() if selected_path.is_file() else None
     candidates = candidate_order(availability, current)
     if dry_run:
-        return {"dry_run": True, "candidates": candidates[:10], "selected": None}
+        return {
+            "dry_run": True,
+            "candidates": candidates[:10],
+            "selected": None,
+            "auto_select_policy": "explicit_free_only",
+        }
     for model in candidates:
         rc, output = run_opencode(["run", "-m", model, PROBE_PROMPT], timeout=45)
         if rc == 0 and PROBE_MARKER in output:
             write_state(selected_path, model + "\n")
-            return {"selected": model, "probe_rc": rc, "tested": candidates.index(model) + 1}
-    return {"selected": None, "probe_rc": None, "tested": len(candidates)}
+            return {
+                "selected": model,
+                "probe_rc": rc,
+                "tested": candidates.index(model) + 1,
+                "auto_select_policy": "explicit_free_only",
+            }
+    return {
+        "selected": None,
+        "probe_rc": None,
+        "tested": len(candidates),
+        "auto_select_policy": "explicit_free_only",
+    }
 
 
 def status(state_dir: Path = STATE_DIR) -> dict[str, Any]:
@@ -208,8 +242,10 @@ def status(state_dir: Path = STATE_DIR) -> dict[str, Any]:
         "owner": resolve_canonical_owner() or getpass.getuser(),
         "availability_count": availability.get("count", len(availability.get("models") or [])),
         "availability_refreshed_at": availability.get("refreshed_at"),
-        "free_models": availability.get("free_models") or [],
-        "selected": selected,
+        "free_models": explicit_free_models(availability.get("free_models") or []),
+        "selected": selected if is_explicit_free_model(selected) else None,
+        "stale_non_free_selection_blocked": bool(selected and not is_explicit_free_model(selected)),
+        "auto_select_policy": "explicit_free_only",
     }
 
 
@@ -222,12 +258,14 @@ def render_status(payload: dict[str, Any]) -> str:
         f"AVAILABILITY_REFRESHED_AT={payload['availability_refreshed_at']}",
         f"FREE_MODELS={payload['free_models']}",
         f"SELECTED={payload['selected']}",
+        f"STALE_NON_FREE_SELECTION_BLOCKED={payload['stale_non_free_selection_blocked']}",
+        f"AUTO_SELECT_POLICY={payload['auto_select_policy']}",
     ]
     return "\n".join(lines)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Dealix OpenCode model broker (identity-stable, no secrets)")
+    parser = argparse.ArgumentParser(description="Dealix OpenCode free-model broker (identity-stable, no secrets)")
     parser.add_argument("command", nargs="?", choices=("status", "refresh", "select"), default="status")
     parser.add_argument("--state-dir", type=Path, default=STATE_DIR)
     parser.add_argument("--dry-run", action="store_true")
@@ -236,7 +274,11 @@ def main() -> int:
 
     if args.command == "refresh":
         payload = refresh(args.state_dir)
-        print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else f"REFRESHED count={payload['count']} free={payload['free_count']} rc={payload['refresh_rc']}")
+        print(
+            json.dumps(payload, indent=2, ensure_ascii=False)
+            if args.json
+            else f"REFRESHED count={payload['count']} free={payload['free_count']} blocked_non_free={payload['blocked_non_free_count']} rc={payload['refresh_rc']}"
+        )
         return 0 if payload["count"] else 1
     if args.command == "select":
         payload = select(args.state_dir, dry_run=args.dry_run)
