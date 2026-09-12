@@ -24,6 +24,11 @@ if [[ "$(id -u)" -ne 0 ]]; then
   exit 2
 fi
 
+if [[ "${DEALIX_CONFIRM_OPENCLAW_REPAIR:-0}" != "1" ]]; then
+  echo "BLOCKED: explicit runtime activation required; set DEALIX_CONFIRM_OPENCLAW_REPAIR=1"
+  exit 2
+fi
+
 for pair in \
   "CONTEXT_TOKENS:$CONTEXT_TOKENS:16384:131072" \
   "MAX_TOKENS:$MAX_TOKENS:256:8192" \
