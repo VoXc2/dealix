@@ -1,0 +1,235 @@
+{
+  "schema": "dealix.agentic_holding_canonical_contract.v1",
+  "effective_date": "2026-09-12",
+  "status": "CANONICAL",
+  "architecture": "agentic_holding_sector_company_mesh",
+  "architecture_source": "docs/architecture/DEALIX_AGENTIC_HOLDING_CANONICAL_2026_09_12.md",
+  "design_basis": "docs/architecture/DEALIX_AGENTIC_HOLDING_SECTOR_MESH.md",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "one_company_law": {
+    "single_company_machine": true,
+    "single_company_brain": true,
+    "single_economic_truth": true,
+    "single_approval_path": true,
+    "single_proof_path": true,
+    "single_scheduler": true,
+    "single_model_routing_policy": true,
+    "parallel_sector_businesses_forbidden": true
+  },
+  "agent_model": {
+    "logical_agents": "dynamic_hierarchical_registry",
+    "runtime_workers": "lazy_resource_governed",
+    "process_per_logical_agent_forbidden": true,
+    "orphan_agents_allowed": false,
+    "required_identity_fields": [
+      "agent_id",
+      "parent_id",
+      "layer",
+      "authority_scope",
+      "capabilities",
+      "sector_scope",
+      "arm_scope",
+      "lifecycle_state"
+    ],
+    "layers": ["holding", "group", "sector_company", "arm_pod", "bounded_specialist"]
+  },
+  "coordination": {
+    "default_pattern": "manager_for_bounded_specialists_handoff_for_ownership_transfer",
+    "manager_pattern": {
+      "use_when": [
+        "one owner must synthesize multiple specialist outputs",
+        "shared guardrails or commercial truth must remain centralized",
+        "specialist work is bounded and should not own the customer-facing result"
+      ],
+      "manager_retains_final_ownership": true
+    },
+    "handoff_pattern": {
+      "use_when": [
+        "specialist should own the remainder of the scoped workflow",
+        "specialist instructions materially differ from the current agent",
+        "routing itself is an explicit state transition"
+      ],
+      "authorization_before_side_effects": true,
+      "receiving_agent_context_is_filtered": true
+    },
+    "handoff_packet_required": [
+      "trace_id",
+      "source_agent",
+      "target_agent",
+      "reason",
+      "scope",
+      "facts",
+      "inferences",
+      "evidence_refs",
+      "authority_scope",
+      "relationship_state",
+      "consent_state",
+      "context_filter",
+      "expected_output",
+      "acceptance_criteria",
+      "next_state_sought"
+    ],
+    "implicit_authority_transfer_forbidden": true,
+    "implicit_relationship_transfer_forbidden": true,
+    "implicit_consent_transfer_forbidden": true
+  },
+  "guardrails": {
+    "blocking_before_side_effects": true,
+    "tool_input_guardrails_required_for": [
+      "external_send",
+      "public_publish",
+      "payment_or_spend",
+      "contract_or_tender_commitment",
+      "production_mutation",
+      "dns_db_secret_mutation",
+      "destructive_provider_action"
+    ],
+    "tool_output_guardrails_required_for": [
+      "customer_facing_content",
+      "commercial_commitment",
+      "proof_claim",
+      "compliance_claim",
+      "financial_state_change"
+    ],
+    "side_effect_classes": ["read_only", "reversible_internal", "material_external", "destructive"],
+    "self_approval_forbidden": true,
+    "model_output_is_authority": false,
+    "pre_execution_fail_closed": true
+  },
+  "tracing_and_receipts": {
+    "end_to_end_trace_required": true,
+    "trace_events": [
+      "agent_start",
+      "model_call",
+      "tool_call",
+      "handoff",
+      "guardrail",
+      "approval_check",
+      "acceptance_check",
+      "receipt",
+      "failure",
+      "retry",
+      "rollback"
+    ],
+    "required_correlation_fields": [
+      "trace_id",
+      "work_id",
+      "agent_id",
+      "parent_agent_id",
+      "opportunity_or_project_id",
+      "authority_level",
+      "model_route",
+      "cost_class",
+      "evidence_refs"
+    ],
+    "acceptance_receipt_required": true,
+    "historical_pass_is_current_pass": false
+  },
+  "context_and_memory": {
+    "least_context_handoff": true,
+    "filtered_history_preferred": true,
+    "secret_propagation_forbidden": true,
+    "customer_data_cross_sector_leakage_forbidden": true,
+    "facts_inferences_and_unknowns_separated": true,
+    "provenance_required_for_market_claims": true
+  },
+  "mcp_and_connector_security": {
+    "authorization_boundary": "server_or_tool_boundary",
+    "oauth_or_equivalent_for_protected_remote_tools": true,
+    "issuer_validation_required": true,
+    "credentials_issuer_bound": true,
+    "resource_bound_tokens_required": true,
+    "token_passthrough_forbidden": true,
+    "per_tool_scope_step_up_supported": true,
+    "client_identity_metadata_preferred_when_supported": true,
+    "enterprise_managed_authorization_preferred_for_managed_enterprise_connectors": true,
+    "agent_identity_and_delegated_scope_must_be_explicit": true,
+    "ssrf_protection_for_remote_metadata_fetch": true,
+    "remote_metadata_fetch_limits": ["https_only", "internal_network_block", "timeout", "size_limit", "strict_schema_validation"],
+    "credentials_never_enter_prompt_context": true
+  },
+  "evaluation": {
+    "verifier_role_required_for_material_outputs": true,
+    "verifier_must_not_self_approve_originating_work": true,
+    "independent_review_preferred_for": ["security", "architecture", "financial_truth", "customer_proof", "production_release"],
+    "acceptance_criteria_before_execution": true,
+    "synthetic_proof_is_customer_proof": false,
+    "delivery_is_customer_value": false,
+    "merged_pr_is_deployed_release": false
+  },
+  "resource_and_cost": {
+    "deterministic_first": true,
+    "cheapest_adequate_model": true,
+    "acceptance_gated_escalation": true,
+    "paid_spill_default": false,
+    "resource_aware_concurrency": true,
+    "parallel_repo_writers_require_isolated_worktrees": true,
+    "logical_agent_count_is_runtime_worker_count": false
+  },
+  "lifecycle": {
+    "allowed_decisions": ["PROMOTE", "KEEP", "SPECIALIZE", "IMPROVE", "DEMOTE", "SUSPEND", "KILL"],
+    "evidence_inputs": ["task_success", "verifier_acceptance", "economic_value", "latency", "cost", "failures", "retries", "authority_violations", "human_intervention", "reuse_value"],
+    "self_improvement_requires": ["versioned_change", "tests", "reviewability", "rollback", "receipt"],
+    "self_grant_external_authority_forbidden": true
+  },
+  "truth_firewall": [
+    "research != relationship",
+    "public_contact != consent",
+    "signal != qualified_problem",
+    "engagement != buyer_intent",
+    "draft != sent",
+    "quote != invoice",
+    "invoice != payment",
+    "payment_request != verified_cash",
+    "payment != revenue_without_reconciliation",
+    "synthetic_demo != customer_proof",
+    "delivery != customer_value",
+    "customer_value != publication_permission",
+    "HTTP_200 != release_identity",
+    "merged_PR != deployed_release",
+    "historical_PASS != current_exact_head_PASS",
+    "model_output != authority"
+  ],
+  "research_basis": [
+    {
+      "source": "OpenAI Agents SDK",
+      "url": "https://openai.github.io/openai-agents-python/",
+      "applied_principles": ["agents", "handoffs", "guardrails", "tracing", "human_in_the_loop"]
+    },
+    {
+      "source": "OpenAI Agents SDK multi-agent orchestration",
+      "url": "https://openai.github.io/openai-agents-python/multi_agent/",
+      "applied_principles": ["manager_pattern", "handoff_pattern"]
+    },
+    {
+      "source": "OpenAI Agents SDK guardrails",
+      "url": "https://openai.github.io/openai-agents-python/guardrails/",
+      "applied_principles": ["blocking_guardrails", "tool_guardrails", "fail_closed_before_side_effect"]
+    },
+    {
+      "source": "OpenAI Agents SDK tracing",
+      "url": "https://openai.github.io/openai-agents-python/tracing/",
+      "applied_principles": ["tool_spans", "handoff_spans", "guardrail_spans", "end_to_end_tracing"]
+    },
+    {
+      "source": "MCP 2026-07-28 specification release",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "applied_principles": ["authorization_hardening", "issuer_validation", "issuer_bound_credentials", "stateless_core"]
+    },
+    {
+      "source": "MCP 2026 roadmap",
+      "url": "https://blog.modelcontextprotocol.io/posts/mcp-roadmap/",
+      "applied_principles": ["agent_identity", "delegated_authority", "enterprise_security"]
+    },
+    {
+      "source": "Anthropic Building Effective Agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "applied_principles": ["simple_composable_patterns", "routing", "parallelization", "orchestrator_workers", "evaluator_optimizer", "environment_ground_truth", "stopping_conditions"]
+    },
+    {
+      "source": "Google Agent Development Kit",
+      "url": "https://adk.dev/",
+      "applied_principles": ["multi_agent_workflows", "graph_workflows", "runtime", "observability", "evaluation", "safety_security"]
+    }
+  ]
+}
