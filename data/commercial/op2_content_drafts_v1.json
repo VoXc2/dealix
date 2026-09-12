@@ -1,0 +1,523 @@
+{
+  "schema": "dealix.op2-content-drafts.v1",
+  "generated_at": "2026-09-12T03:05:13.497112+00:00",
+  "owner_agent": "dealix-content",
+  "publish_authority": false,
+  "warnings": [],
+  "draft_count": 11,
+  "drafts": [
+    {
+      "draft_id": "op2-draft-op2-2026-zatca-wave25-einvoicing",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "FINANCIAL_SERVICES",
+      "signal_id": "op2-2026-zatca-wave25-einvoicing",
+      "source_ref": "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "authority_ref": "ZATCA (Zakat, Tax and Customs Authority)",
+      "observed_at": "2026-07-24T00:00:00+03:00",
+      "fact_from_signal": "ZATCA set Wave 25 integration-phase criteria on 24 July 2026 for taxpayers whose VAT-subject revenue exceeded SAR 187,500 in 2022, 2023, 2024 or 2025.",
+      "trigger": "Wave 25 lowers the Phase-2 threshold to SAR 187,500 VAT-subject revenue in any of 2022-2025",
+      "deadline": "2027-02-01",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "FINANCIAL_SERVICES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: Wave 25 lowers the Phase-2 threshold to SAR 187,500 VAT-subject revenue in any of 2022-2025. المصدر الرسمي: ZATCA (Zakat, Tax and Customs Authority). حقيقة موثّقة: ZATCA set Wave 25 integration-phase criteria on 24 July 2026 for taxpayers whose VAT-subject revenue exceeded SAR 187,500 in 2022, 2023, 2024 or 2025. الموعد: 2027-02-01. السؤال التشغيلي المطروح: E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "FINANCIAL_SERVICES: what changed and why it matters now",
+          "body": "Context: Wave 25 lowers the Phase-2 threshold to SAR 187,500 VAT-subject revenue in any of 2022-2025. Official source: ZATCA (Zakat, Tax and Customs Authority). Documented fact: ZATCA set Wave 25 integration-phase criteria on 24 July 2026 for taxpayers whose VAT-subject revenue exceeded SAR 187,500 in 2022, 2023, 2024 or 2025. Deadline: 2027-02-01. Operating question: E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "FINANCIAL_SERVICES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من FINANCIAL_SERVICES: ZATCA set Wave 25 integration-phase criteria on 24 July 2026 for taxpayers whose VAT-subject revenue exceeded SAR 187,500 in 2022, 2023, 2024 or 2025. (المصدر: ZATCA (Zakat, Tax and Customs Authority)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://kpmg.com/sa/en/insights/tax-insights/announcement-of-25th-wave-for-e-invoicing-phase-2-implementation.html",
+        "https://taxnews.ey.com/news/2026-1705-saudi-arabia-announces-25th-wave-of-phase-2-e-invoicing-integration"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-sdaia-ai-governance-package",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-sdaia-ai-governance-package",
+      "source_ref": "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+      "authority_ref": "SDAIA (Saudi Data & AI Authority)",
+      "observed_at": "2026-06-08T00:00:00+03:00",
+      "fact_from_signal": "On 8 June 2026 SDAIA announced a package of 10 regulatory documents on ethical and responsible AI use.",
+      "trigger": "SDAIA published a June 2026 package of AI ethics/GenAI/deepfake guidance and the AI Adoption Framework is used as a public-sector procurement baseline",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: SDAIA published a June 2026 package of AI ethics/GenAI/deepfake guidance and the AI Adoption Framework is used as a public-sector procurement baseline. المصدر الرسمي: SDAIA (Saudi Data & AI Authority). حقيقة موثّقة: On 8 June 2026 SDAIA announced a package of 10 regulatory documents on ethical and responsible AI use. السؤال التشغيلي المطروح: AI governance, model accountability, and auditability evidence for deployments touching personal data. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: SDAIA published a June 2026 package of AI ethics/GenAI/deepfake guidance and the AI Adoption Framework is used as a public-sector procurement baseline. Official source: SDAIA (Saudi Data & AI Authority). Documented fact: On 8 June 2026 SDAIA announced a package of 10 regulatory documents on ethical and responsible AI use. Operating question: AI governance, model accountability, and auditability evidence for deployments touching personal data. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: On 8 June 2026 SDAIA announced a package of 10 regulatory documents on ethical and responsible AI use. (المصدر: SDAIA (Saudi Data & AI Authority)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://sdaia.gov.sa/en/SDAIA/about/Files/AIAdoptionFramework.pdf",
+        "https://aiinarabia.com/policy/sdaia-ai-adoption-framework-saudi-pdpl-gcc-governance-regime-deep-dive-2026-05-12"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-pdpl-active-enforcement",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "FINANCIAL_SERVICES",
+      "signal_id": "op2-2026-pdpl-active-enforcement",
+      "source_ref": "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+      "authority_ref": "SDAIA / PDPL Committees for Reviewing Violations",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "fact_from_signal": "SDAIA confirmed 48 enforcement decisions in its January 2026 announcement; PDPL has been fully enforceable since 14 September 2024.",
+      "trigger": "SDAIA confirmed 48 PDPL enforcement decisions and penalties up to SAR 5,000,000 (doubled for repeat), including fines for marketing without explicit consent",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "FINANCIAL_SERVICES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: SDAIA confirmed 48 PDPL enforcement decisions and penalties up to SAR 5,000,000 (doubled for repeat), including fines for marketing without explicit consent. المصدر الرسمي: SDAIA / PDPL Committees for Reviewing Violations. حقيقة موثّقة: SDAIA confirmed 48 enforcement decisions in its January 2026 announcement; PDPL has been fully enforceable since 14 September 2024. السؤال التشغيلي المطروح: Consent management, marketing-consent proof, DPO appointment, 72-hour breach reporting and cross-border transfer safeguards. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "FINANCIAL_SERVICES: what changed and why it matters now",
+          "body": "Context: SDAIA confirmed 48 PDPL enforcement decisions and penalties up to SAR 5,000,000 (doubled for repeat), including fines for marketing without explicit consent. Official source: SDAIA / PDPL Committees for Reviewing Violations. Documented fact: SDAIA confirmed 48 enforcement decisions in its January 2026 announcement; PDPL has been fully enforceable since 14 September 2024. Operating question: Consent management, marketing-consent proof, DPO appointment, 72-hour breach reporting and cross-border transfer safeguards. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "FINANCIAL_SERVICES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من FINANCIAL_SERVICES: SDAIA confirmed 48 enforcement decisions in its January 2026 announcement; PDPL has been fully enforceable since 14 September 2024. (المصدر: SDAIA / PDPL Committees for Reviewing Violations). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+        "https://www.globalprivacyblog.com/2026/05/active-enforcement-of-saudi-arabia-privacy-regime-implications-for-businesses/",
+        "https://profectus.sa/resources/sdaia-enforcement-decisions"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-sama-open-banking-licensing",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "FINANCIAL_SERVICES",
+      "signal_id": "op2-2026-sama-open-banking-licensing",
+      "source_ref": "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx",
+      "authority_ref": "SAMA (Saudi Central Bank)",
+      "observed_at": "2026-03-26T00:00:00+03:00",
+      "fact_from_signal": "SAMA announced the commencement of open-banking licensing on 26 March 2026 after completing the regulatory sandbox phase.",
+      "trigger": "SAMA moved open banking from sandbox to a formal licensing regime, with two fintechs licensed on 26 March 2026",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "FINANCIAL_SERVICES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: SAMA moved open banking from sandbox to a formal licensing regime, with two fintechs licensed on 26 March 2026. المصدر الرسمي: SAMA (Saudi Central Bank). حقيقة موثّقة: SAMA announced the commencement of open-banking licensing on 26 March 2026 after completing the regulatory sandbox phase. السؤال التشغيلي المطروح: Consent management, API governance, data security and operational-resilience evidence for supervised open-banking services. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "FINANCIAL_SERVICES: what changed and why it matters now",
+          "body": "Context: SAMA moved open banking from sandbox to a formal licensing regime, with two fintechs licensed on 26 March 2026. Official source: SAMA (Saudi Central Bank). Documented fact: SAMA announced the commencement of open-banking licensing on 26 March 2026 after completing the regulatory sandbox phase. Operating question: Consent management, API governance, data security and operational-resilience evidence for supervised open-banking services. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "FINANCIAL_SERVICES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من FINANCIAL_SERVICES: SAMA announced the commencement of open-banking licensing on 26 March 2026 after completing the regulatory sandbox phase. (المصدر: SAMA (Saudi Central Bank)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx",
+        "https://www.pinsentmasons.com/en-gb/out-law/news/saudi-central-bank-fintechs-licensed-offer-open-banking-services",
+        "https://www.clydeco.com/en/insights/2026/03/sama-new-licensing-framework-for-open-banking"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-nca-ecc2-controls",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-nca-ecc2-controls",
+      "source_ref": "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "observed_at": "2026-07-14T00:00:00+03:00",
+      "fact_from_signal": "ECC-2:2024 is the mandatory baseline for government entities and critical national infrastructure operators in the Kingdom.",
+      "trigger": "ECC-2:2024 replaced ECC-1:2018 (4 domains, 28 subdomains, 108 controls); GECC-2:2026 implementation guide and assessment tool regime",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: ECC-2:2024 replaced ECC-1:2018 (4 domains, 28 subdomains, 108 controls); GECC-2:2026 implementation guide and assessment tool regime. المصدر الرسمي: NCA (National Cybersecurity Authority). حقيقة موثّقة: ECC-2:2024 is the mandatory baseline for government entities and critical national infrastructure operators in the Kingdom. السؤال التشغيلي المطروح: Cybersecurity control evidence, audit trails, third-party/cloud risk and staffing compliance. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: ECC-2:2024 replaced ECC-1:2018 (4 domains, 28 subdomains, 108 controls); GECC-2:2026 implementation guide and assessment tool regime. Official source: NCA (National Cybersecurity Authority). Documented fact: ECC-2:2024 is the mandatory baseline for government entities and critical national infrastructure operators in the Kingdom. Operating question: Cybersecurity control evidence, audit trails, third-party/cloud risk and staffing compliance. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: ECC-2:2024 is the mandatory baseline for government entities and critical national infrastructure operators in the Kingdom. (المصدر: NCA (National Cybersecurity Authority)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/11bb8f2d-706a-4f18-80f1-40d620ebd845_GECC-.pdf",
+        "https://www.secure.com/blog/compliance/saudi-businesses-nca-ecc-update"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-nca-ccc-cloud-residency",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-nca-ccc-cloud-residency",
+      "source_ref": "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+      "authority_ref": "NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)",
+      "observed_at": "2026-06-20T00:00:00+03:00",
+      "fact_from_signal": "CCC 2:2024 is a modular extension of ECC covering cloud service providers and cloud service tenants.",
+      "trigger": "CCC 2:2024 removed direct data-localisation controls and transferred residency authority to NDMO at SDAIA",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: CCC 2:2024 removed direct data-localisation controls and transferred residency authority to NDMO at SDAIA. المصدر الرسمي: NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency). حقيقة موثّقة: CCC 2:2024 is a modular extension of ECC covering cloud service providers and cloud service tenants. السؤال التشغيلي المطروح: Cloud data classification, residency decisions and CSP/CST control evidence. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: CCC 2:2024 removed direct data-localisation controls and transferred residency authority to NDMO at SDAIA. Official source: NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency). Documented fact: CCC 2:2024 is a modular extension of ECC covering cloud service providers and cloud service tenants. Operating question: Cloud data classification, residency decisions and CSP/CST control evidence. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: CCC 2:2024 is a modular extension of ECC covering cloud service providers and cloud service tenants. (المصدر: NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://cdn.nca.gov.sa/api/files/public/upload/86e09090-44e4-481f-bc28-355673607654_ECC--2024-EN.pdf"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-monshaat-sme-digitalization",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-monshaat-sme-digitalization",
+      "source_ref": "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+      "authority_ref": "Monsha'at (General Authority for SMEs) with SAMA/Kafalah data",
+      "observed_at": "2026-06-01T00:00:00+03:00",
+      "fact_from_signal": "Saudi SME registrations have grown to roughly 1.7 million active commercial registers and the sector contributes close to 22.9% of GDP.",
+      "trigger": "SME registrations exceed ~1.7M with SAR 148B in bank lending and e-invoicing scope expanding",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: SME registrations exceed ~1.7M with SAR 148B in bank lending and e-invoicing scope expanding. المصدر الرسمي: Monsha'at (General Authority for SMEs) with SAMA/Kafalah data. حقيقة موثّقة: Saudi SME registrations have grown to roughly 1.7 million active commercial registers and the sector contributes close to 22.9% of GDP. السؤال التشغيلي المطروح: Manual VAT/e-invoicing compliance, weak financial records and limited real-time visibility. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: SME registrations exceed ~1.7M with SAR 148B in bank lending and e-invoicing scope expanding. Official source: Monsha'at (General Authority for SMEs) with SAMA/Kafalah data. Documented fact: Saudi SME registrations have grown to roughly 1.7 million active commercial registers and the sector contributes close to 22.9% of GDP. Operating question: Manual VAT/e-invoicing compliance, weak financial records and limited real-time visibility. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: Saudi SME registrations have grown to roughly 1.7 million active commercial registers and the sector contributes close to 22.9% of GDP. (المصدر: Monsha'at (General Authority for SMEs) with SAMA/Kafalah data). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://vision2030.ai/tracker/priorities/sme-growth/"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-sfda-digital-health-ai",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "signal_id": "op2-2026-sfda-digital-health-ai",
+      "source_ref": "https://sfda.gov.sa/en/news/19378",
+      "authority_ref": "SFDA (Saudi Food & Drug Authority)",
+      "observed_at": "2026-09-01T00:00:00+03:00",
+      "fact_from_signal": "SFDA issued MDS-G27 guidance on digital health products, covering AI/ML clinical algorithms, on 11 August 2025.",
+      "trigger": "MDS-G27 digital health guidance plus SFDA's AI-enabled regulator tooling (ProVerifier) at LEAP 2026",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "HEALTHCARE_LIFE_SCIENCES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: MDS-G27 digital health guidance plus SFDA's AI-enabled regulator tooling (ProVerifier) at LEAP 2026. المصدر الرسمي: SFDA (Saudi Food & Drug Authority). حقيقة موثّقة: SFDA issued MDS-G27 guidance on digital health products, covering AI/ML clinical algorithms, on 11 August 2025. السؤال التشغيلي المطروح: AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "HEALTHCARE_LIFE_SCIENCES: what changed and why it matters now",
+          "body": "Context: MDS-G27 digital health guidance plus SFDA's AI-enabled regulator tooling (ProVerifier) at LEAP 2026. Official source: SFDA (Saudi Food & Drug Authority). Documented fact: SFDA issued MDS-G27 guidance on digital health products, covering AI/ML clinical algorithms, on 11 August 2025. Operating question: AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "HEALTHCARE_LIFE_SCIENCES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من HEALTHCARE_LIFE_SCIENCES: SFDA issued MDS-G27 guidance on digital health products, covering AI/ML clinical algorithms, on 11 August 2025. (المصدر: SFDA (Saudi Food & Drug Authority)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://sfda.gov.sa/en/news/19378",
+        "https://meddeviceguide.com/blog/saudi-sfda-mds-g27-digital-health-products-regulation-guide",
+        "https://www.sfda.gov.sa/en/news/5316783"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-nupco-localization-digital",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "signal_id": "op2-2026-nupco-localization-digital",
+      "source_ref": "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+      "authority_ref": "NUPCO (National Unified Procurement Company) + LCGPA",
+      "observed_at": "2026-04-07T00:00:00+03:00",
+      "fact_from_signal": "NUPCO is the centralized medical procurement entity for public health agencies and reports annual procurement exceeding SAR 25 billion.",
+      "trigger": "NUPCO reportedly enforces local-content preference and is expanding AI demand forecasting and e-marketplace channels",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "HEALTHCARE_LIFE_SCIENCES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: NUPCO reportedly enforces local-content preference and is expanding AI demand forecasting and e-marketplace channels. المصدر الرسمي: NUPCO (National Unified Procurement Company) + LCGPA. حقيقة موثّقة: NUPCO is the centralized medical procurement entity for public health agencies and reports annual procurement exceeding SAR 25 billion. السؤال التشغيلي المطروح: Local-content compliance, framework-agreement qualification and integration with digital procurement platforms. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "HEALTHCARE_LIFE_SCIENCES: what changed and why it matters now",
+          "body": "Context: NUPCO reportedly enforces local-content preference and is expanding AI demand forecasting and e-marketplace channels. Official source: NUPCO (National Unified Procurement Company) + LCGPA. Documented fact: NUPCO is the centralized medical procurement entity for public health agencies and reports annual procurement exceeding SAR 25 billion. Operating question: Local-content compliance, framework-agreement qualification and integration with digital procurement platforms. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "HEALTHCARE_LIFE_SCIENCES: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من HEALTHCARE_LIFE_SCIENCES: NUPCO is the centralized medical procurement entity for public health agencies and reports annual procurement exceeding SAR 25 billion. (المصدر: NUPCO (National Unified Procurement Company) + LCGPA). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+        "https://medstrato.com/blog/medical-device-procurement-sa-guide"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-rega-proptech-sandbox",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "REAL_ESTATE",
+      "signal_id": "op2-2026-rega-proptech-sandbox",
+      "source_ref": "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/",
+      "authority_ref": "REGA (Real Estate General Authority)",
+      "observed_at": "2026-08-20T00:00:00+03:00",
+      "fact_from_signal": "REGA has licensed 71 electronic real-estate platforms for brokerage and marketing after technical integration.",
+      "trigger": "REGA licensed 71 electronic real-estate platforms (FAL) and runs a PropTech regulatory sandbox",
+      "deadline": "2026-04-30",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "REAL_ESTATE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: REGA licensed 71 electronic real-estate platforms (FAL) and runs a PropTech regulatory sandbox. المصدر الرسمي: REGA (Real Estate General Authority). حقيقة موثّقة: REGA has licensed 71 electronic real-estate platforms for brokerage and marketing after technical integration. الموعد: 2026-04-30. السؤال التشغيلي المطروح: Licensing compliance, technical integration and data reliability for electronic real-estate platforms. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "REAL_ESTATE: what changed and why it matters now",
+          "body": "Context: REGA licensed 71 electronic real-estate platforms (FAL) and runs a PropTech regulatory sandbox. Official source: REGA (Real Estate General Authority). Documented fact: REGA has licensed 71 electronic real-estate platforms for brokerage and marketing after technical integration. Deadline: 2026-04-30. Operating question: Licensing compliance, technical integration and data reliability for electronic real-estate platforms. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "REAL_ESTATE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من REAL_ESTATE: REGA has licensed 71 electronic real-estate platforms for brokerage and marketing after technical integration. (المصدر: REGA (Real Estate General Authority)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/",
+        "https://rega.gov.sa/en/media-center/news-announcements/rega-licenses-71-electronic-real-estate-platforms/"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-cst-ai-hub-cloud-zone",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-cst-ai-hub-cloud-zone",
+      "source_ref": "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+      "authority_ref": "CST (Communications, Space & Technology Commission)",
+      "observed_at": "2026-06-13T00:00:00+03:00",
+      "fact_from_signal": "CST published a consultation draft of a Global AI Hub Law on 14 April 2025 introducing private, extended and virtual hub models.",
+      "trigger": "CST draft Global AI Hub Law (private/extended/virtual hub models) and the Cloud Computing Special Economic Zone",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: CST draft Global AI Hub Law (private/extended/virtual hub models) and the Cloud Computing Special Economic Zone. المصدر الرسمي: CST (Communications, Space & Technology Commission). حقيقة موثّقة: CST published a consultation draft of a Global AI Hub Law on 14 April 2025 introducing private, extended and virtual hub models. السؤال التشغيلي المطروح: Licensing, data separation, auditability and jurisdictional evidence for sovereign/AI-hub hosting. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: CST draft Global AI Hub Law (private/extended/virtual hub models) and the Cloud Computing Special Economic Zone. Official source: CST (Communications, Space & Technology Commission). Documented fact: CST published a consultation draft of a Global AI Hub Law on 14 April 2025 introducing private, extended and virtual hub models. Operating question: Licensing, data separation, auditability and jurisdictional evidence for sovereign/AI-hub hosting. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: CST published a consultation draft of a Global AI Hub Law on 14 April 2025 introducing private, extended and virtual hub models. (المصدر: CST (Communications, Space & Technology Commission)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+        "https://new.cst.gov.sa/en/about/program-and-initiatives/cloud-computing-special-economic-zone-technology",
+        "https://www.lexology.com/library/detail.aspx?g=015b8434-0c62-4645-9839-dc7cd8066b63"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    }
+  ]
+}

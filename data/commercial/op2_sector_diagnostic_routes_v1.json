@@ -1,0 +1,277 @@
+{
+  "schema": "dealix.op2-sector-diagnostic-routes.v1",
+  "generated_at": "2026-09-12T03:02:22.939720+00:00",
+  "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
+  "authority": {
+    "relationship": false,
+    "consent": false,
+    "offer": false,
+    "price": false,
+    "quote": false,
+    "external_send": false,
+    "payment": false,
+    "execution": false
+  },
+  "warnings": [],
+  "route_count": 4,
+  "routes": [
+    {
+      "sector_id": "finance_fintech_insurance",
+      "ar_name": "مالي/تأمين",
+      "en_name": "Finance",
+      "buyer": "CFO / finance operations / tax compliance lead",
+      "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
+      "research_rank_score": 547.7333,
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A03",
+          "A04",
+          "A14",
+          "A15",
+          "A13"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-zatca-wave25-einvoicing",
+          "op2-2026-pdpl-active-enforcement",
+          "op2-2026-sama-open-banking-licensing"
+        ],
+        "deadlines": [
+          "2027-02-01"
+        ],
+        "evidence_refs": [
+          "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+          "https://kpmg.com/sa/en/insights/tax-insights/announcement-of-25th-wave-for-e-invoicing-phase-2-implementation.html",
+          "https://taxnews.ey.com/news/2026-1705-saudi-arabia-announces-25th-wave-of-phase-2-e-invoicing-integration",
+          "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "technology_saas_si",
+      "ar_name": "تقنية/SaaS",
+      "en_name": "Technology/SaaS",
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "research_rank_score": 240.075,
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A05",
+          "A11",
+          "A12",
+          "A13",
+          "A43"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-sdaia-ai-governance-package",
+          "op2-2026-nca-ecc2-controls",
+          "op2-2026-nca-ccc-cloud-residency",
+          "op2-2026-monshaat-sme-digitalization",
+          "op2-2026-cst-ai-hub-cloud-zone"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+          "https://sdaia.gov.sa/en/SDAIA/about/Files/AIAdoptionFramework.pdf",
+          "https://aiinarabia.com/policy/sdaia-ai-adoption-framework-saudi-pdpl-gcc-governance-regime-deep-dive-2026-05-12",
+          "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "real_estate_proptech",
+      "ar_name": "عقار/FM",
+      "en_name": "Real Estate/FM",
+      "buyer": "proptech platform operator / data lead",
+      "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
+      "research_rank_score": 81.0,
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A05",
+          "A28",
+          "A46",
+          "A29"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-rega-proptech-sandbox"
+        ],
+        "deadlines": [
+          "2026-04-30"
+        ],
+        "evidence_refs": [
+          "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/",
+          "https://rega.gov.sa/en/media-center/news-announcements/rega-licenses-71-electronic-real-estate-platforms/"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "healthcare",
+      "ar_name": "صحي",
+      "en_name": "Healthcare",
+      "buyer": "regulatory affairs / clinical informatics / quality lead",
+      "problem": "AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products",
+      "research_rank_score": 8.736,
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A44",
+          "A08",
+          "A18",
+          "A13",
+          "A45"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-sfda-digital-health-ai",
+          "op2-2026-nupco-localization-digital"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://sfda.gov.sa/en/news/19378",
+          "https://meddeviceguide.com/blog/saudi-sfda-mds-g27-digital-health-products-regulation-guide",
+          "https://www.sfda.gov.sa/en/news/5316783",
+          "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    }
+  ],
+  "counts_as_pipeline": false,
+  "counts_as_revenue": false
+}
