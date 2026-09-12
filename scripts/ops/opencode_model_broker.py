@@ -203,10 +203,22 @@ def candidate_order(availability: dict[str, Any], current: str | None) -> list[s
     return ordered
 
 
+def _remove_unsafe_selection(selected_path: Path, current: str | None) -> bool:
+    """Delete legacy/non-free selection state before any autonomous consumer can read it."""
+    if not current or is_explicit_free_model(current):
+        return False
+    try:
+        selected_path.unlink(missing_ok=True)
+    except OSError:
+        return False
+    return True
+
+
 def select(state_dir: Path = STATE_DIR, dry_run: bool = False) -> dict[str, Any]:
     availability = load_availability(state_dir)
     selected_path = state_dir / SELECTED_FILE
     current = selected_path.read_text(encoding="utf-8").strip() if selected_path.is_file() else None
+    stale_selection_removed = False if dry_run else _remove_unsafe_selection(selected_path, current)
     candidates = candidate_order(availability, current)
     if dry_run:
         return {
@@ -223,12 +235,14 @@ def select(state_dir: Path = STATE_DIR, dry_run: bool = False) -> dict[str, Any]
                 "selected": model,
                 "probe_rc": rc,
                 "tested": candidates.index(model) + 1,
+                "stale_selection_removed": stale_selection_removed,
                 "auto_select_policy": "explicit_free_only",
             }
     return {
         "selected": None,
         "probe_rc": None,
         "tested": len(candidates),
+        "stale_selection_removed": stale_selection_removed,
         "auto_select_policy": "explicit_free_only",
     }
 
