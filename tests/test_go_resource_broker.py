@@ -68,13 +68,31 @@ def test_headroom_is_unknown_not_fake() -> None:
     assert plan["headroom"] == "UNKNOWN"
 
 
-def test_pick_model_prefers_free_then_included_then_strong() -> None:
-    catalog = ["opencode/paid-a", "opencode/some-free", "opencode/deepseek-v4-flash", "opencode/deepseek-v4-pro", "opencode-go/deepseek-v4.1-flash", "opencode-go/deepseek-v4-pro"]
-    assert broker.pick_model("R3_INCLUDED_LIGHT", catalog, [], []) == "opencode/some-free"
-    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], []) == "opencode-go/deepseek-v4.1-flash"
-    assert broker.pick_model("R5_STRONG_REASONING", catalog, [], []) == "opencode-go/deepseek-v4-pro"
-    assert broker.pick_model("R2_LOCAL_OLLAMA", catalog, ["qwen3:4b"], []) == "qwen3:4b"
-    assert broker.pick_model("R0_NO_MODEL", catalog, [], []) == "none"
+def test_pick_model_prefers_free_and_verified_included_routes() -> None:
+    catalog = [
+        "opencode/paid-a",
+        "opencode/some-free",
+        "opencode/deepseek-v4-flash",
+        "opencode/deepseek-v4-pro",
+        "opencode-go/deepseek-v4.1-flash",
+        "opencode-go/deepseek-v4-pro",
+    ]
+    verified = broker.GO_COST_VERIFIED_DISABLED
+    assert broker.pick_model("R3_INCLUDED_LIGHT", catalog, [], [], verified) == "opencode/some-free"
+    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], verified) == "opencode-go/deepseek-v4.1-flash"
+    assert broker.pick_model("R5_STRONG_REASONING", catalog, [], [], verified) == "opencode-go/deepseek-v4-pro"
+    assert broker.pick_model("R2_LOCAL_OLLAMA", catalog, ["qwen3:4b"], [], verified) == "qwen3:4b"
+    assert broker.pick_model("R0_NO_MODEL", catalog, [], [], verified) == "none"
+
+
+def test_pick_model_does_not_assume_go_cost_authority() -> None:
+    catalog = [
+        "opencode-go/deepseek-v4.1-flash",
+        "opencode/nemotron-3-ultra-free",
+    ]
+    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], broker.GO_COST_UNKNOWN) == (
+        "opencode/nemotron-3-ultra-free"
+    )
 
 
 def test_resolve_opencode_bin_prefers_owner_install_over_path(monkeypatch) -> None:
@@ -129,7 +147,7 @@ def test_discover_catalog_passes_refresh_flag(monkeypatch) -> None:
     assert catalog == ["opencode/deepseek-v4-flash", "opencode/x-free"]
 
 
-def test_daily_envelope_counts_and_reserves() -> None:
+def test_daily_envelope_counts_as_telemetry_not_provider_authority() -> None:
     state = {
         "jobs": [
             {"recorded_at": "2026-09-11T08:00:00+00:00", "route": "R4_INCLUDED_HIGH"},
@@ -143,12 +161,12 @@ def test_daily_envelope_counts_and_reserves() -> None:
     assert envelope["included_jobs_today"] == 1
     assert envelope["strong_jobs_today"] == 1
     assert envelope["reserved_for_emergency"] >= 1
-    assert envelope["headroom_source"].startswith("conservative")
+    assert envelope["headroom_source"] == "local_telemetry_only__provider_limits_are_authoritative"
 
 
 def test_record_job_is_bounded_and_observability_honest(tmp_path: Path) -> None:
     state = {"jobs": []}
-    for index in range(2):
+    for _index in range(2):
         broker.record_job(state, "CODE_ENGINEERING", "R4_INCLUDED_HIGH", "opencode/deepseek-v4-flash")
     assert len(state["jobs"]) == 2
     assert state["jobs"][0]["cost_observable"] is False
@@ -162,11 +180,14 @@ def test_record_job_is_bounded_and_observability_honest(tmp_path: Path) -> None:
 
 def test_run_uses_repo_cwd(monkeypatch) -> None:
     captured = {}
+
     class Result:
         stdout = "ok"
+
     def fake_run(cmd, **kwargs):
         captured.update(kwargs)
         return Result()
+
     monkeypatch.setattr(broker.subprocess, "run", fake_run)
     assert broker._run(["opencode", "models"]) == "ok"
     assert captured["cwd"] == str(broker.REPO_ROOT)
