@@ -1,36 +1,63 @@
 {
-  "schema": "dealix.software_acquisition_sources.v1",
+  "schema": "dealix.software_acquisition_sources.v2",
   "policy": "official_sources_first_no_arbitrary_installer_execution",
   "categories": [
     {
       "id": "dependency_automation",
       "priority": 88,
       "purpose": "automatic dependency update proposals and maintenance",
-      "official_sources": ["https://docs.renovatebot.com/"],
-      "seed_projects": ["renovate"]
+      "official_sources": [
+        "https://docs.renovatebot.com/",
+        "https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review"
+      ],
+      "seed_projects": ["renovate", "github-dependency-review"]
     },
     {
       "id": "software_supply_chain_security",
-      "priority": 98,
-      "purpose": "score, scan and verify third-party software before adoption",
+      "priority": 100,
+      "purpose": "score, scan, prioritize exploited vulnerabilities, and verify third-party software before adoption",
       "official_sources": [
         "https://securityscorecards.dev/",
+        "https://github.com/ossf/security-insights-spec",
         "https://google.github.io/osv-scanner/",
         "https://trivy.dev/",
+        "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+        "https://www.first.org/epss/",
         "https://docs.sigstore.dev/cosign/",
         "https://slsa.dev/spec/latest/"
       ],
-      "seed_projects": ["openssf-scorecard", "osv-scanner", "trivy", "cosign", "slsa"]
+      "seed_projects": [
+        "openssf-scorecard",
+        "openssf-security-insights",
+        "osv-scanner",
+        "trivy",
+        "cisa-kev",
+        "first-epss",
+        "cosign",
+        "slsa"
+      ]
     },
     {
       "id": "sbom_and_provenance",
-      "priority": 94,
-      "purpose": "machine-readable software inventory, license and provenance evidence",
+      "priority": 96,
+      "purpose": "machine-readable software inventory, license, artifact identity, and provenance evidence",
       "official_sources": [
         "https://cyclonedx.org/",
-        "https://spdx.dev/"
+        "https://spdx.dev/",
+        "https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations"
       ],
-      "seed_projects": ["cyclonedx", "spdx"]
+      "seed_projects": ["cyclonedx", "spdx", "github-artifact-attestations"]
+    },
+    {
+      "id": "sandbox_and_runtime_isolation",
+      "priority": 99,
+      "purpose": "least-privilege sandbox execution and bounded blast radius",
+      "official_sources": [
+        "https://docs.docker.com/engine/security/",
+        "https://docs.docker.com/engine/security/rootless/",
+        "https://docs.docker.com/engine/security/seccomp/"
+      ],
+      "seed_projects": ["docker-rootless", "docker-seccomp", "linux-mac-controls"]
     },
     {
       "id": "internet_intelligence",
@@ -45,7 +72,7 @@
     {
       "id": "observability",
       "priority": 90,
-      "purpose": "runtime telemetry, health and failure evidence",
+      "purpose": "runtime telemetry, health, failure, and benefit evidence",
       "official_sources": [
         "https://opentelemetry.io/docs/collector/",
         "https://uptime.kuma.pet/"
@@ -55,13 +82,14 @@
     {
       "id": "agent_engineering",
       "priority": 100,
-      "purpose": "governed autonomous research, coding and local inference",
+      "purpose": "governed autonomous research, coding, MCP tooling, and local inference",
       "official_sources": [
         "https://opencode.ai/docs/",
         "https://hermes-agent.nousresearch.com/docs/",
-        "https://ollama.com/"
+        "https://ollama.com/",
+        "https://modelcontextprotocol.io/"
       ],
-      "seed_projects": ["opencode", "hermes", "ollama"]
+      "seed_projects": ["opencode", "hermes", "ollama", "mcp"]
     }
   ],
   "discovery_rules": {
@@ -69,11 +97,20 @@
     "prefer_official_repository": true,
     "pin_version_commit_or_digest": true,
     "unknown_license_is_hold": true,
-    "critical_cve_is_reject": true,
-    "invalid_signature_is_quarantine": true,
-    "duplicate_is_reject": true,
+    "critical_cve_is_fail_closed": true,
+    "cisa_kev_is_quarantine": true,
+    "epss_is_prioritization_only": true,
+    "invalid_signature_or_provenance_is_quarantine": true,
+    "high_risk_executable_missing_required_provenance_is_hold": true,
+    "unknown_capability_scope_is_hold": true,
+    "duplicate_is_reject_unless_explicit_replacement_case": true,
     "missing_rollback_is_hold": true,
     "direct_pipe_to_shell_install": false,
-    "arbitrary_root_install": false
+    "arbitrary_root_install": false,
+    "privileged_sandbox_default": false,
+    "host_docker_socket_default": false,
+    "host_network_default": false,
+    "broad_secret_access_default": false,
+    "unrestricted_egress_default": false
   }
 }
