@@ -36,9 +36,9 @@
   </g>
 
   <g transform="translate(80 348)" font-family="Inter, Arial, sans-serif">
-    <text x="0" y="0" font-size="44" font-weight="640" fill="#F8FAFC">From business signal</text>
-    <text x="0" y="59" font-size="44" font-weight="640" fill="#22D3EE">to governed execution</text>
-    <text x="0" y="118" font-size="44" font-weight="640" fill="#F8FAFC">to measurable proof.</text>
+    <text x="0" y="0" font-size="44" font-weight="640" fill="#F8FAFC">Signals into Action.</text>
+    <text x="0" y="59" font-size="44" font-weight="640" fill="#22D3EE">Execution with Governance.</text>
+    <text x="0" y="118" font-size="44" font-weight="640" fill="#F8FAFC">Measurable Outcomes.</text>
     <rect x="0" y="158" width="62" height="4" rx="2" fill="#D4AF37"/>
     <text x="84" y="166" font-size="17" font-weight="650" letter-spacing="3.5" fill="#D4AF37">REVENUE + PROOF + COMMAND</text>
   </g>
