@@ -7,6 +7,8 @@ from typing import Any
 
 import yaml
 
+from dealix.commercial.economic_cell import Sector
+
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "dealix/config/commercial_reset_2026_09_12.yaml"
@@ -19,6 +21,7 @@ LEGACY_OWNER_ALIASES = (
     "dealix-content",
 )
 LAYERS = ("group", "sector", "arm")
+CANONICAL_SECTOR_IDS = frozenset(sector.value for sector in Sector)
 
 
 def load_config(path: Path = CONFIG_PATH) -> dict[str, Any]:
@@ -62,6 +65,10 @@ def _resolve_identity(
 
     if not sector:
         raise ValueError(f"sector is required for {layer} packets")
+    if sector not in CANONICAL_SECTOR_IDS:
+        raise ValueError(
+            f"unknown canonical sector: {sector}; use dealix.commercial.economic_cell.Sector.value"
+        )
 
     if layer == "sector":
         if role not in architecture["sector_role_templates"]:
@@ -114,6 +121,7 @@ def build_work_packet(
         legacy_agent=agent,
     )
 
+    pricing = config["pricing"]
     return {
         "schema_version": "2026-09-12-agentic-holding-v2",
         "commercial_reset": config["name"],
@@ -145,7 +153,8 @@ def build_work_packet(
         "resource_governor_inputs": config["architecture"]["runtime_governor_inputs"],
         "authority_required": "exact action-bound authority for any material external effect",
         "safe_to_send": False,
-        "price_authority": "customer-specific / approval-bound",
+        "price_authority": pricing["quote_authority"],
+        "pricing_reference_authority": pricing["internal_reference_authority"],
         "truth_firewall": config["truth_firewall"],
         "output_or_receipt_ref": None,
     }
@@ -214,25 +223,28 @@ def build_daily_packets() -> dict[str, Any]:
         )
         for function in group_functions
     ]
-    sector_packets = [
-        {
-            "sector": sector,
-            "agent_identity": f"dealix.{sector}.sector-ceo",
-            "agent_parent": f"dealix.{sector}",
-            "runtime_activation": "lazy_resource_governed",
-            "activation_functions": [
-                "MARKET_INTELLIGENCE",
-                "OPPORTUNITY_SCORING",
-                "DIAGNOSTIC",
-                "SOLUTION_DESIGN",
-                "CONTENT",
-                "PROOF",
-            ],
-            "money_now_campaigns": money_now,
-            "safe_to_send": False,
-        }
-        for sector in config["sector_priority"]["A1"]
-    ]
+    sector_packets = []
+    for sector in config["sector_priority"]["A1"]:
+        if sector not in CANONICAL_SECTOR_IDS:
+            raise ValueError(f"noncanonical priority sector: {sector}")
+        sector_packets.append(
+            {
+                "sector": sector,
+                "agent_identity": f"dealix.{sector}.sector-ceo",
+                "agent_parent": f"dealix.{sector}",
+                "runtime_activation": "lazy_resource_governed",
+                "activation_functions": [
+                    "MARKET_INTELLIGENCE",
+                    "OPPORTUNITY_SCORING",
+                    "DIAGNOSTIC",
+                    "SOLUTION_DESIGN",
+                    "CONTENT",
+                    "PROOF",
+                ],
+                "money_now_campaigns": money_now,
+                "safe_to_send": False,
+            }
+        )
     return {
         "group_packets": group_packets,
         "sector_company_packets": sector_packets,

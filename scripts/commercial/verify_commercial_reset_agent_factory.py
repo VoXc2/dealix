@@ -5,6 +5,8 @@ from pathlib import Path
 
 import yaml
 
+from dealix.commercial.economic_cell import Sector
+
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "dealix/config/commercial_reset_2026_09_12.yaml"
@@ -28,6 +30,7 @@ EXPECTED_MONEY_NOW = {
     "OPERATIONS_AUTOMATION",
 }
 EXPECTED_ARM_ROLES = {"lead", "scout", "operator", "verifier"}
+CANONICAL_SECTOR_IDS = {sector.value for sector in Sector}
 
 
 def verify() -> dict[str, object]:
@@ -52,6 +55,14 @@ def verify() -> dict[str, object]:
         failures.append("public_fixed_pricing_enabled")
     if pricing.get("customer_specific_only") is not True:
         failures.append("customer_specific_pricing_disabled")
+    if pricing.get("internal_reference_authority") != "UNVERIFIED_INTERNAL_REFERENCE":
+        failures.append("internal_price_reference_authority_unsafe")
+    if pricing.get("benchmark_evidence_required") is not True:
+        failures.append("pricing_benchmark_evidence_not_required")
+    if pricing.get("dynamic_offer_input") != "dealix.commercial.dynamic_offer_input":
+        failures.append("v5_dynamic_offer_input_not_bound")
+    if "EXACT_COMMERCIAL_APPROVAL" not in str(pricing.get("quote_authority", "")):
+        failures.append("customer_quote_not_approval_bound")
 
     architecture = data.get("architecture", {})
     policy_architecture = policy.get("architecture", {})
@@ -80,6 +91,22 @@ def verify() -> dict[str, object]:
     if policy.get("execution", {}).get("legacy_global_deep_wip_max_3") != "deprecated":
         failures.append("legacy_deep_wip_restored")
 
+    sector_priority = data.get("sector_priority", {})
+    if sector_priority.get("id_namespace") != "dealix.commercial.economic_cell.Sector.value":
+        failures.append("sector_id_namespace_not_canonical")
+    priority_sector_ids: list[str] = []
+    for tier in ("A1", "A2", "B"):
+        values = sector_priority.get(tier, [])
+        if not isinstance(values, list):
+            failures.append(f"sector_priority_not_list:{tier}")
+            continue
+        for sector_id in values:
+            if sector_id not in CANONICAL_SECTOR_IDS:
+                failures.append(f"noncanonical_sector:{tier}:{sector_id}")
+            priority_sector_ids.append(str(sector_id))
+    if len(priority_sector_ids) != len(set(priority_sector_ids)):
+        failures.append("duplicate_sector_priority_identity")
+
     autonomy = data.get("autonomy", {})
     for field in (
         "external_send",
@@ -102,6 +129,9 @@ def verify() -> dict[str, object]:
         if not isinstance(row, dict) or not str(row.get("source", "")).startswith("https://"):
             failures.append("campaign_missing_source")
             break
+        status = str(row.get("status", ""))
+        if "PIPELINE" in status:
+            failures.append(f"research_campaign_manufactures_pipeline:{row.get('id')}")
 
     combined = "\n".join(path.read_text(encoding="utf-8") for path in (PLAYBOOK, SKILL, MASTER))
     if "Agentic Holding" not in combined:
@@ -128,9 +158,12 @@ def verify() -> dict[str, object]:
         "sector_role_templates": len(architecture.get("sector_role_templates", [])),
         "arm_pod_roles": architecture.get("arm_pod_roles", []),
         "runtime_workers": architecture.get("runtime_workers"),
+        "canonical_priority_sectors": priority_sector_ids,
         "money_now": sorted(money_now),
         "free_diagnostic": data.get("entry_offer", {}).get("price_public") == "FREE",
         "public_fixed_prices": pricing.get("public_fixed_prices"),
+        "internal_reference_authority": pricing.get("internal_reference_authority"),
+        "quote_authority": pricing.get("quote_authority"),
         "external_send": autonomy.get("external_send"),
         "failures": failures,
     }
