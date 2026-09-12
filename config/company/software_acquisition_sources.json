@@ -1,0 +1,79 @@
+{
+  "schema": "dealix.software_acquisition_sources.v1",
+  "policy": "official_sources_first_no_arbitrary_installer_execution",
+  "categories": [
+    {
+      "id": "dependency_automation",
+      "priority": 88,
+      "purpose": "automatic dependency update proposals and maintenance",
+      "official_sources": ["https://docs.renovatebot.com/"],
+      "seed_projects": ["renovate"]
+    },
+    {
+      "id": "software_supply_chain_security",
+      "priority": 98,
+      "purpose": "score, scan and verify third-party software before adoption",
+      "official_sources": [
+        "https://securityscorecards.dev/",
+        "https://google.github.io/osv-scanner/",
+        "https://trivy.dev/",
+        "https://docs.sigstore.dev/cosign/",
+        "https://slsa.dev/spec/latest/"
+      ],
+      "seed_projects": ["openssf-scorecard", "osv-scanner", "trivy", "cosign", "slsa"]
+    },
+    {
+      "id": "sbom_and_provenance",
+      "priority": 94,
+      "purpose": "machine-readable software inventory, license and provenance evidence",
+      "official_sources": [
+        "https://cyclonedx.org/",
+        "https://spdx.dev/"
+      ],
+      "seed_projects": ["cyclonedx", "spdx"]
+    },
+    {
+      "id": "internet_intelligence",
+      "priority": 82,
+      "purpose": "bounded public-web extraction and source change detection",
+      "official_sources": [
+        "https://docs.crawl4ai.com/",
+        "https://changedetection.io/"
+      ],
+      "seed_projects": ["crawl4ai", "changedetection-io"]
+    },
+    {
+      "id": "observability",
+      "priority": 90,
+      "purpose": "runtime telemetry, health and failure evidence",
+      "official_sources": [
+        "https://opentelemetry.io/docs/collector/",
+        "https://uptime.kuma.pet/"
+      ],
+      "seed_projects": ["opentelemetry-collector", "uptime-kuma"]
+    },
+    {
+      "id": "agent_engineering",
+      "priority": 100,
+      "purpose": "governed autonomous research, coding and local inference",
+      "official_sources": [
+        "https://opencode.ai/docs/",
+        "https://hermes-agent.nousresearch.com/docs/",
+        "https://ollama.com/"
+      ],
+      "seed_projects": ["opencode", "hermes", "ollama"]
+    }
+  ],
+  "discovery_rules": {
+    "prefer_official_project_docs": true,
+    "prefer_official_repository": true,
+    "pin_version_commit_or_digest": true,
+    "unknown_license_is_hold": true,
+    "critical_cve_is_reject": true,
+    "invalid_signature_is_quarantine": true,
+    "duplicate_is_reject": true,
+    "missing_rollback_is_hold": true,
+    "direct_pipe_to_shell_install": false,
+    "arbitrary_root_install": false
+  }
+}
