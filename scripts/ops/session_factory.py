@@ -57,6 +57,11 @@ STATE_DIR = Path(os.environ.get("DEALIX_SESSION_FACTORY_STATE", "/opt/dealix/con
 WORKTREE_ROOT = Path(os.environ.get("DEALIX_SESSION_FACTORY_WORKTREES", "/opt/dealix/worktrees/auto"))
 FROZEN_RELEASE_SHA = os.environ.get("DEALIX_FROZEN_RELEASE_SHA", "8bb0a6c382c49ca288f7b579cae07676f006e229")
 
+# Autonomous OpenCode runs get their own control database. Sharing the single
+# interactive ``opencode.db`` lets session creation block on that file's write
+# lock (a run then sits at ``init`` for the whole budget with zero output).
+OPENCODE_DB_DIR = Path(os.environ.get("DEALIX_OPENCODE_DB_DIR", str(STATE_DIR / "opencode")))
+
 SCHEMA = "dealix.autonomous_job.v1"
 LEDGER_SCHEMA = "dealix.autonomous_job_ledger.v1"
 STATUS_SCHEMA = "dealix.session_factory_status.v1"
@@ -809,7 +814,13 @@ def cleanup_worktree(job: dict[str, Any], *, repo_root: Path | None = None) -> d
 # --------------------------------------------------------------------------
 
 
-def run_argv(argv: list[str], cwd: Path, timeout: int = 600, env: dict[str, str] | None = None) -> dict[str, Any]:
+def run_argv(
+    argv: list[str],
+    cwd: Path,
+    timeout: int = 600,
+    env: dict[str, str] | None = None,
+    stdin: Any = None,
+) -> dict[str, Any]:
     started = now_epoch()
     try:
         result = subprocess.run(
@@ -820,6 +831,7 @@ def run_argv(argv: list[str], cwd: Path, timeout: int = 600, env: dict[str, str]
             timeout=timeout,
             check=False,
             env=env,
+            stdin=stdin,
         )
         return {
             "ok": result.returncode == 0,
@@ -856,24 +868,66 @@ def resolve_opencode_binary() -> str | None:
     return None
 
 
-def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
-    """Launch ``opencode run --auto`` with a fail-closed permission policy.
+def opencode_db_path(job: dict[str, Any], db_dir: Path | None = None) -> Path:
+    """Per-job control database, isolated from the interactive TUI's ``opencode.db``."""
+    base = Path(db_dir) if db_dir else OPENCODE_DB_DIR
+    return base / f"{job.get('JOB_ID') or 'job'}.db"
 
-    ``--auto`` auto-approves every permission that is not an explicit deny, so we
-    inject the hardened autonomous policy (no residual ``ask`` rules) via
-    ``OPENCODE_PERMISSION``. Safe L0-L4 runs without a prompt; material actions
-    fail closed.
+
+def execute_opencode(
+    job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None
+) -> dict[str, Any]:
+    """Launch a strictly headless, control-path-isolated ``opencode run --auto``.
+
+    Two hardenings keep autonomous jobs from deadlocking on the interactive
+    TUI's shared state:
+
+    * ``OPENCODE_DB`` points at a per-job SQLite database, so session creation
+      never blocks on the single shared ``opencode.db`` write lock (the observed
+      stall: the run logs ``init`` and then waits forever).
+    * stdin is ``/dev/null`` and the hardened permission policy is mandatory: a
+      job either starts with ``--auto`` under the explicit deny set or fails
+      closed *before* launch — it never waits for a human prompt.
+
+    Model selection is unchanged, so the economic broker still controls cost and
+    paid spill stays disabled.
     """
     binary = resolve_opencode_binary()
     if not binary:
         return {"ok": False, "returncode": 127, "stdout": "", "stderr": "opencode-not-found", "duration_s": 0}
+    policy = Path(
+        os.environ.get(
+            "DEALIX_OPENCODE_PERMISSION_POLICY",
+            str(REPO_ROOT / "config/opencode/autonomous-permissions.json"),
+        )
+    )
+    if not policy.is_file():
+        return {
+            "ok": False,
+            "returncode": 78,
+            "stdout": "",
+            "stderr": "autonomous-permission-policy-missing",
+            "duration_s": 0,
+        }
+    db_path = opencode_db_path(job, db_dir)
+    try:
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        return {
+            "ok": False,
+            "returncode": 73,
+            "stdout": "",
+            "stderr": redact(f"opencode-control-db-unavailable: {exc}"),
+            "duration_s": 0,
+        }
+
     prompt = job.get("EXECUTOR", {}).get("prompt") or job.get("BUSINESS_GOAL", "")
-    argv = [binary, "run"]
+    argv = [binary, "run", "--auto"]
     env = dict(os.environ)
-    policy = Path(os.environ.get("DEALIX_OPENCODE_PERMISSION_POLICY", str(REPO_ROOT / "config/opencode/autonomous-permissions.json")))
-    if policy.is_file():
-        env["OPENCODE_PERMISSION"] = policy.read_text(encoding="utf-8").strip()
-        argv.append("--auto")
+    env["OPENCODE_PERMISSION"] = policy.read_text(encoding="utf-8").strip()
+    env["OPENCODE_DB"] = str(db_path)
+    env.setdefault("OPENCODE_DISABLE_AUTOUPDATE", "1")
+    env.setdefault("OPENCODE_DISABLE_MODELS_FETCH", "1")
     model = (job.get("EXECUTOR") or {}).get("model")
     if not model:
         route = CLASS_TO_MODEL_CLASS.get(str(job.get("JOB_CLASS")), "R4_INCLUDED_HIGH")
@@ -893,7 +947,13 @@ def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     if model:
         argv += ["-m", str(model)]
     argv.append(str(prompt))
-    return run_argv(argv, cwd, timeout=int(job.get("TIME_BUDGET") or 600), env=env)
+    return run_argv(
+        argv,
+        cwd,
+        timeout=int(job.get("TIME_BUDGET") or 600),
+        env=env,
+        stdin=subprocess.DEVNULL,
+    )
 
 
 def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
