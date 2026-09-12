@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 
 import { motion, useInView, useAnimation, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import api from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveTechDemo } from "./InteractiveTechDemo";
 import { HermesAgentWidget } from "./HermesAgentWidget";
@@ -75,10 +76,10 @@ const FEATURES = [
   },
   {
     icon: "🕐",
-    ar: "دعم على مدار الساعة",
-    en: "24/7 Support",
-    descAr: "فريق متخصص متاح على مدار الساعة طوال أيام الأسبوع.",
-    descEn: "Dedicated team available around the clock.",
+    ar: "تشغيل محكوم بالمراجعة",
+    en: "Governed Human Review",
+    descAr: "المخرجات الحساسة تمر بمراجعة وصلاحيات واضحة قبل أي أثر خارجي.",
+    descEn: "Sensitive outputs pass explicit review and authority gates before external effect.",
   },
 ];
 
@@ -121,11 +122,11 @@ const PRICING = [
     periodAr: "بعد نطاق موثق",
     periodEn: "after a documented scope",
     featuresAr: ["كل ميزات المبدئي", "CRM محكوم", "تقارير أسبوعية", "دعم أولوية", "لوحة تحليلية", "امتثال ZATCA"],
-    featuresEn: ["Everything in Starter", "Governed CRM", "Weekly reports", "Priority support", "Analytics dashboard", "ZATCA compliance"],
+    featuresEn: ["Everything in Starter", "Governed CRM", "Weekly reports", "Priority support", "Analytics dashboard", "ZATCA readiness review"],
     popular: true,
     ctaAr: "ابدأ النمو",
     ctaEn: "Start growing",
-    href: "/offer/retainer",
+    href: "/book-call",
   },
   {
     tierAr: "المؤسسي",
@@ -134,12 +135,12 @@ const PRICING = [
     priceEn: "Custom",
     periodAr: "",
     periodEn: "",
-    featuresAr: ["كل ميزات النمو", "تكامل API مخصص", "مدير حساب مخصص", "SLA مضمون", "تدريب الفريق", "audit log كامل"],
-    featuresEn: ["Everything in Growth", "Custom API integration", "Dedicated account manager", "Guaranteed SLA", "Team training", "Full audit log"],
+    featuresAr: ["كل ميزات النمو", "تكامل API مخصص", "مدير حساب مخصص", "SLA حسب النطاق المتفق عليه", "تدريب الفريق", "audit log كامل"],
+    featuresEn: ["Everything in Growth", "Custom API integration", "Dedicated account manager", "SLA defined in agreed scope", "Team training", "Full audit log"],
     popular: false,
     ctaAr: "تحدث مع فريقنا",
     ctaEn: "Talk to our team",
-    href: "/contact",
+    href: "/book-call",
   },
 ];
 
@@ -174,8 +175,8 @@ const TESTIMONIALS = [
 ];
 
 const TRUST_BADGES = [
-  { icon: "🔒", ar: "ملتزمون بـ PDPL", en: "PDPL Compliant" },
-  { icon: "🧾", ar: "جاهز لـ ZATCA", en: "ZATCA Ready" },
+  { icon: "🔒", ar: "مراعٍ لـ PDPL في التصميم", en: "PDPL-aware by design" },
+  { icon: "🧾", ar: "فحص جاهزية ZATCA", en: "ZATCA readiness checks" },
   { icon: "🇸🇦", ar: "صنع في السعودية", en: "Saudi-First" },
   { icon: "🚫", ar: "لا تسويق بارد آلي", en: "No Cold Outreach" },
   { icon: "📋", ar: "audit log كامل", en: "Full Audit Log" },
@@ -250,8 +251,13 @@ export function CommercialLaunchHome() {
   const dir = isAr ? "rtl" : "ltr";
   const base = `/${locale}`;
 
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [leadRef, setLeadRef] = useState("");
 
   const heroControls = useAnimation();
   const heroRef = useRef<HTMLDivElement>(null);
@@ -261,9 +267,29 @@ export function CommercialLaunchHome() {
     if (heroInView) heroControls.start("visible");
   }, [heroInView, heroControls]);
 
-  function handleEmailSubmit(e: React.FormEvent) {
+  async function handleEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (email.trim()) setEmailSubmitted(true);
+    if (!name.trim() || !company.trim() || !email.trim()) return;
+    setEmailSubmitting(true);
+    setEmailError("");
+    try {
+      const { data } = await api.postPublicLead({
+        name: name.trim(),
+        company: company.trim(),
+        email: email.trim(),
+        country: "Saudi Arabia",
+        source: "landing/free-diagnostic",
+        consent_marketing: false,
+        consent_proof_pack: false,
+        hold_stage: false,
+      });
+      setLeadRef(String(data.lead_id || ""));
+      setEmailSubmitted(true);
+    } catch {
+      setEmailError(isAr ? "تعذّر تسجيل الطلب الآن. جرّب مرة أخرى أو استخدم صفحة التشخيص." : "Could not register the request. Try again or use the diagnostic page.");
+    } finally {
+      setEmailSubmitting(false);
+    }
   }
 
   return (
@@ -701,31 +727,38 @@ export function CommercialLaunchHome() {
         </div>
       </section>
 
-      {/* BEST OFFERS — BEST IN MARKET                                            */}
+      {/* FREE DIAGNOSTICS — EVIDENCE-FIRST                                           */}
       <section className="py-20 px-4 max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <p className="text-gold-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            {isAr ? "أفضل العروض في السوق" : "Best Offers in Market"}
+            {isAr ? "تشخيصات مجانية قائمة على الدليل" : "Evidence-led Free Diagnostics"}
           </p>
           <h2 className="text-3xl md:text-4xl font-bold">
             {isAr ? "تشخيص مجاني يديره 5 وكلاء" : "Free Diagnostic Managed by 5 Agents"}
           </h2>
           <p className="text-white/50 mt-3 text-sm">
-            {isAr ? "3 عروض — مجاني 7 أيام، جاهزية AI، فاتورة — كلها يديرها 5 وكلاء، 6 قنوات" : "3 offers — free 7d, AI readiness, Fatoora — all managed by 5 agents, 6 channels"}
+            {isAr ? "بداية مجانية عبر 20 قطاعًا — ثم مراجعة بشرية قبل أي نطاق مدفوع أو أثر خارجي" : "Free starting diagnostics across 20 sectors — with human review before any paid scope or external effect"}
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {[
-            { ar: "تشخيص مجاني 7 أيام — Proof Pack", en: "Free 7-Day Diagnostic — Proof Pack", valAr: "كشف تسرّب 18% + خريطة اختناق", valEn: "18% leakage + bottleneck map", agents: "pm, sales, delivery, engineer, content" },
-            { ar: "تقييم جاهزية AI مجاني", en: "Free AI Readiness Scan", valAr: "حوكمة AI + اقتصاديات", valEn: "AI governance + economics", agents: "engineer, pm" },
-            { ar: "فحص جاهزية ZATCA مجاني", en: "Free ZATCA Readiness Check", valAr: "تشخيص فاتورة + تكامل", valEn: "Fatoora diagnostic + integration", agents: "engineer" },
+            { ar: "تشخيص مجاني 7 أيام — Proof Pack", en: "Free 7-Day Diagnostic — Proof Pack", valAr: "خريطة تسرّب محتمل + خط أساس + اختناقات", valEn: "Potential leakage map + baseline + bottlenecks", agents: "dealix-pm · dealix-sales · dealix-delivery · dealix-engineer · dealix-content" },
+            { ar: "تقييم جاهزية AI مجاني", en: "Free AI Readiness Scan", valAr: "حوكمة AI + اقتصاديات", valEn: "AI governance + economics", agents: "dealix-engineer · dealix-pm" },
+            { ar: "فحص جاهزية ZATCA مجاني", en: "Free ZATCA Readiness Check", valAr: "تشخيص فاتورة + تكامل", valEn: "Fatoora diagnostic + integration", agents: "dealix-engineer" },
           ].map((offer) => (
             <div key={offer.en} className="rounded-2xl border border-gold-500/20 bg-gradient-to-br from-gold-500/10 to-white/5 p-6 backdrop-blur">
               <h3 className="font-bold text-gold-400">{isAr ? offer.ar : offer.en}</h3>
               <p className="text-sm text-white/60 mt-1">{isAr ? offer.valAr : offer.valEn}</p>
-              <p className="text-xs text-white/40 mt-3">{offer.agents} • {isAr ? "مجاني" : "Free"} • {isAr ? "أفضل في السوق" : "Best in market"}</p>
+              <p className="text-xs text-white/40 mt-3">{offer.agents} • {isAr ? "مجاني" : "Free"} • {isAr ? "لا وعود بنتيجة قبل القياس" : "No outcome claim before measurement"}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Button asChild variant="outline" className="border-gold-500/30 text-gold-300 hover:bg-gold-500/10">
+            <Link href={`${base}/solutions`}>
+              {isAr ? "استعرض حلول 20 قطاعًا" : "Explore solutions across 20 sectors"}
+            </Link>
+          </Button>
         </div>
       </section>
 
@@ -844,8 +877,8 @@ export function CommercialLaunchHome() {
 
           <motion.p variants={fadeUp} custom={1} className="text-white/60 mb-8 text-lg">
             {isAr
-              ? "أدخل بريدك الإلكتروني واحصل على تقرير تشخيصي مجاني خلال 48 ساعة."
-              : "Enter your email and get a free diagnostic report within 48 hours."}
+              ? "أرسل طلب الفحص المجاني؛ نسجله كـ inbound للمراجعة البشرية بدون دفع أو إرسال تسويقي تلقائي."
+              : "Submit a free diagnostic request; it is captured as inbound for human review with no payment or automated marketing send."}
           </motion.p>
 
           <motion.form
@@ -861,22 +894,42 @@ export function CommercialLaunchHome() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col sm:flex-row gap-3 w-full"
+                  className="grid sm:grid-cols-2 gap-3 w-full"
                 >
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    autoComplete="name"
+                    placeholder={isAr ? "الاسم" : "Name"}
+                    className="h-12 rounded-xl bg-white/8 border border-white/15 px-4 text-white placeholder-white/40 text-sm focus:outline-none focus:border-gold-500/60 focus:bg-white/12 transition-colors"
+                  />
+                  <input
+                    type="text"
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                    required
+                    autoComplete="organization"
+                    placeholder={isAr ? "الشركة" : "Company"}
+                    className="h-12 rounded-xl bg-white/8 border border-white/15 px-4 text-white placeholder-white/40 text-sm focus:outline-none focus:border-gold-500/60 focus:bg-white/12 transition-colors"
+                  />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                     placeholder={isAr ? "البريد الإلكتروني للشركة" : "Work email address"}
-                    className="flex-1 h-12 rounded-xl bg-white/8 border border-white/15 px-4 text-white placeholder-white/40 text-sm focus:outline-none focus:border-gold-500/60 focus:bg-white/12 transition-colors"
+                    className="h-12 rounded-xl bg-white/8 border border-white/15 px-4 text-white placeholder-white/40 text-sm focus:outline-none focus:border-gold-500/60 focus:bg-white/12 transition-colors"
                   />
                   <Button
                     type="submit"
                     size="lg"
+                    disabled={emailSubmitting}
                     className="h-12 px-7 bg-gradient-to-r from-gold-500 to-gold-400 text-navy-500 font-bold hover:from-gold-400 hover:to-gold-300 whitespace-nowrap shadow-lg shadow-gold-500/25"
                   >
-                    {isAr ? "ابدأ مجاناً" : "Start Free"}
+                    {emailSubmitting ? (isAr ? "جارٍ التسجيل…" : "Registering…") : (isAr ? "ابدأ مجاناً" : "Start Free")}
                   </Button>
                 </motion.div>
               ) : (
@@ -886,16 +939,20 @@ export function CommercialLaunchHome() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="w-full text-center py-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-medium text-sm"
                 >
-                  {isAr ? "تم الاستلام — سنتواصل معك خلال 48 ساعة." : "Received — we'll be in touch within 48 hours."}
+                  {isAr ? `تم تسجيل طلب الفحص للمراجعة البشرية${leadRef ? ` — المرجع: ${leadRef}` : ""}. لا دفع أو إرسال تسويقي تلقائي.` : `Diagnostic request registered for human review${leadRef ? ` — ref: ${leadRef}` : ""}. No payment or automated marketing send.`}
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.form>
 
+          {emailError && (
+            <p className="mt-3 text-sm text-red-300" role="alert">{emailError}</p>
+          )}
+
           <motion.p variants={fadeUp} custom={3} className="mt-4 text-xs text-white/35">
             {isAr
-              ? "لا بريد عشوائي. بياناتك محمية وفق PDPL. يمكنك إلغاء الاشتراك في أي وقت."
-              : "No spam. Your data is protected under PDPL. Unsubscribe anytime."}
+              ? "إرسال هذا النموذج طلب inbound للفحص فقط، ولا يُعد موافقة على التسويق. نعالج البيانات وفق سياسة الخصوصية والضوابط المعمول بها."
+              : "Submitting this form is an inbound diagnostic request only, not marketing consent. Data is handled under our privacy policy and applicable controls."}
           </motion.p>
         </motion.div>
       </section>
@@ -949,9 +1006,8 @@ export function CommercialLaunchHome() {
               <ul className="space-y-2 text-sm text-white/55">
                 {[
                   { ar: "من نحن", en: "About", href: "/about" },
-                  { ar: "تواصل معنا", en: "Contact", href: "/contact" },
+                  { ar: "احجز جلسة اكتشاف", en: "Book discovery", href: "/book-call" },
                   { ar: "سياسة الخصوصية", en: "Privacy", href: "/privacy" },
-                  { ar: "الشروط والأحكام", en: "Terms", href: "/terms" },
                 ].map((link) => (
                   <li key={link.href}>
                     <Link href={`${base}${link.href}`} className="hover:text-gold-400 transition-colors">
@@ -971,7 +1027,7 @@ export function CommercialLaunchHome() {
             </p>
             <div className="flex gap-4">
               <span className="text-emerald-500/70">PDPL</span>
-              <span className="text-gold-500/70">ZATCA Ready</span>
+              <span className="text-gold-500/70">ZATCA Readiness</span>
               <span className="text-white/40">Saudi-First</span>
             </div>
           </div>

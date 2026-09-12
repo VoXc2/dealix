@@ -769,7 +769,7 @@ function StatisticsTab({ isAr }: { isAr: boolean }) {
                   wrapperStyle={{ fontSize: 12, color: "hsl(var(--muted-foreground))" }}
                   iconType="circle"
                 />
-                <Tooltip formatter={(value: number) => [`${value}`, isAr ? "مشترك" : "Subscribers"]} />
+                <Tooltip formatter={(value) => [`${value ?? 0}`, isAr ? "مشترك" : "Subscribers"]} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>

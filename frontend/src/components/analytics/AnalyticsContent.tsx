@@ -94,7 +94,7 @@ export function AnalyticsContent() {
                   <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v/1000000).toFixed(1)}M`} />
                   <Tooltip
                     contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "12px", fontSize: 12 }}
-                    formatter={(value: number) => [formatCurrency(value), isAr ? "الإيرادات" : "Revenue"]}
+                    formatter={(value) => [formatCurrency(Number(value ?? 0)), isAr ? "الإيرادات" : "Revenue"]}
                   />
                   <Bar dataKey="revenue" fill="#C9A96E" radius={[6, 6, 0, 0]} />
                 </BarChart>
