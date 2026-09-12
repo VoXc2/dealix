@@ -33,16 +33,30 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import pwd
 import re
 import shutil
 import subprocess
 import sys
+import threading
 import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+try:  # Linux runtime; lightweight shim keeps Windows acceptance fail-closed.
+    import pwd  # type: ignore[import-not-found]
+except ImportError:  # pragma: no cover - exercised on Windows only
+    class _PwdCompat:
+        @staticmethod
+        def getpwnam(name: str) -> Any:
+            raise KeyError(name)
+
+    pwd = _PwdCompat()
+
+if not hasattr(os, "geteuid"):  # pragma: no cover - Windows compatibility
+    os.geteuid = lambda: -1  # type: ignore[attr-defined]
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from go_resource_broker import (
@@ -50,6 +64,12 @@ from go_resource_broker import (
     discover_ollama_models,
     discover_router_models,
     pick_model,
+)
+from opencode_agent_allocator import (
+    PERMANENT_AGENTS,
+    agent_fit_errors,
+    allocation_receipt,
+    select_deep_jobs,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -114,7 +134,6 @@ CLASS_TO_MODEL_CLASS: dict[str, str] = {
     "DELIVERY": "R4_INCLUDED_HIGH",
 }
 
-PERMANENT_AGENTS = ("dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content")
 DEEP_WIP_MAX = 3
 
 # --------------------------------------------------------------------------
@@ -234,6 +253,8 @@ _SECRET_PATTERNS = (
     re.compile(r"(?i)bearer\s+[A-Za-z0-9._\-]{8,}"),
     re.compile(r"(?i)(api[_-]?key|token|secret|password)\s*[=:]\s*\S+"),
 )
+_LEDGER_LOCK = threading.Lock()
+_WORKTREE_LOCK = threading.Lock()
 
 
 # --------------------------------------------------------------------------
@@ -263,7 +284,7 @@ def redact(text: str | None, limit: int = 2000) -> str:
 
 def atomic_write(path: Path, payload: str, mode: int = 0o640) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(f".{path.name}.tmp.{os.getpid()}")
+    tmp = path.with_name(f".{path.name}.tmp.{os.getpid()}.{threading.get_ident()}")
     with open(tmp, "w", encoding="utf-8") as handle:
         handle.write(payload)
         handle.flush()
@@ -420,6 +441,7 @@ def validate_job(job: dict[str, Any]) -> list[str]:
     owner = job.get("OWNER_AGENT")
     if owner and owner not in PERMANENT_AGENTS:
         errors.append(f"invalid:OWNER_AGENT={owner} (must be one of the five permanent agents)")
+    errors.extend(f"invalid:AGENT_FIT={error}" for error in agent_fit_errors(job))
     dependencies = job.get("DEPENDENCIES") or []
     if not isinstance(dependencies, list):
         errors.append("invalid:DEPENDENCIES must be a list")
@@ -521,7 +543,7 @@ def all_jobs(root: Path) -> list[dict[str, Any]]:
 def append_ledger(root: Path, event: dict[str, Any]) -> None:
     root.mkdir(parents=True, exist_ok=True)
     event = {"at": now_iso(), **event}
-    with open(ledger_path(root), "a", encoding="utf-8") as handle:
+    with _LEDGER_LOCK, open(ledger_path(root), "a", encoding="utf-8") as handle:
         handle.write(json.dumps(event, ensure_ascii=False) + "\n")
 
 
@@ -767,13 +789,14 @@ def create_worktree(
         return {"ok": True, "path": str(target), "reused": True, "branch": branch_for(job)}
     target.parent.mkdir(parents=True, exist_ok=True)
     base = job.get("BASE_SHA") or FROZEN_RELEASE_SHA
-    result = subprocess.run(
-        [git, "-C", str(repo), "worktree", "add", "-b", branch_for(job), str(target), base],
-        capture_output=True,
-        text=True,
-        timeout=180,
-        check=False,
-    )
+    with _WORKTREE_LOCK:
+        result = subprocess.run(
+            [git, "-C", str(repo), "worktree", "add", "-b", branch_for(job), str(target), base],
+            capture_output=True,
+            text=True,
+            timeout=180,
+            check=False,
+        )
     if result.returncode != 0:
         return {"ok": False, "reason": "worktree-add-failed", "stderr": redact(result.stderr)}
     return {"ok": True, "path": str(target), "branch": branch_for(job), "base_sha": base}
@@ -797,13 +820,14 @@ def cleanup_worktree(job: dict[str, Any], *, repo_root: Path | None = None) -> d
     )
     if status.stdout.strip():
         return {"ok": False, "reason": "worktree-dirty-preserved", "dirty": redact(status.stdout, 500)}
-    removed = subprocess.run(
-        [git, "-C", str(repo), "worktree", "remove", "--force", worktree],
-        capture_output=True,
-        text=True,
-        timeout=120,
-        check=False,
-    )
+    with _WORKTREE_LOCK:
+        removed = subprocess.run(
+            [git, "-C", str(repo), "worktree", "remove", "--force", worktree],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=False,
+        )
     if removed.returncode != 0:
         return {"ok": False, "reason": "worktree-remove-failed", "stderr": redact(removed.stderr)}
     return {"ok": True, "reason": "removed"}
@@ -1141,22 +1165,36 @@ def process_queue(
     repo_root: Path | None = None,
     worktree_root: Path | None = None,
 ) -> list[dict[str, Any]]:
-    """Promote and run READY jobs within the live deep-work resource budget."""
+    """Run one bounded tick with fair, resource-aware parallel deep work.
+
+    Deterministic/read-only jobs do not consume deep slots. Modifying jobs are
+    admitted by the shared OpenCode allocator, then run concurrently only up to
+    the live governor budget. Global deep WIP therefore remains <= 3.
+    """
     governor = governor_state(root)
-    budget = int(governor["deep_wip_available"]) if limit is None else limit
-    candidates = [
-        job
-        for job in all_jobs(root)
-        if job.get("STATUS") == "READY"
-    ]
+    available = int(governor["deep_wip_available"])
+    deep_slots = available if limit is None else min(available, max(0, int(limit)))
+    candidates = [job for job in all_jobs(root) if job.get("STATUS") == "READY"]
     candidates.sort(key=lambda item: -(item.get("PRIORITY") or 0))
-    processed: list[dict[str, Any]] = []
-    for job in candidates:
-        if budget <= 0:
-            break
-        if job.get("MODIFYING"):
-            budget -= 1
-        processed.append(run_job(root, job, repo_root=repo_root, worktree_root=worktree_root))
+
+    shallow = [job for job in candidates if not job.get("MODIFYING")][:12]
+    deep_candidates = [job for job in candidates if job.get("MODIFYING")]
+    selected = select_deep_jobs(deep_candidates, slots=deep_slots, leases=active_leases(root))
+    append_ledger(root, {"event": "allocation", **allocation_receipt(selected)})
+
+    processed = [
+        run_job(root, job, repo_root=repo_root, worktree_root=worktree_root)
+        for job in shallow
+    ]
+    if selected:
+        workers = min(len(selected), DEEP_WIP_MAX)
+        with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="dealix-opencode") as pool:
+            futures = [
+                pool.submit(run_job, root, job, repo_root=repo_root, worktree_root=worktree_root)
+                for job in selected
+            ]
+            processed.extend(future.result() for future in futures)
+    write_queue_snapshot(root)
     return processed
 
 
