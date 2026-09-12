@@ -1,5 +1,5 @@
 {
-  "schema": "dealix.software_acquisition_policy.v1",
+  "schema": "dealix.software_acquisition_policy.v2",
   "name": "Dealix Software Acquisition & Evolution Factory",
   "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
   "one_company_machine": true,
@@ -23,15 +23,81 @@
   },
   "thresholds": {
     "auto_sandbox_min": 80,
-    "research_more_min": 65
+    "research_more_min": 65,
+    "auto_sandbox_evidence_min": 80
   },
+  "evidence_confidence_weights": {
+    "official_source": 15,
+    "immutable_pin": 15,
+    "verified_license": 10,
+    "vulnerability_evidence": 15,
+    "rollback": 10,
+    "evidence_refs": 10,
+    "sbom": 10,
+    "provenance": 10,
+    "capability_map": 5
+  },
+  "high_risk_artifact_types": [
+    "executable",
+    "container_image",
+    "mcp_server",
+    "agent_runtime",
+    "installer",
+    "system_service"
+  ],
   "hard_gates": {
+    "cisa_kev_match": "QUARANTINE_KEV",
     "critical_vulnerability": "REJECT_SECURITY",
     "unknown_license": "HOLD_LICENSE",
     "duplicate": "REJECT_DUPLICATE",
     "requires_secret_dump": "REJECT_SECRET_RISK",
-    "invalid_signature": "QUARANTINE",
+    "invalid_signature_or_provenance": "QUARANTINE",
+    "missing_required_provenance": "HOLD_PROVENANCE",
+    "capability_risk": "HOLD_CAPABILITY_RISK",
     "missing_rollback": "HOLD_ROLLBACK"
+  },
+  "capability_risk_fields": [
+    "privileged",
+    "host_docker_socket",
+    "host_network",
+    "unrestricted_egress",
+    "broad_filesystem_write",
+    "broad_secret_access",
+    "kernel_device_access",
+    "firewall_mutation"
+  ],
+  "strict_sandbox": {
+    "non_root_or_rootless": true,
+    "privileged": false,
+    "host_docker_socket": false,
+    "host_network": false,
+    "preserve_default_seccomp": true,
+    "preserve_mac_controls": true,
+    "drop_unneeded_capabilities": true,
+    "host_inputs_read_only": true,
+    "isolated_writable_worktree": true,
+    "secrets_mounted_by_default": false,
+    "network_egress_default": "DENY_OR_ALLOWLIST",
+    "resource_limits_required": ["cpu", "memory", "pids", "time", "disk"],
+    "ephemeral_cleanup": true,
+    "record_exact_artifact_digest": true
+  },
+  "ai_mcp_capability_inventory": [
+    "tool_inventory",
+    "auth_scopes",
+    "process_execution",
+    "filesystem_reach",
+    "network_destinations",
+    "data_retention_and_telemetry",
+    "untrusted_content_boundary",
+    "secret_visibility",
+    "material_action_confirmation"
+  ],
+  "vulnerability_priority": {
+    "osv_or_trivy_detected": "EVIDENCE",
+    "cisa_kev_match": "QUARANTINE",
+    "epss": "PRIORITIZATION_ONLY",
+    "critical_or_high": "FAIL_CLOSED_UNLESS_EXACT_VERSION_NON_APPLICABILITY_OR_FIXED_PIN_PROVEN"
   },
   "installation_tiers": {
     "dependency_sandbox": "L3_INTERNAL",
@@ -55,30 +121,42 @@
     "payment_is_not_revenue_without_verified_evidence",
     "synthetic_or_demo_is_not_customer_proof",
     "http_200_is_not_release_identity",
-    "merged_pr_is_not_deployed_release"
+    "merged_pr_is_not_deployed_release",
+    "popularity_is_not_security",
+    "high_business_value_does_not_override_failed_trust_or_capability_gate",
+    "score_is_not_evidence"
   ],
   "supply_chain_sequence": [
     "DISCOVER",
     "OFFICIAL_SOURCE",
-    "PIN_VERSION_OR_COMMIT",
+    "PIN_VERSION_COMMIT_OR_DIGEST",
     "VERIFY_SIGNATURE_OR_PROVENANCE",
     "GENERATE_OR_INGEST_SBOM",
     "VULNERABILITY_SCAN",
+    "KEV_EPSS_PRIORITIZATION",
     "LICENSE_CHECK",
-    "ISOLATED_SANDBOX",
+    "CAPABILITY_MAP",
+    "STRICT_ISOLATED_SANDBOX",
     "TEST",
     "BENCHMARK",
     "INTEGRATE_DRAFT_ONLY",
     "OBSERVE_BENEFIT",
+    "ROLLBACK_DRILL",
     "PROMOTE_OR_KILL"
   ],
   "recommended_tooling": [
     "renovate",
     "openssf_scorecard",
+    "openssf_security_insights",
     "osv_scanner",
+    "cisa_kev",
+    "first_epss",
     "trivy",
     "cosign",
+    "slsa",
     "cyclonedx_or_spdx",
+    "github_dependency_review",
+    "github_artifact_attestations",
     "crawl4ai",
     "changedetection_io",
     "opentelemetry_collector",
@@ -87,6 +165,24 @@
     "hermes",
     "ollama"
   ],
+  "benefit_review": {
+    "day_7": [
+      "reliability",
+      "security_and_policy_incidents",
+      "founder_minutes_saved",
+      "cash_and_resource_cost",
+      "maintenance_burden"
+    ],
+    "day_30_promotion_requires": [
+      "persistent_verified_benefit",
+      "acceptable_maintenance_burden",
+      "no_unresolved_kev_or_critical_exposure",
+      "no_unexpected_data_egress_or_policy_incidents",
+      "rollback_tested_with_evidence",
+      "no_duplicate_stack_creep",
+      "clear_economic_reason_to_keep"
+    ]
+  },
   "paid_spill_default": false,
   "external_send_default": false,
   "public_publish_default": false,
