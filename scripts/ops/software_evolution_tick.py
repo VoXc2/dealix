@@ -2,7 +2,8 @@
 """One bounded Internet Scout + Software Acquisition tick.
 
 This script deliberately does not schedule itself. Hermes remains the canonical
-scheduler and Session Factory remains the canonical executor.
+scheduler and Session Factory remains the canonical executor. V2 discovery emits
+the same evidence/capability contract consumed by the acquisition factory.
 """
 
 from __future__ import annotations
@@ -44,19 +45,27 @@ def scout_job(category: dict[str, Any], *, base_sha: str) -> dict[str, Any]:
     category_id = str(category.get("id") or "unknown")
     marker = f"SOFTWARE_SCOUT_RECEIPT:{category_id}"
     prompt = (
-        "Act as Dealix Internet Scout for software/tool acquisition. Research only; do not install, buy, send, publish, merge, deploy, "
-        "change DNS/DB/secrets/firewall/root state, or mutate production. Use official project docs and official repositories first. "
-        "Find only software that materially improves Dealix economic movement, founder minutes, reliability, security, delivery, or cost. "
-        "For every candidate return a machine-readable JSON object containing: candidate_id, name, source, official_url, repo, version, "
-        "commit_sha or image_digest when available, license, purpose, dealix_gap, evidence_refs, maintenance status, security evidence, "
-        "signature/provenance status, SBOM support, known vulnerability status, alternatives, monthly/resource cost, rollback method, "
-        "install_surface, and evidence-backed 0..100 scores for business_value/security/maturity/maintenance/integration_fit/license/cost/reversibility. "
-        "If a score is not evidence-backed, set it conservatively and explicitly say why. Research is not trust; unknown license or provenance must not pass. "
+        "Act as Dealix Internet Scout for governed software/tool acquisition. Research only; do not install, buy, send, publish, "
+        "merge, deploy, change DNS/DB/secrets/firewall/root state, or mutate production. Use official project docs, official repositories, "
+        "release metadata, signed attestations/SBOMs, and authoritative vulnerability sources first. Third-party commentary is discovery evidence only. "
+        "Find only software that materially improves verified economic movement, founder minutes, reliability, security, delivery, or cost. "
+        "For every candidate return ONE machine-readable V2 candidate object with: schema=dealix.software_candidate.v2; candidate_id; name; "
+        "source; official_url; repo; version; commit_sha and/or image_digest; artifact_type; license; purpose; dealix_gap; monthly_cost; resource_cost; "
+        "alternatives; duplicate_of_existing; replacement_of_existing when applicable; rollback_method; sbom_path/status; vulnerability_status; "
+        "cisa_kev_match; epss_score if applicable; signature_status; provenance_status; requires_secret_dump; install_surface; sandbox_result; "
+        "benchmark_result; evidence_refs; and evidence-backed 0..100 scores for business_value/security/maturity/maintenance/integration_fit/license/cost/reversibility. "
+        "Also include capability_map keys for privileged, host_docker_socket, host_network, unrestricted_egress, broad_filesystem_write, "
+        "broad_secret_access, kernel_device_access, firewall_mutation; network_allowlist; and data_egress. "
+        "For MCP/agent/browser/coding runtimes additionally document tool inventory, auth scopes, process execution, filesystem reach, network destinations, "
+        "data retention/telemetry, untrusted-content boundary, credential visibility, and whether material actions require human/L5 confirmation. "
+        "Use OSV/Trivy evidence for affected components, CISA KEV for known exploitation, and FIRST EPSS only as exploitation-likelihood prioritization. "
+        "Prefer Sigstore/Cosign/SLSA or equivalent publisher provenance when available. If a score or security field is not evidence-backed, mark it UNKNOWN "
+        "or conservatively low rather than inventing confidence. Research is not trust; popularity is not security; score is not evidence. "
         f"Category={json.dumps(category, ensure_ascii=False)}. Finish stdout with exact marker {marker}."
     )
     return make_job(
         owner_agent="dealix-engineer",
-        business_goal=f"Discover high-value software candidates for {category_id}",
+        business_goal=f"Discover high-value evidence-backed software candidates for {category_id}",
         economic_reason=str(category.get("purpose") or "improve Dealix capability safely"),
         job_class="RESEARCH",
         authority_level="L1",
@@ -65,14 +74,14 @@ def scout_job(category: dict[str, Any], *, base_sha: str) -> dict[str, Any]:
         modifying=False,
         executor={"prompt": prompt},
         acceptance={
-            "criteria": "official-source software scout receipt",
+            "criteria": "official-source V2 software scout receipt with trust and capability evidence",
             "checks": [
                 {"kind": "exit_zero"},
                 {"kind": "stdout_contains", "text": marker},
             ],
         },
         context_refs=[str(value) for value in (category.get("official_sources") or [])],
-        next_action="ingest only evidence-backed candidates into the canonical software registry",
+        next_action="ingest only evidence-backed V2 candidates into the canonical software registry",
     )
 
 
@@ -121,7 +130,7 @@ def run_tick(
         )
     else:
         acquisition = {
-            "schema": "dealix.software_acquisition_run.v1",
+            "schema": "dealix.software_acquisition_run.v2",
             "candidate_count": 0,
             "decisions": [],
             "submitted_jobs": [],
@@ -131,7 +140,7 @@ def run_tick(
         }
 
     receipt = {
-        "schema": "dealix.software_evolution_tick.v1",
+        "schema": "dealix.software_evolution_tick.v2",
         "base_sha": base_sha,
         "scout_jobs": scout_receipts,
         "acquisition": acquisition,

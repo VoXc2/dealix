@@ -20,6 +20,14 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 REPORT = ROOT / "reports/commercial/post_1712_launch_gate.json"
 CANONICAL_AGENTS = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
+RETIRED_PUBLIC_SURFACES = {
+    "/trust.html": "/trust-center.html",
+    "/security.html": "/trust-center.html",
+    "/why-saudi-ai.html": "/trust-center.html",
+    "/roi.html": "/proof.html",
+    "/case-study.html": "/proof.html",
+}
+BANNED_STALE_PUBLIC_CLAIMS = ("PDPL Compliant", "Saudi data residency", "ZATCA Phase 2 Ready")
 REQUIRED_FILES = [
     "skills/dealix-commercial-execution/SKILL.md",
     "dealix/commercial/universal_diagnostic_factory.py",
@@ -75,10 +83,44 @@ def fetch_status(url: str, timeout: float = 8.0) -> dict[str, Any]:
     request = urllib.request.Request(url, headers={"User-Agent": "Dealix-Commercial-Launch-Gate/1.0"})
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            body = response.read(8192).decode("utf-8", errors="replace")
-            return {"url": url, "ok": 200 <= response.status < 400, "status": response.status, "body_sample": body[:1000]}
+            body = response.read(16384).decode("utf-8", errors="replace")
+            return {
+                "url": url,
+                "final_url": response.geturl(),
+                "ok": 200 <= response.status < 400,
+                "status": response.status,
+                "body_sample": body[:12000],
+            }
+    except urllib.error.HTTPError as exc:
+        body = exc.read(4096).decode("utf-8", errors="replace")
+        return {
+            "url": url,
+            "final_url": exc.geturl(),
+            "ok": False,
+            "status": exc.code,
+            "body_sample": body[:4000],
+            "error": str(exc),
+        }
     except (urllib.error.URLError, TimeoutError, ValueError) as exc:
-        return {"url": url, "ok": False, "error": str(exc)}
+        return {"url": url, "final_url": url, "ok": False, "error": str(exc)}
+
+
+def required_http_failures(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [item for item in checks if not item.get("surface") and not item.get("ok")]
+
+
+def validate_retired_surface(check: dict[str, Any], path: str, target: str, errors: list[str]) -> None:
+    if not check.get("ok"):
+        return
+    body = str(check.get("body_sample", ""))
+    lowered = body.lower()
+    for claim in BANNED_STALE_PUBLIC_CLAIMS:
+        if claim.lower() in lowered:
+            errors.append(f"stale public claim on retired surface {path}: {claim}")
+    final_url = str(check.get("final_url", "")).rstrip("/")
+    target_ok = final_url.endswith(target.rstrip("/")) or "DEALIX_RETIRED_PUBLIC_SURFACE" in body
+    if not target_ok:
+        errors.append(f"retired public surface not converged: {path} -> {target}")
 
 
 def main() -> int:
@@ -120,6 +162,14 @@ def main() -> int:
     if args.public_base_url:
         base = args.public_base_url.rstrip("/")
         production_checks.extend([fetch_status(base + "/"), fetch_status(base + "/book")])
+        for path, target in RETIRED_PUBLIC_SURFACES.items():
+            check = fetch_status(base + path)
+            check["surface"] = path
+            check["expected_target"] = target
+            production_checks.append(check)
+            validate_retired_surface(check, path, target, errors)
+            if not check.get("ok"):
+                warnings.append(f"retired public surface unavailable instead of redirect: {path}")
     if args.api_health_url:
         health = fetch_status(args.api_health_url)
         production_checks.append(health)
@@ -127,8 +177,8 @@ def main() -> int:
             sample = health.get("body_sample", "")
             if args.expected_release not in sample:
                 errors.append("deployed API release does not match expected release")
-    if production_checks and not all(item.get("ok") for item in production_checks):
-        errors.append("one or more production HTTP checks failed")
+    if required_http_failures(production_checks):
+        errors.append("one or more required production HTTP checks failed")
 
     deployment_verified = bool(args.public_base_url and args.api_health_url and args.expected_release and not errors)
     if errors:
@@ -149,6 +199,7 @@ def main() -> int:
         "canonical_agents": CANONICAL_AGENTS,
         "subchecks": subchecks,
         "production_checks": production_checks,
+        "retired_404_count": sum(1 for item in production_checks if item.get("surface") and item.get("status") == 404),
         "deployment_verified": deployment_verified,
         "external_effects_executed": False,
     }

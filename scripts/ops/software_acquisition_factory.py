@@ -228,12 +228,15 @@ def _known(value: Any) -> bool:
     return str(value or "").upper().strip() not in {"", "UNKNOWN", "UNVERIFIED", "NOT_RUN", "NONE"}
 
 
-def _verified_provenance(candidate: dict[str, Any]) -> bool:
+def _verified_provenance(candidate: dict[str, Any], *, allow_not_applicable: bool = True) -> bool:
     values = {
         str(candidate.get("signature_status") or "").upper().strip(),
         str(candidate.get("provenance_status") or "").upper().strip(),
     }
-    return bool(values & {"VERIFIED", "VALID", "SIGNED", "ATTESTED", "NOT_APPLICABLE"})
+    accepted = {"VERIFIED", "VALID", "SIGNED", "ATTESTED"}
+    if allow_not_applicable:
+        accepted.add("NOT_APPLICABLE")
+    return bool(values & accepted)
 
 
 def evidence_confidence(candidate: dict[str, Any], policy: dict[str, Any]) -> float:
@@ -287,11 +290,17 @@ def required_authority(candidate: dict[str, Any], policy: dict[str, Any]) -> str
     return str(mapping.get(surface) or ("L5_REQUIRED" if surface in L5_SURFACES else "UNKNOWN"))
 
 
+def provenance_required(candidate: dict[str, Any], policy: dict[str, Any]) -> bool:
+    high_risk = set(policy.get("high_risk_artifact_types") or HIGH_RISK_ARTIFACT_TYPES)
+    return str(candidate.get("artifact_type") or "source_library").lower().strip() in high_risk
+
+
 def capability_risks(candidate: dict[str, Any], policy: dict[str, Any]) -> tuple[str, ...]:
     capability_map = candidate.get("capability_map")
-    schema = candidate.get("schema")
     if capability_map is None:
-        return ("unknown_capability_scope",) if schema == SCHEMA else ()
+        if candidate.get("schema") == SCHEMA or provenance_required(candidate, policy):
+            return ("unknown_capability_scope",)
+        return ()
     if not isinstance(capability_map, dict):
         return ("invalid_capability_scope",)
     fields = tuple(policy.get("capability_risk_fields") or DEFAULT_CAPABILITY_FIELDS)
@@ -299,15 +308,10 @@ def capability_risks(candidate: dict[str, Any], policy: dict[str, Any]) -> tuple
     return tuple(sorted(risks))
 
 
-def provenance_required(candidate: dict[str, Any], policy: dict[str, Any]) -> bool:
-    high_risk = set(policy.get("high_risk_artifact_types") or HIGH_RISK_ARTIFACT_TYPES)
-    return str(candidate.get("artifact_type") or "source_library").lower().strip() in high_risk
-
-
 def hard_gate(candidate: dict[str, Any], policy: dict[str, Any]) -> tuple[str | None, str | None, tuple[str, ...]]:
     duplicate = str(candidate.get("duplicate_of_existing") or "").strip()
     replacement = str(candidate.get("replacement_of_existing") or "").strip()
-    if duplicate and not replacement:
+    if duplicate and replacement != duplicate:
         return "duplicate", "REJECT_DUPLICATE", ()
     if bool(candidate.get("requires_secret_dump")):
         return "requires_secret_dump", "REJECT_SECRET_RISK", ()
@@ -332,7 +336,9 @@ def hard_gate(candidate: dict[str, Any], policy: dict[str, Any]) -> tuple[str | 
     }
     if integrity_values & {"INVALID", "SUSPICIOUS", "FAILED", "TAMPERED"}:
         return "invalid_signature_or_provenance", "QUARANTINE", ()
-    if provenance_required(candidate, policy) and not _verified_provenance(candidate):
+    if provenance_required(candidate, policy) and not _verified_provenance(
+        candidate, allow_not_applicable=False
+    ):
         return "missing_required_provenance", "HOLD_PROVENANCE", ()
     risks = capability_risks(candidate, policy)
     if risks:

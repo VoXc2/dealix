@@ -1,154 +1,229 @@
-# Dealix Software Acquisition & Evolution Factory
+# Dealix Software Acquisition & Evolution Factory V2
 
 ## القرار المعتمد
 
-هذه الطبقة **معتمدة كامتداد لـ Dealix Company Machine** وليست شركة أو Scheduler أو Agent Fleet جديدة.
+هذه الطبقة **معتمدة كامتداد مباشر لـ Dealix Company Machine** وليست Company Machine أو Scheduler أو Executor أو Model Router أو Agent Fleet جديدة.
 
 - Hermes يبقى الـorchestrator والـscheduler.
 - Session Factory في #1708 يبقى executor الوحيد للـjobs.
-- OpenCode يبقى engineering/research factory.
+- OpenCode يبقى engineering/research capability.
 - Model Broker يبقى authority لاختيار النموذج والتكلفة.
-- Company Brain / Proof Ledger / Approval Queue تبقى المصادر القانونية للحقيقة.
+- Company Brain / Proof Ledger / Approval Queue تبقى مصادر الحقيقة القانونية.
 - عدد الـpermanent agents يبقى 5 فقط.
 - `DEEP_WIP_MAX=3` يبقى ثابتًا.
+- L0-L4 آلي؛ merge/deploy/root/DNS/DB/secrets/firewall/payment/send/publish تبقى L5 exact-action.
 
-## مسار التشغيل
+## قانون V2
+
+لا يكفي أن تكون الأداة مفيدة أو مشهورة. كل مرشح يمر بثلاث طبقات مستقلة:
+
+1. **Value**: هل تحرك المال، تقلل Founder Minutes، تحسن reliability/delivery أو تخفض cost؟
+2. **Trust / Supply Chain**: هل المصدر والنسخة والرخصة والـSBOM والـvulnerability/provenance evidence قابلة للتحقق؟
+3. **Capability / Blast Radius**: ما الصلاحيات الفعلية التي تطلبها الأداة وما أقصى أثر يمكن أن تحدثه؟
+
+`BUSINESS_VALUE_SCORE` يرتب المرشحين فقط بعد مرور gates المطلوبة. `score != evidence` و`popularity != security`.
+
+## المسار القانوني
 
 ```text
-Official/Public Internet
-  -> Internet Scout (bounded RESEARCH jobs)
-  -> Candidate Registry
-  -> Contract validation
-  -> Value + Security + Maturity + Maintenance + Fit + License + Cost + Reversibility score
-  -> hard gates
-  -> AUTO_SANDBOX | RESEARCH_MORE | HOLD/REJECT/QUARANTINE
-  -> canonical Session Factory
-  -> isolated worktree/sandbox
-  -> OpenCode research/engineering
-  -> acceptance receipt
-  -> draft-safe integration only
-  -> 7-day review
-  -> 30-day review
+DISCOVER
+  -> SOURCE_VERIFIED
+  -> PIN_VERSION_COMMIT_OR_DIGEST
+  -> PROVENANCE_CHECKED
+  -> SBOM_READY
+  -> VULN_PRIORITIZED
+  -> LICENSE_CHECKED
+  -> CAPABILITY_MAPPED
+  -> STRICT_SANDBOX
+  -> ACCEPTANCE
+  -> CANARY
+  -> 7D_REVIEW
+  -> 30D_REVIEW
   -> PROMOTE | KEEP_CANARY | DEMOTE | KILL | QUARANTINE
 ```
 
-## قاعدة الإنترنت
+Internet Scout ينتج عقد V2 نفسه الذي يستهلكه Software Acquisition Factory؛ لا توجد طبقة V1 جديدة بين الاكتشاف والقرار.
 
-الإنترنت مصدر اكتشاف، وليس مصدر ثقة. يمنع تحويل نتيجة بحث أو رابط أو repository إلى install مباشر بلا تحقق.
+## Evidence confidence منفصل عن Value score
 
-التسلسل الإلزامي:
+`AUTO_SANDBOX` يحتاج شرطين معًا:
 
-`DISCOVER -> OFFICIAL_SOURCE -> PIN_VERSION/COMMIT/DIGEST -> VERIFY_PROVENANCE -> SBOM -> CVE -> LICENSE -> SANDBOX -> TEST -> BENCHMARK -> DRAFT_INTEGRATION -> BENEFIT_REVIEW`
+- Value score >= 80.
+- Evidence confidence >= 80.
 
-لا يوجد `curl random | sudo bash`، ولا root installer عشوائي، ولا secret dump.
+Evidence confidence يغطي: official source، immutable pin، verified license، fresh vulnerability evidence، rollback، evidence refs، SBOM، provenance، capability map.
 
-## Scoring
+إذا كانت القيمة عالية لكن الأدلة ناقصة: `RESEARCH_MORE`، وليس auto-execute.
 
-| العامل | الوزن |
-|---|---:|
-| Business value | 30% |
-| Security | 20% |
-| Maturity | 15% |
-| Maintenance | 10% |
-| Integration fit | 10% |
-| License | 5% |
-| Cost | 5% |
-| Reversibility | 5% |
+## Supply-chain gates
 
-- `>=80`: `AUTO_SANDBOX` إذا مرت hard gates.
-- `65..79.99`: `RESEARCH_MORE`.
-- `<65`: `REJECT_LOW_VALUE`.
+- OSV/Trivy: إثبات أن dependency/image متأثر فعليًا.
+- CISA KEV match: `QUARANTINE_KEV`.
+- FIRST EPSS: prioritization signal فقط، وليس risk score كاملًا.
+- HIGH/CRITICAL unresolved exposure: fail closed حتى يظهر exact-version remediation/non-applicability evidence.
+- unknown license: `HOLD_LICENSE`.
+- invalid/suspicious signature or provenance: `QUARANTINE`.
+- missing rollback: `HOLD_ROLLBACK`.
+- duplicate capability: `REJECT_DUPLICATE`، إلا إذا كان `replacement_of_existing` صريحًا لنفس الـcapability.
 
-Hard gates: critical vulnerability, unknown license, duplicate capability, secret-dump requirement, invalid/suspicious signature, or missing rollback path.
+للـexecutables/container images/MCP servers/agent runtimes/installers/system services، provenance الموثق مطلوب. `NOT_APPLICABLE` لا يتجاوز هذا gate.
 
-## Installation authority
+## Capability / Blast Radius gates
 
-| Surface | Authority |
-|---|---|
-| dependency inside sandbox | L3 internal |
-| container/sidecar sandbox | L3 internal |
-| loopback canary | L4 repo/canary |
-| repo integration / draft PR | L4 |
-| production/root/DNS/DB/secret/firewall | L5 required |
+لا تدخل الصلاحيات الخطرة داخل weighted score. الحالات التالية تمنع auto-execution:
 
-حتى إذا كان المرشح النهائي يحتاج L5، البحث والـsandbox والbenchmark والـdraft integration تستمر تلقائيًا حتى آخر خطوة آمنة، ثم تقف قبل الأثر الخارجي.
+- privileged/root execution.
+- host Docker socket.
+- host network.
+- unrestricted network egress.
+- broad host filesystem writes.
+- broad secret/environment access.
+- kernel/device access.
+- firewall mutation.
+- production DB/DNS/deploy/root/secret effects.
 
-## Tool discovery seeds
+النتيجة تكون `HOLD_CAPABILITY_RISK` أو `L5_REQUIRED` أو `QUARANTINE` حسب الحالة.
 
-السجل `config/company/software_acquisition_sources.json` يوجّه الـInternet Scout إلى المصادر الرسمية أولًا في المجالات التالية:
+## AI / MCP / Agent candidates
 
-- dependency automation: Renovate.
-- software supply chain: OpenSSF Scorecard, OSV-Scanner, Trivy, Cosign, SLSA.
-- SBOM/provenance: CycloneDX, SPDX.
-- internet intelligence: Crawl4AI, changedetection.io.
-- observability: OpenTelemetry Collector, Uptime Kuma.
-- agent engineering: OpenCode, Hermes, Ollama.
+أي MCP server أو browser/coding agent أو agent runtime أو AI execution tool يجب أن يسجل:
 
-هذه أسماء مرشحين/مصادر بحث، وليست تصريح install مسبق. كل أداة تمر بنفس gates.
+- tool/capability inventory.
+- auth scopes.
+- process/command execution ability.
+- filesystem reach.
+- network destinations.
+- data retention and telemetry.
+- untrusted-content / prompt-injection boundary.
+- credential/secret visibility.
+- هل material actions تحتاج human/L5 confirmation فعليًا.
 
-## Existing Session Factory handoff
+Unknown capability scope للمرشح عالي الخطورة => `HOLD_CAPABILITY_RISK`.
 
-`software_acquisition_factory.py` لا ينفذ installer بنفسه. عند `AUTO_SANDBOX` يصنع `ENGINEERING/L4` job باستخدام `make_job()` ثم يرسله عبر `submit_job()` للـSession Factory. Acceptance يتطلب `exit_zero` + marker receipt محدد.
+## Strict sandbox
 
-`software_evolution_tick.py` يصنع حتى 3 Internet Scout jobs في الدورة، ثم حتى 3 candidate jobs، مع بقاء التنفيذ الفعلي تحت Resource Governor والـleases والـworktrees الخاصة بـ#1708.
+هناك فرق دستوري مهم:
 
-## Benefit loop
+`git worktree isolation != OS/process sandbox`.
 
-`software_benefit_review.py` يقيم النتائج المرصودة فقط:
+الـworktree يمنع تداخل كتابات Git فقط. تشغيل كود مرشح غير موثوق يحتاج structural sandbox evidence. الوضع الافتراضي:
 
-- founder minutes saved.
-- cash saved / cash cost.
+- non-root/rootless حيثما أمكن.
+- no privileged mode.
+- no host Docker socket.
+- no host network.
+- preserve seccomp + AppArmor/SELinux/MAC controls.
+- drop unneeded capabilities.
+- host inputs read-only.
+- writable worktree/tmp معزول فقط.
+- no secrets mounted by default.
+- egress denied أو destination-allowlisted.
+- CPU/RAM/PID/time/disk limits.
+- ephemeral deterministic cleanup.
+- exact artifact digest داخل receipt.
+
+إذا لم يمكن إثبات structural sandbox المناسب، لا يشغّل العامل candidate code على الـhost؛ يقتصر على research/static inspection ويصدر HOLD بدل صناعة PASS وهمي.
+
+## Source hierarchy
+
+1. official project/vendor docs/repository/release metadata.
+2. signed provenance/SBOM/security metadata.
+3. authoritative vulnerability sources: OSV، CISA KEV، FIRST EPSS كإشارة prioritization.
+4. OpenSSF Scorecard / Security Insights.
+5. third-party commentary للاكتشاف التكميلي فقط.
+
+السجل الرسمي يشمل كذلك GitHub Dependency Review / Artifact Attestations، Docker isolation guidance، CycloneDX/SPDX، Cosign/SLSA، Renovate، Crawl4AI، changedetection.io، OpenTelemetry، Uptime Kuma، OpenCode، Hermes، Ollama وMCP.
+
+هذه مصادر/مرشحون، وليست install allowlist.
+
+## Session Factory handoff
+
+`software_acquisition_factory.py` لا ينفذ installer أو downloader بنفسه. عند `AUTO_SANDBOX` يصنع bounded `ENGINEERING/L4` job ويرسله إلى `make_job()/submit_job()` في #1708.
+
+الـjob contract يفرض no merge/deploy/root/DNS/DB/secrets/firewall/send/publish/pay، ويطلب strict sandbox + evidence-backed acceptance. أي أثر إنتاجي لاحق يبقى parked في L5.
+
+`software_evolution_tick.py` يصنع حتى 3 scout jobs وحتى 3 candidate jobs في الدورة. لا ينشئ scheduler ولا worker loop جديدًا.
+
+## 7/30-day evolution loop
+
+### 7 أيام — canary survival
+
+يقاس فقط بدليل مرصود:
+
 - job success rate.
-- maintenance minutes.
+- founder minutes saved.
+- cash/resource cost.
+- maintenance burden.
 - security incidents.
+- policy incidents.
+- unexpected data-egress incidents.
 - evidence refs.
 
-بعد 7 أيام: `KEEP_CANARY`, `DEMOTE`, `QUARANTINE`, أو `HOLD_MEASURE`.
+نتائج محتملة: `KEEP_CANARY / DEMOTE / QUARANTINE / HOLD_MEASURE`.
 
-بعد 30 يومًا: يمكن `PROMOTE` أو `KILL` إذا كانت الأدلة كافية. أي claim بلا evidence refs لا يحسب verified value.
+### 30 يومًا — promotion gate
+
+`PROMOTE` يتطلب جميع الآتي:
+
+- persistent verified benefit.
+- acceptable reliability/maintenance.
+- no unresolved KEV/HIGH/CRITICAL exposure.
+- zero security/policy/unexpected-egress incidents.
+- rollback tested + rollback evidence refs.
+- no duplicate stack creep.
+- explicit economic reason to keep.
+
+إذا توجد تكلفة بلا فائدة موثقة: `KILL`. إذا ارتفع الخطر: `QUARANTINE`. sunk cost ليس سببًا للإبقاء.
+
+## GitHub / dependency controls
+
+عند توفر خصائص المستودع/الخطة:
+
+- Dependency Review يمنع vulnerable dependency additions في PRs.
+- Artifact Attestations/Provenance تستخدم عند ملاءمتها.
+- OpenSSF Scorecard/Security Insights inputs وليست trust substitute.
+- GitHub job بـ`steps=[]` أو `runner_id=0` يصنف `HOSTED_EXECUTION_PLANE_BLOCKED`، لا Source PASS ولا Source FAIL.
 
 ## Hermes scheduling contract
 
-لا يتم إنشاء scheduler ثانٍ. عند توفر runtime access، يضاف إلى Hermes فقط:
+لا Scheduler ثانٍ. بعد توفر authorized runtime channel يضاف إلى Hermes فقط:
 
 ```bash
-# deterministic/no-agent intake + scout enqueue
 python3 scripts/ops/software_evolution_tick.py \
   --base-sha "$PINNED_RUNTIME_SHA" \
   --max-scouts 3 \
   --max-candidate-jobs 3
 
-# evidence-only benefit reviews
 python3 scripts/ops/software_benefit_review.py --window-days 7
 python3 scripts/ops/software_benefit_review.py --window-days 30
 ```
 
-التردد المقترح داخل Hermes:
+المقترح:
 
-- evolution tick: كل 6 ساعات، no-agent script mode.
-- 7-day benefit review: يوميًا، لأن كل candidate يحمل عمره/أدلته ويُراجع فقط عندما ينطبق window.
-- 30-day benefit review: يوميًا بنفس المنطق، zero-token.
+- evolution tick: كل 6 ساعات، no-agent/script orchestration.
+- 7d review: يوميًا، deterministic/zero-token.
+- 30d review: يوميًا، deterministic/zero-token.
+- #1708 watchdog يبقى العامل الوحيد للـREADY jobs.
 
-Session Factory watchdog الموجود يبقى هو الذي يشغل الـREADY jobs؛ لا نضيف worker loop جديد.
-
-## Operating-board projection
+## Operating boards
 
 | Board | Entry |
 |---|---|
-| Strategy Backlog | Governed software acquisition/evolution over existing Session Factory |
-| Action Queue | Internet scout -> evidence gate -> sandbox -> acceptance -> benefit review |
+| Strategy Backlog | Governed software acquisition/evolution over #1708 |
+| Action Queue | scout -> evidence/capability gates -> strict sandbox -> acceptance -> review |
 | Approval Queue | L5-only production/root/DNS/DB/secret/firewall promotion |
-| Opportunity Graph | لا يتم إنشاء opportunity من software research |
-| Proof Ledger | acceptance receipts + 7/30-day observed benefit evidence |
-| Self Improvement | failed candidates/gates/benchmarks feed kill/demote/research rules |
-| Contacts Radar | لا علاقة لهذه الطبقة بإنشاء consent/relationship |
+| Opportunity Graph | software research لا ينشئ customer opportunity |
+| Proof Ledger | acceptance + provenance/security + 7/30d benefit receipts |
+| Self Improvement | failures/gates/benchmarks feed research/demote/kill rules |
+| Contacts Radar | لا consent أو relationship مشتق من software research |
 
-## Acceptance
+## Acceptance V2
 
-Focused suite:
+يجب أن يشمل exact-head Linux acceptance على الأقل:
 
 ```bash
 pytest tests/test_software_acquisition_factory.py \
+       tests/test_software_acquisition_factory_v2_edges.py \
        tests/test_software_evolution_tick.py \
        tests/test_software_benefit_review.py -q
 python3 -m py_compile \
@@ -156,12 +231,22 @@ python3 -m py_compile \
   scripts/ops/software_evolution_tick.py \
   scripts/ops/software_benefit_review.py
 git diff --check
+ruff check \
+  scripts/ops/software_acquisition_factory.py \
+  scripts/ops/software_evolution_tick.py \
+  scripts/ops/software_benefit_review.py \
+  tests/test_software_acquisition_factory.py \
+  tests/test_software_acquisition_factory_v2_edges.py \
+  tests/test_software_evolution_tick.py \
+  tests/test_software_benefit_review.py
 ```
 
-Device V exact-head acceptance on 2026-09-12: `12 passed` plus Python compile and `git diff --check` PASS.
+الـ`12 passed` القديم يعود إلى V1 head `8e923552...` فقط ولا يصلح merge authority لـV2.
+
+حتى يصدر fresh exact-head V2 receipt، يبقى PR Draft.
 
 ## Runtime activation status
 
-Repository implementation and Device V acceptance are complete. Direct non-interactive SSH from Device V to `root@100.103.59.11` and `dealix@100.103.59.11` is not authorized by the local keychain, so VPS runtime pin / Hermes cron activation was **not claimed as completed** from this lane.
+Repo policy/code V2 معتمد على فرع #1714، لكن VPS pin / Hermes cron activation غير مدعى اكتماله. لا يتم اختلاق runtime activation بلا authorized access.
 
-Activation remains L0-L4 operational work once an authorized runtime channel is available. No merge/deploy/DNS/DB/secret/send/publish/payment action is performed by this factory.
+`L5_EXECUTED=NONE`.
