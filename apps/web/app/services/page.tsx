@@ -80,6 +80,21 @@ const products = [
   },
 ];
 
+const saudiWedges = [
+  {
+    title: "ZATCA / Fatoora Readiness",
+    text: "تشخيص مجاني لفجوات المرحلة الثانية: notification، ERP/integration، owners، testing، exception handling وevidence. لا نمنح حكمًا ضريبيًا أو شهادة امتثال.",
+    href: "/zatca-fatoora-readiness",
+    ctaId: "services_zatca_readiness",
+  },
+  {
+    title: "AI Governance Readiness",
+    text: "تشخيص مجاني لـAI ownership، data/model inventory، approval boundaries وevidence pack مع فصل readiness عن أي اعتماد تنظيمي رسمي.",
+    href: "/ai-governance-readiness",
+    ctaId: "services_ai_governance_readiness",
+  },
+];
+
 export default function ServicesPage() {
   return (
     <main className="dx-corporate-page">
@@ -95,6 +110,20 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <section className="card">
+        <p className="eyebrow">SAUDI MONEY-NOW WEDGES</p>
+        <h2>ابدأ من ضغط تنفيذي حقيقي، ثم اثبت القيمة قبل التوسع.</h2>
+        <div className="cards">
+          {saudiWedges.map((wedge) => (
+            <article className="card" key={wedge.title}>
+              <h3>{wedge.title}</h3>
+              <p>{wedge.text}</p>
+              <TrackedLink href={wedge.href} ctaId={wedge.ctaId} surface="services_saudi_wedges">افتح التشخيص</TrackedLink>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {solutionGroups.map((group) => (
         <section className="card" id={group.id} key={group.id}>
           <p className="eyebrow">{group.label}</p>
@@ -102,9 +131,7 @@ export default function ServicesPage() {
           <p><strong>Buyer:</strong> {group.buyer}</p>
           <div className="cards" style={{ marginTop: "var(--sp-5)" }}>
             {group.capabilities.map((capability) => (
-              <article className="card" key={capability}>
-                <h3>{capability}</h3>
-              </article>
+              <article className="card" key={capability}><h3>{capability}</h3></article>
             ))}
           </div>
           <p style={{ marginTop: "var(--sp-5)" }}><strong>Outcome:</strong> {group.outcome}</p>
