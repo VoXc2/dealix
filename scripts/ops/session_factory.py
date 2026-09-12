@@ -34,6 +34,7 @@ import argparse
 import json
 import os
 import pwd
+import pathlib
 import re
 import shutil
 import subprocess
@@ -56,6 +57,30 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 STATE_DIR = Path(os.environ.get("DEALIX_SESSION_FACTORY_STATE", "/opt/dealix/control/state/session_factory"))
 WORKTREE_ROOT = Path(os.environ.get("DEALIX_SESSION_FACTORY_WORKTREES", "/opt/dealix/worktrees/auto"))
 FROZEN_RELEASE_SHA = os.environ.get("DEALIX_FROZEN_RELEASE_SHA", "8bb0a6c382c49ca288f7b579cae07676f006e229")
+
+def resolve_default_base_sha(repo_root: pathlib.Path | str | None = None) -> str:
+    """Resolve exact live base for autonomous jobs; never inherit stale frozen default blindly."""
+    # Prefer explicit env
+    explicit = os.environ.get("DEALIX_AGENTIC_BASE_SHA", "").strip()
+    if explicit:
+        return explicit
+    # Prefer origin/main, then HEAD, via git
+    git = shutil.which("git")
+    repo = pathlib.Path(repo_root or REPO_ROOT)
+    if git:
+        for candidate in (os.environ.get("DEALIX_AGENTIC_BASE_REF", "origin/main").strip() or "origin/main", "HEAD"):
+            try:
+                result = subprocess.run(
+                    [git, "-C", str(repo), "rev-parse", "--verify", f"{candidate}^{{commit}}"],
+                    capture_output=True, text=True, timeout=10, check=False
+                )
+                sha = result.stdout.strip()
+                if result.returncode == 0 and sha:
+                    return sha
+            except (OSError, subprocess.TimeoutExpired):
+                continue
+    # Fallback to frozen only when live resolution fails (preserves production release path)
+    return FROZEN_RELEASE_SHA
 
 # Autonomous OpenCode runs get their own control database. Sharing the single
 # interactive ``opencode.db`` lets session creation block on that file's write
@@ -389,7 +414,7 @@ def make_job(
             "DEPENDENCIES": [],
             "AUTHORITY_LEVEL": authority_level,
             "REPO": str(REPO_ROOT),
-            "BASE_SHA": base_sha or FROZEN_RELEASE_SHA,
+            "BASE_SHA": base_sha or resolve_default_base_sha(),
             "WORKTREE": None,
             "FILES_IN_SCOPE": files_in_scope or [],
             "FILES_FORBIDDEN": [".env", "*.secret", "auth.json"],
@@ -428,8 +453,10 @@ def validate_job(job: dict[str, Any]) -> list[str]:
     if job.get("STATUS") not in STATES:
         errors.append(f"invalid:STATUS={job.get('STATUS')}")
     owner = job.get("OWNER_AGENT")
-    if owner and owner not in PERMANENT_AGENTS:
-        errors.append(f"invalid:OWNER_AGENT={owner} (must be one of the five permanent agents)")
+    # Allow hierarchical Agentic Holding logical agents (dealix.*) while preserving 5 legacy aliases as compatibility facade
+    is_hierarchical = isinstance(owner, str) and owner.startswith("dealix.") and owner.count(".") >= 2
+    if owner and owner not in PERMANENT_AGENTS and not is_hierarchical:
+        errors.append(f"invalid:OWNER_AGENT={owner} (must be one of the five permanent agents or a hierarchical logical agent dealix.*.*)")
     dependencies = job.get("DEPENDENCIES") or []
     if not isinstance(dependencies, list):
         errors.append("invalid:DEPENDENCIES must be a list")
@@ -776,7 +803,7 @@ def create_worktree(
     if target.exists():
         return {"ok": True, "path": str(target), "reused": True, "branch": branch_for(job)}
     target.parent.mkdir(parents=True, exist_ok=True)
-    base = job.get("BASE_SHA") or FROZEN_RELEASE_SHA
+    base = job.get("BASE_SHA") or resolve_default_base_sha()
     result = subprocess.run(
         [git, "-C", str(repo), "worktree", "add", "-b", branch_for(job), str(target), base],
         capture_output=True,
@@ -1254,7 +1281,8 @@ def factory_status(root: Path) -> dict[str, Any]:
     payload = {
         "schema": STATUS_SCHEMA,
         "generated_at": now_iso(),
-        "base_sha": FROZEN_RELEASE_SHA,
+        "base_sha": resolve_default_base_sha(),
+        "frozen_release_sha": FROZEN_RELEASE_SHA,
         "jobs_total": len(jobs),
         "counts": counts,
         "active_leases": len(active_leases(root)),
