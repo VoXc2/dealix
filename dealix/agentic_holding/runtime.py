@@ -309,6 +309,7 @@ class ResourceGovernor:
     max_workers: int = 12
     max_repo_writers: int = 2
     paid_spill_allowed: bool = False
+    paid_approval_reference: str | None = None
     conservative_cpu_count: int = 4
 
     def budget(self, snapshot: ResourceSnapshot) -> RuntimeBudget:
@@ -331,10 +332,13 @@ class ResourceGovernor:
         if not model_capacity_available:
             workers = min(workers, 2)
         writers = min(max(0, snapshot.worktree_slots), self.max_repo_writers, workers)
+        paid_model_allowed = self.paid_spill_allowed and bool(
+            (self.paid_approval_reference or "").strip()
+        )
         return RuntimeBudget(
             worker_slots=workers,
             writer_slots=writers,
-            paid_model_allowed=self.paid_spill_allowed,
+            paid_model_allowed=paid_model_allowed,
             model_capacity_available=model_capacity_available,
         )
 
@@ -371,7 +375,7 @@ class AgentDispatcher:
                 rejected[item.work_id] = "exact_action_authority_required"
             elif item.requires_paid_model and not budget.paid_model_allowed:
                 rejected[item.work_id] = "paid_spill_blocked"
-            elif item.requires_model and not budget.model_capacity_available:
+            elif (item.requires_model or item.requires_paid_model) and not budget.model_capacity_available:
                 rejected[item.work_id] = "model_quota_exhausted"
             else:
                 eligible.append(item)
