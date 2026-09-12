@@ -101,9 +101,15 @@ def main() -> int:
     skill_path = ROOT / "skills/dealix-commercial-execution/SKILL.md"
     if skill_path.exists():
         skill = skill_path.read_text(encoding="utf-8")
-        for invariant in ("research != relationship", "draft != sent", "invoice != payment", "payment != revenue"):
+        for invariant in ("research != relationship", "draft != sent", "quote != invoice", "invoice != payment"):
             if invariant not in skill:
                 errors.append(f"commercial skill missing invariant: {invariant}")
+
+    acceptance_path = ROOT / "docs/commercial/POST_1712_COMMERCIAL_LAUNCH_ACCEPTANCE_2026-09-12.md"
+    if acceptance_path.exists():
+        acceptance = acceptance_path.read_text(encoding="utf-8")
+        if "payment != revenue" not in acceptance:
+            errors.append("post-1712 acceptance contract missing payment != revenue invariant")
 
     subchecks = [run_check(command) for command in SUBCHECKS if (ROOT / command[1]).exists()]
     for check in subchecks:
