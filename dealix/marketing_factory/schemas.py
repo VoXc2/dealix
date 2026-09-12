@@ -23,8 +23,8 @@ class CalendarSlotRecord(BaseModel):
     channel: str
     title_ar: str
     body_draft_ar: str
-    cta_label_ar: str = "اطلب Risk Score"
-    cta_path: str = "/dealix-diagnostic"
+    cta_label_ar: str = "ابدأ التشخيص المجاني"
+    cta_path: str = "/book"
     utm_campaign: str = ""
     utm_medium: str = "social"
     utm_source: str = "dealix"

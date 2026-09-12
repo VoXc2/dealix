@@ -6,8 +6,8 @@ slots:
     body_draft_ar: >
       فرق B2B في السعودية تسرّع AI قبل تثبيت الموافقات وسجل الأدلة.
       ابدأ بـ Risk Score + Proof Pack — بدون وعود إيراد وهمية.
-    cta_label_ar: "Risk Score"
-    cta_path: /dealix-diagnostic
+    cta_label_ar: "التشخيص المجاني"
+    cta_path: /book
     utm_source: dealix
     utm_medium: social
     utm_campaign: founder_linkedin_w1
