@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import os
+import shutil
+import subprocess
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from dealix.agentic_holding.runtime import DispatchPlan, LogicalAgent, WorkItem
@@ -97,14 +101,42 @@ def legacy_executor_owner(agent: LogicalAgent) -> str:
     return "dealix-pm"
 
 
-def _attach_logical_identity(job: dict[str, Any], agent: LogicalAgent) -> dict[str, Any]:
-    """Persist hierarchical identity while OWNER_AGENT remains an executor facade.
+def resolve_live_base_sha(
+    session_factory: Any,
+    *,
+    repo_root: Path | str | None = None,
+) -> str:
+    """Resolve an exact live base; never inherit the legacy frozen default."""
+    native = getattr(session_factory, "resolve_default_base_sha", None)
+    if callable(native):
+        value = str(native()).strip()
+        if value:
+            return value
 
-    The current Session Factory validator tolerates additional top-level fields,
-    so these values survive durable job persistence without weakening the
-    compatibility owner gate. They become first-class contract candidates for
-    the next bounded Session Factory schema migration.
-    """
+    repo = Path(repo_root or getattr(session_factory, "REPO_ROOT", Path.cwd()))
+    git = shutil.which("git")
+    if not git:
+        raise RuntimeError("git is required to resolve Agentic Holding live base")
+
+    explicit = os.environ.get("DEALIX_AGENTIC_BASE_SHA", "").strip()
+    default_ref = os.environ.get("DEALIX_AGENTIC_BASE_REF", "origin/main").strip() or "origin/main"
+    candidates = (explicit,) if explicit else (default_ref, "HEAD")
+    for candidate in candidates:
+        result = subprocess.run(
+            [git, "-C", str(repo), "rev-parse", "--verify", f"{candidate}^{{commit}}"],
+            capture_output=True,
+            text=True,
+            timeout=20,
+            check=False,
+        )
+        resolved = result.stdout.strip()
+        if result.returncode == 0 and resolved:
+            return resolved
+    raise RuntimeError(f"unable to resolve Agentic Holding live base from {candidates}")
+
+
+def _attach_logical_identity(job: dict[str, Any], agent: LogicalAgent) -> dict[str, Any]:
+    """Persist hierarchy while OWNER_AGENT remains a compatibility facade."""
     job.update(
         {
             "LOGICAL_AGENT_ID": agent.agent_id,
@@ -144,6 +176,8 @@ def render_session_job(
     if agent.arm_id:
         context_refs.append(f"arm:{agent.arm_id}")
 
+    base_sha = request.base_sha or resolve_live_base_sha(session_factory)
+    context_refs.append(f"agentic_base_sha:{base_sha}")
     job = session_factory.make_job(
         owner_agent=legacy_executor_owner(agent),
         business_goal=request.business_goal,
@@ -152,7 +186,7 @@ def render_session_job(
         economic_reason=request.economic_reason,
         priority=float(item.expected_economic_value),
         urgency=request.urgency,
-        base_sha=request.base_sha,
+        base_sha=base_sha,
         modifying=item.repo_writer,
         executor=dict(request.executor or {}),
         acceptance=dict(request.acceptance or {}),
@@ -183,6 +217,61 @@ def render_dispatch_plan(
     return jobs
 
 
+def submit_dispatch_plan(
+    plan: DispatchPlan,
+    *,
+    registry: Any,
+    requests: Mapping[str, SessionWorkRequest],
+    session_factory: Any,
+    state_root: Path,
+    execute: bool = False,
+    repo_root: Path | None = None,
+    worktree_root: Path | None = None,
+) -> dict[str, Any]:
+    """Use the canonical Session Factory; never create a second durable queue."""
+    jobs = render_dispatch_plan(
+        plan,
+        registry=registry,
+        requests=requests,
+        session_factory=session_factory,
+    )
+    submissions: list[dict[str, Any]] = []
+    executions: list[dict[str, Any]] = []
+    for job in jobs:
+        submitted = session_factory.submit_job(state_root, job)
+        submitted_job = submitted.get("job") or job
+        submissions.append(
+            {
+                "JOB_ID": job.get("JOB_ID"),
+                "ok": bool(submitted.get("ok")),
+                "status": submitted_job.get("STATUS"),
+            }
+        )
+        if execute and submitted.get("ok") and submitted_job.get("STATUS") == "READY":
+            outcome = session_factory.run_job(
+                state_root,
+                submitted_job,
+                repo_root=repo_root or getattr(session_factory, "REPO_ROOT", None),
+                worktree_root=worktree_root,
+            )
+            executions.append(
+                {
+                    "JOB_ID": submitted_job.get("JOB_ID"),
+                    "ok": bool(outcome.get("ok")),
+                    "status": outcome.get("status"),
+                }
+            )
+    return {
+        **session_adapter_receipt(jobs),
+        "submitted": True,
+        "execute_requested": execute,
+        "governor_worker_slots": plan.budget.worker_slots,
+        "governor_writer_slots": plan.budget.writer_slots,
+        "submissions": submissions,
+        "executions": executions,
+    }
+
+
 def session_adapter_receipt(jobs: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     logical_identity_preserved = all(
         bool(job.get("LOGICAL_AGENT_ID"))
@@ -192,12 +281,15 @@ def session_adapter_receipt(jobs: Sequence[Mapping[str, Any]]) -> dict[str, Any]
         and any(str(ref).startswith("logical_agent:") for ref in (job.get("CONTEXT_REFS") or []))
         for job in jobs
     )
+    base_shas = sorted({str(job.get("BASE_SHA")) for job in jobs if job.get("BASE_SHA")})
     return {
         "jobs_rendered": len(jobs),
         "legacy_executor_owners": sorted({str(job.get("OWNER_AGENT")) for job in jobs}),
         "logical_agent_ids": sorted({str(job.get("LOGICAL_AGENT_ID")) for job in jobs if job.get("LOGICAL_AGENT_ID")}),
         "logical_identity_fields": list(LOGICAL_IDENTITY_FIELDS),
         "logical_identity_preserved": logical_identity_preserved,
+        "explicit_base_sha": bool(jobs) and len(base_shas) == 1,
+        "base_shas": base_shas,
         "submitted": False,
         "material_external_effects_executed": False,
     }
