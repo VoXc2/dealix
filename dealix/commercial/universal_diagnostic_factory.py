@@ -29,14 +29,9 @@ class DiagnosticDepth(StrEnum):
     D4_DEEP_EVIDENCE = "D4_deep_evidence"
     D5_CONTINUOUS = "D5_continuous"
 
-# Founder policy: D0-D2 are genuinely free. No card, no fake urgency, no fake ROI.
-FREE_DEPTHS: frozenset[DiagnosticDepth] = frozenset(
-    {
-        DiagnosticDepth.D0_SIGNAL_SCAN,
-        DiagnosticDepth.D1_RAPID,
-        DiagnosticDepth.D2_FUNCTIONAL,
-    }
-)
+# Founder policy: every diagnostic depth is genuinely free. Depth describes
+# diagnostic scope/evidence intensity, never payment status.
+FREE_DEPTHS: frozenset[DiagnosticDepth] = frozenset(DiagnosticDepth)
 
 class DiagnosticFamily(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
