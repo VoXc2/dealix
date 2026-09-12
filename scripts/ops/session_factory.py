@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import pwd
 import re
 import shutil
 import subprocess
@@ -286,6 +287,39 @@ def new_job_id() -> str:
     _JOB_SEQUENCE += 1
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S")
     return f"JOB-{stamp}-{os.getpid() % 1000:03d}{_JOB_SEQUENCE:04d}"
+
+
+_CANONICAL_OPERATOR = "dealix"
+
+
+def share_state_with_operator(root: Path) -> dict[str, Any]:
+    """Grant the canonical operator group read access to factory state.
+
+    The factory frequently runs as root while Hermes runs as ``dealix``. A
+    no-agent watchdog under the operator identity cannot read root-owned 0640
+    state, so mirror the operator group onto the state tree after each command.
+    """
+    if os.geteuid() != 0:
+        return {"shared": False, "reason": "not-root"}
+    try:
+        gid = pwd.getpwnam(_CANONICAL_OPERATOR).pw_gid
+    except KeyError:
+        return {"shared": False, "reason": "operator-absent"}
+    shared = 0
+    try:
+        os.chown(root, -1, gid)
+        os.chmod(root, 0o750)  # noqa: S103 - operator group needs r-x to traverse
+        for path in root.rglob("*"):
+            try:
+                os.chown(path, -1, gid)
+                if path.is_file():
+                    os.chmod(path, (path.stat().st_mode & 0o777) | 0o040)
+            except OSError:
+                continue
+            shared += 1
+    except OSError:
+        return {"shared": False, "reason": "chown-failed"}
+    return {"shared": True, "group": _CANONICAL_OPERATOR, "paths": shared}
 
 
 # --------------------------------------------------------------------------
@@ -1285,27 +1319,7 @@ def _load_job_arg(args: argparse.Namespace, root: Path) -> dict[str, Any]:
     )
 
 
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Dealix Hermes Autonomous Session Factory")
-    parser.add_argument("command", choices=("status", "submit", "run", "tick", "recover", "acceptance", "governor", "list"))
-    parser.add_argument("--state-dir", type=Path, default=STATE_DIR)
-    parser.add_argument("--worktree-root", type=Path, default=WORKTREE_ROOT)
-    parser.add_argument("--job-id")
-    parser.add_argument("--file")
-    parser.add_argument("--owner", default="dealix-pm")
-    parser.add_argument("--goal")
-    parser.add_argument("--job-class", default="DETERMINISTIC")
-    parser.add_argument("--authority", default="L1")
-    parser.add_argument("--priority", type=float, default=50.0)
-    parser.add_argument("--modifying", action="store_true")
-    parser.add_argument("--executor", help="JSON executor spec")
-    parser.add_argument("--acceptance", help="JSON acceptance spec")
-    parser.add_argument("--json", action="store_true")
-    args = parser.parse_args(argv)
-
-    root = args.state_dir
-    root.mkdir(parents=True, exist_ok=True)
-
+def _run_command(args: argparse.Namespace, root: Path) -> int:
     if args.command == "status":
         payload = factory_status(root)
         print(json.dumps(payload, indent=2, ensure_ascii=False) if args.json else render_status(payload))
@@ -1341,6 +1355,31 @@ def main(argv: list[str] | None = None) -> int:
     receipt = run_autonomy_acceptance(root)
     print(json.dumps(receipt, indent=2, ensure_ascii=False) if args.json else render_acceptance(receipt))
     return 0 if receipt["overall"] == "PASS" else 1
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Dealix Hermes Autonomous Session Factory")
+    parser.add_argument("command", choices=("status", "submit", "run", "tick", "recover", "acceptance", "governor", "list"))
+    parser.add_argument("--state-dir", type=Path, default=STATE_DIR)
+    parser.add_argument("--worktree-root", type=Path, default=WORKTREE_ROOT)
+    parser.add_argument("--job-id")
+    parser.add_argument("--file")
+    parser.add_argument("--owner", default="dealix-pm")
+    parser.add_argument("--goal")
+    parser.add_argument("--job-class", default="DETERMINISTIC")
+    parser.add_argument("--authority", default="L1")
+    parser.add_argument("--priority", type=float, default=50.0)
+    parser.add_argument("--modifying", action="store_true")
+    parser.add_argument("--executor", help="JSON executor spec")
+    parser.add_argument("--acceptance", help="JSON acceptance spec")
+    parser.add_argument("--json", action="store_true")
+    args = parser.parse_args(argv)
+
+    root = args.state_dir
+    root.mkdir(parents=True, exist_ok=True)
+    rc = _run_command(args, root)
+    share_state_with_operator(root)
+    return rc
 
 
 if __name__ == "__main__":

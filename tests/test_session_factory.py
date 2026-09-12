@@ -197,3 +197,35 @@ def test_autonomy_acceptance_end_to_end(tmp_path: Path) -> None:
     assert receipt["overall"] == "PASS", receipt["evidence"]
     assert receipt["external_effect"] == "NONE"
     assert all(receipt["checks"].values())
+
+
+def test_share_state_skipped_for_non_root(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(factory.os, "geteuid", lambda: 1000)
+    result = factory.share_state_with_operator(tmp_path)
+    assert result == {"shared": False, "reason": "not-root"}
+
+
+def test_share_state_reports_absent_operator(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(factory.os, "geteuid", lambda: 0)
+
+    def _missing(_name):
+        raise KeyError(_name)
+
+    monkeypatch.setattr(factory.pwd, "getpwnam", _missing)
+    result = factory.share_state_with_operator(tmp_path)
+    assert result == {"shared": False, "reason": "operator-absent"}
+
+
+def test_share_state_applies_operator_group(tmp_path: Path, monkeypatch) -> None:
+    (tmp_path / "jobs").mkdir()
+    (tmp_path / "jobs" / "J.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(factory.os, "geteuid", lambda: 0)
+    monkeypatch.setattr(factory.pwd, "getpwnam", lambda _name: type("PW", (), {"pw_gid": 1234})())
+    calls: list[tuple] = []
+    monkeypatch.setattr(factory.os, "chown", lambda *a: calls.append(a))
+    monkeypatch.setattr(factory.os, "chmod", lambda *a: calls.append(a))
+    result = factory.share_state_with_operator(tmp_path)
+    assert result["shared"] is True
+    assert result["group"] == "dealix"
+    assert result["paths"] >= 1
+    assert any(len(call) == 3 and call[2] == 1234 for call in calls)
