@@ -209,27 +209,12 @@ def test_value_estimate_never_invents_without_cost_basis() -> None:
     assert estimated["is_measured_fact"] is False
 
 
-def test_d0_d2_are_free_and_deeper_requires_quote() -> None:
+def test_all_diagnostic_depths_are_free() -> None:
     factory = UniversalDiagnosticFactory()
-    for depth in (
-        DiagnosticDepth.D0_SIGNAL_SCAN,
-        DiagnosticDepth.D1_RAPID,
-        DiagnosticDepth.D2_FUNCTIONAL,
-    ):
+    assert FREE_DEPTHS == frozenset(DiagnosticDepth)
+    for depth in DiagnosticDepth:
         assert factory.is_free(depth)
         assert depth in FREE_DEPTHS
-    for depth in (
-        DiagnosticDepth.D3_CROSS_FUNCTIONAL,
-        DiagnosticDepth.D4_DEEP_EVIDENCE,
-        DiagnosticDepth.D5_CONTINUOUS,
-    ):
-        assert not factory.is_free(depth)
-
-    engine = DiagnosticProductEngine()
-    assert engine.price("professional_services", DiagnosticDepth.D2_FUNCTIONAL) == 0
-    assert engine.pricing_basis(DiagnosticDepth.D2_FUNCTIONAL) == "free_d0_d2"
-    assert engine.pricing_basis(DiagnosticDepth.D3_CROSS_FUNCTIONAL) == QUOTE_REQUIRED
-
 
 def test_generated_diagnostic_text_has_no_fake_roi() -> None:
     factory = UniversalDiagnosticFactory()
