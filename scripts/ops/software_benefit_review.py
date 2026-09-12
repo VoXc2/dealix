@@ -13,14 +13,9 @@ from typing import Any
 OPS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(OPS_DIR))
 
-from software_acquisition_factory import (
-    DEFAULT_REGISTRY,
-    DEFAULT_STATE,
-    load_json,
-    write_json,
-)
+from software_acquisition_factory import DEFAULT_REGISTRY, DEFAULT_STATE, load_json, write_json
 
-REVIEW_SCHEMA = "dealix.software_benefit_review.v1"
+REVIEW_SCHEMA = "dealix.software_benefit_review.v2"
 
 
 def now_iso() -> str:
@@ -31,6 +26,10 @@ def _number(value: Any) -> float | None:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
     return float(value)
+
+
+def _positive_refs(value: Any) -> bool:
+    return isinstance(value, list) and any(str(item).strip() for item in value)
 
 
 def review_candidate(candidate: dict[str, Any], *, window_days: int) -> dict[str, Any]:
@@ -46,6 +45,8 @@ def review_candidate(candidate: dict[str, Any], *, window_days: int) -> dict[str
         }
 
     security_incidents = _number(observations.get("security_incidents"))
+    policy_incidents = _number(observations.get("policy_incidents"))
+    data_egress_incidents = _number(observations.get("unexpected_data_egress_incidents"))
     success_rate = _number(observations.get("job_success_rate"))
     founder_minutes_saved = _number(observations.get("founder_minutes_saved"))
     cash_saved = _number(observations.get("cash_saved"))
@@ -53,7 +54,7 @@ def review_candidate(candidate: dict[str, Any], *, window_days: int) -> dict[str
     maintenance_minutes = _number(observations.get("maintenance_minutes"))
     evidence_refs = observations.get("evidence_refs")
 
-    if not isinstance(evidence_refs, list) or not evidence_refs:
+    if not _positive_refs(evidence_refs):
         return {
             "candidate_id": candidate_id,
             "window_days": window_days,
@@ -63,14 +64,33 @@ def review_candidate(candidate: dict[str, Any], *, window_days: int) -> dict[str
         }
 
     vuln = str(candidate.get("vulnerability_status") or "UNKNOWN").upper()
-    if vuln in {"CRITICAL", "KNOWN_CRITICAL", "BLOCKED_CRITICAL"} or (
-        security_incidents is not None and security_incidents > 0
+    if bool(candidate.get("cisa_kev_match")):
+        return {
+            "candidate_id": candidate_id,
+            "window_days": window_days,
+            "decision": "QUARANTINE",
+            "reason": "candidate matches CISA Known Exploited Vulnerabilities evidence",
+            "counts_as_verified_value": False,
+            "evidence_refs": evidence_refs,
+        }
+    if vuln in {"CRITICAL", "HIGH", "KNOWN_CRITICAL", "KNOWN_HIGH", "BLOCKED_CRITICAL", "BLOCKED_HIGH"}:
+        return {
+            "candidate_id": candidate_id,
+            "window_days": window_days,
+            "decision": "QUARANTINE",
+            "reason": "unresolved high/critical vulnerability evidence",
+            "counts_as_verified_value": False,
+            "evidence_refs": evidence_refs,
+        }
+    if any(
+        value is not None and value > 0
+        for value in (security_incidents, policy_incidents, data_egress_incidents)
     ):
         return {
             "candidate_id": candidate_id,
             "window_days": window_days,
             "decision": "QUARANTINE",
-            "reason": "security regression or critical vulnerability evidence",
+            "reason": "security, policy, or unexpected data-egress incident observed",
             "counts_as_verified_value": False,
             "evidence_refs": evidence_refs,
         }
@@ -92,12 +112,56 @@ def review_candidate(candidate: dict[str, Any], *, window_days: int) -> dict[str
     net_cash_positive = cash_saved is not None and cash_cost is not None and cash_saved > cash_cost
     low_maintenance = maintenance_minutes is None or maintenance_minutes <= max(60.0, founder_minutes_saved or 0.0)
 
-    if positive_value and (success_rate is None or success_rate >= 0.90) and low_maintenance:
+    if window_days >= 30 and positive_value and (success_rate is None or success_rate >= 0.90) and low_maintenance:
+        rollback_tested = bool(observations.get("rollback_tested"))
+        rollback_refs = observations.get("rollback_evidence_refs")
+        duplicate_stack_creep = bool(observations.get("duplicate_stack_creep"))
+        keep_reason = str(observations.get("economic_reason_to_keep") or "").strip()
+        if not rollback_tested or not _positive_refs(rollback_refs):
+            return {
+                "candidate_id": candidate_id,
+                "window_days": window_days,
+                "decision": "HOLD_MEASURE",
+                "reason": "30-day promotion requires tested rollback with evidence",
+                "counts_as_verified_value": False,
+                "evidence_refs": evidence_refs,
+            }
+        if duplicate_stack_creep:
+            return {
+                "candidate_id": candidate_id,
+                "window_days": window_days,
+                "decision": "DEMOTE",
+                "reason": "duplicate stack creep detected",
+                "counts_as_verified_value": False,
+                "evidence_refs": evidence_refs,
+            }
+        if not keep_reason:
+            return {
+                "candidate_id": candidate_id,
+                "window_days": window_days,
+                "decision": "HOLD_MEASURE",
+                "reason": "30-day promotion requires explicit economic reason to keep",
+                "counts_as_verified_value": False,
+                "evidence_refs": evidence_refs,
+            }
         return {
             "candidate_id": candidate_id,
             "window_days": window_days,
-            "decision": "PROMOTE" if window_days >= 30 else "KEEP_CANARY",
-            "reason": "evidence-backed operational/economic benefit with acceptable reliability",
+            "decision": "PROMOTE",
+            "reason": "persistent verified benefit, reliability, rollback proof, and policy safety",
+            "counts_as_verified_value": True,
+            "net_cash_positive": net_cash_positive,
+            "rollback_evidence_refs": rollback_refs,
+            "economic_reason_to_keep": keep_reason,
+            "evidence_refs": evidence_refs,
+        }
+
+    if window_days < 30 and positive_value and (success_rate is None or success_rate >= 0.90) and low_maintenance:
+        return {
+            "candidate_id": candidate_id,
+            "window_days": window_days,
+            "decision": "KEEP_CANARY",
+            "reason": "7-day evidence-backed benefit with acceptable reliability; continue bounded canary",
             "counts_as_verified_value": True,
             "net_cash_positive": net_cash_positive,
             "evidence_refs": evidence_refs,
