@@ -91,7 +91,7 @@ class MarketingJSONStore:
                     title_ar=str(row.get("title_ar") or ""),
                     body_draft_ar=str(row.get("body_draft_ar") or ""),
                     cta_label_ar=str(row.get("cta_label_ar") or ""),
-                    cta_path=str(row.get("cta_path") or "/dealix-diagnostic"),
+                    cta_path=str(row.get("cta_path") or "/book"),
                     utm_campaign=str(row.get("utm_campaign") or ""),
                     utm_medium=str(row.get("utm_medium") or "social"),
                     utm_source=str(row.get("utm_source") or "dealix"),

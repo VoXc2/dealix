@@ -67,3 +67,9 @@ def test_review_threads_and_main_drift_fail_closed():
     assert "review-thread evidence could not be retrieved; fail closed" in ENGINEER
     assert "current-main comparison could not be verified; fail closed" in ENGINEER
     assert "PR head is behind current main" in ENGINEER
+
+
+def test_review_pr_initializes_pr_before_packet_path():
+    review = ENGINEER.split("review_pr() {", 1)[1].split("changed_files_for_pr()", 1)[0]
+    assert 'local pr="$1"\n  local packet="${RUN_DIR}/PR_${pr}_MERGE_PACKET.md"' in review
+    assert 'local pr="$1" packet="${RUN_DIR}/PR_${pr}_MERGE_PACKET.md"' not in review

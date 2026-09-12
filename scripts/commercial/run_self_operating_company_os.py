@@ -15,8 +15,12 @@ import argparse
 import json
 import os
 from dataclasses import asdict, dataclass
+
 try:
-    from dealix.commercial.universal_diagnostic_factory import DiagnosticDepth, UniversalDiagnosticFactory
+    from dealix.commercial.universal_diagnostic_factory import (
+        DiagnosticDepth,
+        UniversalDiagnosticFactory,
+    )
 except Exception:
     UniversalDiagnosticFactory = None
     DiagnosticDepth = None
@@ -79,7 +83,7 @@ PLAYBOOKS = [
     {
         "name": "production_and_trust",
         "priority": 100,
-        "goal": "Close #1476, #1494 and #1121 evidence before public scale.",
+        "goal": "Close current Production Trust and release-parity evidence before public scale.",
         "safe_actions": [
             "reconcile current main and production evidence",
             "classify exact-head trust blockers without weakening gates",
@@ -427,11 +431,11 @@ def write_daily_report(
         [
             "",
             "## Current executive focus",
-            "1. #1494 exact-head commercial/runtime acceptance.",
-            "2. #1476 production recovery + governed GTM activation.",
-            "3. #1121 canonical apps/web front-door truth.",
-            "4. First verified paid 30-Day Revenue Command Pilot with payment evidence.",
-            "5. Delivery evidence -> customer-validated Proof -> STOP / EXPAND / REDESIGN.",
+            "1. Production Trust: current exact-head acceptance + current-main Web/API release parity.",
+            "2. Revenue/Customer: real interaction -> qualified problem -> Diagnostic -> customer-specific quote -> verified payment.",
+            "3. Company/Scale: Deep-WIP <= 3; partner/B2G only where eligibility, non-overlap, margin, and proof route are evidenced.",
+            "4. Delivery/Proof: predefine acceptance and a customer-validated Proof Pack for paid work.",
+            "5. Learning: convert root causes into bounded regression and evidence rules.",
             "",
             "## Truth firewall",
             "- Research != relationship.",
