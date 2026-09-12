@@ -1,4 +1,12 @@
-"""First paid Diagnostic DoD — evidence CSV + KPI import (no invented revenue)."""
+"""First verified commercial close tracker — free diagnostic → paid delivery.
+
+Historical note: this module/file was originally named for a "first paid
+Diagnostic" milestone. Dealix' current constitution makes *all* diagnostic
+depths free. The canonical economic milestone tracked here is now the first
+verified commercial close after a free diagnostic/discovery path. The legacy
+function name remains as a compatibility alias for existing scripts and audit
+history; it does not authorize diagnostic pricing.
+"""
 
 from __future__ import annotations
 
@@ -15,8 +23,11 @@ from dealix.commercial_ops.paths import (
 
 EVIDENCE = EVIDENCE_TRACKER_CSV
 KPI_YAML = REPO_ROOT / "dealix/transformation/kpi_founder_commercial_import.yaml"
+# Historical DoD document retained for audit compatibility; current economic
+# semantics are governed by DIAGNOSTIC_PRICE_POLICY below.
 DOD_DOC = REPO_ROOT / "docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md"
 SOFT_LAUNCH_TRACKER = SOFT_LAUNCH_TRACKER_YAML
+DIAGNOSTIC_PRICE_POLICY = "FREE_ALL_DEPTHS"
 
 REVENUE_LADDER_AR = (
     "Free Mini Diagnostic → qualified discovery → customer-specific quote → "
@@ -46,13 +57,14 @@ def _companies_by_key(rows: list[dict[str, str]]) -> dict[str, str]:
     return companies
 
 
-def analyze_first_paid_diagnostic() -> dict[str, Any]:
+def analyze_first_commercial_close() -> dict[str, Any]:
+    """Track verified payment+proof closure after the free diagnostic path."""
     events = _load_events()
     real = real_evidence_rows(events)
     by_type: dict[str, list[dict[str, str]]] = {}
     for row in real:
-        et = (row.get("event_type") or "").strip()
-        by_type.setdefault(et, []).append(row)
+        event_type = (row.get("event_type") or "").strip()
+        by_type.setdefault(event_type, []).append(row)
 
     kpi_ok = KPI_YAML.is_file()
     crm_pending = True
@@ -104,4 +116,20 @@ def analyze_first_paid_diagnostic() -> dict[str, Any]:
         "verdict": verdict,
         "revenue_ladder_ar": REVENUE_LADDER_AR,
         "soft_launch_tracker": display_path(SOFT_LAUNCH_TRACKER),
+        "diagnostic_price_policy": DIAGNOSTIC_PRICE_POLICY,
+        "canonical_milestone": "FIRST_VERIFIED_COMMERCIAL_CLOSE",
+        "legacy_tracker_name": "first_paid_diagnostic",
     }
+
+
+def analyze_first_paid_diagnostic() -> dict[str, Any]:
+    """Compatibility alias; does *not* mean a diagnostic may be charged."""
+    return analyze_first_commercial_close()
+
+
+__all__ = [
+    "DIAGNOSTIC_PRICE_POLICY",
+    "REVENUE_LADDER_AR",
+    "analyze_first_commercial_close",
+    "analyze_first_paid_diagnostic",
+]
