@@ -17,7 +17,7 @@ export function HermesAgentWidget() {
 
   function send(text: string) {
     if (!text.trim()) return;
-    setMessages((m) => [...m, { role: "user", text }, { role: "hermes", text: isAr ? `هرميس: فهمت — قطاعك يحتاج تشخيص D1 (3 عائلات) + عرض ${text.includes("ZATCA") ? "ZATCA" : "مجاني 7 أيام"} + إثبات L0-L5 — كلشي بأفضل شكل، 5 وكلاء يديرون، DeepWIP≤3. هل تريد تسجيل حساب الآن؟` : `Hermes: Got it — your sector needs D1 diagnostic (3 families) + ${text.includes("ZATCA") ? "ZATCA" : "free 7d"} offer + L0-L5 proof — all in best form, 5 agents manage, DeepWIP≤3. Want to register now?` }]);
+    setMessages((m) => [...m, { role: "user", text }, { role: "hermes", text: isAr ? `هرميس: فهمت — قطاعك يحتاج تشخيص D1 (3 عائلات) + عرض ${text.includes("ZATCA") ? "ZATCA" : "مجاني 7 أيام"} + إثبات L0-L5 — محكوم وموثق. هل تريد تسجيل حساب الآن؟` : `Hermes: Got it — your sector needs D1 diagnostic (3 families) + ${text.includes("ZATCA") ? "ZATCA" : "free 7d"} offer + L0-L5 proof — governed & evidence-backed. Want to register now?` }]);
     setInput("");
   }
 

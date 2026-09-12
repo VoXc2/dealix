@@ -41,7 +41,7 @@ export function InteractiveTechDemo() {
       </div>
       <div className="mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4">
         <p className="text-sm font-bold text-emerald-400">{isAr ? "النتيجة التقنية" : "Technical Result"}</p>
-        <p className="text-xs text-white/70 mt-1">{isAr ? `قطاع \${sector} + تشخيص \${diagnostic} → 5 وكلاء، 44 ذراع، DeepWIP≤3، بدون شوائب` : `Sector \${sector} + Diagnostic \${diagnostic} → 5 agents, 44 arms, DeepWIP≤3, no impurities`}</p>
+        <p className="text-xs text-white/70 mt-1">{isAr ? `قطاع \${sector} + تشخيص \${diagnostic} → محكوم وموثق، بدون شوائب` : `Sector \${sector} + Diagnostic \${diagnostic} → governed & evidence-backed, no impurities`}</p>
         <p className="text-xs text-white/40 mt-2">500 cells • 50 families • 12 channels • SaaS 20 tenants • Proof L0-L5</p>
       </div>
     </div>
