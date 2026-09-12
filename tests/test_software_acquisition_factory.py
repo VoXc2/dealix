@@ -49,7 +49,7 @@ def candidate(**overrides) -> dict:
         "license": "Apache-2.0",
         "purpose": "reduce repetitive engineering toil",
         "dealix_gap": "automate safe maintenance",
-        "scores": {field: 90 for field in SCORE_FIELDS},
+        "scores": dict.fromkeys(SCORE_FIELDS, 90),
         "monthly_cost": 0,
         "resource_cost": "LOW",
         "alternatives": [],

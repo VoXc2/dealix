@@ -17,8 +17,8 @@ OPS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(OPS_DIR))
 
-from session_factory import make_job, submit_job  # noqa: E402
-from software_acquisition_factory import (  # noqa: E402
+from session_factory import make_job, submit_job
+from software_acquisition_factory import (
     DEFAULT_REGISTRY,
     DEFAULT_SESSION_STATE,
     DEFAULT_STATE,

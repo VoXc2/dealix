@@ -13,7 +13,12 @@ from typing import Any
 OPS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(OPS_DIR))
 
-from software_acquisition_factory import DEFAULT_REGISTRY, DEFAULT_STATE, load_json, write_json  # noqa: E402
+from software_acquisition_factory import (
+    DEFAULT_REGISTRY,
+    DEFAULT_STATE,
+    load_json,
+    write_json,
+)
 
 REVIEW_SCHEMA = "dealix.software_benefit_review.v1"
 

@@ -32,7 +32,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 OPS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(OPS_DIR))
 
-from session_factory import make_job, submit_job  # noqa: E402
+from session_factory import make_job, submit_job
 
 POLICY_PATH = REPO_ROOT / "config/company/software_acquisition_policy.json"
 DEFAULT_REGISTRY = Path(
@@ -139,7 +139,7 @@ def blank_candidate(candidate_id: str, name: str) -> dict[str, Any]:
         "license": "UNKNOWN",
         "purpose": "",
         "dealix_gap": "",
-        "scores": {field: 0 for field in SCORE_FIELDS},
+        "scores": dict.fromkeys(SCORE_FIELDS, 0),
         "monthly_cost": None,
         "resource_cost": "UNKNOWN",
         "alternatives": [],
