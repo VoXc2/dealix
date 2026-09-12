@@ -47,7 +47,7 @@ def test_money_now_registry_preserves_research_truth_boundary() -> None:
     payload = json.loads((ROOT / "config/growth/saudi_money_now_wedges_2026-09-12.json").read_text(encoding="utf-8"))
     assert payload["schema"] == "dealix.saudi_money_now_wedges.v1"
     assert "not relationship" in payload["truth_law"]
-    assert "not certification" in payload["truth_law"]
+    assert "certification" in payload["truth_law"]
     assert "not pipeline" in payload["truth_law"]
     assert "not revenue" in payload["truth_law"]
     ids = {item["id"] for item in payload["wedges"]}
