@@ -258,12 +258,12 @@ def test_execute_opencode_places_auto_after_run(tmp_path: Path, monkeypatch) -> 
     captured: dict[str, object] = {}
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
-    def _capture(argv, cwd, timeout=600, env=None):
+    def _capture(argv, cwd, timeout=600, env=None, stdin=None):
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
-    result = factory.execute_opencode(job, tmp_path)
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
     assert argv[:3] == [str(binary), "run", "--auto"]
@@ -284,12 +284,12 @@ def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) 
     monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: [])
     monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
     monkeypatch.setattr(factory, "discover_router_models", lambda: [])
-    def _capture(argv, cwd, timeout=600, env=None):
+    def _capture(argv, cwd, timeout=600, env=None, stdin=None):
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
-    result = factory.execute_opencode(job, tmp_path)
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
     assert argv[0:3] == [str(binary), "run", "--auto"]
@@ -308,10 +308,104 @@ def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> 
     monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode-go/deepseek-v4.1-flash"])
     monkeypatch.setattr(factory, "discover_ollama_models", lambda: ["qwen3:4b"])
     monkeypatch.setattr(factory, "discover_router_models", lambda: ["dealix-local"])
-    def _capture(argv, cwd, timeout=600, env=None):
+    def _capture(argv, cwd, timeout=600, env=None, stdin=None):
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
-    assert factory.execute_opencode(job, tmp_path)["ok"] is True
+    assert factory.execute_opencode(job, tmp_path, db_dir=tmp_path)["ok"] is True
     assert captured["argv"][3:5] == ["-m", "opencode-go/deepseek-v4.1-flash"]
+
+
+def _opencode_job(**overrides):
+    kwargs = {
+        "owner_agent": "dealix-engineer",
+        "business_goal": "control-path canary",
+        "job_class": "REVIEW",
+        "authority_level": "L2",
+        "modifying": False,
+        "executor": {"prompt": "inspect"},
+    }
+    kwargs.update(overrides)
+    return factory.make_job(**kwargs)
+
+
+def test_opencode_fails_closed_without_permission_policy(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(tmp_path / "missing.json"))
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: "/usr/bin/true")
+
+    def _boom(*_args, **_kwargs):
+        raise AssertionError("run_argv must not be called without the hardened policy")
+
+    monkeypatch.setattr(factory, "run_argv", _boom)
+    result = factory.execute_opencode(_opencode_job(), tmp_path)
+    assert result["ok"] is False
+    assert result["returncode"] == 78
+    assert "policy" in result["stderr"]
+
+
+def test_opencode_fails_closed_when_control_db_unavailable(tmp_path: Path, monkeypatch) -> None:
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: "/usr/bin/true")
+
+    def _boom(*_args, **_kwargs):
+        raise AssertionError("run_argv must not be called without a writable control DB")
+
+    monkeypatch.setattr(factory, "run_argv", _boom)
+    blocker = tmp_path / "blocker"
+    blocker.write_text("not-a-dir", encoding="utf-8")
+    result = factory.execute_opencode(_opencode_job(), tmp_path, db_dir=blocker / "opencode")
+    assert result["ok"] is False
+    assert result["returncode"] == 73
+    assert "control-db-unavailable" in result["stderr"]
+
+
+def test_opencode_isolates_control_path_and_stdin(tmp_path: Path, monkeypatch) -> None:
+    policy = tmp_path / "permissions.json"
+    policy.write_text('{"bash":{"*":"allow"}}', encoding="utf-8")
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: "/usr/bin/true")
+    captured: dict[str, object] = {}
+
+    def _capture(argv, cwd, timeout=600, env=None, stdin=None):
+        captured.update(argv=argv, env=env, stdin=stdin)
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    job = _opencode_job()
+    assert factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")["ok"] is True
+    argv = captured["argv"]
+    env = captured["env"]
+    assert argv[:3] == ["/usr/bin/true", "run", "--auto"]
+    assert env["OPENCODE_PERMISSION"] == '{"bash":{"*":"allow"}}'
+    assert env["OPENCODE_DB"] == str(tmp_path / "oc" / f"{job['JOB_ID']}.db")
+    assert env["OPENCODE_DISABLE_AUTOUPDATE"] == "1"
+    assert env["OPENCODE_DISABLE_MODELS_FETCH"] == "1"
+    assert captured["stdin"] is subprocess.DEVNULL
+    assert (tmp_path / "oc").is_dir()
+
+
+def test_opencode_control_db_is_unique_per_job(tmp_path: Path) -> None:
+    first = factory.opencode_db_path(_opencode_job(), tmp_path)
+    second = factory.opencode_db_path(_opencode_job(), tmp_path)
+    assert first != second
+    assert first.parent == second.parent == tmp_path
+
+
+def test_run_argv_forwards_stdin_to_subprocess(tmp_path: Path, monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class _Completed:
+        returncode = 0
+        stdout = "ok"
+        stderr = ""
+
+    def _run(argv, **kwargs):
+        captured.update(kwargs)
+        return _Completed()
+
+    monkeypatch.setattr(factory.subprocess, "run", _run)
+    factory.run_argv(["true"], tmp_path, stdin=subprocess.DEVNULL)
+    assert captured["stdin"] is subprocess.DEVNULL
