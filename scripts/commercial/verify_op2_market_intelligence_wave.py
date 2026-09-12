@@ -117,7 +117,7 @@ def main() -> int:
         radar_meta = _read_json(RADAR_PATH)
         playbooks = _read_json(PLAYBOOK_PATH)
         runner = _load_runner()
-    except Exception as exc:  # noqa: BLE001 - fail closed regardless of cause
+    except Exception as exc:
         print(VERDICT_FAIL)
         print(f"ERROR={exc}")
         return 1

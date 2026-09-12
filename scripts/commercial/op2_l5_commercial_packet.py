@@ -39,7 +39,7 @@ PROVIDER = "gmail"
 
 def build_packet() -> dict[str, Any]:
     from dealix.commercial.external_execution_gate import (
-        ExecutionDecision,  # noqa: F401  (documented dependency)
+        ExecutionDecision,
         ResolvedAuthoritySnapshot,
         RuntimeAuthority,
         build_external_action_packet,

@@ -149,7 +149,12 @@ def build_b2g(wave: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def rank_partners() -> list[dict[str, Any]]:
-    from dealix.commercial.partner_economy import PartnerCandidate, PartnerEconomy, PartnerMotion, PartnerType
+    from dealix.commercial.partner_economy import (
+        PartnerCandidate,
+        PartnerEconomy,
+        PartnerMotion,
+        PartnerType,
+    )
 
     economy = PartnerEconomy()
     for item in PARTNER_HYPOTHESES:
