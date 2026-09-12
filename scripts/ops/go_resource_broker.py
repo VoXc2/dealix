@@ -4,6 +4,11 @@
 Deterministic planner only: it never calls a model and never spends paid balance.
 Headroom that cannot be observed locally is reported as UNKNOWN and handled with
 a conservative envelope. Paid fallback (R6) requires explicit approval.
+
+Automatic model selection is fail-closed: only model IDs that explicitly declare
+``-free`` or live in the Dealix-included ``opencode-go/*`` namespace may be
+automatically returned for R3-R5. Merely appearing in the OpenCode catalog does
+not prove free/included entitlement.
 """
 
 from __future__ import annotations
@@ -14,12 +19,27 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+OPS_DIR = Path(__file__).resolve().parent
+if str(OPS_DIR) not in sys.path:
+    sys.path.insert(0, str(OPS_DIR))
+
+from model_cost_policy import (
+    PAID_PENDING_APPROVAL,
+    UNKNOWN_INCLUDED_HIGH,
+    UNKNOWN_INCLUDED_LIGHT,
+    UNKNOWN_INCLUDED_STRONG,
+    explicit_free_models,
+    first_available,
+    included_opencode_go_models,
+)
+
 STATE_PATH = Path("/opt/dealix/company-os/founder-os/model_economics/GO_BROKER_STATE.json")
 ROUTER_URL = "http://127.0.0.1:11999/v1/models"
 OLLAMA_URL = "http://127.0.0.1:11434/api/tags"
@@ -85,7 +105,11 @@ UNKNOWN = "UNKNOWN"
 def _run(cmd: list[str], timeout: int = 30) -> str:
     try:
         return subprocess.run(
-            cmd, capture_output=True, text=True, timeout=timeout, check=False,
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
             cwd=str(REPO_ROOT) if REPO_ROOT.is_dir() else None,
         ).stdout
     except (OSError, subprocess.TimeoutExpired):
@@ -162,28 +186,35 @@ def discover_ollama_models() -> list[str]:
 
 
 def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[str]) -> str:
-    free = [model for model in catalog if "-free" in model]
+    free = explicit_free_models(catalog)
+    included = included_opencode_go_models(catalog)
+    safe = [*included, *[model for model in free if model not in included]]
+
     if route == "R0_NO_MODEL" or route == "R1_DETERMINISTIC":
         return "none"
     if route == "R2_LOCAL_OLLAMA":
         return ollama[0] if ollama else "ollama:UNKNOWN"
     if route == "R3_INCLUDED_LIGHT":
-        return free[0] if free else (router[0] if router else "included:light:UNKNOWN")
+        return free[0] if free else (included[0] if included else UNKNOWN_INCLUDED_LIGHT)
     if route == "R4_INCLUDED_HIGH":
         preferred = (
             "opencode-go/deepseek-v4.1-flash",
             "opencode-go/deepseek-v4-flash",
-            "opencode/deepseek-v4-flash",
+            "opencode/deepseek-v4-flash-free",
+            "opencode/north-mini-code-free",
+            "opencode/nemotron-3-ultra-free",
         )
-        return next((model for model in preferred if model in catalog), catalog[0] if catalog else preferred[0])
+        selected = first_available(preferred, safe)
+        return selected or UNKNOWN_INCLUDED_HIGH
     if route == "R5_STRONG_REASONING":
         preferred = (
             "opencode-go/deepseek-v4-pro",
-            "opencode/deepseek-v4-pro",
             "opencode-go/glm-5.3",
+            "opencode/nemotron-3-ultra-free",
         )
-        return next((model for model in preferred if model in catalog), catalog[-1] if catalog else preferred[0])
-    return "PAID_PENDING_APPROVAL"
+        selected = first_available(preferred, safe)
+        return selected or UNKNOWN_INCLUDED_STRONG
+    return PAID_PENDING_APPROVAL
 
 
 def load_state(path: Path = STATE_PATH) -> dict[str, Any]:
@@ -281,10 +312,17 @@ def status_payload(refresh_models: bool = False) -> dict[str, Any]:
         "generated_at": datetime.now(UTC).isoformat(),
         "opencode": opencode,
         "catalog_size": len(catalog),
-        "catalog_free_models": [model for model in catalog if "-free" in model][:5],
+        "catalog_free_models": explicit_free_models(catalog)[:5],
+        "catalog_included_go_models": included_opencode_go_models(catalog)[:5],
+        "catalog_unproven_models": [
+            model
+            for model in catalog
+            if model not in explicit_free_models(catalog) and model not in included_opencode_go_models(catalog)
+        ][:5],
         "router_models": discover_router_models(),
         "ollama_models": discover_ollama_models(),
         "envelope": daily_envelope(state),
+        "auto_select_policy": "explicit_free_or_opencode_go_included_only",
         "paid_spill": "DISABLED_BY_DEFAULT",
     }
 
@@ -295,12 +333,15 @@ def render_status(status: dict[str, Any]) -> str:
         f"OPENCODE={status['opencode']['name']}@{status['opencode']['version']}",
         f"CATALOG_SIZE={status['catalog_size']}",
         f"FREE_MODELS={status['catalog_free_models']}",
+        f"INCLUDED_GO_MODELS={status['catalog_included_go_models']}",
+        f"UNPROVEN_MODELS={status['catalog_unproven_models']}",
         f"ROUTER_MODELS={status['router_models']}",
         f"OLLAMA_MODELS={status['ollama_models']}",
         f"INCLUDED_JOBS_TODAY={status['envelope']['included_jobs_today']}",
         f"INCLUDED_JOBS_REMAINING={status['envelope']['included_jobs_remaining']}",
         f"STRONG_JOBS_REMAINING={status['envelope']['strong_jobs_remaining']}",
         f"HEADROOM={status['envelope']['headroom_source']}",
+        f"AUTO_SELECT_POLICY={status['auto_select_policy']}",
         f"PAID_SPILL={status['paid_spill']}",
     ]
     return "\n".join(lines)
