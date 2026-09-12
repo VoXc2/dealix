@@ -1,0 +1,95 @@
+{
+  "schema": "dealix.software_acquisition_policy.v1",
+  "name": "Dealix Software Acquisition & Evolution Factory",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "one_company_machine": true,
+  "permanent_agents": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content"
+  ],
+  "deep_wip_max": 3,
+  "weights": {
+    "business_value": 0.30,
+    "security": 0.20,
+    "maturity": 0.15,
+    "maintenance": 0.10,
+    "integration_fit": 0.10,
+    "license": 0.05,
+    "cost": 0.05,
+    "reversibility": 0.05
+  },
+  "thresholds": {
+    "auto_sandbox_min": 80,
+    "research_more_min": 65
+  },
+  "hard_gates": {
+    "critical_vulnerability": "REJECT_SECURITY",
+    "unknown_license": "HOLD_LICENSE",
+    "duplicate": "REJECT_DUPLICATE",
+    "requires_secret_dump": "REJECT_SECRET_RISK",
+    "invalid_signature": "QUARANTINE",
+    "missing_rollback": "HOLD_ROLLBACK"
+  },
+  "installation_tiers": {
+    "dependency_sandbox": "L3_INTERNAL",
+    "container_sidecar": "L3_INTERNAL",
+    "loopback_service": "L4_REPO_CANARY",
+    "repo_integration": "L4_REPO_EXECUTE",
+    "production": "L5_REQUIRED",
+    "root_system": "L5_REQUIRED",
+    "dns": "L5_REQUIRED",
+    "database": "L5_REQUIRED",
+    "secret": "L5_REQUIRED",
+    "firewall": "L5_REQUIRED"
+  },
+  "truth_laws": [
+    "internet_discovery_is_not_trust",
+    "research_is_not_relationship",
+    "public_contact_is_not_consent",
+    "draft_is_not_sent",
+    "quote_is_not_invoice",
+    "invoice_is_not_payment",
+    "payment_is_not_revenue_without_verified_evidence",
+    "synthetic_or_demo_is_not_customer_proof",
+    "http_200_is_not_release_identity",
+    "merged_pr_is_not_deployed_release"
+  ],
+  "supply_chain_sequence": [
+    "DISCOVER",
+    "OFFICIAL_SOURCE",
+    "PIN_VERSION_OR_COMMIT",
+    "VERIFY_SIGNATURE_OR_PROVENANCE",
+    "GENERATE_OR_INGEST_SBOM",
+    "VULNERABILITY_SCAN",
+    "LICENSE_CHECK",
+    "ISOLATED_SANDBOX",
+    "TEST",
+    "BENCHMARK",
+    "INTEGRATE_DRAFT_ONLY",
+    "OBSERVE_BENEFIT",
+    "PROMOTE_OR_KILL"
+  ],
+  "recommended_tooling": [
+    "renovate",
+    "openssf_scorecard",
+    "osv_scanner",
+    "trivy",
+    "cosign",
+    "cyclonedx_or_spdx",
+    "crawl4ai",
+    "changedetection_io",
+    "opentelemetry_collector",
+    "uptime_kuma",
+    "opencode",
+    "hermes",
+    "ollama"
+  ],
+  "paid_spill_default": false,
+  "external_send_default": false,
+  "public_publish_default": false,
+  "merge_default": false,
+  "deploy_default": false
+}
