@@ -1,0 +1,790 @@
+{
+  "schema": "dealix.market-signal-set.v1",
+  "wave_id": "op2-market-intelligence-wave-2026-09-12",
+  "lane": "OP2",
+  "generated_at": "2026-09-12T05:55:00+03:00",
+  "scope": "dealix_company",
+  "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
+  "authority": {
+    "relationship": false,
+    "consent": false,
+    "offer": false,
+    "price": false,
+    "quote": false,
+    "contract": false,
+    "external_send": false,
+    "payment": false,
+    "customer_proof": false,
+    "execution": false,
+    "production": false
+  },
+  "notes": "Fresh OP2 Saudi market-intelligence wave. Public/regulatory signals only. A market signal is NOT an opportunity, relationship, consent, quote, or revenue. Authority flags are all false; promotion is owned by canonical downstream state owners only.",
+  "signals": [
+    {
+      "signal_id": "op2-2026-zatca-wave25-einvoicing",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "observed_at": "2026-07-24T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "ZATCA media release: Wave 25 integration-phase criteria (published 24 July 2026)",
+      "fresh_until": "2027-02-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "ZATCA (Zakat, Tax and Customs Authority)",
+      "buyer": "CFO / finance operations / tax compliance lead",
+      "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
+      "trigger": "Wave 25 lowers the Phase-2 threshold to SAR 187,500 VAT-subject revenue in any of 2022-2025",
+      "deadline": "2027-02-01",
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://kpmg.com/sa/en/insights/tax-insights/announcement-of-25th-wave-for-e-invoicing-phase-2-implementation.html",
+        "https://taxnews.ey.com/news/2026-1705-saudi-arabia-announces-25th-wave-of-phase-2-e-invoicing-integration"
+      ],
+      "facts": [
+        "ZATCA set Wave 25 integration-phase criteria on 24 July 2026 for taxpayers whose VAT-subject revenue exceeded SAR 187,500 in 2022, 2023, 2024 or 2025.",
+        "Targeted taxpayers must integrate their e-invoicing solutions with the Fatoora platform by 1 February 2027.",
+        "Wave 25 is the first wave to include calendar-year 2025 revenue as a selection criterion and halves the prior threshold."
+      ],
+      "inferences": [
+        "A materially larger population of smaller firms enters integration scope, plausibly raising demand for governed finance/tax automation help.",
+        "The deadline is a research trigger only; it does not prove that any specific firm wants external help or would buy."
+      ],
+      "unknowns": [
+        "No named buyer has been confirmed as ZATCA-notified in Wave 25.",
+        "No purchase intent, budget, or incumbent-vendor evidence exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm the Wave 25 notification timeline from ZATCA primary sources",
+        "Identify named firms in scope with public ERP/accounting transformation signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 4,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-sdaia-ai-governance-package",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+      "observed_at": "2026-06-08T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SDAIA regulatory documents page + June 2026 package of 10 AI guidance documents (SPA)",
+      "fresh_until": "2027-06-08T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SDAIA (Saudi Data & AI Authority)",
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "trigger": "SDAIA published a June 2026 package of AI ethics/GenAI/deepfake guidance and the AI Adoption Framework is used as a public-sector procurement baseline",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://sdaia.gov.sa/en/SDAIA/about/Files/AIAdoptionFramework.pdf",
+        "https://aiinarabia.com/policy/sdaia-ai-adoption-framework-saudi-pdpl-gcc-governance-regime-deep-dive-2026-05-12"
+      ],
+      "facts": [
+        "On 8 June 2026 SDAIA announced a package of 10 regulatory documents on ethical and responsible AI use.",
+        "SDAIA publishes an AI Adoption Framework structured around governance, accountability, transparency, human oversight and risk management.",
+        "There is no standalone binding Saudi AI statute yet; PDPL and sector regulators carry the binding obligations."
+      ],
+      "inferences": [
+        "Organizations deploying AI over Saudi personal data face a growing governance-evidence expectation, which is research-relevant for Dealix governance capability.",
+        "The guidance being non-binding means procurement expectations, not statute, drive demand."
+      ],
+      "unknowns": [
+        "No evidence that any specific buyer is currently procuring AI-governance services.",
+        "The final AI law timeline is unannounced."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Track whether the AI Adoption Framework appears in live Etimad technical evaluation criteria",
+        "Identify named regulated entities publishing AI-governance job postings"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-pdpl-active-enforcement",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SDAIA enforcement record (48 decisions, Jan 2026) as reported by Clyde & Co, Latham & Watkins, Lexis Middle East",
+      "fresh_until": "2026-12-30T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SDAIA / PDPL Committees for Reviewing Violations",
+      "buyer": "DPO / legal / compliance / CISO",
+      "problem": "Consent management, marketing-consent proof, DPO appointment, 72-hour breach reporting and cross-border transfer safeguards",
+      "trigger": "SDAIA confirmed 48 PDPL enforcement decisions and penalties up to SAR 5,000,000 (doubled for repeat), including fines for marketing without explicit consent",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+        "https://www.globalprivacyblog.com/2026/05/active-enforcement-of-saudi-arabia-privacy-regime-implications-for-businesses/",
+        "https://profectus.sa/resources/sdaia-enforcement-decisions"
+      ],
+      "facts": [
+        "SDAIA confirmed 48 enforcement decisions in its January 2026 announcement; PDPL has been fully enforceable since 14 September 2024.",
+        "Penalty ceiling is SAR 5,000,000, doubling to SAR 10,000,000 for repeat violations; enforcement included marketing without explicit consent and 72-hour breach-notification failures.",
+        "Respondents have only five days to respond once notified of an alleged violation."
+      ],
+      "inferences": [
+        "Enforcement maturity raises the value of demonstrable consent/breach/evidence operations, which is research-relevant to Dealix trust capabilities.",
+        "Recurring violation types are a proxy research agenda, not proof of demand from any named firm."
+      ],
+      "unknowns": [
+        "SDAIA did not publish per-case penalty amounts or a numeric breakdown by category.",
+        "No named enforcement target is linked to a purchase signal."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Locate SDAIA primary enforcement notices with dates and categories",
+        "Map which sectors received the most decisions from primary sources"
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-sama-open-banking-licensing",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx",
+      "observed_at": "2026-03-26T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SAMA announcement: commencement of open-banking licensing (26 March 2026)",
+      "fresh_until": "2027-03-26T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SAMA (Saudi Central Bank)",
+      "buyer": "COO / technology / risk / compliance lead at licensed fintechs and banks",
+      "problem": "Consent management, API governance, data security and operational-resilience evidence for supervised open-banking services",
+      "trigger": "SAMA moved open banking from sandbox to a formal licensing regime, with two fintechs licensed on 26 March 2026",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx",
+        "https://www.pinsentmasons.com/en-gb/out-law/news/saudi-central-bank-fintechs-licensed-offer-open-banking-services",
+        "https://www.clydeco.com/en/insights/2026/03/sama-new-licensing-framework-for-open-banking"
+      ],
+      "facts": [
+        "SAMA announced the commencement of open-banking licensing on 26 March 2026 after completing the regulatory sandbox phase.",
+        "Licensed providers face permanent, enforceable governance, cybersecurity, API and consent requirements.",
+        "Licensing sits within the National Fintech Strategy under Vision 2030."
+      ],
+      "inferences": [
+        "A licensed-regime transition increases formal evidence and governance workload for open-banking participants, plausibly relevant to governed automation.",
+        "Only a small number of firms are licensed so far; the addressable research set is narrow."
+      ],
+      "unknowns": [
+        "The full list of future license applicants is not public.",
+        "No buyer-level procurement or budget evidence exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Track additional SAMA open-banking license announcements",
+        "Identify licensed fintechs' public engineering/compliance hiring signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 2,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-ecc2-controls",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+      "observed_at": "2026-07-14T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "NCA ECC-2:2024 + Guide to ECC Implementation (GECC-2:2026)",
+      "fresh_until": "2027-07-14T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "GOVERNMENT_ENTITY",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "buyer": "CISO / security governance lead / vendor security owner",
+      "problem": "Cybersecurity control evidence, audit trails, third-party/cloud risk and staffing compliance",
+      "trigger": "ECC-2:2024 replaced ECC-1:2018 (4 domains, 28 subdomains, 108 controls); GECC-2:2026 implementation guide and assessment tool regime",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/11bb8f2d-706a-4f18-80f1-40d620ebd845_GECC-.pdf",
+        "https://www.secure.com/blog/compliance/saudi-businesses-nca-ecc-update"
+      ],
+      "facts": [
+        "ECC-2:2024 is the mandatory baseline for government entities and critical national infrastructure operators in the Kingdom.",
+        "ECC-2:2024 consolidates controls to 4 main domains, 28 subdomains and 108 controls.",
+        "Suppliers to in-scope entities are increasingly asked for ECC-aligned evidence."
+      ],
+      "inferences": [
+        "Supply-chain evidence expectations create downstream research relevance for vendors serving government/CNI.",
+        "Direct scope excludes most small private firms; the realistic route is as a supplier, not a primary buyer."
+      ],
+      "unknowns": [
+        "No named in-scope buyer with a live ECC-evidence gap has been confirmed.",
+        "NCA may revise published control counts."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm current control counts on the NCA portal before citing externally",
+        "Identify which Etimad technical evaluations score ECC alignment"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-ccc-cloud-residency",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+      "observed_at": "2026-06-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "NCA Cloud Cybersecurity Controls CCC 2:2024 (data-localisation authority moved to NDMO/SDAIA)",
+      "fresh_until": "2027-06-20T00:00:00+03:00",
+      "signal_family": "TECHNOLOGY_OR_PLATFORM_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)",
+      "buyer": "cloud/security architect / data governance lead",
+      "problem": "Cloud data classification, residency decisions and CSP/CST control evidence",
+      "trigger": "CCC 2:2024 removed direct data-localisation controls and transferred residency authority to NDMO at SDAIA",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://cdn.nca.gov.sa/api/files/public/upload/86e09090-44e4-481f-bc28-355673607654_ECC--2024-EN.pdf"
+      ],
+      "facts": [
+        "CCC 2:2024 is a modular extension of ECC covering cloud service providers and cloud service tenants.",
+        "The 2024 revision transferred data-residency responsibility from CCC to the National Data Management Office at SDAIA.",
+        "Sensitive and government-classified workloads still face strict in-country requirements via NDMO."
+      ],
+      "inferences": [
+        "Cloud/data-residency uncertainty is research-relevant to organizations with sensitive Saudi workloads.",
+        "This overlaps with PDPL transfer rules, so a single evidence approach may serve both."
+      ],
+      "unknowns": [
+        "NDMO operational guidance details are not fully public.",
+        "No buyer-level cloud migration evidence is attached."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Locate NDMO primary data-classification and residency documents",
+        "Map which cloud workloads are explicitly in-scope for CNI operators"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-monshaat-sme-digitalization",
+      "source_id": "MONSHAAT_OFFICIAL",
+      "source_ref": "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+      "observed_at": "2026-06-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "Saudi SME 2026 data report compiling Monsha'at observatory and SAMA/Kafalah figures",
+      "fresh_until": "2026-12-01T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "SME",
+      "authority_ref": "Monsha'at (General Authority for SMEs) with SAMA/Kafalah data",
+      "buyer": "SME owner / finance manager",
+      "problem": "Manual VAT/e-invoicing compliance, weak financial records and limited real-time visibility",
+      "trigger": "SME registrations exceed ~1.7M with SAR 148B in bank lending and e-invoicing scope expanding",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://vision2030.ai/tracker/priorities/sme-growth/"
+      ],
+      "facts": [
+        "Saudi SME registrations have grown to roughly 1.7 million active commercial registers and the sector contributes close to 22.9% of GDP.",
+        "SME bank lending has grown to about SAR 148 billion under Vision 2030 programs including Kafalah.",
+        "The report states that automated cloud solutions can save up to 30% of monthly VAT compliance time versus manual systems."
+      ],
+      "inferences": [
+        "A very large, fragmented SME population with a standardization/automation wedge is research-relevant for low-touch products.",
+        "Sector-level growth does not establish demand from any individual SME."
+      ],
+      "unknowns": [
+        "The 30% time-saving figure is a vendor-compiled report claim, not an independently validated benchmark.",
+        "No named SME buyer evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Corroborate the 30% claim from a primary/independent source before external use",
+        "Identify SME segments where e-invoicing scope overlaps low-touch automation"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-sfda-digital-health-ai",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://sfda.gov.sa/en/news/19378",
+      "observed_at": "2026-09-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SFDA ProVerifier launch at LEAP 2026 + MDS-G27 digital health guidance (v1, 2025-08-11)",
+      "fresh_until": "2027-09-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SFDA (Saudi Food & Drug Authority)",
+      "buyer": "regulatory affairs / clinical informatics / quality lead",
+      "problem": "AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products",
+      "trigger": "MDS-G27 digital health guidance plus SFDA's AI-enabled regulator tooling (ProVerifier) at LEAP 2026",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://sfda.gov.sa/en/news/19378",
+        "https://meddeviceguide.com/blog/saudi-sfda-mds-g27-digital-health-products-regulation-guide",
+        "https://www.sfda.gov.sa/en/news/5316783"
+      ],
+      "facts": [
+        "SFDA issued MDS-G27 guidance on digital health products, covering AI/ML clinical algorithms, on 11 August 2025.",
+        "For AI/ML products SFDA mandates validation, data governance, explainability, human oversight and post-market change management.",
+        "SFDA launched the ProVerifier AI tool at LEAP 2026 (31 Aug - 3 Sep 2026) for field product verification."
+      ],
+      "inferences": [
+        "Clinical AI/ML evidence requirements are research-relevant to Dealix's governed-AI/evidence capabilities.",
+        "Selling into this space carries heavy regulatory and partner prerequisites, so default is partner-first."
+      ],
+      "unknowns": [
+        "No named digital-health vendor or provider is linked to a procurement signal.",
+        "MDMA timelines and local-representative requirements vary by product class."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Read MDS-G27 and MDS-G010 primary texts for exact evidence requirements",
+        "Identify local authorized representatives as potential partner route"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 2,
+        "distribution_density": 2,
+        "regulatory_friction": 5,
+        "integration_complexity": 5,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nupco-localization-digital",
+      "source_id": "ETIMAD_PUBLIC_PROCUREMENT",
+      "source_ref": "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+      "observed_at": "2026-04-07T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "NUPCO procurement/localization and digital-transformation guide (secondary research compilation)",
+      "fresh_until": "2027-04-07T00:00:00+03:00",
+      "signal_family": "TENDER_OR_PROCUREMENT",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "business_archetype": "GOVERNMENT_ENTITY",
+      "authority_ref": "NUPCO (National Unified Procurement Company) + LCGPA",
+      "buyer": "supplier / procurement / supply-chain lead",
+      "problem": "Local-content compliance, framework-agreement qualification and integration with digital procurement platforms",
+      "trigger": "NUPCO reportedly enforces local-content preference and is expanding AI demand forecasting and e-marketplace channels",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+        "https://medstrato.com/blog/medical-device-procurement-sa-guide"
+      ],
+      "facts": [
+        "NUPCO is the centralized medical procurement entity for public health agencies and reports annual procurement exceeding SAR 25 billion.",
+        "NUPCO has shifted toward framework agreements and reportedly rejects foreign bids where a qualified local alternative exists.",
+        "NUPCO launched a digital healthcare marketplace for private clinics and SMEs in Q1 2025 and is deploying AI demand forecasting."
+      ],
+      "inferences": [
+        "The realistic Dealix route is as a partner/backend to qualified local suppliers, not a direct bidder.",
+        "These are secondary sources; primary NUPCO/Etimad tender data is required before any bid/no-bid decision."
+      ],
+      "unknowns": [
+        "Exact live framework-agreement scope and deadlines are not verified from Etimad primary sources.",
+        "No local partner has been confirmed."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Verify live NUPCO/Etimad opportunities from primary portals",
+        "Map qualified local medical suppliers as potential partners"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 2,
+        "repeatability": 2,
+        "readiness": 2,
+        "distribution_density": 2,
+        "regulatory_friction": 5,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-rega-proptech-sandbox",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/",
+      "observed_at": "2026-08-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "REGA Saudi PropTech Hub regulatory sandbox + FAL platform licensing (71 platforms)",
+      "fresh_until": "2027-02-20T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "REAL_ESTATE",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "REGA (Real Estate General Authority)",
+      "buyer": "proptech platform operator / data lead",
+      "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
+      "trigger": "REGA licensed 71 electronic real-estate platforms (FAL) and runs a PropTech regulatory sandbox",
+      "deadline": "2026-04-30",
+      "evidence_refs": [
+        "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/",
+        "https://rega.gov.sa/en/media-center/news-announcements/rega-licenses-71-electronic-real-estate-platforms/"
+      ],
+      "facts": [
+        "REGA has licensed 71 electronic real-estate platforms for brokerage and marketing after technical integration.",
+        "REGA operates a PropTech regulatory sandbox with applications for the current cycle closing 30 April 2026.",
+        "Unlicensed platforms are subject to regulatory action."
+      ],
+      "inferences": [
+        "A licensed proptech cohort with integration/data obligations is research-relevant for governed data/automation services.",
+        "The sandbox is a structured partner/discovery route, not a guarantee of demand."
+      ],
+      "unknowns": [
+        "The 2026 sandbox application outcome and next cycle dates are not confirmed.",
+        "No named platform buyer evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm the next PropTech sandbox cycle from REGA primary sources",
+        "Identify licensed platforms with public data-integration needs"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-cst-ai-hub-cloud-zone",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+      "observed_at": "2026-06-13T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "CST draft Global AI Hub Law (sovereign data centres) + Cloud Computing Special Economic Zone",
+      "fresh_until": "2026-12-13T00:00:00+03:00",
+      "signal_family": "TECHNOLOGY_OR_PLATFORM_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "CST (Communications, Space & Technology Commission)",
+      "buyer": "data-centre / cloud operator / sovereignty lead",
+      "problem": "Licensing, data separation, auditability and jurisdictional evidence for sovereign/AI-hub hosting",
+      "trigger": "CST draft Global AI Hub Law (private/extended/virtual hub models) and the Cloud Computing Special Economic Zone",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+        "https://new.cst.gov.sa/en/about/program-and-initiatives/cloud-computing-special-economic-zone-technology",
+        "https://www.lexology.com/library/detail.aspx?g=015b8434-0c62-4645-9839-dc7cd8066b63"
+      ],
+      "facts": [
+        "CST published a consultation draft of a Global AI Hub Law on 14 April 2025 introducing private, extended and virtual hub models.",
+        "The draft contemplates licensing, data separation, audit trails and emergency-access obligations aligned with PDPL and NCA.",
+        "CST also operates a Cloud Computing Special Economic Zone."
+      ],
+      "inferences": [
+        "Sovereign-hosting compliance and audit-evidence needs are research-relevant to cloud/data-centre operators in the Kingdom.",
+        "This is draft/early-stage, so no near-term procurement should be assumed."
+      ],
+      "unknowns": [
+        "Final law and implementing regulations timeline is unconfirmed.",
+        "No operator-level procurement evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Check Istitlaa/CST for the final law status",
+        "Identify Cloud Computing SEZ tenants as potential future research set"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 2,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 2,
+        "distribution_density": 2,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    }
+  ]
+}

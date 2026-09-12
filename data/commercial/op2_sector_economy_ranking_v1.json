@@ -1,0 +1,396 @@
+{
+  "schema": "dealix.op2-sector-economy.v1",
+  "generated_at": "2026-09-12T02:52:52.989159+00:00",
+  "source_wave": "/opt/dealix/worktrees/op2-20260912T052940/data/commercial/op2_market_intelligence_wave_v1.json",
+  "truth_class": "PATTERN_RESEARCH_RANKING",
+  "authority": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_OPPORTUNITY_NO_PIPELINE",
+  "counts_as_pipeline": false,
+  "counts_as_revenue": false,
+  "status_ceiling": "RESEARCHED_WITH_SIGNALS",
+  "cells": [
+    {
+      "sector_id": "finance_fintech_insurance",
+      "ar_name": "مالي/تأمين",
+      "en_name": "Finance",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 547.7333,
+      "signal_count": 3,
+      "signal_ids": [
+        "op2-2026-zatca-wave25-einvoicing",
+        "op2-2026-pdpl-active-enforcement",
+        "op2-2026-sama-open-banking-licensing"
+      ],
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx"
+      ],
+      "authority_refs": [
+        "ZATCA (Zakat, Tax and Customs Authority)",
+        "SDAIA / PDPL Committees for Reviewing Violations",
+        "SAMA (Saudi Central Bank)"
+      ],
+      "deadlines": [
+        "2027-02-01"
+      ],
+      "mapping_notes": [],
+      "buyer": "CFO / finance operations / tax compliance lead",
+      "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
+      "vector": {
+        "offer": "GOVERNED_AI_COMPLIANCE_EVIDENCE",
+        "channel": "direct_finance_ops",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "workspace_plus_week_review",
+        "proof": "control_evidence_pack",
+        "automation": "consent_and_report_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "technology_saas_si",
+      "ar_name": "تقنية/SaaS",
+      "en_name": "Technology/SaaS",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 240.075,
+      "signal_count": 5,
+      "signal_ids": [
+        "op2-2026-sdaia-ai-governance-package",
+        "op2-2026-nca-ecc2-controls",
+        "op2-2026-nca-ccc-cloud-residency",
+        "op2-2026-monshaat-sme-digitalization",
+        "op2-2026-cst-ai-hub-cloud-zone"
+      ],
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025"
+      ],
+      "authority_refs": [
+        "SDAIA (Saudi Data & AI Authority)",
+        "NCA (National Cybersecurity Authority)",
+        "NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)",
+        "Monsha'at (General Authority for SMEs) with SAMA/Kafalah data",
+        "CST (Communications, Space & Technology Commission)"
+      ],
+      "deadlines": [],
+      "mapping_notes": [],
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "vector": {
+        "offer": "AI_GOVERNANCE_AND_READINESS_ASSESSMENT",
+        "channel": "direct_cto",
+        "monetization": "PAID_SPRINT",
+        "delivery": "assessment_then_build",
+        "proof": "model_accountability_pack",
+        "automation": "governance_evidence_trail",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "real_estate_proptech",
+      "ar_name": "عقار/FM",
+      "en_name": "Real Estate/FM",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 81.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-rega-proptech-sandbox"
+      ],
+      "evidence_refs": [
+        "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/"
+      ],
+      "authority_refs": [
+        "REGA (Real Estate General Authority)"
+      ],
+      "deadlines": [
+        "2026-04-30"
+      ],
+      "mapping_notes": [],
+      "buyer": "proptech platform operator / data lead",
+      "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
+      "vector": {
+        "offer": "PLATFORM_DATA_INTEGRITY_AUTOMATION",
+        "channel": "direct_operator",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "platform_integration",
+        "proof": "data_quality_pack",
+        "automation": "integration_and_validation",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "healthcare",
+      "ar_name": "صحي",
+      "en_name": "Healthcare",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 8.736,
+      "signal_count": 2,
+      "signal_ids": [
+        "op2-2026-sfda-digital-health-ai",
+        "op2-2026-nupco-localization-digital"
+      ],
+      "evidence_refs": [
+        "https://sfda.gov.sa/en/news/19378",
+        "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide"
+      ],
+      "authority_refs": [
+        "SFDA (Saudi Food & Drug Authority)",
+        "NUPCO (National Unified Procurement Company) + LCGPA"
+      ],
+      "deadlines": [],
+      "mapping_notes": [],
+      "buyer": "regulatory affairs / clinical informatics / quality lead",
+      "problem": "AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products",
+      "vector": {
+        "offer": "DIGITAL_HEALTH_EVIDENCE_READINESS",
+        "channel": "partner_led",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "partner_joint_delivery",
+        "proof": "regulatory_evidence_pack",
+        "automation": "human_oversight_workflow",
+        "time_to_cash": "slow_90d_plus"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    }
+  ],
+  "top_cells": [
+    {
+      "sector_id": "finance_fintech_insurance",
+      "ar_name": "مالي/تأمين",
+      "en_name": "Finance",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 547.7333,
+      "signal_count": 3,
+      "signal_ids": [
+        "op2-2026-zatca-wave25-einvoicing",
+        "op2-2026-pdpl-active-enforcement",
+        "op2-2026-sama-open-banking-licensing"
+      ],
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx"
+      ],
+      "authority_refs": [
+        "ZATCA (Zakat, Tax and Customs Authority)",
+        "SDAIA / PDPL Committees for Reviewing Violations",
+        "SAMA (Saudi Central Bank)"
+      ],
+      "deadlines": [
+        "2027-02-01"
+      ],
+      "mapping_notes": [],
+      "buyer": "CFO / finance operations / tax compliance lead",
+      "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
+      "vector": {
+        "offer": "GOVERNED_AI_COMPLIANCE_EVIDENCE",
+        "channel": "direct_finance_ops",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "workspace_plus_week_review",
+        "proof": "control_evidence_pack",
+        "automation": "consent_and_report_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "technology_saas_si",
+      "ar_name": "تقنية/SaaS",
+      "en_name": "Technology/SaaS",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 240.075,
+      "signal_count": 5,
+      "signal_ids": [
+        "op2-2026-sdaia-ai-governance-package",
+        "op2-2026-nca-ecc2-controls",
+        "op2-2026-nca-ccc-cloud-residency",
+        "op2-2026-monshaat-sme-digitalization",
+        "op2-2026-cst-ai-hub-cloud-zone"
+      ],
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025"
+      ],
+      "authority_refs": [
+        "SDAIA (Saudi Data & AI Authority)",
+        "NCA (National Cybersecurity Authority)",
+        "NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)",
+        "Monsha'at (General Authority for SMEs) with SAMA/Kafalah data",
+        "CST (Communications, Space & Technology Commission)"
+      ],
+      "deadlines": [],
+      "mapping_notes": [],
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "vector": {
+        "offer": "AI_GOVERNANCE_AND_READINESS_ASSESSMENT",
+        "channel": "direct_cto",
+        "monetization": "PAID_SPRINT",
+        "delivery": "assessment_then_build",
+        "proof": "model_accountability_pack",
+        "automation": "governance_evidence_trail",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "real_estate_proptech",
+      "ar_name": "عقار/FM",
+      "en_name": "Real Estate/FM",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 81.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-rega-proptech-sandbox"
+      ],
+      "evidence_refs": [
+        "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/"
+      ],
+      "authority_refs": [
+        "REGA (Real Estate General Authority)"
+      ],
+      "deadlines": [
+        "2026-04-30"
+      ],
+      "mapping_notes": [],
+      "buyer": "proptech platform operator / data lead",
+      "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
+      "vector": {
+        "offer": "PLATFORM_DATA_INTEGRITY_AUTOMATION",
+        "channel": "direct_operator",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "platform_integration",
+        "proof": "data_quality_pack",
+        "automation": "integration_and_validation",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "healthcare",
+      "ar_name": "صحي",
+      "en_name": "Healthcare",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 8.736,
+      "signal_count": 2,
+      "signal_ids": [
+        "op2-2026-sfda-digital-health-ai",
+        "op2-2026-nupco-localization-digital"
+      ],
+      "evidence_refs": [
+        "https://sfda.gov.sa/en/news/19378",
+        "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide"
+      ],
+      "authority_refs": [
+        "SFDA (Saudi Food & Drug Authority)",
+        "NUPCO (National Unified Procurement Company) + LCGPA"
+      ],
+      "deadlines": [],
+      "mapping_notes": [],
+      "buyer": "regulatory affairs / clinical informatics / quality lead",
+      "problem": "AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products",
+      "vector": {
+        "offer": "DIGITAL_HEALTH_EVIDENCE_READINESS",
+        "channel": "partner_led",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "partner_joint_delivery",
+        "proof": "regulatory_evidence_pack",
+        "automation": "human_oversight_workflow",
+        "time_to_cash": "slow_90d_plus"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    }
+  ],
+  "deep_wip_top3": [
+    {
+      "sector_id": "finance_fintech_insurance",
+      "buyer": "CFO / finance operations / tax compliance lead",
+      "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
+      "research_rank_score": 547.7333,
+      "vector": {
+        "offer": "GOVERNED_AI_COMPLIANCE_EVIDENCE",
+        "channel": "direct_finance_ops",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "workspace_plus_week_review",
+        "proof": "control_evidence_pack",
+        "automation": "consent_and_report_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx"
+      ],
+      "truth_class": "PATTERN",
+      "counts_as_pipeline": false
+    },
+    {
+      "sector_id": "technology_saas_si",
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "research_rank_score": 240.075,
+      "vector": {
+        "offer": "AI_GOVERNANCE_AND_READINESS_ASSESSMENT",
+        "channel": "direct_cto",
+        "monetization": "PAID_SPRINT",
+        "delivery": "assessment_then_build",
+        "proof": "model_accountability_pack",
+        "automation": "governance_evidence_trail",
+        "time_to_cash": "fast_7_30d"
+      },
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025"
+      ],
+      "truth_class": "PATTERN",
+      "counts_as_pipeline": false
+    },
+    {
+      "sector_id": "real_estate_proptech",
+      "buyer": "proptech platform operator / data lead",
+      "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
+      "research_rank_score": 81.0,
+      "vector": {
+        "offer": "PLATFORM_DATA_INTEGRITY_AUTOMATION",
+        "channel": "direct_operator",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "platform_integration",
+        "proof": "data_quality_pack",
+        "automation": "integration_and_validation",
+        "time_to_cash": "medium_30_60d"
+      },
+      "evidence_refs": [
+        "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/"
+      ],
+      "truth_class": "PATTERN",
+      "counts_as_pipeline": false
+    }
+  ]
+}
