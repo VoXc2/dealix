@@ -1,0 +1,399 @@
+version: "2026-09-12"
+status: ACTIVE_DRAFT_AUTHORITY_FOR_AGENT_PREPARATION
+name: DEALIX_COMMERCIAL_RESET
+market: Saudi Arabia
+north_star: CASH_READY_AUTONOMOUS_DEALIX_COMPANY
+
+positioning:
+  company: "Dealix — Saudi AI Business Operating System"
+  external_category: "AI Business Operating System"
+  promise_en: "Diagnose the workflow. Deploy the right intelligence. Govern the action. Prove the outcome."
+  promise_ar: "شخّص العملية، فعّل الذكاء المناسب، احكم التنفيذ، وأثبت النتيجة."
+  mechanism: "Assess -> Decide -> Automate -> Govern -> Prove"
+  rule: "Sell a measurable business outcome, not an agent count or isolated AI feature."
+
+commercial_path:
+  - MARKET_SIGNAL
+  - EVIDENCE
+  - REAL_INTERACTION
+  - QUALIFIED_PROBLEM
+  - FREE_DIAGNOSTIC
+  - QUALIFIED_DISCOVERY
+  - CUSTOMER_SPECIFIC_PROPOSAL
+  - PILOT_DECISION
+  - INVOICE
+  - VERIFIED_PAYMENT
+  - GOVERNED_DELIVERY
+  - CUSTOMER_VALIDATED_PROOF
+  - EXPANSION_OR_REFERRAL
+  - PRODUCTIZATION
+
+truth_firewall:
+  - "research != relationship"
+  - "public_contact != consent"
+  - "signal != qualified_problem"
+  - "draft != sent"
+  - "quote != invoice"
+  - "invoice != payment"
+  - "payment != revenue_without_reconciliation"
+  - "delivery != customer_value"
+  - "customer_value != publication_permission"
+  - "HTTP_200 != release_identity"
+
+architecture:
+  model: agentic_holding_sector_company_mesh
+  canonical_policy: config/company/fresh_market_execution_policy.json
+  canonical_architecture: docs/architecture/DEALIX_AGENTIC_HOLDING_SECTOR_MESH.md
+  single_company_machine: true
+  legacy_fixed_five_permanent_agents: deprecated
+  logical_agents: dynamic_hierarchical_registry
+  runtime_workers: lazy_resource_governed
+  orphan_agents_allowed: false
+  duplicate_company_machine_forbidden: true
+  repo_writers: isolated_worktrees
+  acceptance_receipt_required: true
+  legacy_owner_aliases:
+    dealix-pm: president
+    dealix-sales: revenue
+    dealix-delivery: delivery
+    dealix-engineer: engineering
+    dealix-content: brand-content
+  group_roles:
+    - president
+    - strategy-capital
+    - coo
+    - cto
+    - ai-automation
+    - cfo-economic-truth
+    - revenue
+    - growth
+    - delivery
+    - customer-success
+    - research-intelligence
+    - product
+    - data-analytics
+    - engineering
+    - security
+    - risk
+    - governance-compliance
+    - procurement-b2g
+    - partnerships
+    - talent-workforce
+    - brand-content
+    - qa-verification
+    - proof
+    - self-improvement
+  sector_role_templates:
+    - sector-ceo
+    - sector-strategy
+    - sector-market-intelligence
+    - sector-research
+    - sector-sales
+    - sector-business-development
+    - sector-diagnostic
+    - sector-solution-architect
+    - sector-product
+    - sector-delivery
+    - sector-customer-success
+    - sector-economics
+    - sector-procurement
+    - sector-b2g
+    - sector-compliance
+    - sector-content
+    - sector-distribution
+    - sector-partnerships
+    - sector-data
+    - sector-qa
+    - sector-proof
+    - sector-learning
+  arm_pod_roles:
+    - lead
+    - scout
+    - operator
+    - verifier
+  additional_specialists_allowed_when_justified:
+    - analyst
+    - architect
+    - engineer
+    - automation-builder
+    - negotiator
+    - procurement-specialist
+    - finance-specialist
+    - compliance-specialist
+    - content-specialist
+    - customer-success-specialist
+    - reviewer
+    - red-team
+  runtime_governor_inputs:
+    - cpu_load
+    - available_ram
+    - swap_pressure
+    - disk_io
+    - provider_quota
+    - model_quota
+    - token_or_api_cost
+    - worktree_availability
+    - task_risk
+    - expected_economic_value
+    - duration
+    - contention_domain
+    - incident_state
+
+commercial_function_routing:
+  TOP_ECONOMIC_ORDERING:
+    group_role: president
+    sector_role: sector-ceo
+    arm_role: lead
+  MARKET_INTELLIGENCE:
+    group_role: research-intelligence
+    sector_role: sector-market-intelligence
+    arm_role: scout
+  OPPORTUNITY_SCORING:
+    group_role: revenue
+    sector_role: sector-sales
+    arm_role: scout
+  DIAGNOSTIC:
+    group_role: revenue
+    sector_role: sector-diagnostic
+    arm_role: lead
+  DISCOVERY:
+    group_role: revenue
+    sector_role: sector-sales
+    arm_role: lead
+  SOLUTION_DESIGN:
+    group_role: delivery
+    sector_role: sector-solution-architect
+    arm_role: operator
+  PROPOSAL_DRAFT:
+    group_role: revenue
+    sector_role: sector-sales
+    arm_role: lead
+  NEGOTIATION_PREP:
+    group_role: revenue
+    sector_role: sector-business-development
+    arm_role: lead
+  PRICING_PREP:
+    group_role: cfo-economic-truth
+    sector_role: sector-economics
+    arm_role: verifier
+  GOVERNANCE_REVIEW:
+    group_role: governance-compliance
+    sector_role: sector-compliance
+    arm_role: verifier
+  PROCUREMENT_B2G:
+    group_role: procurement-b2g
+    sector_role: sector-procurement
+    arm_role: scout
+  PARTNERSHIPS:
+    group_role: partnerships
+    sector_role: sector-partnerships
+    arm_role: scout
+  DELIVERY:
+    group_role: delivery
+    sector_role: sector-delivery
+    arm_role: operator
+  PROOF:
+    group_role: proof
+    sector_role: sector-proof
+    arm_role: verifier
+  ENGINEERING:
+    group_role: engineering
+    sector_role: sector-solution-architect
+    arm_role: operator
+  CONTENT:
+    group_role: brand-content
+    sector_role: sector-content
+    arm_role: operator
+  SELF_IMPROVEMENT:
+    group_role: self-improvement
+    sector_role: sector-learning
+    arm_role: verifier
+
+entry_offer:
+  id: FREE_AI_OPERATIONS_DIAGNOSTIC
+  name_en: "Dealix AI & Operations Diagnostic"
+  name_ar: "تشخيص Dealix للذكاء الاصطناعي والعمليات"
+  price_public: "FREE"
+  card_required: false
+  purpose: "Identify the highest-value workflow, readiness gaps, evidence path, data boundary and next governed action."
+
+solution_families:
+  - id: WORKFLOW_PROOF_SPRINT
+    name_en: "Workflow Proof Sprint"
+    outcome: "Prove whether one bounded workflow can be measurably improved."
+  - id: GOVERNED_AI_AGENT_PILOT
+    name_en: "Governed AI Agent Pilot"
+    outcome: "Run one or more agents inside a real workflow with authority, policy, human review and proof."
+  - id: BUSINESS_AUTOMATION_DEPLOYMENT
+    name_en: "Business Automation Deployment"
+    outcome: "Connect AI, ERP/CRM, email, files, APIs and workflows around an approved operating process."
+  - id: DEALIX_AI_BUSINESS_OS
+    name_en: "Dealix AI Business OS"
+    outcome: "Operate governed intelligence and automation across multiple departments and systems."
+  - id: MANAGED_AI_OPERATIONS
+    name_en: "Managed AI Operations"
+    outcome: "Operate, monitor, improve and govern proven AI-enabled workflows continuously."
+
+service_families:
+  - REVENUE_OPERATIONS
+  - AI_WORKFLOW_AUTOMATION
+  - KNOWLEDGE_TO_ACTION
+  - DOCUMENT_INTELLIGENCE
+  - CUSTOMER_OPERATIONS
+  - PROCUREMENT_TENDER_INTELLIGENCE
+  - GOVERNED_AI
+  - AI_RELIABILITY_EVALUATION
+  - OPERATIONS_INTELLIGENCE
+  - INTEGRATION_MCP
+  - FATOORA_TECHNICAL_OPERATIONS
+  - MANAGED_AI_OPERATIONS
+
+campaigns:
+  - id: SAUDI_AI_ADOPTION
+    status: MONEY_NOW
+    target: "technology, SaaS, IT and professional-services companies"
+    offer: GOVERNED_AI_AGENT_PILOT
+    source: "https://www.cst.gov.sa/en/media-center/news/N2026072701"
+    evidence: "CST guide covers internal operations, customer-facing AI, AI agents and readiness across context, data, infrastructure, skills and culture."
+  - id: FATOORA_WAVE_25
+    status: MONEY_NOW
+    target: "notified VAT taxpayers in Wave 25 and their ERP/accounting ecosystem"
+    offer: BUSINESS_AUTOMATION_DEPLOYMENT
+    source: "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx"
+    evidence: "Wave 25 covers taxpayers above SAR 187,500 VAT-taxable revenue in 2022-2025; notified taxpayers must integrate by 2027-02-01."
+    guardrail: "Technical/operational readiness only; do not present Dealix as tax adviser or ZATCA certifier."
+  - id: PRIVATE_SECTOR_CYBER_READINESS
+    status: HIGH_VALUE_PIPELINE
+    target: "private-sector entities not classified as critical national infrastructure"
+    offer: GOVERNED_AI_AGENT_PILOT
+    source: "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/"
+    evidence: "NCA NCNICC establishes minimum cybersecurity controls for the relevant private-sector population."
+    guardrail: "Control mapping/readiness/evidence automation only; no certification claim."
+  - id: OPEN_BANKING_PARTNER_LANE
+    status: PARTNER_FIRST
+    target: "licensed/supervised financial institutions, fintechs and qualified technology partners"
+    offer: BUSINESS_AUTOMATION_DEPLOYMENT
+    source: "https://sama.gov.sa/en-US/MediaCenter/News/pages/news-1135.aspx"
+    evidence: "SAMA began licensing fintech companies for open-banking services on 2026-03-26."
+    guardrail: "Do not imply regulated-provider status; enter through technology, integration and governance partnership."
+  - id: OPERATIONS_AUTOMATION
+    status: MONEY_NOW
+    target: "construction, retail/e-commerce, logistics, hospitality"
+    offer: WORKFLOW_PROOF_SPRINT
+    source: "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-01.aspx"
+    evidence: "Saudi business formation remains broad and active; Q2 2026 exceeded 71,000 new commercial registrations."
+
+sector_priority:
+  A1:
+    - technology-saas-it
+    - construction-contractors
+    - wholesale-retail-ecommerce
+    - hospitality-food-tourism
+    - accounting-erp-ecosystem
+    - logistics-transport
+  A2:
+    - industrial-manufacturing
+    - professional-services
+    - real-estate
+    - healthcare
+    - education
+  B:
+    - fintech-banking
+    - government-b2g
+  rule: "The canonical sector registry remains coverage. Priority tiers decide activation, not existence."
+
+opportunity_scoring:
+  conceptual_formula: "EconomicPain * Urgency * DecisionAccess * Evidence * SolutionFit * TimeToCash * ProofPotential / DeliveryComplexity / RegulatoryRisk"
+  normalized_fields:
+    - economic_pain
+    - urgency
+    - decision_access
+    - evidence_strength
+    - solution_fit
+    - time_to_cash
+    - proof_potential
+    - delivery_complexity
+    - regulatory_risk
+  hard_rule: "Company size alone must never dominate ranking."
+
+pricing:
+  public_fixed_prices: false
+  customer_specific_only: true
+  diagnostic: "FREE"
+  doctrine: "Price = max(CostFloor, MarketFloor, ValueAdjustedFloor), then adjust for scope, integrations, data complexity, security/regulatory load, urgency, support, SLA, customization, expected economic value, reusability and strategic proof value."
+  internal_reference_bands_sar:
+    very_small_bounded_proof: "10000-25000"
+    workflow_proof_sprint: "15000-40000"
+    governed_agent_pilot: "35000-90000"
+    department_automation: "75000-200000"
+    multi_system_ai_os: "150000-500000+"
+    enterprise_regulated_complex: "250000-1000000+"
+    managed_ai_operations_monthly: "15000-75000+"
+  warning: "These are internal starting guardrails only. They are not public pricing, not a promise, and not doctrine. Refresh against current market, value, delivery cost and evidence before every named-customer quote."
+
+proposal_contract:
+  required:
+    - customer_context
+    - verified_problem_and_evidence
+    - why_now
+    - target_workflow
+    - baseline_or_missing_evidence_state
+    - proposed_solution_family
+    - scope_in
+    - scope_out
+    - systems_and_integrations
+    - data_boundary
+    - authority_and_approval_path
+    - acceptance_criteria
+    - proof_plan
+    - delivery_plan
+    - dependencies
+    - risks_and_guardrails
+    - commercial_assumptions
+    - customer_specific_quote_placeholder
+    - next_step
+  forbidden:
+    - fabricated_roi
+    - fabricated_customer_proof
+    - guaranteed_outcome
+    - public_fixed_price_as_authority
+    - blanket_compliance_claim
+    - government_access_claim
+
+email_draft_contract:
+  allowed_contexts:
+    - REAL_INBOUND
+    - WARM_INTRODUCTION
+    - DOCUMENTED_OPT_IN
+    - CUSTOMER_REQUESTED_FOLLOWUP
+  required_elements:
+    - WHY_THEM
+    - WHY_NOW
+    - EVIDENCE_BOUND_INSIGHT
+    - PROBLEM_HYPOTHESIS
+    - VALUE_HYPOTHESIS
+    - ONE_CTA
+  defaults:
+    cta: "Free diagnostic / short discovery"
+    send: false
+    safe_to_send: false
+  forbidden:
+    - cold_whatsapp
+    - mass_linkedin_automation
+    - scraped_contact_as_consent
+    - fabricated_relationship
+
+autonomy:
+  L0_L4: autonomous_with_receipts
+  L5: exact_action_bound
+  external_send: false
+  public_publish: false
+  payment_or_spend: false
+  production_mutation: false
+  dns_db_secret_mutation: false
+
+refresh_policy:
+  market_evidence: "before material campaign/sector reprioritization and at least weekly"
+  pricing_benchmarks: "before each material quote and at least monthly"
+  provider_model_software: "before operational routing changes"
+  stale_rule: "Newer verified evidence overrides this file; update this file rather than creating a parallel commercial authority."
