@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/commercial/run_sector_hermes_fabric.py"
 
@@ -49,3 +51,38 @@ def test_patrol_writes_internal_receipt_only(tmp_path: Path) -> None:
     assert "INTERNAL_PATROL_READY" in receipt
     assert '"counts_as_pipeline": false' in receipt
     assert '"counts_as_revenue": false' in receipt
+
+
+def test_canonical_factory_resolution_uses_repo_scheduler(monkeypatch) -> None:
+    monkeypatch.delenv(fabric_mod.FACTORY_SCRIPT_ENV, raising=False)
+    resolved = fabric_mod.resolve_factory_script()
+    assert resolved == fabric_mod.CANONICAL_FACTORY
+    assert resolved.is_file()
+    assert resolved == ROOT / "scripts/ops/session_factory.py"
+    assert "/control/runtime/session-factory-" not in str(resolved)
+    assert not hasattr(fabric_mod, "DEFAULT_FACTORY")
+
+
+def test_factory_resolution_prefers_explicit_then_env(tmp_path: Path, monkeypatch) -> None:
+    explicit = tmp_path / "explicit_factory.py"
+    explicit.write_text("# stub\n", encoding="utf-8")
+    env_path = tmp_path / "env_factory.py"
+    env_path.write_text("# stub\n", encoding="utf-8")
+    monkeypatch.setenv(fabric_mod.FACTORY_SCRIPT_ENV, str(env_path))
+    assert fabric_mod.resolve_factory_script(explicit) == explicit
+    assert fabric_mod.resolve_factory_script() == env_path
+
+
+def test_factory_resolution_fails_closed_when_unavailable(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv(fabric_mod.FACTORY_SCRIPT_ENV, str(tmp_path / "missing.py"))
+    monkeypatch.setattr(fabric_mod, "CANONICAL_FACTORY", tmp_path / "also_missing.py")
+    with pytest.raises(FileNotFoundError):
+        fabric_mod.resolve_factory_script()
+
+
+def test_submit_due_jobs_uses_canonical_factory(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.delenv(fabric_mod.FACTORY_SCRIPT_ENV, raising=False)
+    fabric = fabric_mod.build_fabric()
+    result = fabric_mod.submit_due_jobs(fabric, tmp_path / "fabric", tmp_path / "factory", None)
+    assert result["submitted_count"] > 0
+    assert list((tmp_path / "factory" / "jobs").glob("*.json"))
