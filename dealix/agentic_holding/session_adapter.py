@@ -14,6 +14,15 @@ LEGACY_EXECUTOR_OWNERS = (
     "dealix-content",
 )
 
+LOGICAL_IDENTITY_FIELDS = (
+    "LOGICAL_AGENT_ID",
+    "LOGICAL_AGENT_PARENT",
+    "LOGICAL_AGENT_LAYER",
+    "LOGICAL_AGENT_ROLE",
+    "LOGICAL_AGENT_SECTOR",
+    "LOGICAL_AGENT_ARM_ID",
+)
+
 _GROUP_ROLE_TO_LEGACY_OWNER = {
     "president": "dealix-pm",
     "strategy-capital": "dealix-pm",
@@ -88,6 +97,27 @@ def legacy_executor_owner(agent: LogicalAgent) -> str:
     return "dealix-pm"
 
 
+def _attach_logical_identity(job: dict[str, Any], agent: LogicalAgent) -> dict[str, Any]:
+    """Persist hierarchical identity while OWNER_AGENT remains an executor facade.
+
+    The current Session Factory validator tolerates additional top-level fields,
+    so these values survive durable job persistence without weakening the
+    compatibility owner gate. They become first-class contract candidates for
+    the next bounded Session Factory schema migration.
+    """
+    job.update(
+        {
+            "LOGICAL_AGENT_ID": agent.agent_id,
+            "LOGICAL_AGENT_PARENT": agent.parent_id,
+            "LOGICAL_AGENT_LAYER": agent.layer.value,
+            "LOGICAL_AGENT_ROLE": agent.role,
+            "LOGICAL_AGENT_SECTOR": agent.sector,
+            "LOGICAL_AGENT_ARM_ID": agent.arm_id,
+        }
+    )
+    return job
+
+
 def render_session_job(
     request: SessionWorkRequest,
     *,
@@ -114,7 +144,7 @@ def render_session_job(
     if agent.arm_id:
         context_refs.append(f"arm:{agent.arm_id}")
 
-    return session_factory.make_job(
+    job = session_factory.make_job(
         owner_agent=legacy_executor_owner(agent),
         business_goal=request.business_goal,
         job_class=request.job_class,
@@ -131,6 +161,7 @@ def render_session_job(
         context_refs=context_refs,
         next_action=request.next_action,
     )
+    return _attach_logical_identity(job, agent)
 
 
 def render_dispatch_plan(
@@ -153,13 +184,20 @@ def render_dispatch_plan(
 
 
 def session_adapter_receipt(jobs: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    logical_identity_preserved = all(
+        bool(job.get("LOGICAL_AGENT_ID"))
+        and bool(job.get("LOGICAL_AGENT_PARENT"))
+        and bool(job.get("LOGICAL_AGENT_LAYER"))
+        and bool(job.get("LOGICAL_AGENT_ROLE"))
+        and any(str(ref).startswith("logical_agent:") for ref in (job.get("CONTEXT_REFS") or []))
+        for job in jobs
+    )
     return {
         "jobs_rendered": len(jobs),
         "legacy_executor_owners": sorted({str(job.get("OWNER_AGENT")) for job in jobs}),
-        "logical_identity_preserved": all(
-            any(str(ref).startswith("logical_agent:") for ref in (job.get("CONTEXT_REFS") or []))
-            for job in jobs
-        ),
+        "logical_agent_ids": sorted({str(job.get("LOGICAL_AGENT_ID")) for job in jobs if job.get("LOGICAL_AGENT_ID")}),
+        "logical_identity_fields": list(LOGICAL_IDENTITY_FIELDS),
+        "logical_identity_preserved": logical_identity_preserved,
         "submitted": False,
         "material_external_effects_executed": False,
     }
