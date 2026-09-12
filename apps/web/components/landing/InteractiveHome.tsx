@@ -149,7 +149,7 @@ export function InteractiveHome() {
         </section>
 
         <section className="dx-final-cta" style={deferredSectionStyle} aria-labelledby="dx-final-title">
-          <div className="dx-final-mark" aria-hidden="true"><img src="/dealix-mark.svg" alt="" /></div><span className="dx-kicker">START WITH ONE EXECUTABLE BUSINESS PROBLEM</span><h2 id="dx-final-title">عندك نمو، عملية، سوق أو قرار مهم لا يتحول اليوم إلى نتيجة قابلة للإثبات؟</h2><p>ابدأ بـFree Execution Diagnostic. إذا لم توجد حالة قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Qualified Discovery ثم عرض customer-specific بدون fixed public pricing.</p><div className="dx-actions dx-actions-center"><Link href="/book" className="dx-btn dx-btn-primary">ابدأ التشخيص المجاني</Link><Link href="/services" className="dx-btn dx-btn-ghost">شاهد الحلول الاستراتيجية</Link></div>
+          <div className="dx-final-mark" aria-hidden="true"><img src="/dealix-mark.svg" alt="" /></div><span className="dx-kicker">START WITH ONE EXECUTABLE BUSINESS PROBLEM</span><h2 id="dx-final-title">عندك نمو، عملية، سوق أو قرار مهم لا يتحول اليوم إلى نتيجة قابلة للإثبات؟</h2><p>ابدأ بـFree Execution Diagnostic. إذا لم توجد حالة قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Qualified Discovery ثم عرض خاص بالعميل بدون fixed public pricing.</p><div className="dx-actions dx-actions-center"><Link href="/book" className="dx-btn dx-btn-primary">ابدأ التشخيص المجاني</Link><Link href="/services" className="dx-btn dx-btn-ghost">شاهد الحلول الاستراتيجية</Link></div>
         </section>
       </main>
 
