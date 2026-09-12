@@ -104,6 +104,41 @@ MONETIZATION_MARGIN = {
 }
 
 
+# ─── Deterministic Economic Factors (Mission B) ───────────────────────────
+
+
+class EconomicFactor(StrEnum):
+    """Deterministic evidence-backed factors for economic priority."""
+    ECONOMIC_VALUE = "economic_value"
+    URGENCY = "urgency"
+    ACCESS = "access"
+    RELATIONSHIP_STRENGTH = "relationship_strength"
+    PROBLEM_CONFIDENCE = "problem_confidence"
+    DELIVERY_FEASIBILITY = "delivery_feasibility"
+    PROOF_POTENTIAL = "proof_potential"
+    TIME_TO_VALUE = "time_to_value"
+    EXECUTION_COST = "execution_cost"
+    MODEL_COST = "model_cost"
+    OPERATIONAL_RISK = "operational_risk"
+    POLICY_RISK = "policy_risk"
+
+
+FACTOR_EVIDENCE_MAP: dict[EconomicFactor, list[str]] = {
+    EconomicFactor.ECONOMIC_VALUE: ["near_term_cash_ev", "recurring_revenue_potential", "gross_margin_potential"],
+    EconomicFactor.URGENCY: ["urgency", "trigger"],
+    EconomicFactor.ACCESS: ["buyer_access", "distribution_rail", "procurement_rail"],
+    EconomicFactor.RELATIONSHIP_STRENGTH: ["relationship_strength", "evidence_level", "real_interaction_refs"],
+    EconomicFactor.PROBLEM_CONFIDENCE: ["problem_evidence", "impact_evidence", "measurable_loss_type"],
+    EconomicFactor.DELIVERY_FEASIBILITY: ["delivery_confidence", "capability_dependencies", "integration_dependencies"],
+    EconomicFactor.PROOF_POTENTIAL: ["proof_strength", "acceptance_criteria", "customer_validation_evidence"],
+    EconomicFactor.TIME_TO_VALUE: ["time_to_cash", "time_to_validate", "time_to_deliver"],
+    EconomicFactor.EXECUTION_COST: ["implementation_cost", "compute_cost", "maintenance_burden"],
+    EconomicFactor.MODEL_COST: ["compute_cost", "model_usage_estimate"],
+    EconomicFactor.OPERATIONAL_RISK: ["delivery_risk", "dependency_risk", "irreversibility", "complexity_debt"],
+    EconomicFactor.POLICY_RISK: ["regulatory_exposure", "privacy_risk", "cybersecurity_risk", "compliance_concerns"],
+}
+
+
 # ─── Input Models ──────────────────────────────────────────────────────
 
 
@@ -205,6 +240,62 @@ class DispatchDecision(BaseModel):
             ).hexdigest()[:16]
 
 
+class EconomicPriorityResult(BaseModel):
+    """Deterministic economic priority result with explicit known/unknown factors."""
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    cell_id: str
+    priority: float
+    known_factors: list[str] = Field(default_factory=list)
+    unknown_factors: list[str] = Field(default_factory=list)
+    risk: list[str] = Field(default_factory=list)
+    reason: str
+    next_action: str
+    confidence: ConfidenceLevel
+    evidence_class: EvidenceClass
+    decided_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
+
+    @classmethod
+    def from_dispatch_decision(cls, decision: DispatchDecision) -> "EconomicPriorityResult":
+        """Create EconomicPriorityResult from DispatchDecision."""
+        breakdown = decision.score
+        known = []
+        unknown = list(breakdown.unknown_inputs)
+        risk = list(breakdown.negative_factors)
+
+        # Map positive factors to known factors
+        for factor in EconomicFactor:
+            factor_fields = FACTOR_EVIDENCE_MAP.get(factor, [])
+            has_evidence = any(f in breakdown.positive_factors for f in factor_fields)
+            if has_evidence or factor.value in [f.lower() for f in breakdown.positive_factors]:
+                known.append(factor.value)
+
+        # Add unknown factors
+        for factor in EconomicFactor:
+            if factor.value not in known:
+                unknown.append(factor.value)
+
+        # Build reason
+        if breakdown.economic_priority > 0.5:
+            reason = f"Positive expected value ({breakdown.expected_value:.2f}) with {breakdown.evidence_strength:.0%} evidence strength"
+        elif breakdown.economic_priority > 0:
+            reason = f"Marginal priority ({breakdown.economic_priority:.2f}) limited by {len(unknown)} unknown factors and {len(risk)} risks"
+        else:
+            reason = f"Non-positive priority ({breakdown.economic_priority:.2f}) — costs and risks exceed expected value"
+
+        return cls(
+            cell_id=decision.cell_id,
+            priority=breakdown.economic_priority,
+            known_factors=sorted(set(known)),
+            unknown_factors=sorted(set(unknown)),
+            risk=sorted(set(risk)),
+            reason=reason,
+            next_action=decision.recommended_action,
+            confidence=breakdown.confidence,
+            evidence_class=breakdown.evidence_class,
+        )
+
+
 # ─── Scoring Engine ────────────────────────────────────────────────────
 
 
@@ -288,7 +379,7 @@ class EconomicDispatcher:
         b.evidence_class = input_.evidence_strength
         b.evidence_strength = EVIDENCE_WEIGHTS.get(input_.evidence_strength, 0.1)
 
-        # Expected Value (conservative)
+        # Expected Value (conservative) — maps to ECONOMIC_VALUE
         ev_components = []
         for field_name in ["near_term_cash_ev", "recurring_revenue_potential", "gross_margin_potential"]:
             val = getattr(input_, field_name)
@@ -300,11 +391,13 @@ class EconomicDispatcher:
                     b.conservative_assumptions.append(f"assumed 0 for {field_name}")
         b.expected_value = sum(ev_components) if ev_components else 0.0
         if ev_components:
-            b.positive_factors.append(f"EV components: {ev_components}")
+            b.positive_factors.append(f"economic_value: {ev_components}")
 
-        # Delivery Confidence
+        # Delivery Confidence — maps to DELIVERY_FEASIBILITY
         conf_map = {"high": 0.8, "medium": 0.5, "low": 0.2}
         b.delivery_confidence = conf_map.get(input_.delivery_confidence, 0.3)
+        if input_.delivery_confidence != UNKNOWN:
+            b.positive_factors.append(f"delivery_feasibility: {input_.delivery_confidence}")
 
         # Strategic Reuse
         strategic_map = {"very_high": 0.9, "high": 0.7, "medium_high": 0.6, "medium": 0.5, "low": 0.3}
@@ -314,7 +407,7 @@ class EconomicDispatcher:
         irrev_map = {"low": 0.9, "medium": 0.6, "high": 0.2, "unknown": 0.4}
         b.reversibility_factor = irrev_map.get(input_.irreversibility, 0.4)
 
-        # Total Expected Cost
+        # Total Expected Cost — maps to EXECUTION_COST, MODEL_COST
         cost_components = []
         for field_name in ["acquisition_cost", "implementation_cost", "compute_cost", "maintenance_burden"]:
             val = getattr(input_, field_name)
@@ -324,25 +417,57 @@ class EconomicDispatcher:
                 except ValueError:
                     b.unknown_inputs.append(field_name)
         b.total_expected_cost = sum(cost_components) if cost_components else 0.0
+        if cost_components:
+            b.negative_factors.append(f"execution_cost: {cost_components}")
 
-        # Risk Penalty
+        # Risk Penalty — maps to OPERATIONAL_RISK, POLICY_RISK
         risk_fields = ["regulatory_exposure", "privacy_risk", "cybersecurity_risk", "dependency_risk"]
         risk_count = sum(1 for f in risk_fields if getattr(input_, f) not in {UNKNOWN, "low"})
         b.risk_penalty = risk_count * 0.15
         if risk_count:
-            b.negative_factors.append(f"{risk_count} elevated risk factors")
+            b.negative_factors.append(f"policy_risk: {risk_count} elevated")
 
         # Founder Attention Penalty
         att_map = {"low": 0.05, "medium": 0.15, "high": 0.3, "unknown": 0.2}
         b.founder_attention_penalty = att_map.get(input_.founder_attention, 0.2)
+        if input_.founder_attention not in {UNKNOWN, "low"}:
+            b.negative_factors.append(f"operational_risk: founder_attention={input_.founder_attention}")
 
         # Procurement Friction
         proc_map = {"low": 0.05, "medium": 0.15, "high": 0.3, "unknown": 0.2}
         b.procurement_friction = proc_map.get(input_.procurement_friction, 0.15)
+        if input_.procurement_friction not in {UNKNOWN, "low"}:
+            b.negative_factors.append(f"operational_risk: procurement_friction={input_.procurement_friction}")
 
         # Complexity Debt
         comp_map = {"low": 0.05, "medium": 0.15, "high": 0.25}
         b.complexity_debt = comp_map.get(input_.complexity_debt, 0.1)
+        if input_.complexity_debt not in {UNKNOWN, "low"}:
+            b.negative_factors.append(f"operational_risk: complexity_debt={input_.complexity_debt}")
+
+        # URGENCY
+        if input_.urgency != UNKNOWN:
+            b.positive_factors.append(f"urgency: {input_.urgency}")
+
+        # ACCESS
+        if input_.buyer_access != UNKNOWN:
+            b.positive_factors.append(f"access: {input_.buyer_access}")
+
+        # RELATIONSHIP_STRENGTH
+        if input_.relationship_strength != UNKNOWN:
+            b.positive_factors.append(f"relationship_strength: {input_.relationship_strength}")
+
+        # PROBLEM_CONFIDENCE
+        if cell.problem.measurable_loss_type != UNKNOWN:
+            b.positive_factors.append(f"problem_confidence: measurable_loss_type={cell.problem.measurable_loss_type}")
+
+        # PROOF_POTENTIAL
+        if cell.proof.proof_strength != UNKNOWN:
+            b.positive_factors.append(f"proof_potential: {cell.proof.proof_strength}")
+
+        # TIME_TO_VALUE
+        if input_.time_to_cash != UNKNOWN:
+            b.positive_factors.append(f"time_to_value: {input_.time_to_cash}")
 
         # Final Score
         positive = (
@@ -510,9 +635,12 @@ __all__ = [
     "EVIDENCE_WEIGHTS",
     "SECTOR_STRATEGIC_FIT",
     "MONETIZATION_MARGIN",
+    "EconomicFactor",
+    "FACTOR_EVIDENCE_MAP",
     "ScoringInput",
     "ScoringBreakdown",
     "DispatchDecision",
+    "EconomicPriorityResult",
     "EconomicDispatcher",
     "BatchDispatcher",
 ]
