@@ -26,7 +26,7 @@ export default async function DemoPage({ params }: { params: Promise<{ locale: s
           </div>
           <div className="rounded-xl border border-white/10 bg-white/5 p-6">
             <h3 className="font-bold text-gold-400">{isAr ? "الحلول" : "Solutions"}</h3>
-            <p className="text-sm text-white/60 mt-2">{isAr ? "20 قطاع، 3 خدمات لكل قطاع، يديرها 5 وكلاء" : "20 sectors, 3 services per sector, managed by 5 agents"}</p>
+            <p className="text-sm text-white/60 mt-2">{isAr ? "20 قطاع، 3 خدمات لكل قطاع، تشغيل محكوم وموثق" : "20 sectors, 3 services per sector, governed & evidence-backed"}</p>
             <Link href={`/${locale}/solutions`} className="inline-block mt-4 bg-gold-500 text-navy-900 px-4 py-2 rounded-lg font-bold">→</Link>
           </div>
           <div className="rounded-xl border border-white/10 bg-white/5 p-6">
@@ -37,7 +37,7 @@ export default async function DemoPage({ params }: { params: Promise<{ locale: s
           <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-6">
             <h3 className="font-bold text-emerald-400">{isAr ? "هرميس على الشاشة" : "Hermes on Screen"}</h3>
             <p className="text-sm text-white/60 mt-2">{isAr ? "وكيل ذكي يقنع — يعطي كلشي يحتاجه بأفضل شكل، ذكي جداً" : "Smart agent convinces — gives everything needed in best form, very intelligent"}</p>
-            <p className="text-xs text-white/40 mt-2">5 agents • 44 arms • 500 cells • DeepWIP≤3</p>
+            <p className="text-xs text-white/40 mt-2">Governed • Resource-governed • L0-L5 proof</p>
           </div>
         </div>
         <div className="mt-8 rounded-xl border border-gold-500/20 bg-gold-500/10 p-6">
