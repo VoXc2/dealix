@@ -10,6 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/services", priority: 0.95, changeFrequency: "weekly" },
     { path: "/dealix-os", priority: 0.95, changeFrequency: "weekly" },
     { path: "/book", priority: 0.95, changeFrequency: "weekly" },
+    { path: "/zatca-fatoora-readiness", priority: 0.9, changeFrequency: "weekly" },
+    { path: "/ai-governance-readiness", priority: 0.9, changeFrequency: "weekly" },
     { path: "/proof-vault", priority: 0.85, changeFrequency: "weekly" },
     { path: "/safety", priority: 0.8, changeFrequency: "monthly" },
     { path: "/cases", priority: 0.7, changeFrequency: "weekly" },
