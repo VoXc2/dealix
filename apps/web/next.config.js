@@ -86,6 +86,8 @@ const nextConfig = {
       { source: "/proof.html", destination: "/", permanent: true },
       { source: "/checkout.html", destination: "/pricing", permanent: true },
       { source: "/signup", destination: "/book", permanent: true },
+      { source: "/revenue-os", destination: "/dealix-os", permanent: true },
+      { source: "/enterprise-readiness", destination: "/services", permanent: true },
       { source: "/offers", destination: "/pricing", permanent: true },
       { source: "/ar/pricing", destination: "/pricing", permanent: true },
       { source: "/ar/offers", destination: "/pricing", permanent: true },

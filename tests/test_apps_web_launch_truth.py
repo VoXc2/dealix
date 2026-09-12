@@ -81,6 +81,8 @@ def test_book_page_is_inbound_execution_diagnostic_with_evidence_first_truth() -
     assert "لا يتم اعتبار المشكلة أو العائد أو Proof مثبتًا من مجرد التسجيل" in text
     assert "هذه الصفحة قناة inbound" in text
     assert "لا تعتبر رقمًا أو بريدًا عامًا موافقة على مراسلات تسويقية" in text
+    assert "شبكة Dealix الوكيلة المحكومة" in text
+    assert "Dealix الخمسة" not in text
 
     for forbidden in ("سعر ثابت", "نضمن ROI", "public checkout", "auto-send"):
         assert forbidden not in text
@@ -97,6 +99,8 @@ def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
         '{ source: "/checkout.html", destination: "/pricing", permanent: true }',
         '{ source: "/signup", destination: "/book", permanent: true }',
         '{ source: "/offers", destination: "/pricing", permanent: true }',
+        '{ source: "/revenue-os", destination: "/dealix-os", permanent: true }',
+        '{ source: "/enterprise-readiness", destination: "/services", permanent: true }',
     }
     for redirect in required_redirects:
         assert redirect in text
