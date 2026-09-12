@@ -13,7 +13,6 @@ from scripts.ops.software_acquisition_factory import (
     process_candidates,
 )
 
-
 CAPABILITY_FIELDS = (
     "privileged",
     "host_docker_socket",
