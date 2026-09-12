@@ -15,8 +15,12 @@ import argparse
 import json
 import os
 from dataclasses import asdict, dataclass
+
 try:
-    from dealix.commercial.universal_diagnostic_factory import DiagnosticDepth, UniversalDiagnosticFactory
+    from dealix.commercial.universal_diagnostic_factory import (
+        DiagnosticDepth,
+        UniversalDiagnosticFactory,
+    )
 except Exception:
     UniversalDiagnosticFactory = None
     DiagnosticDepth = None
