@@ -23,7 +23,11 @@ from dealix.commercial_ops.gtm_public_surfaces import (
 
 def _probe_json(url: str, timeout: float = 12.0) -> dict[str, object]:
     try:
-        req = urllib.request.Request(url, method="GET")
+        req = urllib.request.Request(
+            url,
+            method="GET",
+            headers={"User-Agent": "DealixVerify/1.0 (+https://dealix.me)"},
+        )
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             body = resp.read(4096).decode("utf-8", errors="replace")
             return {"ok": resp.getcode() == 200, "status": resp.getcode(), "url": url, "body": body[:200]}

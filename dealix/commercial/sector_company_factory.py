@@ -15,11 +15,14 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from dealix.commercial.economic_cell import Sector
-from dealix.commercial.universal_diagnostic_factory import UniversalDiagnosticFactory, DiagnosticDepth
-from dealix.commercial.channel_registry import ChannelRegistry, Channel, ChannelType, ChannelStatus
+from dealix.commercial.channel_registry import Channel, ChannelRegistry, ChannelStatus, ChannelType
 from dealix.commercial.consent_registry import ConsentRegistry
+from dealix.commercial.economic_cell import Sector
 from dealix.commercial.relationship_graph import RelationshipGraph
+from dealix.commercial.universal_diagnostic_factory import (
+    DiagnosticDepth,
+    UniversalDiagnosticFactory,
+)
 
 UNKNOWN = "UNKNOWN"
 
@@ -60,10 +63,21 @@ SECTOR_INTEL: dict[Sector, dict[str, Any]] = {
     Sector.PROFESSIONAL_SERVICES: {"ar": "خدمات مهنية", "en": "Professional Services", "buyers": ["ceo","sales_director","finance_director"], "problems": ["revenue_leakage","quote_delay","collection_delay"], "workflows": ["lead→proposal→cash"], "procurement": "direct", "compliance": [], "offers": ["Revenue Leakage","Proposal Automation"], "channels": ["founder_content","referral","website_inbound"]},
 }
 
-# Fill remaining sectors with generic but intelligent defaults
-for s in Sector:
-    if s not in SECTOR_INTEL:
-        SECTOR_INTEL[s] = {"ar": s.value.replace("_"," "), "en": s.value.replace("_"," ").title(), "buyers": ["ceo","coo"], "problems": ["revenue_leakage","operational_exception_overload"], "workflows": ["lead→cash"], "procurement": "direct", "compliance": ["PDPL"], "offers": ["Diagnostic","Automation Sprint"], "channels": ["website_inbound","seo"]}
+# Sector-specific PATTERN intelligence for the remaining canonical sectors.
+# These are internal hypotheses for diagnostics/qualification; never customer facts.
+_REMAINING_SECTOR_INTEL: dict[Sector, dict[str, Any]] = {
+    Sector.MINING_METALS: {"ar": "تعدين ومعادن", "en": "Mining & Metals", "buyers": ["operations_director","procurement_director","cfo"], "problems": ["maintenance_downtime","grade_data_fragmentation","procurement_delay"], "workflows": ["mine->process","maintenance->return_to_service"], "procurement": "supplier portals+private", "compliance": ["MIM","NCA","PDPL"], "offers": ["Mining Operations Diagnostic","Maintenance Intelligence"], "channels": ["supplier_portals","events_conferences","partner_referrals"]},
+    Sector.RETAIL_COMMERCE_ECOMMERCE: {"ar": "تجارة تجزئة وإلكترونية", "en": "Retail & E-commerce", "buyers": ["ecommerce_director","coo","finance_director"], "problems": ["conversion_leakage","fulfillment_exception","customer_support_backlog"], "workflows": ["order->fulfillment","return->refund"], "procurement": "direct", "compliance": ["MC","ZATCA","PDPL"], "offers": ["Commerce Operations Diagnostic","Support Automation"], "channels": ["website_inbound","seo","founder_content"]},
+    Sector.TOURISM_HOSPITALITY: {"ar": "سياحة وضيافة", "en": "Tourism & Hospitality", "buyers": ["general_manager","revenue_manager","operations_director"], "problems": ["booking_leakage","guest_support_backlog","operational_exception_overload"], "workflows": ["booking->stay","guest_issue->resolution"], "procurement": "private", "compliance": ["Ministry_of_Tourism","PDPL","ZATCA"], "offers": ["Guest Operations Diagnostic","Revenue Command"], "channels": ["events_conferences","partner_referrals","website_inbound"]},
+    Sector.TELECOM_MEDIA_MARKETING: {"ar": "اتصالات وإعلام وتسويق", "en": "Telecom, Media & Marketing", "buyers": ["cmo","cio","operations_director"], "problems": ["campaign_attribution_gap","content_operations_bottleneck","customer_support_backlog"], "workflows": ["campaign->lead","content->publish","support->resolution"], "procurement": "direct+enterprise", "compliance": ["CST","GAMR","PDPL"], "offers": ["Growth Operations Diagnostic","AI Governance"], "channels": ["website_inbound","seo","events_conferences"]},
+    Sector.EDUCATION_TRAINING: {"ar": "تعليم وتدريب", "en": "Education & Training", "buyers": ["training_director","operations_director","cio"], "problems": ["enrollment_leakage","scheduling_fragmentation","learner_support_backlog"], "workflows": ["lead->enrollment","enrollment->completion","support->resolution"], "procurement": "direct+government", "compliance": ["ETEC","Ministry_of_Education","PDPL"], "offers": ["Enrollment Operations Diagnostic","Learning Support Automation"], "channels": ["website_inbound","partner_referrals","procurement_portals"]},
+    Sector.AGRICULTURE_FOOD_WATER: {"ar": "زراعة وأغذية ومياه", "en": "Agriculture, Food & Water", "buyers": ["operations_director","quality_director","procurement_director"], "problems": ["traceability_gap","inventory_exception","quality_failure"], "workflows": ["source->quality->delivery","exception->resolution"], "procurement": "supplier portals+private", "compliance": ["MEWA","SFDA","SWA"], "offers": ["Traceability Diagnostic","Operations Automation"], "channels": ["supplier_portals","events_conferences","partner_referrals"]},
+    Sector.MOBILITY_AUTOMOTIVE: {"ar": "تنقل وسيارات", "en": "Mobility & Automotive", "buyers": ["fleet_director","after_sales_director","operations_director"], "problems": ["maintenance_downtime","parts_inventory_exception","service_backlog"], "workflows": ["vehicle->service","parts->fulfillment","issue->resolution"], "procurement": "supplier portals+private", "compliance": ["TGA","SASO","ZATCA"], "offers": ["Fleet Operations Diagnostic","Service Automation"], "channels": ["supplier_portals","events_conferences","website_inbound"]},
+    Sector.EXPORT_IMPORT_RHQ: {"ar": "تصدير واستيراد ومقرات إقليمية", "en": "Export, Import & RHQ", "buyers": ["supply_chain_director","cfo","compliance_risk"], "problems": ["customs_document_delay","landed_cost_leakage","compliance_burden"], "workflows": ["order->customs->delivery","quote->cash"], "procurement": "direct+partner", "compliance": ["MISA","ZATCA","PDPL"], "offers": ["Trade Operations Diagnostic","Document Intelligence"], "channels": ["partner_referrals","website_inbound","events_conferences"]},
+    Sector.CREATIVE_SPORTS_GAMING: {"ar": "إبداع ورياضة وألعاب", "en": "Creative, Sports & Gaming", "buyers": ["commercial_director","operations_director","marketing_director"], "problems": ["sponsorship_pipeline_leakage","fan_support_backlog","content_operations_bottleneck"], "workflows": ["campaign->revenue","event->engagement","content->publish"], "procurement": "direct+events", "compliance": ["GEA","Ministry_of_Sport","GAMR","PDPL"], "offers": ["Commercial Revenue Diagnostic","Content Operations Automation"], "channels": ["founder_content","events_conferences","website_inbound"]},
+    Sector.ASSOCIATIONS_NONPROFITS: {"ar": "جمعيات وغير ربحية", "en": "Associations & Nonprofits", "buyers": ["executive_director","fundraising_director","operations_director"], "problems": ["donor_member_lifecycle_gap","reporting_burden","service_coordination_delay"], "workflows": ["donor->receipt->report","member->service","case->resolution"], "procurement": "direct+grants", "compliance": ["NCNPO","PDPL"], "offers": ["Mission Operations Diagnostic","Member and Donor Automation"], "channels": ["partner_referrals","website_inbound","events_conferences"]},
+}
+SECTOR_INTEL.update(_REMAINING_SECTOR_INTEL)
 
 class SectorCompanyFactory:
     def __init__(self) -> None:

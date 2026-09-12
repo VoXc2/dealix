@@ -8,9 +8,26 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from dealix.commercial.universal_diagnostic_factory import UniversalDiagnosticFactory, DiagnosticDepth, FAMILIES
 from dealix.commercial.economic_cell_registry import EconomicCellRegistry
 from dealix.commercial.financial_os import FinancialOS
+from dealix.commercial.universal_diagnostic_factory import (
+    FAMILIES,
+    FAMILY_AR,
+    SECTOR_SURFACES,
+    DiagnosticDepth,
+    UniversalDiagnosticFactory,
+)
+
+REQUIRED_SURFACES = {
+    "logistics", "ports_marine", "construction", "real_estate", "retail",
+    "ecommerce", "hospitality", "restaurants", "healthcare_operations",
+    "clinics", "manufacturing", "industrial", "automotive", "education",
+    "hr_recruitment", "professional_services", "accounting",
+    "finance_operations", "legal_operations", "insurance_operations",
+    "facilities", "maintenance", "field_services", "procurement",
+    "warehousing", "distribution", "customer_service", "marketing",
+    "technology_saas", "sme", "enterprise_operations",
+}
 
 def scenario(name, sector, size, buyer, problem, depth):
     f = UniversalDiagnosticFactory()
@@ -60,6 +77,31 @@ def main() -> int:
         else:
             print(f"  FAIL {r}")
     print(f"PASS {ok}/8 scenarios")
+    # Commercial surface coverage + bilingual + truth-safe estimates
+    f0 = UniversalDiagnosticFactory()
+    surface_ids = {s.surface_id for s in SECTOR_SURFACES}
+    missing = REQUIRED_SURFACES - surface_ids
+    print(f"Surfaces {len(surface_ids)}/{len(REQUIRED_SURFACES)} missing={sorted(missing)}")
+    assert all(fid in FAMILY_AR for fid in f0.families), "every family needs an Arabic name"
+    for loc in ("ar", "en"):
+        q = f0.generate_questions(FAMILIES[0], locale=loc)
+        assert all(item["text_ar"] and item["text_en"] for item in q)
+        if loc == "ar":
+            assert any("\u0600" <= ch <= "\u06FF" for ch in q[0]["question_text"])
+        else:
+            assert q[0]["question_text"].isascii()
+    print("Bilingual questions PASS")
+    leakage = f0.economic_leakage([{"finding": "manual handoff", "evidence": "interview"}])
+    assert leakage and leakage[0]["truth_class"] == "UNKNOWN", "no invented numbers"
+    labelled = f0.economic_leakage([{"finding": "manual handoff", "evidence": "interview", "annual_frequency": 12, "time_per_event": "2h", "estimate_basis": "system_export", "annual_hours": 24}])
+    assert labelled[0]["truth_class"] == "ESTIMATED"
+    value = f0.value_estimate(labelled, hourly_cost_sar=100)
+    assert value["truth_class"] == "ESTIMATED" and value["is_measured_fact"] is False
+    assert f0.value_estimate(leakage)["truth_class"] == "UNKNOWN"
+    print("Truth-safe estimates PASS")
+    assert all(f0.is_free(d) for d in (DiagnosticDepth.D0_SIGNAL_SCAN, DiagnosticDepth.D1_RAPID, DiagnosticDepth.D2_FUNCTIONAL))
+    assert not f0.is_free(DiagnosticDepth.D3_CROSS_FUNCTIONAL)
+    print("D0-D2 free PASS")
     # Test other invariants
     # Economic cell registry
     reg = EconomicCellRegistry(storage_path=Path(tempfile.mktemp(suffix=".jsonl")))
@@ -67,19 +109,44 @@ def main() -> int:
     print(f"Registry 10 cells: {len(cells)}")
     # Financial truth
     fos = FinancialOS()
-    from dealix.commercial.financial_os import FinancialRecord, FinancialState
     from datetime import UTC, datetime
+
+    from dealix.commercial.financial_os import FinancialRecord, FinancialState
     fos.add_record(FinancialRecord(record_id="q1", state=FinancialState.QUOTE_VALUE, amount_sar=10000, probability=0.5))
     assert fos.verified_cash() == 0, "quote should not be cash"
-    fos.add_record(FinancialRecord(record_id="p1", state=FinancialState.PAYMENT_VERIFIED, amount_sar=5000, probability=1.0))
+    fos.add_record(FinancialRecord(record_id="p1", state=FinancialState.PAYMENT_VERIFIED, amount_sar=5000, probability=1.0, verified_at=datetime.now(UTC).isoformat(), evidence_ref="ev_universal_diag"))
     assert fos.verified_cash() == 5000
     print("Financial truth PASS")
     # DeepWIP
-    from dealix.commercial.deep_wip_enforcer import DeepWipEnforcer
-    from dealix.commercial.economic_cell_registry import EconomicCellRegistry as ECR
-    from dealix.commercial.economic_cell import EconomicCell, Identity, Market, Sector, Buyer, BuyerGroup, Problem, ProblemClass, Value, Offer, Monetization, MonetizationRail, Distribution, DistributionRail, Procurement, Execution, Evidence, Economics, Risk, Portfolio, Proof, LifecycleState
-    from datetime import UTC, datetime
     import uuid
+    from datetime import UTC, datetime
+
+    from dealix.commercial.deep_wip_enforcer import DeepWipEnforcer
+    from dealix.commercial.economic_cell import (
+        Buyer,
+        BuyerGroup,
+        Distribution,
+        DistributionRail,
+        EconomicCell,
+        Economics,
+        Evidence,
+        Execution,
+        Identity,
+        LifecycleState,
+        Market,
+        Monetization,
+        MonetizationRail,
+        Offer,
+        Portfolio,
+        Problem,
+        ProblemClass,
+        Procurement,
+        Proof,
+        Risk,
+        Sector,
+        Value,
+    )
+    from dealix.commercial.economic_cell_registry import EconomicCellRegistry as ECR
     tmp2 = Path(tempfile.mktemp(suffix=".jsonl"))
     reg2 = ECR(storage_path=tmp2)
     def mk(state):
@@ -110,7 +177,7 @@ def main() -> int:
     assert "permission" in data and "permissions" not in data
     assert "bash" in data["permission"] and "shell" not in data["permission"]
     print("OpenCode V1 PASS")
-    return 0 if ok == 8 else 1
+    return 0 if (ok == 8 and not missing) else 1
 
 if __name__ == "__main__":
     sys.exit(main())

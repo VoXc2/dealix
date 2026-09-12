@@ -40,6 +40,7 @@ from dealix.commercial.deep_wip_enforcer import (
     PresidentWipController,
     get_enforcer,
 )
+from dealix.commercial.truth_types import TruthClass
 from dealix.commercial.agent_work_packets import AgentPacketBuilder
 from dealix.president_approval_digest import (
     PresidentDigest,
@@ -387,6 +388,7 @@ class PresidentCommand:
                     "cell_id": cell.identity.cell_id,
                     "name": cell.identity.canonical_name,
                     "score": decision.score.economic_priority,
+                    "score_truth": TruthClass.ESTIMATED.value,
                     "evidence": cell.evidence.evidence_level.value,
                     "next_step": decision.recommended_action,
                 })

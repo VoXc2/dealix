@@ -63,7 +63,7 @@ def main() -> int:
 
     assert set(data["owners"].values()) == EXPECTED_AGENTS
     assert REQUIRED_TRUTH.issubset(set(data["truth_firewall"]))
-    assert REQUIRED_ROUTES == set(data["route_options"])
+    assert set(data["route_options"]) == REQUIRED_ROUTES
 
     ceilings = data["capacity_ceiling_per_operating_day"]
     assert ceilings["raw_signal_refresh"] >= ceilings["verified_relevant_signals"]
@@ -92,7 +92,8 @@ def main() -> int:
     assert "effective_limit = min(requested_limit, raw_signal_ceiling)" in runner
     assert "deep_wip_evidence_ready" in runner
     assert "EV_BLOCKED_EVIDENCE_GAP" in runner
-    assert 'flags["evidence_ref_count"] > 0' in runner
+    assert 'flags["source_present"] and flags["source_attributable"]' in runner
+    assert '"evidence_ref_count": len(evidence_refs)' in runner
 
     print("DEALIX_PROBABILITY_REVENUE_ENGINE_VERIFY=PASS")
     print(f"RAW_SIGNAL_CAPACITY={ceilings['raw_signal_refresh']}")

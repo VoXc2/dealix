@@ -1,0 +1,2073 @@
+{
+  "schema": "dealix.market-signal-set.v1",
+  "wave_id": "op2-market-intelligence-wave-2026-09-12",
+  "lane": "OP2",
+  "generated_at": "2026-09-12T09:18:34+03:00",
+  "scope": "dealix_company",
+  "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
+  "authority": {
+    "relationship": false,
+    "consent": false,
+    "offer": false,
+    "price": false,
+    "quote": false,
+    "contract": false,
+    "external_send": false,
+    "payment": false,
+    "customer_proof": false,
+    "execution": false,
+    "production": false
+  },
+  "notes": "Fresh OP2 Saudi market-intelligence wave expanded across the canonical 20-sector Company OS. Public/regulatory/statistical signals only. A market signal is NOT buyer demand, opportunity, relationship, consent, quote, payment, or revenue. Authority flags remain false.",
+  "signals": [
+    {
+      "signal_id": "op2-2026-zatca-wave25-einvoicing",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "observed_at": "2026-07-24T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "ZATCA media release: Wave 25 integration-phase criteria (published 24 July 2026)",
+      "fresh_until": "2027-02-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "ZATCA (Zakat, Tax and Customs Authority)",
+      "buyer": "CFO / finance operations / tax compliance lead",
+      "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
+      "trigger": "Wave 25 lowers the Phase-2 threshold to SAR 187,500 VAT-subject revenue in any of 2022-2025",
+      "deadline": "2027-02-01",
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://kpmg.com/sa/en/insights/tax-insights/announcement-of-25th-wave-for-e-invoicing-phase-2-implementation.html",
+        "https://taxnews.ey.com/news/2026-1705-saudi-arabia-announces-25th-wave-of-phase-2-e-invoicing-integration"
+      ],
+      "facts": [
+        "ZATCA set Wave 25 integration-phase criteria on 24 July 2026 for taxpayers whose VAT-subject revenue exceeded SAR 187,500 in 2022, 2023, 2024 or 2025.",
+        "Targeted taxpayers must integrate their e-invoicing solutions with the Fatoora platform by 1 February 2027.",
+        "Wave 25 is the first wave to include calendar-year 2025 revenue as a selection criterion and halves the prior threshold."
+      ],
+      "inferences": [
+        "A materially larger population of smaller firms enters integration scope, plausibly raising demand for governed finance/tax automation help.",
+        "The deadline is a research trigger only; it does not prove that any specific firm wants external help or would buy."
+      ],
+      "unknowns": [
+        "No named buyer has been confirmed as ZATCA-notified in Wave 25.",
+        "No purchase intent, budget, or incumbent-vendor evidence exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm the Wave 25 notification timeline from ZATCA primary sources",
+        "Identify named firms in scope with public ERP/accounting transformation signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 4,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-sdaia-ai-governance-package",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+      "observed_at": "2026-06-08T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SDAIA regulatory documents page + June 2026 package of 10 AI guidance documents (SPA)",
+      "fresh_until": "2027-06-08T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SDAIA (Saudi Data & AI Authority)",
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "trigger": "SDAIA published a June 2026 package of AI ethics/GenAI/deepfake guidance and the AI Adoption Framework is used as a public-sector procurement baseline",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://sdaia.gov.sa/en/SDAIA/about/Files/AIAdoptionFramework.pdf",
+        "https://aiinarabia.com/policy/sdaia-ai-adoption-framework-saudi-pdpl-gcc-governance-regime-deep-dive-2026-05-12"
+      ],
+      "facts": [
+        "On 8 June 2026 SDAIA announced a package of 10 regulatory documents on ethical and responsible AI use.",
+        "SDAIA publishes an AI Adoption Framework structured around governance, accountability, transparency, human oversight and risk management.",
+        "There is no standalone binding Saudi AI statute yet; PDPL and sector regulators carry the binding obligations."
+      ],
+      "inferences": [
+        "Organizations deploying AI over Saudi personal data face a growing governance-evidence expectation, which is research-relevant for Dealix governance capability.",
+        "The guidance being non-binding means procurement expectations, not statute, drive demand."
+      ],
+      "unknowns": [
+        "No evidence that any specific buyer is currently procuring AI-governance services.",
+        "The final AI law timeline is unannounced."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Track whether the AI Adoption Framework appears in live Etimad technical evaluation criteria",
+        "Identify named regulated entities publishing AI-governance job postings"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-pdpl-active-enforcement",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SDAIA enforcement record (48 decisions, Jan 2026) as reported by Clyde & Co, Latham & Watkins, Lexis Middle East",
+      "fresh_until": "2026-12-30T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SDAIA / PDPL Committees for Reviewing Violations",
+      "buyer": "DPO / legal / compliance / CISO",
+      "problem": "Consent management, marketing-consent proof, DPO appointment, 72-hour breach reporting and cross-border transfer safeguards",
+      "trigger": "SDAIA confirmed 48 PDPL enforcement decisions and penalties up to SAR 5,000,000 (doubled for repeat), including fines for marketing without explicit consent",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+        "https://www.globalprivacyblog.com/2026/05/active-enforcement-of-saudi-arabia-privacy-regime-implications-for-businesses/",
+        "https://profectus.sa/resources/sdaia-enforcement-decisions"
+      ],
+      "facts": [
+        "SDAIA confirmed 48 enforcement decisions in its January 2026 announcement; PDPL has been fully enforceable since 14 September 2024.",
+        "Penalty ceiling is SAR 5,000,000, doubling to SAR 10,000,000 for repeat violations; enforcement included marketing without explicit consent and 72-hour breach-notification failures.",
+        "Respondents have only five days to respond once notified of an alleged violation."
+      ],
+      "inferences": [
+        "Enforcement maturity raises the value of demonstrable consent/breach/evidence operations, which is research-relevant to Dealix trust capabilities.",
+        "Recurring violation types are a proxy research agenda, not proof of demand from any named firm."
+      ],
+      "unknowns": [
+        "SDAIA did not publish per-case penalty amounts or a numeric breakdown by category.",
+        "No named enforcement target is linked to a purchase signal."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Locate SDAIA primary enforcement notices with dates and categories",
+        "Map which sectors received the most decisions from primary sources"
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-sama-open-banking-licensing",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx",
+      "observed_at": "2026-03-26T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SAMA announcement: commencement of open-banking licensing (26 March 2026)",
+      "fresh_until": "2027-03-26T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "FINANCIAL_SERVICES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SAMA (Saudi Central Bank)",
+      "buyer": "COO / technology / risk / compliance lead at licensed fintechs and banks",
+      "problem": "Consent management, API governance, data security and operational-resilience evidence for supervised open-banking services",
+      "trigger": "SAMA moved open banking from sandbox to a formal licensing regime, with two fintechs licensed on 26 March 2026",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx",
+        "https://www.pinsentmasons.com/en-gb/out-law/news/saudi-central-bank-fintechs-licensed-offer-open-banking-services",
+        "https://www.clydeco.com/en/insights/2026/03/sama-new-licensing-framework-for-open-banking"
+      ],
+      "facts": [
+        "SAMA announced the commencement of open-banking licensing on 26 March 2026 after completing the regulatory sandbox phase.",
+        "Licensed providers face permanent, enforceable governance, cybersecurity, API and consent requirements.",
+        "Licensing sits within the National Fintech Strategy under Vision 2030."
+      ],
+      "inferences": [
+        "A licensed-regime transition increases formal evidence and governance workload for open-banking participants, plausibly relevant to governed automation.",
+        "Only a small number of firms are licensed so far; the addressable research set is narrow."
+      ],
+      "unknowns": [
+        "The full list of future license applicants is not public.",
+        "No buyer-level procurement or budget evidence exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Track additional SAMA open-banking license announcements",
+        "Identify licensed fintechs' public engineering/compliance hiring signals"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 2,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-ecc2-controls",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+      "observed_at": "2026-07-14T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "NCA ECC-2:2024 + Guide to ECC Implementation (GECC-2:2026)",
+      "fresh_until": "2027-07-14T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "GOVERNMENT_ENTITY",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "buyer": "CISO / security governance lead / vendor security owner",
+      "problem": "Cybersecurity control evidence, audit trails, third-party/cloud risk and staffing compliance",
+      "trigger": "ECC-2:2024 replaced ECC-1:2018 (4 domains, 28 subdomains, 108 controls); GECC-2:2026 implementation guide and assessment tool regime",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/11bb8f2d-706a-4f18-80f1-40d620ebd845_GECC-.pdf",
+        "https://www.secure.com/blog/compliance/saudi-businesses-nca-ecc-update"
+      ],
+      "facts": [
+        "ECC-2:2024 is the mandatory baseline for government entities and critical national infrastructure operators in the Kingdom.",
+        "ECC-2:2024 consolidates controls to 4 main domains, 28 subdomains and 108 controls.",
+        "Suppliers to in-scope entities are increasingly asked for ECC-aligned evidence."
+      ],
+      "inferences": [
+        "Supply-chain evidence expectations create downstream research relevance for vendors serving government/CNI.",
+        "Direct scope excludes most small private firms; the realistic route is as a supplier, not a primary buyer."
+      ],
+      "unknowns": [
+        "No named in-scope buyer with a live ECC-evidence gap has been confirmed.",
+        "NCA may revise published control counts."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm current control counts on the NCA portal before citing externally",
+        "Identify which Etimad technical evaluations score ECC alignment"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-ccc-cloud-residency",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+      "observed_at": "2026-06-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "NCA Cloud Cybersecurity Controls CCC 2:2024 (data-localisation authority moved to NDMO/SDAIA)",
+      "fresh_until": "2027-06-20T00:00:00+03:00",
+      "signal_family": "TECHNOLOGY_OR_PLATFORM_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)",
+      "buyer": "cloud/security architect / data governance lead",
+      "problem": "Cloud data classification, residency decisions and CSP/CST control evidence",
+      "trigger": "CCC 2:2024 removed direct data-localisation controls and transferred residency authority to NDMO at SDAIA",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://cdn.nca.gov.sa/api/files/public/upload/86e09090-44e4-481f-bc28-355673607654_ECC--2024-EN.pdf"
+      ],
+      "facts": [
+        "CCC 2:2024 is a modular extension of ECC covering cloud service providers and cloud service tenants.",
+        "The 2024 revision transferred data-residency responsibility from CCC to the National Data Management Office at SDAIA.",
+        "Sensitive and government-classified workloads still face strict in-country requirements via NDMO."
+      ],
+      "inferences": [
+        "Cloud/data-residency uncertainty is research-relevant to organizations with sensitive Saudi workloads.",
+        "This overlaps with PDPL transfer rules, so a single evidence approach may serve both."
+      ],
+      "unknowns": [
+        "NDMO operational guidance details are not fully public.",
+        "No buyer-level cloud migration evidence is attached."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Locate NDMO primary data-classification and residency documents",
+        "Map which cloud workloads are explicitly in-scope for CNI operators"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-monshaat-sme-digitalization",
+      "source_id": "MONSHAAT_OFFICIAL",
+      "source_ref": "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+      "observed_at": "2026-06-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "Saudi SME 2026 data report compiling Monsha'at observatory and SAMA/Kafalah figures",
+      "fresh_until": "2026-12-01T00:00:00+03:00",
+      "signal_family": "COMPANY_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "SME",
+      "authority_ref": "Monsha'at (General Authority for SMEs) with SAMA/Kafalah data",
+      "buyer": "SME owner / finance manager",
+      "problem": "Manual VAT/e-invoicing compliance, weak financial records and limited real-time visibility",
+      "trigger": "SME registrations exceed ~1.7M with SAR 148B in bank lending and e-invoicing scope expanding",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://vision2030.ai/tracker/priorities/sme-growth/"
+      ],
+      "facts": [
+        "Saudi SME registrations have grown to roughly 1.7 million active commercial registers and the sector contributes close to 22.9% of GDP.",
+        "SME bank lending has grown to about SAR 148 billion under Vision 2030 programs including Kafalah.",
+        "The report states that automated cloud solutions can save up to 30% of monthly VAT compliance time versus manual systems."
+      ],
+      "inferences": [
+        "A very large, fragmented SME population with a standardization/automation wedge is research-relevant for low-touch products.",
+        "Sector-level growth does not establish demand from any individual SME."
+      ],
+      "unknowns": [
+        "The 30% time-saving figure is a vendor-compiled report claim, not an independently validated benchmark.",
+        "No named SME buyer evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Corroborate the 30% claim from a primary/independent source before external use",
+        "Identify SME segments where e-invoicing scope overlaps low-touch automation"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-sfda-digital-health-ai",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://sfda.gov.sa/en/news/19378",
+      "observed_at": "2026-09-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "SFDA ProVerifier launch at LEAP 2026 + MDS-G27 digital health guidance (v1, 2025-08-11)",
+      "fresh_until": "2027-09-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "SFDA (Saudi Food & Drug Authority)",
+      "buyer": "regulatory affairs / clinical informatics / quality lead",
+      "problem": "AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products",
+      "trigger": "MDS-G27 digital health guidance plus SFDA's AI-enabled regulator tooling (ProVerifier) at LEAP 2026",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://sfda.gov.sa/en/news/19378",
+        "https://meddeviceguide.com/blog/saudi-sfda-mds-g27-digital-health-products-regulation-guide",
+        "https://www.sfda.gov.sa/en/news/5316783"
+      ],
+      "facts": [
+        "SFDA issued MDS-G27 guidance on digital health products, covering AI/ML clinical algorithms, on 11 August 2025.",
+        "For AI/ML products SFDA mandates validation, data governance, explainability, human oversight and post-market change management.",
+        "SFDA launched the ProVerifier AI tool at LEAP 2026 (31 Aug - 3 Sep 2026) for field product verification."
+      ],
+      "inferences": [
+        "Clinical AI/ML evidence requirements are research-relevant to Dealix's governed-AI/evidence capabilities.",
+        "Selling into this space carries heavy regulatory and partner prerequisites, so default is partner-first."
+      ],
+      "unknowns": [
+        "No named digital-health vendor or provider is linked to a procurement signal.",
+        "MDMA timelines and local-representative requirements vary by product class."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Read MDS-G27 and MDS-G010 primary texts for exact evidence requirements",
+        "Identify local authorized representatives as potential partner route"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 2,
+        "distribution_density": 2,
+        "regulatory_friction": 5,
+        "integration_complexity": 5,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nupco-localization-digital",
+      "source_id": "ETIMAD_PUBLIC_PROCUREMENT",
+      "source_ref": "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+      "observed_at": "2026-04-07T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "NUPCO procurement/localization and digital-transformation guide (secondary research compilation)",
+      "fresh_until": "2027-04-07T00:00:00+03:00",
+      "signal_family": "TENDER_OR_PROCUREMENT",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HEALTHCARE_LIFE_SCIENCES",
+      "business_archetype": "GOVERNMENT_ENTITY",
+      "authority_ref": "NUPCO (National Unified Procurement Company) + LCGPA",
+      "buyer": "supplier / procurement / supply-chain lead",
+      "problem": "Local-content compliance, framework-agreement qualification and integration with digital procurement platforms",
+      "trigger": "NUPCO reportedly enforces local-content preference and is expanding AI demand forecasting and e-marketplace channels",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+        "https://medstrato.com/blog/medical-device-procurement-sa-guide"
+      ],
+      "facts": [
+        "NUPCO is the centralized medical procurement entity for public health agencies and reports annual procurement exceeding SAR 25 billion.",
+        "NUPCO has shifted toward framework agreements and reportedly rejects foreign bids where a qualified local alternative exists.",
+        "NUPCO launched a digital healthcare marketplace for private clinics and SMEs in Q1 2025 and is deploying AI demand forecasting."
+      ],
+      "inferences": [
+        "The realistic Dealix route is as a partner/backend to qualified local suppliers, not a direct bidder.",
+        "These are secondary sources; primary NUPCO/Etimad tender data is required before any bid/no-bid decision."
+      ],
+      "unknowns": [
+        "Exact live framework-agreement scope and deadlines are not verified from Etimad primary sources.",
+        "No local partner has been confirmed."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Verify live NUPCO/Etimad opportunities from primary portals",
+        "Map qualified local medical suppliers as potential partners"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 2,
+        "data_availability": 2,
+        "repeatability": 2,
+        "readiness": 2,
+        "distribution_density": 2,
+        "regulatory_friction": 5,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-rega-proptech-sandbox",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/",
+      "observed_at": "2026-08-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "REGA Saudi PropTech Hub regulatory sandbox + FAL platform licensing (71 platforms)",
+      "fresh_until": "2027-02-20T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "REAL_ESTATE",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "REGA (Real Estate General Authority)",
+      "buyer": "proptech platform operator / data lead",
+      "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
+      "trigger": "REGA licensed 71 electronic real-estate platforms (FAL) and runs a PropTech regulatory sandbox",
+      "deadline": "2026-04-30",
+      "evidence_refs": [
+        "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/",
+        "https://rega.gov.sa/en/media-center/news-announcements/rega-licenses-71-electronic-real-estate-platforms/"
+      ],
+      "facts": [
+        "REGA has licensed 71 electronic real-estate platforms for brokerage and marketing after technical integration.",
+        "REGA operates a PropTech regulatory sandbox with applications for the current cycle closing 30 April 2026.",
+        "Unlicensed platforms are subject to regulatory action."
+      ],
+      "inferences": [
+        "A licensed proptech cohort with integration/data obligations is research-relevant for governed data/automation services.",
+        "The sandbox is a structured partner/discovery route, not a guarantee of demand."
+      ],
+      "unknowns": [
+        "The 2026 sandbox application outcome and next cycle dates are not confirmed.",
+        "No named platform buyer evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm the next PropTech sandbox cycle from REGA primary sources",
+        "Identify licensed platforms with public data-integration needs"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-cst-ai-hub-cloud-zone",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+      "observed_at": "2026-06-13T00:00:00+03:00",
+      "ingested_at": "2026-09-12T05:55:00+03:00",
+      "provenance_ref": "CST draft Global AI Hub Law (sovereign data centres) + Cloud Computing Special Economic Zone",
+      "fresh_until": "2026-12-13T00:00:00+03:00",
+      "signal_family": "TECHNOLOGY_OR_PLATFORM_CHANGE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "CST (Communications, Space & Technology Commission)",
+      "buyer": "data-centre / cloud operator / sovereignty lead",
+      "problem": "Licensing, data separation, auditability and jurisdictional evidence for sovereign/AI-hub hosting",
+      "trigger": "CST draft Global AI Hub Law (private/extended/virtual hub models) and the Cloud Computing Special Economic Zone",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+        "https://new.cst.gov.sa/en/about/program-and-initiatives/cloud-computing-special-economic-zone-technology",
+        "https://www.lexology.com/library/detail.aspx?g=015b8434-0c62-4645-9839-dc7cd8066b63"
+      ],
+      "facts": [
+        "CST published a consultation draft of a Global AI Hub Law on 14 April 2025 introducing private, extended and virtual hub models.",
+        "The draft contemplates licensing, data separation, audit trails and emergency-access obligations aligned with PDPL and NCA.",
+        "CST also operates a Cloud Computing Special Economic Zone."
+      ],
+      "inferences": [
+        "Sovereign-hosting compliance and audit-evidence needs are research-relevant to cloud/data-centre operators in the Kingdom.",
+        "This is draft/early-stage, so no near-term procurement should be assumed."
+      ],
+      "unknowns": [
+        "Final law and implementing regulations timeline is unconfirmed.",
+        "No operator-level procurement evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Check Istitlaa/CST for the final law status",
+        "Identify Cloud Computing SEZ tenants as potential future research set"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 2,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 2,
+        "distribution_density": 2,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-etimad-government-procurement-snapshot",
+      "source_id": "ETIMAD_PUBLIC_PROCUREMENT",
+      "source_ref": "https://portal.etimad.sa/en-us/home/gettenderssection",
+      "observed_at": "2026-09-12T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for government_b2g; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-12T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "AVIATION_DEFENSE",
+      "business_archetype": "PUBLIC_SECTOR_PROCUREMENT",
+      "authority_ref": "Etimad / Ministry of Finance",
+      "buyer": "procurement / digital transformation / program owner",
+      "problem": "Tender discovery, bid/no-bid evidence, requirements traceability, and compliant delivery proof",
+      "trigger": "Etimad publicly exposes a large active government-tender surface with IT among major activity categories.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://portal.etimad.sa/en-us/home/gettenderssection"
+      ],
+      "facts": [
+        "Etimad is the Saudi public procurement platform and publicly lists active and awarded competitions.",
+        "The current public dashboard exposes IT, operation/maintenance, building contracting and equipment trading among major tender categories."
+      ],
+      "inferences": [
+        "A governed tender-intelligence and partner/no-bid workflow is commercially relevant to B2G research."
+      ],
+      "unknowns": [
+        "No specific tender is qualified for Dealix and no bid authority is granted."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Select only open tenders with exact scope, deadline, buyer and eligibility evidence.",
+        "Apply partner-or-no-bid posture before any submission."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 5,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "government_b2g",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-sca-construction-project-awards",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://sca.sa/ar",
+      "observed_at": "2026-07-19T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for construction_epc; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-19T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MANUFACTURING",
+      "business_archetype": "PROJECT_BASED_ENTERPRISE",
+      "authority_ref": "Saudi Contractors Authority",
+      "buyer": "project controls / contracts / operations director",
+      "problem": "RFI, submittal, change-order, document-control and project exception cycle time",
+      "trigger": "Saudi Contractors Authority reported more than SAR 29B of projects awarded in June 2026 and a continuing future-project pipeline.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://sca.sa/ar"
+      ],
+      "facts": [
+        "The Saudi Contractors Authority states construction is a major non-oil sector and publishes current project-market activity.",
+        "Its July 2026 homepage/news highlights more than SAR 29B of projects awarded during June 2026."
+      ],
+      "inferences": [
+        "Project volume creates a repeatable research case for governed document and project-control automation."
+      ],
+      "unknowns": [
+        "No contractor has confirmed a Dealix need, budget, or access to project systems."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify contractors with active awarded-project evidence and public digital/project-control signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "construction_epc",
+      "canonical_mapping_note": "Broad radar registry lacks a construction family; MANUFACTURING is only the admitted parent bridge, while canonical_sector_id is authoritative for Company OS routing.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-manufacturing-revenue-growth",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for industrial_manufacturing; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MANUFACTURING",
+      "business_archetype": "INDUSTRIAL_ENTERPRISE",
+      "authority_ref": "GASTAT",
+      "buyer": "plant operations / quality / supply-chain director",
+      "problem": "Downtime, quality exceptions, inventory visibility and manual operating evidence",
+      "trigger": "GASTAT reported manufacturing operating revenues up 9.6% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "facts": [
+        "GASTAT reported a 9.6% year-on-year increase in manufacturing operating revenues in May 2026.",
+        "Manufacturing operating revenues also rose 0.6% month on month in May 2026."
+      ],
+      "inferences": [
+        "Growth increases the value of scalable quality, maintenance and inventory operating workflows, but does not prove demand from any named factory."
+      ],
+      "unknowns": [
+        "No named manufacturer relationship, budget or deployment baseline exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Find named manufacturers with measurable maintenance, quality or inventory transformation signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "industrial_manufacturing",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-logistics-june-sts",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "observed_at": "2026-08-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for logistics_supply_chain; research-only canonical-sector bridge",
+      "fresh_until": "2026-11-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "HIGH_VOLUME_OPERATIONS",
+      "authority_ref": "GASTAT / Transport General Authority",
+      "buyer": "COO / logistics operations / last-mile director",
+      "problem": "High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load",
+      "trigger": "GASTAT June 2026 short-term business tables report strong transportation/storage operating-revenue growth; TGA reporting also shows rapid delivery-order expansion.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication",
+        "https://mot.gov.sa/ar/logistics-sectors"
+      ],
+      "facts": [
+        "GASTAT published Short-Term Business Indicators Statistics for June 2026 on 20 August 2026.",
+        "The June table reports transportation and storage operating-revenue index growth of 18.4% year on year and 0.8% month on month."
+      ],
+      "inferences": [
+        "High transaction density and measurable exceptions make logistics a strong automation-research lane."
+      ],
+      "unknowns": [
+        "No named logistics operator has provided operational data or consent."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Qualify operators with public SLA, fleet, fulfillment or support transformation signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 5,
+        "buyer_access": 4,
+        "data_availability": 5,
+        "repeatability": 5,
+        "readiness": 5,
+        "distribution_density": 5,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "logistics_supply_chain",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-seec-energy-efficiency-marketplace",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://foras.seec.gov.sa/",
+      "observed_at": "2026-09-12T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for energy_utilities_oil_gas; research-only canonical-sector bridge",
+      "fresh_until": "2027-03-12T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ENERGY",
+      "business_archetype": "ASSET_INTENSIVE_REGULATED",
+      "authority_ref": "Saudi Energy Efficiency Center",
+      "buyer": "energy manager / facilities / operations director",
+      "problem": "Energy audit evidence, measurement and verification, opportunity qualification and savings tracking",
+      "trigger": "SEEC operates a live opportunity platform matching facilities with licensed energy-service providers and requiring audit and measurement/verification outputs.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://foras.seec.gov.sa/"
+      ],
+      "facts": [
+        "SEEC Foras allows facility owners to publish energy-efficiency opportunities and licensed providers to compete.",
+        "The platform explicitly includes Level-1 energy audits and annual savings measurement/verification reporting."
+      ],
+      "inferences": [
+        "The workflow is evidence-heavy and measurable, making governed diagnostic and proof automation research-relevant."
+      ],
+      "unknowns": [
+        "Dealix is not evidenced as a licensed energy-service provider; partner eligibility must be verified before any market action."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Map licensed partners and position Dealix only as governed automation/backend where legally and commercially appropriate."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 5,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 2,
+        "regulatory_friction": 5,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "energy_utilities_oil_gas",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-mining-revenue-growth",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for mining_metals; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "MINING_METALS",
+      "business_archetype": "ASSET_INTENSIVE_INDUSTRIAL",
+      "authority_ref": "GASTAT",
+      "buyer": "mine operations / maintenance / procurement director",
+      "problem": "Maintenance downtime, production exceptions, grade/asset data fragmentation and procurement cycle time",
+      "trigger": "GASTAT reported mining and quarrying operating revenues up 38.7% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "facts": [
+        "Mining and quarrying had the highest May 2026 operating-revenue increase reported by GASTAT at 38.7% year on year.",
+        "Mining and quarrying rose 10.2% month on month in May 2026."
+      ],
+      "inferences": [
+        "The activity level supports a high-value research lane for maintenance and operations intelligence."
+      ],
+      "unknowns": [
+        "No mine operator is a Dealix relationship or qualified opportunity."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify operators and contractors with public maintenance/digital-mining transformation signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "mining_metals",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-mc-retail-commerce-registrations",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx",
+      "observed_at": "2026-07-09T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for retail_commerce_ecommerce; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-09T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "HIGH_VOLUME_DIGITAL_COMMERCE",
+      "authority_ref": "Ministry of Commerce",
+      "buyer": "ecommerce director / COO / customer operations lead",
+      "problem": "Conversion leakage, order exceptions, returns, support backlog and reconciliation",
+      "trigger": "The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026, with wholesale and retail among leading activities.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx"
+      ],
+      "facts": [
+        "The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026.",
+        "Wholesale and retail was among the leading activities for registrations issued that month."
+      ],
+      "inferences": [
+        "Dense commerce activity supports repeatable low-friction diagnostics around order, customer-support and revenue leakage."
+      ],
+      "unknowns": [
+        "No specific merchant purchase intent or first-party conversion baseline exists."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize merchants with opt-in/inbound signals and observable operational pain before discovery."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 5,
+        "buyer_access": 4,
+        "data_availability": 5,
+        "repeatability": 5,
+        "readiness": 5,
+        "distribution_density": 5,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "retail_commerce_ecommerce",
+      "canonical_mapping_note": "ICT is the admitted radar bridge for e-commerce; canonical_sector_id preserves retail/e-commerce truth in the Company OS.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-tourism-q1-release",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "observed_at": "2026-07-05T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for tourism_hospitality; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-05T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "business_archetype": "GUEST_EXPERIENCE_OPERATIONS",
+      "authority_ref": "GASTAT / Ministry of Tourism",
+      "buyer": "general manager / revenue manager / guest operations",
+      "problem": "Booking leakage, guest-response load, occupancy/revenue operations and service exceptions",
+      "trigger": "GASTAT published Tourism Establishments Statistics for Q1 2026 and continues quarterly monitoring of occupancy, room rates, stay length and tourism employment.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication",
+        "https://www.stats.gov.sa/en/w/methodology-and-quality-report-for-tourism-establishment-statistics-4.0"
+      ],
+      "facts": [
+        "GASTAT published Tourism Establishments Statistics for Q1 2026 on 5 July 2026.",
+        "The official tourism-establishment statistics track occupancy, average daily room rate, length of stay and tourism employment."
+      ],
+      "inferences": [
+        "These measurable operating indicators support a governed hospitality diagnostic without implying demand from any property."
+      ],
+      "unknowns": [
+        "No hotel or tourism operator has shared first-party performance data with Dealix."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify operators with public expansion, guest-experience or revenue-operations signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "tourism_hospitality",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-professional-services-sts",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for professional_services; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "business_archetype": "KNOWLEDGE_SERVICE_FIRM",
+      "authority_ref": "GASTAT",
+      "buyer": "managing partner / COO / commercial director",
+      "problem": "Lead-to-proposal delay, utilization leakage, delivery coordination and billing evidence",
+      "trigger": "GASTAT May 2026 short-term business tables show positive operating-revenue movement for professional, scientific and technical activities.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "facts": [
+        "GASTAT short-term business tables for May 2026 include professional, scientific and technical activities.",
+        "The published table reports an operating-revenue index of 114.9, with approximately 1.0% year-on-year and 0.5% month-on-month growth."
+      ],
+      "inferences": [
+        "Professional services have short, measurable lead-to-cash and delivery workflows that can support fast diagnostics."
+      ],
+      "unknowns": [
+        "No named firm is a qualified Dealix opportunity."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize firms with clear proposal throughput, utilization or collections signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "professional_services",
+      "canonical_mapping_note": "HUMAN_CAPITAL_INNOVATION is the closest admitted radar family for knowledge services; canonical_sector_id is the Company OS authority.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-cst-ict-market-199b",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.cst.gov.sa/en/media-center/news/N2026070101",
+      "observed_at": "2026-07-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for telecom_media_marketing; research-only canonical-sector bridge",
+      "fresh_until": "2027-01-01T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "DIGITAL_HIGH_SCALE",
+      "authority_ref": "Communications, Space and Technology Commission",
+      "buyer": "CIO / customer operations / CMO",
+      "problem": "Customer support scale, content operations, campaign attribution and digital-service reliability",
+      "trigger": "CST reported the Saudi ICT market reached SAR 199B by end-2025 with 8% five-year CAGR and 100% internet penetration.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/media-center/news/N2026070101"
+      ],
+      "facts": [
+        "CST reported Saudi Arabia ranked first globally in the ITU ICT Development Index 2026.",
+        "CST states the ICT market reached SAR 199 billion by end-2025 with an 8% CAGR over five years."
+      ],
+      "inferences": [
+        "Large digital usage and market scale create repeatable customer/content/operations automation research lanes."
+      ],
+      "unknowns": [
+        "No telecom or media buyer has confirmed purchase intent."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Find opt-in or public transformation signals at operators, agencies and media businesses."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "telecom_media_marketing",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-hrdf-training-employment-scale",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/",
+      "observed_at": "2026-02-05T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for education_training; research-only canonical-sector bridge",
+      "fresh_until": "2027-02-05T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "business_archetype": "TRAINING_AND_EMPLOYMENT_ECOSYSTEM",
+      "authority_ref": "Human Resources Development Fund (HRDF)",
+      "buyer": "training director / COO / enrollment operations",
+      "problem": "Enrollment leakage, training scheduling, learner support and employer outcome evidence",
+      "trigger": "HRDF reported more than 562,000 citizens employed through its programs in 2025, with more than 226,000 establishments benefiting and 45 sector training agreements.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/"
+      ],
+      "facts": [
+        "HRDF reported support contributing to employment of more than 562,000 citizens in private-sector establishments during 2025.",
+        "More than 226,000 establishments benefited from HRDF services, and 45 specific training agreements linked to employment were signed."
+      ],
+      "inferences": [
+        "Scale and outcome orientation support measurable enrollment, learner-support and employer-reporting automation research."
+      ],
+      "unknowns": [
+        "No training provider has consented to outreach or shared conversion data."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Identify licensed training providers with inbound/partner signals and measurable enrollment pain."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "education_training",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-mewa-agri-water-tech-investment",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx",
+      "observed_at": "2026-06-21T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for agriculture_food_water; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-21T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "AGRICULTURE_FOOD",
+      "business_archetype": "RESOURCE_INTENSIVE_OPERATIONS",
+      "authority_ref": "Ministry of Environment, Water and Agriculture",
+      "buyer": "operations / quality / sustainability director",
+      "problem": "Resource efficiency, traceability, loss, quality exceptions and asset monitoring",
+      "trigger": "MEWA identified smart irrigation, protected agriculture, aquaculture, food-loss reduction, AI/IoT sensing and digital twins as investment-ready technology areas.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx"
+      ],
+      "facts": [
+        "MEWA highlighted scalable investment opportunities in smart irrigation, protected agriculture, aquaculture, food preservation and food-loss reduction.",
+        "MEWA also identified AI-enabled IoT sensing, digital twins, smart monitoring and drones as high-readiness technologies across agriculture, water and environmental domains."
+      ],
+      "inferences": [
+        "Operational sensing and traceability create measurable workflows for diagnostics and governed automation."
+      ],
+      "unknowns": [
+        "No farm, food producer or water operator is qualified as a Dealix buyer."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize operators with public technology adoption, traceability or efficiency projects."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "agriculture_food_water",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-gastat-mobility-vehicle-repair-growth",
+      "source_id": "GASTAT_OFFICIAL",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for mobility_automotive; research-only canonical-sector bridge",
+      "fresh_until": "2026-10-20T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "FLEET_AND_SERVICE_OPERATIONS",
+      "authority_ref": "GASTAT",
+      "buyer": "fleet director / aftersales director / service operations",
+      "problem": "Vehicle uptime, service backlog, parts exceptions and maintenance coordination",
+      "trigger": "GASTAT reported wholesale/retail trade and repair of motor vehicles and motorcycles operating revenues up 3.6% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "facts": [
+        "GASTAT reported 3.6% year-on-year operating-revenue growth for wholesale/retail trade and repair of motor vehicles and motorcycles in May 2026.",
+        "The activity also increased 1.3% month on month."
+      ],
+      "inferences": [
+        "Vehicle-service and fleet workflows have measurable uptime and cycle-time outcomes suitable for a free diagnostic."
+      ],
+      "unknowns": [
+        "No dealer, fleet or workshop relationship is established."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize fleets/dealers with public service expansion, backlog or digital-service signals."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "mobility_automotive",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-misa-rhq-trade-operations",
+      "source_id": "INVEST_SAUDI_OFFICIAL",
+      "source_ref": "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for export_import_rhq; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-30T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "business_archetype": "MULTINATIONAL_AND_TRADE_OPERATIONS",
+      "authority_ref": "Ministry of Investment / Ministry of Industry and Mineral Resources",
+      "buyer": "regional COO / supply-chain / finance / compliance",
+      "problem": "Cross-border document control, customs/origin workflows, landed-cost visibility and regional reporting",
+      "trigger": "MISA 2026 investor guidance maintains a formal RHQ registration path, while MIM operates electronic Certificate of Origin issuance/tracking for exporters.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf",
+        "https://coo.mim.gov.sa/"
+      ],
+      "facts": [
+        "MISA 2026 investor guidance includes the Regional Headquarters license for multinational companies managing MENA operations from Saudi Arabia.",
+        "The Ministry of Industry and Mineral Resources provides electronic Certificate of Origin issuance and tracking for local exporters and manufacturers."
+      ],
+      "inferences": [
+        "RHQ and export/import operations create repeatable document, compliance and reporting workflows."
+      ],
+      "unknowns": [
+        "No multinational or exporter is a qualified Dealix opportunity."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Use current GASTAT trade releases and public RHQ/export signals to identify named research targets."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "export_import_rhq",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-sports-law-investment",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5",
+      "observed_at": "2026-06-11T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for creative_sports_gaming; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-11T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "business_archetype": "SPORTS_AND_EXPERIENCE_ECONOMY",
+      "authority_ref": "Ministry of Sport",
+      "buyer": "commercial director / club COO / marketing director",
+      "problem": "Sponsorship pipeline, fan/member support, event operations and content execution",
+      "trigger": "Saudi Sports Law entered into force in June 2026 and explicitly supports commercial/sports investment; privatization is opening additional private-sector operating surfaces.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5"
+      ],
+      "facts": [
+        "The Saudi Sports Law entered into force on 11 June 2026 and establishes a comprehensive governance framework for the sports sector.",
+        "The Ministry states the law supports and encourages investment through commercial and sports-related investment transactions."
+      ],
+      "inferences": [
+        "Commercialization and professionalization raise the value of governed sponsorship, fan and operating workflows."
+      ],
+      "unknowns": [
+        "No club, federation or sports entity is a Dealix relationship."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Target only public/inbound commercial or operations signals; do not treat investment activity as consent."
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "creative_sports_gaming",
+      "canonical_mapping_note": "Direct canonical bridge for the 20-sector Company OS; does not imply buyer demand.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-ncnp-nonprofit-scale",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "ingested_at": "2026-09-12T09:18:34+03:00",
+      "provenance_ref": "Official/public Saudi source observed for associations_nonprofits; research-only canonical-sector bridge",
+      "fresh_until": "2027-06-30T00:00:00+03:00",
+      "signal_family": "MARKET_ACTIVITY_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "business_archetype": "MISSION_DRIVEN_ORGANIZATION",
+      "authority_ref": "National Center for Non-Profit Sector",
+      "buyer": "executive director / operations / fundraising or membership lead",
+      "problem": "Member/donor lifecycle, service-case coordination, reporting burden and impact evidence",
+      "trigger": "NCNPS reported more than 7,200 nonprofit organizations by end-2025, 1.7M volunteers and a 1.4% GDP contribution.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1"
+      ],
+      "facts": [
+        "NCNPS reported more than 7,200 nonprofit organizations by end-2025.",
+        "The sector reached 1.7 million volunteers and a 1.4% contribution to GDP according to the 2025 annual report."
+      ],
+      "inferences": [
+        "Sector scale and reporting/beneficiary complexity support governed member, donor and impact-reporting automation research."
+      ],
+      "unknowns": [
+        "No nonprofit entity has opted in or been qualified as a buyer."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize associations/nonprofits with public digitization, service-scale or reporting signals and appropriate procurement capacity."
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). This is ordering evidence, not purchase probability, relationship, consent, pipeline, or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      },
+      "canonical_sector_id": "associations_nonprofits",
+      "canonical_mapping_note": "HUMAN_CAPITAL_INNOVATION is the closest admitted broad radar family; canonical_sector_id controls Company OS routing.",
+      "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-cst-ai-adoption-guide-tech",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+      "observed_at": "2026-01-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T06:40:00+03:00",
+      "provenance_ref": "CST Awareness Guide for AI Adoption in Technology Companies (observed 2026-09-12)",
+      "fresh_until": "2027-06-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "CST (Communications, Space & Technology Commission)",
+      "buyer": "CTO / product / strategy executive in a Saudi technology company",
+      "problem": "Responsible AI adoption readiness for internal operations and customer-facing AI/agent products",
+      "trigger": "CST published an AI adoption guide for technology companies, coinciding with 2026 designated the Year of AI",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies"
+      ],
+      "facts": [
+        "CST published the Awareness Guide for AI Adoption in Technology Companies.",
+        "The guide covers internal operations, customer-facing solutions, and AI-enabled implementation models including AI agents.",
+        "It defines a readiness assessment across five dimensions: context, data, infrastructure, skills/expertise, and organizational culture."
+      ],
+      "inferences": [
+        "Technology firms adopting AI/agents have a documented readiness frame that maps to research-relevant governance/readiness work.",
+        "A guide is not a mandate; it does not prove any specific firm wants external help."
+      ],
+      "unknowns": [
+        "No named technology company is linked to a procurement signal.",
+        "No binding obligation or penalty is attached to the guide."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Map which Saudi tech/SaaS firms publish AI product or agent launches",
+        "Confirm whether the guide is referenced in live procurement evaluations"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 4,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-ncnicc-private-sector",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+      "observed_at": "2025-12-28T00:00:00+03:00",
+      "ingested_at": "2026-09-12T06:40:00+03:00",
+      "provenance_ref": "NCA Cybersecurity Controls for Private-Sector Entities without Critical Infrastructure (issued 28/12/2025)",
+      "fresh_until": "2026-12-28T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "buyer": "CISO / IT-security owner in private-sector companies outside CNI scope",
+      "problem": "Minimum cybersecurity-control evidence for private-sector entities not owning critical infrastructure",
+      "trigger": "NCA issued dedicated cybersecurity controls for private-sector non-CNI entities (document modified 28/12/2025)",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/721bed5c-5304-497c-a5ac-a92a049e6306_NCNICC-AR-.pdf"
+      ],
+      "facts": [
+        "NCA issued controls for private-sector entities that do not own or operate critical national infrastructure.",
+        "The controls set a minimum cybersecurity baseline and aim to reduce internal and external cyber risk.",
+        "The NCA page lists the document as last modified on 28/12/2025."
+      ],
+      "inferences": [
+        "The scope now explicitly reaches non-CNI private companies, widening the research-relevant evidence-readiness surface.",
+        "It does not by itself create a customer or a procurement event."
+      ],
+      "unknowns": [
+        "Assessment/enforcement mechanism and timelines for non-CNI private entities are not yet evidenced.",
+        "No named buyer evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Read the NCNICC primary document for control counts and applicability",
+        "Identify private firms with published security incidents or compliance programs"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-implementation-guidance-ecc-ccc",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/",
+      "observed_at": "2026-03-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T06:40:00+03:00",
+      "provenance_ref": "NCA implementation guidance list (ECC/CCC implementation guidance, observed 2026-09-12)",
+      "fresh_until": "2027-03-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "buyer": "CISO / GRC / third-party risk owner",
+      "problem": "Turning ECC/CCC controls into assessable evidence and third-party assurance",
+      "trigger": "NCA publishes implementation guidance mapping controls to assessable deliverables and evidence",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/11bb8f2d-706a-4f18-80f1-40d620ebd845_GECC-.pdf"
+      ],
+      "facts": [
+        "NCA publishes implementation guidance to help entities implement ECC (e.g., GECC-2:2026).",
+        "Guidance explicitly points to illustrative deliverables and evidence assessors may request.",
+        "Suppliers to in-scope entities are expected to provide ECC-aligned evidence."
+      ],
+      "inferences": [
+        "Evidence-readiness work is research-relevant for vendors serving in-scope entities as a supplier route.",
+        "This is guidance, not a certification that Dealix holds."
+      ],
+      "unknowns": [
+        "No named supplier has confirmed an evidence gap.",
+        "Assessment tooling availability is not verified."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm the current IGCC document list and versions on the NCA portal",
+        "Map which Etimad evaluations score NCA evidence"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    }
+  ],
+  "canonical_sector_bridge_policy": "canonical_sector_id is a validated bridge from the broad 15-family radar taxonomy to the canonical 20-sector Company OS. It is research-only and cannot create relationship, consent, opportunity, pipeline, quote, payment, or revenue."
+}

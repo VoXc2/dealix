@@ -7,7 +7,7 @@ regenerate with:
 python3 scripts/ops/build_verify_catalog.py > docs/ops/VERIFY_SCRIPTS_CATALOG.md
 ```
 
-Total scripts: 106
+Total scripts: 111
 
 | Script | Purpose |
 |---|---|
@@ -23,6 +23,7 @@ Total scripts: 106
 | `scripts/verify_brand_pitch_conversion_layer.py` | (no docstring — needs one) |
 | `scripts/verify_capability_intake_contract.py` | (no docstring — needs one) |
 | `scripts/verify_client_acquisition_delivery_os.py` | Verify Stage 1 — Client Acquisition & Delivery OS files exist. |
+| `scripts/verify_closed_loop.py` | Closed-loop verification: Market Signal → Cell → Bet → DeepWIP → Delivery → Proof → Asset → Financial. |
 | `scripts/verify_commercial_authority_source_map_v1.py` | (no docstring — needs one) |
 | `scripts/verify_commercial_diagnostic_evidence.py` | Fail-closed runtime verifier for the evidence-bound commercial diagnostic. |
 | `scripts/verify_commercial_execution_fabric_v2.py` | (no docstring — needs one) |
@@ -54,11 +55,13 @@ Total scripts: 106
 | `scripts/verify_enterprise_layer_readiness.py` | Enterprise layer readiness verification runner. |
 | `scripts/verify_enterprise_operating_layer.py` | (no docstring — needs one) |
 | `scripts/verify_event_to_cash_priority_contract.py` | (no docstring — needs one) |
+| `scripts/verify_expanded_launch.py` | Expanded Launch Verification — all sectors, all channels, all arms, online. |
 | `scripts/verify_first_paid_diagnostic_tracker.py` | Track first paid Diagnostic DoD from evidence CSV + KPI import (no invented revenue). |
 | `scripts/verify_founder_operating_system.py` | Verify the founder operating system files that keep Dealix production-ready. |
 | `scripts/verify_founder_pdpl_pass.py` | Verify founder PDPL pass checklist — doc refs + privacy route in frontend. |
 | `scripts/verify_frontend_railway_dns.py` | Verify dealix.me frontend Railway readiness (Layer 4) — DNS must not be GitHub Pages. |
 | `scripts/verify_full_autonomous_ops_stack.py` | Verify full autonomous commercial ops stack (governed — no external send). |
+| `scripts/verify_full_launch_readiness.py` | Full Launch Readiness — expanded, all sectors, all arms, all channels, SaaS comprehensive. |
 | `scripts/verify_full_mvp_ready.py` | Full MVP readiness gate — prints DEALIX_READY and component flags. |
 | `scripts/verify_gap_closure_bundle.py` | Verify six gap-closure matrix rows; print GAP_CLOSURE_VERDICT. |
 | `scripts/verify_global_ai_transformation.py` | Verify global AI transformation program artifacts and core modules. |
@@ -83,6 +86,7 @@ Total scripts: 106
 | `scripts/verify_morning_revenue_authority_scope.py` | Regression proof that Founder/personal data cannot pollute Dealix company truth. |
 | `scripts/verify_moyasar_e2e.py` | Moyasar sandbox E2E checklist — webhook route + side-effects (no live charge). |
 | `scripts/verify_no_auto_external_send.py` | Verify Dealix does not enable uncontrolled external sending in test/release gates. |
+| `scripts/verify_opencode_config_v1.py` | Verify OpenCode V1 control plane config compat and L5 deny boundaries. |
 | `scripts/verify_operating_company_commercial_state.py` | Deterministically verify the canonical Dealix commercial state contract. |
 | `scripts/verify_outreach_compliance.py` | Gate: outreach compliance — draft-only defaults and approval gates exist. |
 | `scripts/verify_p0_trust_remediation_v1.py` | Static fail-closed verifier for Dealix trust incident #1440 remediation. |
@@ -114,6 +118,7 @@ Total scripts: 106
 | `scripts/verify_service_readiness_matrix.py` | Validate docs/registry/SERVICE_READINESS_MATRIX.yaml. |
 | `scripts/verify_strategic_command_layer.py` | (no docstring — needs one) |
 | `scripts/verify_ultimate_sales_os.py` | Verify the Ultimate Sales OS pack files exist. |
+| `scripts/verify_universal_diagnostic_acceptance.py` | Synthetic acceptance for Universal Diagnostic Factory — 8 scenarios A-H. |
 | `scripts/verify_universal_market_radar.py` | Fail-closed verifier for the Dealix Universal Market Radar. |
 | `scripts/verify_value_plan_stack.py` | Run all Value Plan verification gates (soft + modules + pytest slice). |
 | `scripts/verify_workload_economics_attribution.py` | Fail-closed runtime verifier for workload economics attribution. |

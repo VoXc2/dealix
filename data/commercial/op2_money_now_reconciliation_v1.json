@@ -1,0 +1,93 @@
+{
+  "schema": "dealix.op2-money-now-reconciliation.v1",
+  "generated_at": "2026-09-12T02:58:11.933649+00:00",
+  "truth_policy": "EVIDENCE_ONLY_NO_INVENTED_STATE",
+  "reachable_canonical_inputs": true,
+  "warnings": [],
+  "economic_truth": {
+    "verified_revenue_sar": 0,
+    "verified_paid_pilots": 0,
+    "real_relationships_dealix_company": 0,
+    "real_relationships_founder": 1,
+    "founder_income_is_not_dealix_revenue": true
+  },
+  "relationships": [
+    {
+      "relationship_id": "rel-imini-001",
+      "scope": "FOUNDER_INCOME",
+      "entity": "iMini / Jannie",
+      "state": "REAL_RELATIONSHIP",
+      "evidence_type": "TWO_WAY_EMAIL",
+      "observed_at": "2026-08-24",
+      "commercial_truth": "NEGOTIATION_EXISTS_NO_VERIFIED_PAYMENT",
+      "stage": "NEGOTIATION",
+      "next_safe_action": "Prepare approval-ready response; do not send automatically",
+      "source": "canonical_relationship_register"
+    },
+    {
+      "relationship_id": "rel-linnk-001",
+      "scope": "DEALIX_COMPANY",
+      "entity": "Linnk Arabia",
+      "state": "OUTBOUND_SENT",
+      "evidence_type": "SENT_EMAIL",
+      "observed_at": "2026-08-21",
+      "commercial_truth": "NO_REPLY_PROVEN",
+      "stage": "OUTBOUND_SENT_NO_REPLY",
+      "next_safe_action": "Wait for inbound evidence or prepare bounded follow-up draft",
+      "source": "canonical_relationship_register"
+    },
+    {
+      "relationship_id": "rel-leap29-001",
+      "scope": "DEALIX_COMPANY",
+      "entity": "Leap29 Saudi",
+      "state": "OUTBOUND_SENT",
+      "evidence_type": "SENT_EMAIL",
+      "observed_at": "2026-08-21",
+      "commercial_truth": "NO_REPLY_PROVEN",
+      "stage": "OUTBOUND_SENT_NO_REPLY",
+      "next_safe_action": "Wait for inbound evidence or prepare bounded follow-up draft",
+      "source": "canonical_relationship_register"
+    }
+  ],
+  "money_now_top3": [
+    {
+      "relationship_id": "rel-imini-001",
+      "scope": "FOUNDER_INCOME",
+      "entity": "iMini / Jannie",
+      "state": "REAL_RELATIONSHIP",
+      "evidence_type": "TWO_WAY_EMAIL",
+      "observed_at": "2026-08-24",
+      "commercial_truth": "NEGOTIATION_EXISTS_NO_VERIFIED_PAYMENT",
+      "stage": "NEGOTIATION",
+      "next_safe_action": "Prepare approval-ready response; do not send automatically",
+      "source": "canonical_relationship_register"
+    },
+    {
+      "relationship_id": "rel-linnk-001",
+      "scope": "DEALIX_COMPANY",
+      "entity": "Linnk Arabia",
+      "state": "OUTBOUND_SENT",
+      "evidence_type": "SENT_EMAIL",
+      "observed_at": "2026-08-21",
+      "commercial_truth": "NO_REPLY_PROVEN",
+      "stage": "OUTBOUND_SENT_NO_REPLY",
+      "next_safe_action": "Wait for inbound evidence or prepare bounded follow-up draft",
+      "source": "canonical_relationship_register"
+    },
+    {
+      "relationship_id": "rel-leap29-001",
+      "scope": "DEALIX_COMPANY",
+      "entity": "Leap29 Saudi",
+      "state": "OUTBOUND_SENT",
+      "evidence_type": "SENT_EMAIL",
+      "observed_at": "2026-08-21",
+      "commercial_truth": "NO_REPLY_PROVEN",
+      "stage": "OUTBOUND_SENT_NO_REPLY",
+      "next_safe_action": "Wait for inbound evidence or prepare bounded follow-up draft",
+      "source": "canonical_relationship_register"
+    }
+  ],
+  "real_relationships": 1,
+  "counts_as_revenue": false,
+  "counts_as_pipeline": false
+}

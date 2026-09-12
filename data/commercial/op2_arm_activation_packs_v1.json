@@ -1,0 +1,1865 @@
+{
+  "schema": "dealix.op2-arm-activation-packs.v1",
+  "generated_at": "2026-09-12T06:26:52.051865+00:00",
+  "lane": "OP2",
+  "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_PIPELINE_NO_FIXED_PUBLIC_PRICE",
+  "new_arms_created": 0,
+  "new_permanent_agents_created": 0,
+  "arm_registry": "config/company/dealix_arm_registry.json",
+  "packs": [
+    {
+      "pack_id": "OP2-PACK-A-FATOORA",
+      "title": "Fatoora / Revenue-Leakage Readiness + Integration Operations",
+      "arms": [
+        "ARM-001",
+        "ARM-016"
+      ],
+      "official_signal_ids": [
+        "op2-2026-zatca-wave25-einvoicing"
+      ],
+      "certification_claim": false,
+      "icp": {
+        "sectors": [
+          "finance_fintech_insurance",
+          "retail_commerce_ecommerce",
+          "professional_services",
+          "export_import_rhq"
+        ],
+        "buyer_roles": [
+          "cfo",
+          "finance_manager",
+          "tax_compliance_lead",
+          "operations_director"
+        ],
+        "size_hypothesis": "SME to mid-market with VAT-subject revenue above SAR 187,500 in any of 2022-2025",
+        "problem_hypotheses": [
+          "E-invoicing integration not yet mapped to the Fatoora integration phase",
+          "Manual reconciliation between invoices, VAT returns and collections",
+          "Unknown readiness before the 1 February 2027 integration date"
+        ]
+      },
+      "free_diagnostic": {
+        "depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "families": [
+          "A03",
+          "A04",
+          "A14",
+          "A15"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "qualification_gates": [
+        "VAT-subject revenue in scope of an announced ZATCA wave (self-declared, then evidenced)",
+        "Named finance/tax decision owner",
+        "Confirmed current invoicing stack and integration status",
+        "No request for a tax/legal certification opinion from Dealix"
+      ],
+      "discovery_questions_ar": [
+        "ما تاريخ آخر موجة تكامل تنطبق عليكم ومعايير الاختيار؟",
+        "كيف تُربط الفواتير الإلكترونية بإقرار ضريبة القيمة المضافة حالياً؟",
+        "أين يحدث التسرّب بين الفاتورة والتحصيل؟"
+      ],
+      "discovery_questions_en": [
+        "Which integration wave applies to you and on what criteria?",
+        "How are e-invoices reconciled to the VAT return today?",
+        "Where does leakage occur between invoice, collections and reporting?"
+      ],
+      "proposal_skeleton": {
+        "phases": [
+          "Readiness assessment (free D0-D2 diagnostic)",
+          "Qualified discovery",
+          "Customer-specific implementation scope",
+          "Managed exception/operations retainer"
+        ],
+        "pricing_basis": "QUOTE_AFTER_QUALIFIED_DISCOVERY",
+        "public_fixed_price": false
+      },
+      "acceptance_criteria": [
+        "Readiness gaps documented with owner and target date",
+        "Integration/reconciliation workflow described end-to-end",
+        "Evidence of each agreed control captured and re-verified"
+      ],
+      "proof_requirements": [
+        "Before/after reconciliation evidence (no customer identity without permission)",
+        "Control evidence pack",
+        "Customer validation statement where permission is granted"
+      ],
+      "delivery_runbook": [
+        "Intake + consent",
+        "Free D0-D2 assessment",
+        "Discovery call with decision owner",
+        "Scope + quote (no public price)",
+        "Implementation with human gates",
+        "Evidence capture + customer validation"
+      ],
+      "stop_loss": "Stop if no named owner, if the buyer wants a certification opinion, or if eligibility cannot be evidenced.",
+      "partner_regulatory_boundary": {
+        "tax_or_legal_certification": "NOT_PROVIDED",
+        "licensed_tax_firm_partner": "OPTIONAL_IF_CERTIFICATION_REQUIRED",
+        "note": "Dealix provides integration and operations evidence, never tax/legal certification."
+      },
+      "content_seo_drafts": {
+        "publish_authority": false,
+        "ar_title": "الفاتورة الإلكترونية: كيف تستعد لموجة التكامل القادمة بدل الانتظار؟",
+        "ar_body": "الموجة 25 من مرحلة التكامل تشمل المكلفين الذين تجاوزت إيراداتهم الخاضعة للضريبة 187,500 ريال في أي من 2022-2025، مع موعد تكامل في 1 فبراير 2027. ابدأ بتشخيص مجاني لتحديد الفجوات — بدون أي ادعاء شهادة ضريبية.",
+        "en_title": "E-invoicing: preparing for the next integration wave instead of waiting",
+        "en_body": "Wave 25 covers taxpayers with VAT-subject revenue above SAR 187,500 in any of 2022-2025, integrating by 1 February 2027. Start with a free readiness diagnostic — no tax-certification claim."
+      },
+      "next_evidence_required": [
+        "Confirm ZATCA notification status per prospect",
+        "Capture current invoicing stack and integration gaps"
+      ],
+      "reason_codes": [
+        "OFFICIAL_SIGNAL",
+        "HARD_DEADLINE_2027-02-01",
+        "EXISTING_ARM_ONLY"
+      ],
+      "truth_class": "PATTERN_RESEARCH_PACK",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false,
+      "counts_as_relationship": false,
+      "arm_details": [
+        {
+          "id": "ARM-001",
+          "name": "Revenue Command + AI Company OS",
+          "state": "ACTIVE_DEEP",
+          "owner": "dealix-sales"
+        },
+        {
+          "id": "ARM-016",
+          "name": "Fatoora Integration Operations",
+          "state": "ACTIVE_LIGHT",
+          "owner": "dealix-delivery"
+        }
+      ],
+      "official_signals": [
+        {
+          "signal_id": "op2-2026-zatca-wave25-einvoicing",
+          "source_ref": "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+          "authority_ref": "ZATCA (Zakat, Tax and Customs Authority)",
+          "observed_at": "2026-07-24T00:00:00+03:00",
+          "fresh_until": "2027-02-01T00:00:00+03:00",
+          "deadline": "2027-02-01",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        }
+      ],
+      "authority_all_false": true,
+      "external_effects": {
+        "send": false,
+        "publish": false,
+        "spend": false,
+        "payment": false,
+        "merge": false,
+        "deploy": false,
+        "dns": false,
+        "db": false,
+        "secret": false
+      }
+    },
+    {
+      "pack_id": "OP2-PACK-B-GOVERNED-AI",
+      "title": "Governed AI / Agent Reliability Readiness",
+      "arms": [
+        "ARM-002",
+        "ARM-006",
+        "ARM-008"
+      ],
+      "official_signal_ids": [
+        "op2-2026-cst-ai-adoption-guide-tech",
+        "op2-2026-sdaia-ai-governance-package",
+        "op2-2026-pdpl-active-enforcement"
+      ],
+      "certification_claim": false,
+      "icp": {
+        "sectors": [
+          "technology_saas_si",
+          "finance_fintech_insurance",
+          "healthcare",
+          "telecom_media_marketing"
+        ],
+        "buyer_roles": [
+          "cto",
+          "cio",
+          "product_lead",
+          "ai_governance_lead",
+          "ciso"
+        ],
+        "size_hypothesis": "Saudi technology company shipping AI or AI-agent features to customers",
+        "problem_hypotheses": [
+          "No inventory of AI/agent systems, tools, data and action boundaries",
+          "Missing evaluation, approval, and human-oversight evidence",
+          "Unclear readiness against CST/SDAIA guidance and PDPL duties"
+        ]
+      },
+      "free_diagnostic": {
+        "depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "families": [
+          "A11",
+          "A12",
+          "A13",
+          "A43"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "qualification_gates": [
+        "Named AI owner and at least one deployed AI/agent system",
+        "Willingness to expose tool/data/action boundaries",
+        "No request for a certification or legal opinion from Dealix"
+      ],
+      "discovery_questions_ar": [
+        "ما الأنظمة/الوكلاء العاملون حالياً وأي أدوات وبيانات يلمسون؟",
+        "كيف تُقيّم مخرجات النموذج قبل التأثير على العميل؟",
+        "أين توجد موافقة بشرية على القرارات الحساسة؟"
+      ],
+      "discovery_questions_en": [
+        "What AI/agent systems run today, and what tools/data can they touch?",
+        "How are model outputs evaluated before customer impact?",
+        "Where is human oversight enforced on sensitive decisions?"
+      ],
+      "proposal_skeleton": {
+        "phases": [
+          "Free readiness diagnostic",
+          "AI inventory + risk mapping",
+          "Control/eval/approval implementation",
+          "Managed AI reliability retainer"
+        ],
+        "pricing_basis": "QUOTE_AFTER_QUALIFIED_DISCOVERY",
+        "public_fixed_price": false
+      },
+      "acceptance_criteria": [
+        "Complete AI/agent inventory with owners and boundaries",
+        "Evaluation and human-oversight evidence per high-risk system",
+        "Remediation items closed and re-verified"
+      ],
+      "proof_requirements": [
+        "AI inventory artifact",
+        "Eval/control evidence pack",
+        "Customer validation of a fixed gap"
+      ],
+      "delivery_runbook": [
+        "Intake + consent",
+        "Free readiness diagnostic",
+        "AI inventory and gap workshop",
+        "Scope + quote",
+        "Implement controls/evals",
+        "Evidence capture + validation"
+      ],
+      "stop_loss": "Stop if no named AI owner, if the buyer seeks certification, or if systems cannot be inventoried safely.",
+      "partner_regulatory_boundary": {
+        "certification_or_audit_opinion": "NOT_PROVIDED",
+        "legal_pdpl_opinion": "NOT_PROVIDED",
+        "note": "Dealix provides readiness, control and evidence engineering; not certification or legal advice."
+      },
+      "content_seo_drafts": {
+        "publish_authority": false,
+        "ar_title": "الذكاء الاصطناعي المسؤول للشركات التقنية: جاهزية قبل التوسع",
+        "ar_body": "دليل تبني الذكاء الاصطناعي من هيئة الاتصالات والفضاء والتقنية يغطي العمليات والمنتجات والوكلاء، ومعه إطار جاهزية بخمسة أبعاد. ابدأ بتشخيص مجاني لفجوات الحوكمة والتقييم — بدون ادعاء شهادة.",
+        "en_title": "Responsible AI for tech companies: readiness before scale",
+        "en_body": "CST's AI adoption guide covers operations, products and AI agents with a five-dimension readiness frame. Start with a free governance/eval gap diagnostic — no certification claim."
+      },
+      "next_evidence_required": [
+        "Confirm AI/agent systems per prospect",
+        "Capture which official guidance the buyer tracks"
+      ],
+      "reason_codes": [
+        "OFFICIAL_SIGNAL",
+        "NO_CERTIFICATION_CLAIM",
+        "EXISTING_ARM_ONLY"
+      ],
+      "truth_class": "PATTERN_RESEARCH_PACK",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false,
+      "counts_as_relationship": false,
+      "arm_details": [
+        {
+          "id": "ARM-002",
+          "name": "Governed AI Execution",
+          "state": "ACTIVE_DEEP",
+          "owner": "dealix-pm"
+        },
+        {
+          "id": "ARM-006",
+          "name": "AI Governance Readiness Sprint",
+          "state": "ACTIVE_LIGHT",
+          "owner": "dealix-pm"
+        },
+        {
+          "id": "ARM-008",
+          "name": "AI Agent Reliability + Control Assessment",
+          "state": "ACTIVE_LIGHT",
+          "owner": "dealix-engineer"
+        }
+      ],
+      "official_signals": [
+        {
+          "signal_id": "op2-2026-cst-ai-adoption-guide-tech",
+          "source_ref": "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+          "authority_ref": "CST (Communications, Space & Technology Commission)",
+          "observed_at": "2026-01-01T00:00:00+03:00",
+          "fresh_until": "2027-06-01T00:00:00+03:00",
+          "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        },
+        {
+          "signal_id": "op2-2026-sdaia-ai-governance-package",
+          "source_ref": "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+          "authority_ref": "SDAIA (Saudi Data & AI Authority)",
+          "observed_at": "2026-06-08T00:00:00+03:00",
+          "fresh_until": "2027-06-08T00:00:00+03:00",
+          "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        },
+        {
+          "signal_id": "op2-2026-pdpl-active-enforcement",
+          "source_ref": "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+          "authority_ref": "SDAIA / PDPL Committees for Reviewing Violations",
+          "observed_at": "2026-06-30T00:00:00+03:00",
+          "fresh_until": "2026-12-30T00:00:00+03:00",
+          "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        }
+      ],
+      "authority_all_false": true,
+      "external_effects": {
+        "send": false,
+        "publish": false,
+        "spend": false,
+        "payment": false,
+        "merge": false,
+        "deploy": false,
+        "dns": false,
+        "db": false,
+        "secret": false
+      }
+    },
+    {
+      "pack_id": "OP2-PACK-C-MARKET-ACCESS-CYBER",
+      "title": "Market Access + Cybersecurity Evidence Readiness",
+      "arms": [
+        "ARM-003",
+        "ARM-028"
+      ],
+      "official_signal_ids": [
+        "op2-2026-nca-ncnicc-private-sector",
+        "op2-2026-nca-ecc2-controls",
+        "op2-2026-nupco-localization-digital"
+      ],
+      "certification_claim": false,
+      "icp": {
+        "sectors": [
+          "government_b2g",
+          "healthcare",
+          "technology_saas_si",
+          "industrial_manufacturing"
+        ],
+        "buyer_roles": [
+          "ciso",
+          "grc_lead",
+          "procurement_director",
+          "partner_manager"
+        ],
+        "size_hypothesis": "Private-sector firm or supplier to an in-scope entity with cyber evidence obligations",
+        "problem_hypotheses": [
+          "No mapped evidence base against NCA controls",
+          "Unclear applicability (private non-CNI vs CNI vs supplier)",
+          "Tender/partner route requires specialist credentials Dealix does not hold"
+        ]
+      },
+      "free_diagnostic": {
+        "depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "families": [
+          "A13",
+          "A15",
+          "A28",
+          "A36"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "qualification_gates": [
+        "Applicability determined against NCA control families",
+        "Named security/compliance owner",
+        "Explicit partner/specialist boundary if audit authority is required",
+        "No claim of government access or accreditation"
+      ],
+      "discovery_questions_ar": [
+        "هل الجهة ضمن نطاق الضوابط أم مورد لها؟",
+        "أين توجد فجوات الأدلة الحالية؟",
+        "من الشريك/المدقق المعتمد عند الحاجة لسلطة تخصصية؟"
+      ],
+      "discovery_questions_en": [
+        "Is the entity in-scope, or a supplier to one?",
+        "Where are the current evidence gaps?",
+        "Which accredited partner/auditor is required where specialist authority applies?"
+      ],
+      "proposal_skeleton": {
+        "phases": [
+          "Free applicability/evidence diagnostic",
+          "Evidence matrix + gap map",
+          "Remediation + evidence operations",
+          "Partner-led route where specialist authority required"
+        ],
+        "pricing_basis": "QUOTE_AFTER_QUALIFIED_DISCOVERY",
+        "public_fixed_price": false
+      },
+      "acceptance_criteria": [
+        "Control applicability matrix completed",
+        "Evidence owners and gaps assigned",
+        "Partner boundary documented for specialist authority"
+      ],
+      "proof_requirements": [
+        "Evidence matrix artifact",
+        "Gap closure evidence",
+        "Partner attestation where applicable"
+      ],
+      "delivery_runbook": [
+        "Intake + consent",
+        "Free applicability diagnostic",
+        "Evidence gap workshop",
+        "Scope + quote or partner handoff",
+        "Evidence build + verification"
+      ],
+      "stop_loss": "Default PARTNER_OR_NO_BID when specialist authority or accreditation is required.",
+      "partner_regulatory_boundary": {
+        "government_access_claim": "NONE",
+        "accreditation_claim": "NONE",
+        "default_bid_posture": "PARTNER_OR_NO_BID",
+        "note": "Dealix prepares evidence and partners for specialist authority; it does not claim accreditation or government access."
+      },
+      "content_seo_drafts": {
+        "publish_authority": false,
+        "ar_title": "ضوابط الأمن السيبراني للقطاع الخاص: جاهزية الأدلة بدل الادعاءات",
+        "ar_body": "أصدرت الهيئة الوطنية للأمن السيبراني ضوابط للقطاع الخاص من غير ذوي البنية التحتية الحساسة. ابدأ بتشخيص مجاني لخريطة الأدلة والفجوات — بدون ادعاء اعتماد أو وصول حكومي.",
+        "en_title": "Private-sector cybersecurity controls: evidence readiness, not claims",
+        "en_body": "NCA issued controls for private-sector entities outside critical infrastructure. Start with a free evidence-matrix diagnostic — no accreditation or government-access claim."
+      },
+      "next_evidence_required": [
+        "Confirm NCNICC applicability per prospect",
+        "Identify accredited partners for specialist authority"
+      ],
+      "reason_codes": [
+        "OFFICIAL_SIGNAL",
+        "PARTNER_OR_NO_BID_DEFAULT",
+        "EXISTING_ARM_ONLY"
+      ],
+      "truth_class": "PATTERN_RESEARCH_PACK",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false,
+      "counts_as_relationship": false,
+      "arm_details": [
+        {
+          "id": "ARM-003",
+          "name": "Saudi Market Access + Partner + B2G Intelligence",
+          "state": "ACTIVE_DEEP",
+          "owner": "dealix-sales"
+        },
+        {
+          "id": "ARM-028",
+          "name": "Private-Sector Cybersecurity Evidence Desk",
+          "state": "VALIDATE",
+          "owner": "dealix-delivery"
+        }
+      ],
+      "official_signals": [
+        {
+          "signal_id": "op2-2026-nca-ncnicc-private-sector",
+          "source_ref": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+          "authority_ref": "NCA (National Cybersecurity Authority)",
+          "observed_at": "2025-12-28T00:00:00+03:00",
+          "fresh_until": "2026-12-28T00:00:00+03:00",
+          "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        },
+        {
+          "signal_id": "op2-2026-nca-ecc2-controls",
+          "source_ref": "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+          "authority_ref": "NCA (National Cybersecurity Authority)",
+          "observed_at": "2026-07-14T00:00:00+03:00",
+          "fresh_until": "2027-07-14T00:00:00+03:00",
+          "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        },
+        {
+          "signal_id": "op2-2026-nupco-localization-digital",
+          "source_ref": "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+          "authority_ref": "NUPCO (National Unified Procurement Company) + LCGPA",
+          "observed_at": "2026-04-07T00:00:00+03:00",
+          "fresh_until": "2027-04-07T00:00:00+03:00",
+          "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        }
+      ],
+      "authority_all_false": true,
+      "external_effects": {
+        "send": false,
+        "publish": false,
+        "spend": false,
+        "payment": false,
+        "merge": false,
+        "deploy": false,
+        "dns": false,
+        "db": false,
+        "secret": false
+      }
+    },
+    {
+      "pack_id": "OP2-PACK-D-OPEN-BANKING",
+      "title": "Open Banking — VALIDATE / Partner-First",
+      "arms": [
+        "ARM-023"
+      ],
+      "official_signal_ids": [
+        "op2-2026-sama-open-banking-licensing"
+      ],
+      "certification_claim": false,
+      "icp": {
+        "sectors": [
+          "finance_fintech_insurance"
+        ],
+        "buyer_roles": [
+          "coo",
+          "cto",
+          "risk_lead",
+          "compliance_lead"
+        ],
+        "size_hypothesis": "SAMA-licensed or licence-seeking fintech/bank",
+        "problem_hypotheses": [
+          "Consent/API governance and operational-resilience evidence under a licensed regime",
+          "Need for a non-licensed technical partner rather than a licence holder"
+        ]
+      },
+      "free_diagnostic": {
+        "depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "families": [
+          "A13",
+          "A14",
+          "A15",
+          "A43"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "qualification_gates": [
+        "Buyer is a licensed provider or a partner of one",
+        "Explicit acknowledgement that Dealix is not a SAMA-licensed provider",
+        "Specialist/regulatory boundary agreed before any scope"
+      ],
+      "discovery_questions_ar": [
+        "من الجهة المرخّصة في العلاقة؟",
+        "كيف تُدار الموافقات وحدود الوصول إلى بيانات العملاء؟",
+        "ما الفجوات في جاهزية التشغيل والأدلة؟"
+      ],
+      "discovery_questions_en": [
+        "Who is the licensed entity in the relationship?",
+        "How are consent and customer-data access boundaries managed?",
+        "What operational/evidence readiness gaps exist?"
+      ],
+      "proposal_skeleton": {
+        "phases": [
+          "Free readiness diagnostic (partner-led)",
+          "Licensed-provider boundary agreement",
+          "Technical evidence/control work under partner",
+          "Managed evidence operations under partner"
+        ],
+        "pricing_basis": "QUOTE_AFTER_QUALIFIED_DISCOVERY",
+        "public_fixed_price": false
+      },
+      "acceptance_criteria": [
+        "Licensed-provider boundary documented and signed",
+        "Consent/API evidence requirements mapped",
+        "Deliverables scoped strictly as non-licensed technical support"
+      ],
+      "proof_requirements": [
+        "Boundary agreement",
+        "Control/evidence artifacts",
+        "Licensed partner validation"
+      ],
+      "delivery_runbook": [
+        "Validate partner/licensed boundary",
+        "Free readiness diagnostic",
+        "Scope + quote under partner",
+        "Deliver technical evidence work"
+      ],
+      "stop_loss": "HOLD/VALIDATE until a licensed partner is engaged; never represent Dealix as a SAMA-licensed provider.",
+      "partner_regulatory_boundary": {
+        "licensed_provider_claim": "NONE_NEVER",
+        "partner_required": true,
+        "note": "Dealix must never represent itself as a SAMA-licensed open-banking provider."
+      },
+      "content_seo_drafts": {
+        "publish_authority": false,
+        "ar_title": "المصرفية المفتوحة في السعودية: حدود الشريك مقابل الجهة المرخّصة",
+        "ar_body": "بدأت مؤسسة النقد ترخيص شركات التقنية المالية للمصرفية المفتوحة. Dealix ليست جهة مرخّصة؛ نعمل فقط كشريك تقني خلف الجهة المرخّصة. تشخيص مجاني للجاهزية التقنية.",
+        "en_title": "Open banking in Saudi Arabia: partner vs licensed-provider boundary",
+        "en_body": "SAMA has begun licensing open-banking providers. Dealix is not a licensed provider; we operate only as a technical partner behind the licensed entity. Free readiness diagnostic."
+      },
+      "next_evidence_required": [
+        "Identify licensed/partnering providers from SAMA primary announcements",
+        "Confirm the specialist/regulatory boundary in writing"
+      ],
+      "reason_codes": [
+        "OFFICIAL_SIGNAL",
+        "PARTNER_FIRST",
+        "NO_LICENSED_PROVIDER_CLAIM"
+      ],
+      "truth_class": "PATTERN_RESEARCH_PACK",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false,
+      "counts_as_relationship": false,
+      "arm_details": [
+        {
+          "id": "ARM-023",
+          "name": "Open Banking Integration Partner Pack",
+          "state": "VALIDATE",
+          "owner": "dealix-engineer"
+        }
+      ],
+      "official_signals": [
+        {
+          "signal_id": "op2-2026-sama-open-banking-licensing",
+          "source_ref": "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx",
+          "authority_ref": "SAMA (Saudi Central Bank)",
+          "observed_at": "2026-03-26T00:00:00+03:00",
+          "fresh_until": "2027-03-26T00:00:00+03:00",
+          "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+          "authority": {
+            "relationship": false,
+            "consent": false,
+            "offer": false,
+            "price": false,
+            "quote": false,
+            "contract": false,
+            "external_send": false,
+            "payment": false,
+            "customer_proof": false,
+            "execution": false,
+            "production": false
+          }
+        }
+      ],
+      "authority_all_false": true,
+      "external_effects": {
+        "send": false,
+        "publish": false,
+        "spend": false,
+        "payment": false,
+        "merge": false,
+        "deploy": false,
+        "dns": false,
+        "db": false,
+        "secret": false
+      }
+    }
+  ],
+  "ranking": {
+    "schema": "dealix.op2-arm-priority-view.v1",
+    "truth_policy": "RESEARCH_ONLY_CANNOT_DISPLACE_ACTIVE_DEEP",
+    "deep_wip_max": 3,
+    "arm_count": 44,
+    "active_deep_locked_top3": [
+      {
+        "arm_id": "ARM-001",
+        "name": "Revenue Command + AI Company OS",
+        "state": "ACTIVE_DEEP"
+      },
+      {
+        "arm_id": "ARM-002",
+        "name": "Governed AI Execution",
+        "state": "ACTIVE_DEEP"
+      },
+      {
+        "arm_id": "ARM-003",
+        "name": "Saudi Market Access + Partner + B2G Intelligence",
+        "state": "ACTIVE_DEEP"
+      }
+    ],
+    "research_top10": [
+      {
+        "arm_id": "ARM-011",
+        "name": "Saudi Opportunity Radar",
+        "research_score": 320.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-012",
+        "name": "Tender / Etimad Intelligence Desk",
+        "research_score": 320.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-016",
+        "name": "Fatoora Integration Operations",
+        "research_score": 320.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-006",
+        "name": "AI Governance Readiness Sprint",
+        "research_score": 240.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-008",
+        "name": "AI Agent Reliability + Control Assessment",
+        "research_score": 240.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-019",
+        "name": "Cloud Tenant Readiness + Evidence Ops",
+        "research_score": 240.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-007",
+        "name": "PDPL/Data Operations Desk",
+        "research_score": 192.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-028",
+        "name": "Private-Sector Cybersecurity Evidence Desk",
+        "research_score": 96.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-004",
+        "name": "Execution / Revenue Leak Diagnostic",
+        "research_score": 80.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      },
+      {
+        "arm_id": "ARM-005",
+        "name": "Omnichannel Customer Experience Command",
+        "research_score": 80.0,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE"
+      }
+    ],
+    "rows": [
+      {
+        "arm_id": "ARM-001",
+        "name": "Revenue Command + AI Company OS",
+        "state": "ACTIVE_DEEP",
+        "priority": "P0",
+        "owner": "dealix-sales",
+        "dimension": "REVENUE",
+        "horizon": "NOW-30D",
+        "factors": {
+          "official_signal_strength": 4,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 4,
+          "regulatory_risk": 3
+        },
+        "research_score": 426.6667,
+        "locked": true,
+        "locked_reason": "CURRENT_ACTIVE_DEEP_TOP3",
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-002",
+        "name": "Governed AI Execution",
+        "state": "ACTIVE_DEEP",
+        "priority": "P0",
+        "owner": "dealix-pm",
+        "dimension": "GOVERNANCE",
+        "horizon": "NOW-30D",
+        "factors": {
+          "official_signal_strength": 5,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 4,
+          "regulatory_risk": 5
+        },
+        "research_score": 320.0,
+        "locked": true,
+        "locked_reason": "CURRENT_ACTIVE_DEEP_TOP3",
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-003",
+        "name": "Saudi Market Access + Partner + B2G Intelligence",
+        "state": "ACTIVE_DEEP",
+        "priority": "P0",
+        "owner": "dealix-sales",
+        "dimension": "PARTNER",
+        "horizon": "NOW-30D",
+        "factors": {
+          "official_signal_strength": 4,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 4,
+          "regulatory_risk": 3
+        },
+        "research_score": 426.6667,
+        "locked": true,
+        "locked_reason": "CURRENT_ACTIVE_DEEP_TOP3",
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-004",
+        "name": "Execution / Revenue Leak Diagnostic",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P0",
+        "owner": "dealix-sales",
+        "dimension": "REVENUE",
+        "horizon": "NOW-30D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-005",
+        "name": "Omnichannel Customer Experience Command",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-delivery",
+        "dimension": "CROSS_SECTOR",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-006",
+        "name": "AI Governance Readiness Sprint",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P0",
+        "owner": "dealix-pm",
+        "dimension": "GOVERNANCE",
+        "horizon": "NOW-30D",
+        "factors": {
+          "official_signal_strength": 5,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 240.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-007",
+        "name": "PDPL/Data Operations Desk",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-delivery",
+        "dimension": "GOVERNANCE",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 4,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 192.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-008",
+        "name": "AI Agent Reliability + Control Assessment",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P0",
+        "owner": "dealix-engineer",
+        "dimension": "GOVERNANCE",
+        "horizon": "NOW-30D",
+        "factors": {
+          "official_signal_strength": 5,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 240.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-009",
+        "name": "Proof Pack as a Service",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-delivery",
+        "dimension": "CROSS_SECTOR",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-010",
+        "name": "Executive Company Command Retainer",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-pm",
+        "dimension": "CROSS_SECTOR",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-011",
+        "name": "Saudi Opportunity Radar",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-sales",
+        "dimension": "CROSS_SECTOR",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 4,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 320.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-012",
+        "name": "Tender / Etimad Intelligence Desk",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-sales",
+        "dimension": "PROCUREMENT",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 4,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 320.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-013",
+        "name": "Saudi AI Governance Update Service",
+        "state": "VALIDATE",
+        "priority": "P1",
+        "owner": "dealix-content",
+        "dimension": "GOVERNANCE",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 19.2,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-014",
+        "name": "AI Cost + Model Optimization Desk",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "CROSS_SECTOR",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-015",
+        "name": "Connector Reliability Managed Service",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "CROSS_SECTOR",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-016",
+        "name": "Fatoora Integration Operations",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-delivery",
+        "dimension": "FATOORA",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 4,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 320.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-017",
+        "name": "Future Factory Digital Operations",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-delivery",
+        "dimension": "INDUSTRIAL",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-018",
+        "name": "Logistics Exception + Evidence Command",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-delivery",
+        "dimension": "LOGISTICS",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-019",
+        "name": "Cloud Tenant Readiness + Evidence Ops",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "CROSS_SECTOR",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 3,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 240.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-020",
+        "name": "Partner / Distributor Desk",
+        "state": "ACTIVE_LIGHT",
+        "priority": "P1",
+        "owner": "dealix-sales",
+        "dimension": "PARTNER",
+        "horizon": "NOW-30D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 5,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 80.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-021",
+        "name": "Franchise Multi-Branch Command",
+        "state": "VALIDATE",
+        "priority": "P1",
+        "owner": "dealix-sales",
+        "dimension": "RETAIL",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 32.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-022",
+        "name": "E-commerce CX + Retention Command",
+        "state": "VALIDATE",
+        "priority": "P1",
+        "owner": "dealix-sales",
+        "dimension": "RETAIL",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 32.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-023",
+        "name": "Open Banking Integration Partner Pack",
+        "state": "VALIDATE",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "FINTECH",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 4,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 76.8,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-024",
+        "name": "Healthcare Administrative + Interoperability Ops",
+        "state": "VALIDATE",
+        "priority": "P2",
+        "owner": "dealix-delivery",
+        "dimension": "HEALTHCARE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 19.2,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-025",
+        "name": "Real Estate / Property Revenue Command",
+        "state": "VALIDATE",
+        "priority": "P2",
+        "owner": "dealix-sales",
+        "dimension": "REALESTATE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 32.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-026",
+        "name": "Hospitality + Tourism Operations Command",
+        "state": "VALIDATE",
+        "priority": "P2",
+        "owner": "dealix-sales",
+        "dimension": "HOSPITALITY",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 32.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-027",
+        "name": "Education Revenue + Service Command",
+        "state": "VALIDATE",
+        "priority": "P2",
+        "owner": "dealix-sales",
+        "dimension": "EDUCATION",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 32.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-028",
+        "name": "Private-Sector Cybersecurity Evidence Desk",
+        "state": "VALIDATE",
+        "priority": "P1",
+        "owner": "dealix-delivery",
+        "dimension": "GOVERNANCE",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 5,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 96.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-029",
+        "name": "Private Dealix SaaS",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-engineer",
+        "dimension": "SOFTWARE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-030",
+        "name": "Opportunity Graph API",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-engineer",
+        "dimension": "SOFTWARE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-031",
+        "name": "Proof Ledger API",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-engineer",
+        "dimension": "SOFTWARE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-032",
+        "name": "Policy + Approval Gateway",
+        "state": "WATCH",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "GOVERNANCE",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 19.2,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-033",
+        "name": "Agent Identity Registry",
+        "state": "WATCH",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "GOVERNANCE",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 4,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 4,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 5
+        },
+        "research_score": 19.2,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-034",
+        "name": "Saudi Signal Feed API",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-sales",
+        "dimension": "SOFTWARE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-035",
+        "name": "Diagnostic Engine",
+        "state": "WATCH",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "SOFTWARE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-036",
+        "name": "Proposal + Decision Pack Engine",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-sales",
+        "dimension": "SOFTWARE",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-037",
+        "name": "AI Eval Service",
+        "state": "WATCH",
+        "priority": "P1",
+        "owner": "dealix-engineer",
+        "dimension": "SOFTWARE",
+        "horizon": "30-90D",
+        "factors": {
+          "official_signal_strength": 3,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 24.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-038",
+        "name": "Template + Playbook Vault",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-content",
+        "dimension": "IP_MEDIA",
+        "horizon": "90-180D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-039",
+        "name": "Dealix Academy + Corporate Training",
+        "state": "WATCH",
+        "priority": "P3",
+        "owner": "dealix-content",
+        "dimension": "IP_MEDIA",
+        "horizon": "180-365D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-040",
+        "name": "White-Label Dealix Modules",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-pm",
+        "dimension": "SOFTWARE",
+        "horizon": "180-365D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-041",
+        "name": "Benchmark + Industry Reports",
+        "state": "WATCH",
+        "priority": "P2",
+        "owner": "dealix-content",
+        "dimension": "IP_MEDIA",
+        "horizon": "180-365D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-042",
+        "name": "Data Licensing",
+        "state": "BLOCKED",
+        "priority": "P3",
+        "owner": "dealix-pm",
+        "dimension": "IP_MEDIA",
+        "horizon": "HOLD",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-043",
+        "name": "Micro-SaaS Acquisition / Roll-up",
+        "state": "WATCH",
+        "priority": "P3",
+        "owner": "dealix-pm",
+        "dimension": "VENTURE",
+        "horizon": "180-365D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      },
+      {
+        "arm_id": "ARM-044",
+        "name": "Venture Studio",
+        "state": "WATCH",
+        "priority": "P3",
+        "owner": "dealix-pm",
+        "dimension": "VENTURE",
+        "horizon": "180-365D",
+        "factors": {
+          "official_signal_strength": 1,
+          "relationship_evidence": 0,
+          "time_to_cash": 2,
+          "delivery_readiness": 2,
+          "cost_margin_proxy": 2,
+          "founder_minutes_factor": 3,
+          "regulatory_risk": 3
+        },
+        "research_score": 8.0,
+        "locked": false,
+        "locked_reason": null,
+        "disposition": "RESEARCH_ONLY_NO_STATE_CHANGE",
+        "state_change_allowed": false
+      }
+    ],
+    "state_changes_applied": 0
+  },
+  "l5_executed": "NONE"
+}

@@ -1,0 +1,1165 @@
+{
+  "schema": "dealix.op2-sector-economy.v1",
+  "generated_at": "2026-09-12T06:27:47.579469+00:00",
+  "source_wave": "/opt/dealix/worktrees/op2-20260912T052940/data/commercial/op2_market_intelligence_wave_v1.json",
+  "truth_class": "PATTERN_RESEARCH_RANKING",
+  "authority": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_OPPORTUNITY_NO_PIPELINE",
+  "counts_as_pipeline": false,
+  "counts_as_revenue": false,
+  "status_ceiling": "RESEARCHED_WITH_SIGNALS",
+  "cells": [
+    {
+      "sector_id": "retail_commerce_ecommerce",
+      "ar_name": "تجارة تجزئة وإلكترونية",
+      "en_name": "Retail & E-commerce",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 7812.5,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-mc-retail-commerce-registrations"
+      ],
+      "evidence_refs": [
+        "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx"
+      ],
+      "authority_refs": [
+        "Ministry of Commerce"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "ICT->retail_commerce_ecommerce:ICT->retail_commerce_ecommerce:explicit_canonical_sector_id"
+      ],
+      "buyer": "ecommerce director / COO / customer operations lead",
+      "problem": "Conversion leakage, order exceptions, returns, support backlog and reconciliation",
+      "vector": {
+        "offer": "REVENUE_LEAKAGE_AND_ORDER_AUTOMATION",
+        "channel": "direct_ceo",
+        "monetization": "PAID_SPRINT",
+        "delivery": "commerce_workspace",
+        "proof": "conversion_and_leakage_pack",
+        "automation": "order_and_support_automation",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "logistics_supply_chain",
+      "ar_name": "لوجستي",
+      "en_name": "Logistics",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 5208.3333,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-logistics-june-sts"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "authority_refs": [
+        "GASTAT / Transport General Authority"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TRANSPORT_LOGISTICS->logistics_supply_chain:TRANSPORT_LOGISTICS->logistics_supply_chain:explicit_canonical_sector_id"
+      ],
+      "buyer": "COO / logistics operations / last-mile director",
+      "problem": "High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load",
+      "vector": {
+        "offer": "OPERATIONS_EXCEPTION_AUTOMATION",
+        "channel": "direct_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "ops_workspace",
+        "proof": "exception_resolution_pack",
+        "automation": "exception_detection",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "tourism_hospitality",
+      "ar_name": "سياحة وضيافة",
+      "en_name": "Tourism & Hospitality",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2560.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-tourism-q1-release"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "authority_refs": [
+        "GASTAT / Ministry of Tourism"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TOURISM_QUALITY_OF_LIFE->tourism_hospitality:TOURISM_QUALITY_OF_LIFE->tourism_hospitality:explicit_canonical_sector_id"
+      ],
+      "buyer": "general manager / revenue manager / guest operations",
+      "problem": "Booking leakage, guest-response load, occupancy/revenue operations and service exceptions",
+      "vector": {
+        "offer": "GUEST_AND_REVENUE_OPERATIONS_AUTOMATION",
+        "channel": "direct_general_manager",
+        "monetization": "PAID_SPRINT",
+        "delivery": "guest_operations_workspace",
+        "proof": "booking_support_resolution_pack",
+        "automation": "booking_guest_support_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "professional_services",
+      "ar_name": "خدمات مهنية",
+      "en_name": "Professional Services",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2048.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-professional-services-sts"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "authority_refs": [
+        "GASTAT"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "HUMAN_CAPITAL_INNOVATION->professional_services:HUMAN_CAPITAL_INNOVATION->professional_services:explicit_canonical_sector_id"
+      ],
+      "buyer": "managing partner / COO / commercial director",
+      "problem": "Lead-to-proposal delay, utilization leakage, delivery coordination and billing evidence",
+      "vector": {
+        "offer": "LEAD_TO_CASH_AND_DELIVERY_AUTOMATION",
+        "channel": "direct_managing_partner",
+        "monetization": "PAID_SPRINT",
+        "delivery": "professional_service_workspace",
+        "proof": "proposal_cycle_and_utilization_pack",
+        "automation": "lead_proposal_delivery_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "education_training",
+      "ar_name": "تعليم وتدريب",
+      "en_name": "Education & Training",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2048.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-hrdf-training-employment-scale"
+      ],
+      "evidence_refs": [
+        "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/"
+      ],
+      "authority_refs": [
+        "Human Resources Development Fund (HRDF)"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "HUMAN_CAPITAL_INNOVATION->education_training:HUMAN_CAPITAL_INNOVATION->education_training:explicit_canonical_sector_id"
+      ],
+      "buyer": "training director / COO / enrollment operations",
+      "problem": "Enrollment leakage, training scheduling, learner support and employer outcome evidence",
+      "vector": {
+        "offer": "ENROLLMENT_AND_REVENUE_LEAKAGE_AUTOMATION",
+        "channel": "direct_ceo",
+        "monetization": "PAID_SPRINT",
+        "delivery": "lightweight_workspace",
+        "proof": "leakage_reduction_pack",
+        "automation": "lead_and_enrollment_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "mobility_automotive",
+      "ar_name": "تنقل وسيارات",
+      "en_name": "Mobility & Automotive",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2048.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-mobility-vehicle-repair-growth"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "authority_refs": [
+        "GASTAT"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TRANSPORT_LOGISTICS->mobility_automotive:TRANSPORT_LOGISTICS->mobility_automotive:explicit_canonical_sector_id"
+      ],
+      "buyer": "fleet director / aftersales director / service operations",
+      "problem": "Vehicle uptime, service backlog, parts exceptions and maintenance coordination",
+      "vector": {
+        "offer": "FLEET_SERVICE_AND_PARTS_AUTOMATION",
+        "channel": "direct_fleet_or_aftersales",
+        "monetization": "PAID_SPRINT",
+        "delivery": "fleet_service_workspace",
+        "proof": "uptime_service_cycle_pack",
+        "automation": "service_parts_exception_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "construction_epc",
+      "ar_name": "إنشاءات/EPC",
+      "en_name": "Construction/EPC",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 682.6667,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-sca-construction-project-awards"
+      ],
+      "evidence_refs": [
+        "https://sca.sa/ar"
+      ],
+      "authority_refs": [
+        "Saudi Contractors Authority"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "MANUFACTURING->construction_epc:MANUFACTURING->construction_epc:explicit_canonical_sector_id"
+      ],
+      "buyer": "project controls / contracts / operations director",
+      "problem": "RFI, submittal, change-order, document-control and project exception cycle time",
+      "vector": {
+        "offer": "PROJECT_CONTROL_AND_SUBMITTAL_AUTOMATION",
+        "channel": "direct_project_controls",
+        "monetization": "PAID_SPRINT",
+        "delivery": "project_control_workspace",
+        "proof": "cycle_time_and_exception_pack",
+        "automation": "submittal_rfi_change_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "industrial_manufacturing",
+      "ar_name": "صناعي",
+      "en_name": "Industrial",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 682.6667,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-manufacturing-revenue-growth"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "authority_refs": [
+        "GASTAT"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "MANUFACTURING->industrial_manufacturing:MANUFACTURING->industrial_manufacturing:explicit_canonical_sector_id"
+      ],
+      "buyer": "plant operations / quality / supply-chain director",
+      "problem": "Downtime, quality exceptions, inventory visibility and manual operating evidence",
+      "vector": {
+        "offer": "QUALITY_AND_INVENTORY_AUTOMATION",
+        "channel": "direct_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "shopfloor_workspace",
+        "proof": "quality_outcome_pack",
+        "automation": "quality_signal_detection",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "telecom_media_marketing",
+      "ar_name": "اتصالات وإعلام وتسويق",
+      "en_name": "Telecom, Media & Marketing",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 682.6667,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-cst-ict-market-199b"
+      ],
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/media-center/news/N2026070101"
+      ],
+      "authority_refs": [
+        "Communications, Space and Technology Commission"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "ICT->telecom_media_marketing:ICT->telecom_media_marketing:explicit_canonical_sector_id"
+      ],
+      "buyer": "CIO / customer operations / CMO",
+      "problem": "Customer support scale, content operations, campaign attribution and digital-service reliability",
+      "vector": {
+        "offer": "CUSTOMER_AND_CONTENT_OPERATIONS_AUTOMATION",
+        "channel": "direct_growth_or_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "growth_operations_workspace",
+        "proof": "support_content_attribution_pack",
+        "automation": "campaign_content_support_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "technology_saas_si",
+      "ar_name": "تقنية/SaaS",
+      "en_name": "Technology/SaaS",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 603.1922,
+      "signal_count": 8,
+      "signal_ids": [
+        "op2-2026-sdaia-ai-governance-package",
+        "op2-2026-nca-ecc2-controls",
+        "op2-2026-nca-ccc-cloud-residency",
+        "op2-2026-monshaat-sme-digitalization",
+        "op2-2026-cst-ai-hub-cloud-zone",
+        "op2-2026-cst-ai-adoption-guide-tech",
+        "op2-2026-nca-ncnicc-private-sector",
+        "op2-2026-nca-implementation-guidance-ecc-ccc"
+      ],
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+        "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+        "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+        "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/"
+      ],
+      "authority_refs": [
+        "SDAIA (Saudi Data & AI Authority)",
+        "NCA (National Cybersecurity Authority)",
+        "NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)",
+        "Monsha'at (General Authority for SMEs) with SAMA/Kafalah data",
+        "CST (Communications, Space & Technology Commission)"
+      ],
+      "deadlines": [],
+      "mapping_notes": [],
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "vector": {
+        "offer": "AI_GOVERNANCE_AND_READINESS_ASSESSMENT",
+        "channel": "direct_cto",
+        "monetization": "PAID_SPRINT",
+        "delivery": "assessment_then_build",
+        "proof": "model_accountability_pack",
+        "automation": "governance_evidence_trail",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "finance_fintech_insurance",
+      "ar_name": "مالي/تأمين",
+      "en_name": "Finance",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 547.7333,
+      "signal_count": 3,
+      "signal_ids": [
+        "op2-2026-zatca-wave25-einvoicing",
+        "op2-2026-pdpl-active-enforcement",
+        "op2-2026-sama-open-banking-licensing"
+      ],
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+        "https://www.clydeco.com/en/insights/2026/03/enforcement-of-the-saudi-pdp-law",
+        "https://www.sama.gov.sa/en-US/MediaCenter/News/Pages/news-1135.aspx"
+      ],
+      "authority_refs": [
+        "ZATCA (Zakat, Tax and Customs Authority)",
+        "SDAIA / PDPL Committees for Reviewing Violations",
+        "SAMA (Saudi Central Bank)"
+      ],
+      "deadlines": [
+        "2027-02-01"
+      ],
+      "mapping_notes": [],
+      "buyer": "CFO / finance operations / tax compliance lead",
+      "problem": "E-invoicing integration, VAT reporting accuracy, and reconciliation leakage as the integration threshold drops",
+      "vector": {
+        "offer": "GOVERNED_AI_COMPLIANCE_EVIDENCE",
+        "channel": "direct_finance_ops",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "workspace_plus_week_review",
+        "proof": "control_evidence_pack",
+        "automation": "consent_and_report_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "export_import_rhq",
+      "ar_name": "تصدير واستيراد ومقرات إقليمية",
+      "en_name": "Export, Import & RHQ",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 512.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-misa-rhq-trade-operations"
+      ],
+      "evidence_refs": [
+        "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf"
+      ],
+      "authority_refs": [
+        "Ministry of Investment / Ministry of Industry and Mineral Resources"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TRANSPORT_LOGISTICS->export_import_rhq:TRANSPORT_LOGISTICS->export_import_rhq:explicit_canonical_sector_id"
+      ],
+      "buyer": "regional COO / supply-chain / finance / compliance",
+      "problem": "Cross-border document control, customs/origin workflows, landed-cost visibility and regional reporting",
+      "vector": {
+        "offer": "TRADE_DOCUMENT_AND_LANDED_COST_AUTOMATION",
+        "channel": "partner_or_supply_chain",
+        "monetization": "PAID_SPRINT",
+        "delivery": "trade_operations_workspace",
+        "proof": "document_cycle_and_exception_pack",
+        "automation": "document_customs_exception_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "creative_sports_gaming",
+      "ar_name": "إبداع ورياضة وألعاب",
+      "en_name": "Creative, Sports & Gaming",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 432.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-sports-law-investment"
+      ],
+      "evidence_refs": [
+        "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5"
+      ],
+      "authority_refs": [
+        "Ministry of Sport"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TOURISM_QUALITY_OF_LIFE->creative_sports_gaming:TOURISM_QUALITY_OF_LIFE->creative_sports_gaming:explicit_canonical_sector_id"
+      ],
+      "buyer": "commercial director / club COO / marketing director",
+      "problem": "Sponsorship pipeline, fan/member support, event operations and content execution",
+      "vector": {
+        "offer": "COMMERCIAL_AND_FAN_OPERATIONS_AUTOMATION",
+        "channel": "direct_commercial_director",
+        "monetization": "PAID_SPRINT",
+        "delivery": "commercial_operations_workspace",
+        "proof": "sponsorship_engagement_pack",
+        "automation": "sponsorship_content_fan_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "agriculture_food_water",
+      "ar_name": "زراعة وأغذية ومياه",
+      "en_name": "Agriculture, Food & Water",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 384.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-mewa-agri-water-tech-investment"
+      ],
+      "evidence_refs": [
+        "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx"
+      ],
+      "authority_refs": [
+        "Ministry of Environment, Water and Agriculture"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "AGRICULTURE_FOOD->agriculture_food_water:AGRICULTURE_FOOD->agriculture_food_water:explicit_canonical_sector_id"
+      ],
+      "buyer": "operations / quality / sustainability director",
+      "problem": "Resource efficiency, traceability, loss, quality exceptions and asset monitoring",
+      "vector": {
+        "offer": "TRACEABILITY_AND_RESOURCE_EFFICIENCY_DIAGNOSTIC",
+        "channel": "partner_or_operations",
+        "monetization": "PAID_SPRINT",
+        "delivery": "traceability_workspace",
+        "proof": "loss_quality_resource_pack",
+        "automation": "traceability_quality_exception_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "associations_nonprofits",
+      "ar_name": "جمعيات وغير ربحية",
+      "en_name": "Associations & Nonprofits",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 243.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-ncnp-nonprofit-scale"
+      ],
+      "evidence_refs": [
+        "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1"
+      ],
+      "authority_refs": [
+        "National Center for Non-Profit Sector"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "HUMAN_CAPITAL_INNOVATION->associations_nonprofits:HUMAN_CAPITAL_INNOVATION->associations_nonprofits:explicit_canonical_sector_id"
+      ],
+      "buyer": "executive director / operations / fundraising or membership lead",
+      "problem": "Member/donor lifecycle, service-case coordination, reporting burden and impact evidence",
+      "vector": {
+        "offer": "MEMBER_DONOR_AND_REPORTING_AUTOMATION",
+        "channel": "partner_or_executive_director",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "mission_operations_workspace",
+        "proof": "member_donor_reporting_pack",
+        "automation": "member_donor_case_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "mining_metals",
+      "ar_name": "تعدين ومعادن",
+      "en_name": "Mining & Metals",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 120.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-mining-revenue-growth"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "authority_refs": [
+        "GASTAT"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "MINING_METALS->mining_metals:MINING_METALS->mining_metals:explicit_canonical_sector_id"
+      ],
+      "buyer": "mine operations / maintenance / procurement director",
+      "problem": "Maintenance downtime, production exceptions, grade/asset data fragmentation and procurement cycle time",
+      "vector": {
+        "offer": "MAINTENANCE_AND_PRODUCTION_INTELLIGENCE",
+        "channel": "supplier_portal_plus_operations",
+        "monetization": "PAID_SPRINT",
+        "delivery": "maintenance_intelligence_workspace",
+        "proof": "downtime_and_resolution_pack",
+        "automation": "maintenance_exception_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "real_estate_proptech",
+      "ar_name": "عقار/FM",
+      "en_name": "Real Estate/FM",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 81.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-rega-proptech-sandbox"
+      ],
+      "evidence_refs": [
+        "https://rega.gov.sa/en/rega-services/platforms/saudi-proptech-hub/"
+      ],
+      "authority_refs": [
+        "REGA (Real Estate General Authority)"
+      ],
+      "deadlines": [
+        "2026-04-30"
+      ],
+      "mapping_notes": [],
+      "buyer": "proptech platform operator / data lead",
+      "problem": "Licensing compliance, technical integration and data reliability for electronic real-estate platforms",
+      "vector": {
+        "offer": "PLATFORM_DATA_INTEGRITY_AUTOMATION",
+        "channel": "direct_operator",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "platform_integration",
+        "proof": "data_quality_pack",
+        "automation": "integration_and_validation",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "energy_utilities_oil_gas",
+      "ar_name": "طاقة/نفط",
+      "en_name": "Energy/Oil&Gas",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 64.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-seec-energy-efficiency-marketplace"
+      ],
+      "evidence_refs": [
+        "https://foras.seec.gov.sa/"
+      ],
+      "authority_refs": [
+        "Saudi Energy Efficiency Center"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "ENERGY->energy_utilities_oil_gas:ENERGY->energy_utilities_oil_gas:explicit_canonical_sector_id"
+      ],
+      "buyer": "energy manager / facilities / operations director",
+      "problem": "Energy audit evidence, measurement and verification, opportunity qualification and savings tracking",
+      "vector": {
+        "offer": "ENERGY_OPERATIONS_AND_EVIDENCE_AUTOMATION",
+        "channel": "partner_or_direct_operations",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "governed_operations_workspace",
+        "proof": "energy_control_evidence_pack",
+        "automation": "audit_measurement_exception_pipeline",
+        "time_to_cash": "slow_90d_plus"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "government_b2g",
+      "ar_name": "حكومي/B2G",
+      "en_name": "Government/B2G",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 57.6,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-etimad-government-procurement-snapshot"
+      ],
+      "evidence_refs": [
+        "https://portal.etimad.sa/en-us/home/gettenderssection"
+      ],
+      "authority_refs": [
+        "Etimad / Ministry of Finance"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "AVIATION_DEFENSE->government_b2g:AVIATION_DEFENSE->government_b2g:explicit_canonical_sector_id"
+      ],
+      "buyer": "procurement / digital transformation / program owner",
+      "problem": "Tender discovery, bid/no-bid evidence, requirements traceability, and compliant delivery proof",
+      "vector": {
+        "offer": "GOVERNED_EXECUTION_BACKEND",
+        "channel": "partner_or_tender",
+        "monetization": "WHITE_LABEL",
+        "delivery": "partner_joint_delivery",
+        "proof": "compliance_evidence_pack",
+        "automation": "procurement_evidence_trail",
+        "time_to_cash": "slow_90d_plus"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "healthcare",
+      "ar_name": "صحي",
+      "en_name": "Healthcare",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 8.736,
+      "signal_count": 2,
+      "signal_ids": [
+        "op2-2026-sfda-digital-health-ai",
+        "op2-2026-nupco-localization-digital"
+      ],
+      "evidence_refs": [
+        "https://sfda.gov.sa/en/news/19378",
+        "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide"
+      ],
+      "authority_refs": [
+        "SFDA (Saudi Food & Drug Authority)",
+        "NUPCO (National Unified Procurement Company) + LCGPA"
+      ],
+      "deadlines": [],
+      "mapping_notes": [],
+      "buyer": "regulatory affairs / clinical informatics / quality lead",
+      "problem": "AI/ML validation, explainability, data governance, human oversight and post-market change-management evidence for digital health products",
+      "vector": {
+        "offer": "DIGITAL_HEALTH_EVIDENCE_READINESS",
+        "channel": "partner_led",
+        "monetization": "FIXED_SCOPE_IMPLEMENTATION",
+        "delivery": "partner_joint_delivery",
+        "proof": "regulatory_evidence_pack",
+        "automation": "human_oversight_workflow",
+        "time_to_cash": "slow_90d_plus"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    }
+  ],
+  "top_cells": [
+    {
+      "sector_id": "retail_commerce_ecommerce",
+      "ar_name": "تجارة تجزئة وإلكترونية",
+      "en_name": "Retail & E-commerce",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 7812.5,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-mc-retail-commerce-registrations"
+      ],
+      "evidence_refs": [
+        "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx"
+      ],
+      "authority_refs": [
+        "Ministry of Commerce"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "ICT->retail_commerce_ecommerce:ICT->retail_commerce_ecommerce:explicit_canonical_sector_id"
+      ],
+      "buyer": "ecommerce director / COO / customer operations lead",
+      "problem": "Conversion leakage, order exceptions, returns, support backlog and reconciliation",
+      "vector": {
+        "offer": "REVENUE_LEAKAGE_AND_ORDER_AUTOMATION",
+        "channel": "direct_ceo",
+        "monetization": "PAID_SPRINT",
+        "delivery": "commerce_workspace",
+        "proof": "conversion_and_leakage_pack",
+        "automation": "order_and_support_automation",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "logistics_supply_chain",
+      "ar_name": "لوجستي",
+      "en_name": "Logistics",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 5208.3333,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-logistics-june-sts"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "authority_refs": [
+        "GASTAT / Transport General Authority"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TRANSPORT_LOGISTICS->logistics_supply_chain:TRANSPORT_LOGISTICS->logistics_supply_chain:explicit_canonical_sector_id"
+      ],
+      "buyer": "COO / logistics operations / last-mile director",
+      "problem": "High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load",
+      "vector": {
+        "offer": "OPERATIONS_EXCEPTION_AUTOMATION",
+        "channel": "direct_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "ops_workspace",
+        "proof": "exception_resolution_pack",
+        "automation": "exception_detection",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "tourism_hospitality",
+      "ar_name": "سياحة وضيافة",
+      "en_name": "Tourism & Hospitality",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2560.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-tourism-q1-release"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "authority_refs": [
+        "GASTAT / Ministry of Tourism"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TOURISM_QUALITY_OF_LIFE->tourism_hospitality:TOURISM_QUALITY_OF_LIFE->tourism_hospitality:explicit_canonical_sector_id"
+      ],
+      "buyer": "general manager / revenue manager / guest operations",
+      "problem": "Booking leakage, guest-response load, occupancy/revenue operations and service exceptions",
+      "vector": {
+        "offer": "GUEST_AND_REVENUE_OPERATIONS_AUTOMATION",
+        "channel": "direct_general_manager",
+        "monetization": "PAID_SPRINT",
+        "delivery": "guest_operations_workspace",
+        "proof": "booking_support_resolution_pack",
+        "automation": "booking_guest_support_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "professional_services",
+      "ar_name": "خدمات مهنية",
+      "en_name": "Professional Services",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2048.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-professional-services-sts"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "authority_refs": [
+        "GASTAT"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "HUMAN_CAPITAL_INNOVATION->professional_services:HUMAN_CAPITAL_INNOVATION->professional_services:explicit_canonical_sector_id"
+      ],
+      "buyer": "managing partner / COO / commercial director",
+      "problem": "Lead-to-proposal delay, utilization leakage, delivery coordination and billing evidence",
+      "vector": {
+        "offer": "LEAD_TO_CASH_AND_DELIVERY_AUTOMATION",
+        "channel": "direct_managing_partner",
+        "monetization": "PAID_SPRINT",
+        "delivery": "professional_service_workspace",
+        "proof": "proposal_cycle_and_utilization_pack",
+        "automation": "lead_proposal_delivery_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "education_training",
+      "ar_name": "تعليم وتدريب",
+      "en_name": "Education & Training",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2048.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-hrdf-training-employment-scale"
+      ],
+      "evidence_refs": [
+        "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/"
+      ],
+      "authority_refs": [
+        "Human Resources Development Fund (HRDF)"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "HUMAN_CAPITAL_INNOVATION->education_training:HUMAN_CAPITAL_INNOVATION->education_training:explicit_canonical_sector_id"
+      ],
+      "buyer": "training director / COO / enrollment operations",
+      "problem": "Enrollment leakage, training scheduling, learner support and employer outcome evidence",
+      "vector": {
+        "offer": "ENROLLMENT_AND_REVENUE_LEAKAGE_AUTOMATION",
+        "channel": "direct_ceo",
+        "monetization": "PAID_SPRINT",
+        "delivery": "lightweight_workspace",
+        "proof": "leakage_reduction_pack",
+        "automation": "lead_and_enrollment_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "mobility_automotive",
+      "ar_name": "تنقل وسيارات",
+      "en_name": "Mobility & Automotive",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 2048.0,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-mobility-vehicle-repair-growth"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "authority_refs": [
+        "GASTAT"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "TRANSPORT_LOGISTICS->mobility_automotive:TRANSPORT_LOGISTICS->mobility_automotive:explicit_canonical_sector_id"
+      ],
+      "buyer": "fleet director / aftersales director / service operations",
+      "problem": "Vehicle uptime, service backlog, parts exceptions and maintenance coordination",
+      "vector": {
+        "offer": "FLEET_SERVICE_AND_PARTS_AUTOMATION",
+        "channel": "direct_fleet_or_aftersales",
+        "monetization": "PAID_SPRINT",
+        "delivery": "fleet_service_workspace",
+        "proof": "uptime_service_cycle_pack",
+        "automation": "service_parts_exception_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "construction_epc",
+      "ar_name": "إنشاءات/EPC",
+      "en_name": "Construction/EPC",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 682.6667,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-sca-construction-project-awards"
+      ],
+      "evidence_refs": [
+        "https://sca.sa/ar"
+      ],
+      "authority_refs": [
+        "Saudi Contractors Authority"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "MANUFACTURING->construction_epc:MANUFACTURING->construction_epc:explicit_canonical_sector_id"
+      ],
+      "buyer": "project controls / contracts / operations director",
+      "problem": "RFI, submittal, change-order, document-control and project exception cycle time",
+      "vector": {
+        "offer": "PROJECT_CONTROL_AND_SUBMITTAL_AUTOMATION",
+        "channel": "direct_project_controls",
+        "monetization": "PAID_SPRINT",
+        "delivery": "project_control_workspace",
+        "proof": "cycle_time_and_exception_pack",
+        "automation": "submittal_rfi_change_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "industrial_manufacturing",
+      "ar_name": "صناعي",
+      "en_name": "Industrial",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 682.6667,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-gastat-manufacturing-revenue-growth"
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "authority_refs": [
+        "GASTAT"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "MANUFACTURING->industrial_manufacturing:MANUFACTURING->industrial_manufacturing:explicit_canonical_sector_id"
+      ],
+      "buyer": "plant operations / quality / supply-chain director",
+      "problem": "Downtime, quality exceptions, inventory visibility and manual operating evidence",
+      "vector": {
+        "offer": "QUALITY_AND_INVENTORY_AUTOMATION",
+        "channel": "direct_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "shopfloor_workspace",
+        "proof": "quality_outcome_pack",
+        "automation": "quality_signal_detection",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "telecom_media_marketing",
+      "ar_name": "اتصالات وإعلام وتسويق",
+      "en_name": "Telecom, Media & Marketing",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 682.6667,
+      "signal_count": 1,
+      "signal_ids": [
+        "op2-2026-cst-ict-market-199b"
+      ],
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/media-center/news/N2026070101"
+      ],
+      "authority_refs": [
+        "Communications, Space and Technology Commission"
+      ],
+      "deadlines": [],
+      "mapping_notes": [
+        "ICT->telecom_media_marketing:ICT->telecom_media_marketing:explicit_canonical_sector_id"
+      ],
+      "buyer": "CIO / customer operations / CMO",
+      "problem": "Customer support scale, content operations, campaign attribution and digital-service reliability",
+      "vector": {
+        "offer": "CUSTOMER_AND_CONTENT_OPERATIONS_AUTOMATION",
+        "channel": "direct_growth_or_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "growth_operations_workspace",
+        "proof": "support_content_attribution_pack",
+        "automation": "campaign_content_support_pipeline",
+        "time_to_cash": "medium_30_60d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
+      "sector_id": "technology_saas_si",
+      "ar_name": "تقنية/SaaS",
+      "en_name": "Technology/SaaS",
+      "status": "RESEARCHED_WITH_SIGNALS",
+      "research_rank_score": 603.1922,
+      "signal_count": 8,
+      "signal_ids": [
+        "op2-2026-sdaia-ai-governance-package",
+        "op2-2026-nca-ecc2-controls",
+        "op2-2026-nca-ccc-cloud-residency",
+        "op2-2026-monshaat-sme-digitalization",
+        "op2-2026-cst-ai-hub-cloud-zone",
+        "op2-2026-cst-ai-adoption-guide-tech",
+        "op2-2026-nca-ncnicc-private-sector",
+        "op2-2026-nca-implementation-guidance-ecc-ccc"
+      ],
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+        "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/",
+        "https://securitywall.co/blog/ccc-cloud-cybersecurity-controls-saudi-arabia",
+        "https://www.qoyod.com/wp-content/uploads/2026/06/qoyod-sme-report-2026-en.pdf",
+        "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
+        "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+        "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+        "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/"
+      ],
+      "authority_refs": [
+        "SDAIA (Saudi Data & AI Authority)",
+        "NCA (National Cybersecurity Authority)",
+        "NCA (CCC 2:2024) + NDMO/SDAIA (data classification and residency)",
+        "Monsha'at (General Authority for SMEs) with SAMA/Kafalah data",
+        "CST (Communications, Space & Technology Commission)"
+      ],
+      "deadlines": [],
+      "mapping_notes": [],
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "vector": {
+        "offer": "AI_GOVERNANCE_AND_READINESS_ASSESSMENT",
+        "channel": "direct_cto",
+        "monetization": "PAID_SPRINT",
+        "delivery": "assessment_then_build",
+        "proof": "model_accountability_pack",
+        "automation": "governance_evidence_trail",
+        "time_to_cash": "fast_7_30d"
+      },
+      "truth_class": "PATTERN_RESEARCH_RANKING",
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    }
+  ],
+  "deep_wip_top3": [
+    {
+      "sector_id": "retail_commerce_ecommerce",
+      "buyer": "ecommerce director / COO / customer operations lead",
+      "problem": "Conversion leakage, order exceptions, returns, support backlog and reconciliation",
+      "research_rank_score": 7812.5,
+      "vector": {
+        "offer": "REVENUE_LEAKAGE_AND_ORDER_AUTOMATION",
+        "channel": "direct_ceo",
+        "monetization": "PAID_SPRINT",
+        "delivery": "commerce_workspace",
+        "proof": "conversion_and_leakage_pack",
+        "automation": "order_and_support_automation",
+        "time_to_cash": "fast_7_30d"
+      },
+      "evidence_refs": [
+        "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx"
+      ],
+      "truth_class": "PATTERN",
+      "counts_as_pipeline": false
+    },
+    {
+      "sector_id": "logistics_supply_chain",
+      "buyer": "COO / logistics operations / last-mile director",
+      "problem": "High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load",
+      "research_rank_score": 5208.3333,
+      "vector": {
+        "offer": "OPERATIONS_EXCEPTION_AUTOMATION",
+        "channel": "direct_operations",
+        "monetization": "MANAGED_SERVICE",
+        "delivery": "ops_workspace",
+        "proof": "exception_resolution_pack",
+        "automation": "exception_detection",
+        "time_to_cash": "medium_30_60d"
+      },
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "truth_class": "PATTERN",
+      "counts_as_pipeline": false
+    },
+    {
+      "sector_id": "tourism_hospitality",
+      "buyer": "general manager / revenue manager / guest operations",
+      "problem": "Booking leakage, guest-response load, occupancy/revenue operations and service exceptions",
+      "research_rank_score": 2560.0,
+      "vector": {
+        "offer": "GUEST_AND_REVENUE_OPERATIONS_AUTOMATION",
+        "channel": "direct_general_manager",
+        "monetization": "PAID_SPRINT",
+        "delivery": "guest_operations_workspace",
+        "proof": "booking_support_resolution_pack",
+        "automation": "booking_guest_support_pipeline",
+        "time_to_cash": "fast_7_30d"
+      },
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "truth_class": "PATTERN",
+      "counts_as_pipeline": false
+    }
+  ]
+}
