@@ -229,3 +229,89 @@ def test_share_state_applies_operator_group(tmp_path: Path, monkeypatch) -> None
     assert result["group"] == "dealix"
     assert result["paths"] >= 1
     assert any(len(call) == 3 and call[2] == 1234 for call in calls)
+    assert any(len(call) == 2 and call[0] == tmp_path and call[1] == 0o770 for call in calls)
+    assert any(len(call) == 2 and isinstance(call[1], int) and (call[1] & 0o060) == 0o060 for call in calls)
+
+
+def test_resolve_opencode_binary_falls_back_to_home(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / ".opencode" / "bin" / "opencode"
+    binary.parent.mkdir(parents=True)
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(factory.shutil, "which", lambda _name: None)
+    assert factory.resolve_opencode_binary() == str(binary)
+
+
+def test_resolve_opencode_binary_returns_none_without_path(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(factory.shutil, "which", lambda _name: None)
+    assert factory.resolve_opencode_binary() is None
+
+
+def test_execute_opencode_places_auto_after_run(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    def _capture(argv, cwd, timeout=600, env=None):
+        captured["argv"] = argv
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    result = factory.execute_opencode(job, tmp_path)
+    assert result["ok"] is True
+    argv = captured["argv"]
+    assert argv[:3] == [str(binary), "run", "--auto"]
+
+
+def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    selected = tmp_path / "selected-model"
+    selected.write_text("opencode/example-free\n", encoding="utf-8")
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    monkeypatch.setenv("DEALIX_OPENCODE_SELECTED_MODEL_FILE", str(selected))
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: [])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+    def _capture(argv, cwd, timeout=600, env=None):
+        captured["argv"] = argv
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    result = factory.execute_opencode(job, tmp_path)
+    assert result["ok"] is True
+    argv = captured["argv"]
+    assert argv[0:3] == [str(binary), "run", "--auto"]
+    assert argv[3:5] == ["-m", "opencode/example-free"]
+
+
+def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode-go/deepseek-v4.1-flash"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: ["qwen3:4b"])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: ["dealix-local"])
+    def _capture(argv, cwd, timeout=600, env=None):
+        captured["argv"] = argv
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    assert factory.execute_opencode(job, tmp_path)["ok"] is True
+    assert captured["argv"][3:5] == ["-m", "opencode-go/deepseek-v4.1-flash"]

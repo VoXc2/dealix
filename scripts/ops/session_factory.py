@@ -44,6 +44,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from go_resource_broker import (
+    discover_catalog,
+    discover_ollama_models,
+    discover_router_models,
+    pick_model,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STATE_DIR = Path(os.environ.get("DEALIX_SESSION_FACTORY_STATE", "/opt/dealix/control/state/session_factory"))
 WORKTREE_ROOT = Path(os.environ.get("DEALIX_SESSION_FACTORY_WORKTREES", "/opt/dealix/worktrees/auto"))
@@ -293,11 +301,12 @@ _CANONICAL_OPERATOR = "dealix"
 
 
 def share_state_with_operator(root: Path) -> dict[str, Any]:
-    """Grant the canonical operator group read access to factory state.
+    """Grant the canonical operator group controlled read/write access to factory state.
 
-    The factory frequently runs as root while Hermes runs as ``dealix``. A
-    no-agent watchdog under the operator identity cannot read root-owned 0640
-    state, so mirror the operator group onto the state tree after each command.
+    The factory may bootstrap as root while Hermes runs as ``dealix``. The
+    canonical operator must be able to claim/recover jobs without sudo, so the
+    state tree is shared only with the operator group and remains closed to
+    everyone else.
     """
     if os.geteuid() != 0:
         return {"shared": False, "reason": "not-root"}
@@ -308,12 +317,14 @@ def share_state_with_operator(root: Path) -> dict[str, Any]:
     shared = 0
     try:
         os.chown(root, -1, gid)
-        os.chmod(root, 0o750)  # noqa: S103 - operator group needs r-x to traverse
+        os.chmod(root, 0o770)  # noqa: S103 - canonical operator owns runtime mutations
         for path in root.rglob("*"):
             try:
                 os.chown(path, -1, gid)
-                if path.is_file():
-                    os.chmod(path, (path.stat().st_mode & 0o777) | 0o040)
+                if path.is_dir():
+                    os.chmod(path, (path.stat().st_mode & 0o777) | 0o070)  # noqa: S103 - operator group owns state dirs
+                elif path.is_file():
+                    os.chmod(path, (path.stat().st_mode & 0o777) | 0o060)
             except OSError:
                 continue
             shared += 1
@@ -833,6 +844,18 @@ def execute_deterministic(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     return run_argv(list(executor["argv"]), cwd, timeout=timeout)
 
 
+def resolve_opencode_binary() -> str | None:
+    """Resolve OpenCode in both interactive shells and stripped cron environments."""
+    binary = shutil.which("opencode")
+    if binary:
+        return binary
+    home = Path(os.environ.get("HOME", str(Path.home()))).expanduser()
+    candidate = home / ".opencode" / "bin" / "opencode"
+    if candidate.is_file() and os.access(candidate, os.X_OK):
+        return str(candidate)
+    return None
+
+
 def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     """Launch ``opencode run --auto`` with a fail-closed permission policy.
 
@@ -841,18 +864,32 @@ def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     ``OPENCODE_PERMISSION``. Safe L0-L4 runs without a prompt; material actions
     fail closed.
     """
-    binary = shutil.which("opencode")
+    binary = resolve_opencode_binary()
     if not binary:
         return {"ok": False, "returncode": 127, "stdout": "", "stderr": "opencode-not-found", "duration_s": 0}
     prompt = job.get("EXECUTOR", {}).get("prompt") or job.get("BUSINESS_GOAL", "")
-    argv = [binary]
+    argv = [binary, "run"]
     env = dict(os.environ)
     policy = Path(os.environ.get("DEALIX_OPENCODE_PERMISSION_POLICY", str(REPO_ROOT / "config/opencode/autonomous-permissions.json")))
     if policy.is_file():
         env["OPENCODE_PERMISSION"] = policy.read_text(encoding="utf-8").strip()
         argv.append("--auto")
-    argv.append("run")
     model = (job.get("EXECUTOR") or {}).get("model")
+    if not model:
+        route = CLASS_TO_MODEL_CLASS.get(str(job.get("JOB_CLASS")), "R4_INCLUDED_HIGH")
+        catalog = discover_catalog(refresh=False)
+        model = pick_model(route, catalog, discover_ollama_models(), discover_router_models()) if catalog else None
+        if not model or model.endswith("UNKNOWN") or model == "PAID_PENDING_APPROVAL":
+            selected_path = Path(
+                os.environ.get(
+                    "DEALIX_OPENCODE_SELECTED_MODEL_FILE",
+                    "/opt/dealix/control/opencode/state/selected-free-model",
+                )
+            )
+            if selected_path.is_file():
+                candidate = selected_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
+                if candidate and "/" in candidate and not any(ch.isspace() for ch in candidate):
+                    model = candidate
     if model:
         argv += ["-m", str(model)]
     argv.append(str(prompt))

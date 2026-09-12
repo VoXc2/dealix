@@ -19,6 +19,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 STATE_PATH = Path("/opt/dealix/company-os/founder-os/model_economics/GO_BROKER_STATE.json")
 ROUTER_URL = "http://127.0.0.1:11999/v1/models"
 OLLAMA_URL = "http://127.0.0.1:11434/api/tags"
@@ -83,7 +84,10 @@ UNKNOWN = "UNKNOWN"
 
 def _run(cmd: list[str], timeout: int = 30) -> str:
     try:
-        return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, check=False).stdout
+        return subprocess.run(
+            cmd, capture_output=True, text=True, timeout=timeout, check=False,
+            cwd=str(REPO_ROOT) if REPO_ROOT.is_dir() else None,
+        ).stdout
     except (OSError, subprocess.TimeoutExpired):
         return ""
 
@@ -166,11 +170,19 @@ def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[s
     if route == "R3_INCLUDED_LIGHT":
         return free[0] if free else (router[0] if router else "included:light:UNKNOWN")
     if route == "R4_INCLUDED_HIGH":
-        preferred = "opencode/deepseek-v4-flash"
-        return preferred if preferred in catalog else (catalog[0] if catalog else preferred)
+        preferred = (
+            "opencode-go/deepseek-v4.1-flash",
+            "opencode-go/deepseek-v4-flash",
+            "opencode/deepseek-v4-flash",
+        )
+        return next((model for model in preferred if model in catalog), catalog[0] if catalog else preferred[0])
     if route == "R5_STRONG_REASONING":
-        preferred = "opencode/deepseek-v4-pro"
-        return preferred if preferred in catalog else (catalog[-1] if catalog else preferred)
+        preferred = (
+            "opencode-go/deepseek-v4-pro",
+            "opencode/deepseek-v4-pro",
+            "opencode-go/glm-5.3",
+        )
+        return next((model for model in preferred if model in catalog), catalog[-1] if catalog else preferred[0])
     return "PAID_PENDING_APPROVAL"
 
 
