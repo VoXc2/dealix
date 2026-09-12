@@ -1,0 +1,54 @@
+{
+  "schema": "dealix.op2-l5-commercial-packet.v1",
+  "generated_at": "2026-09-12T03:00:28.736267+00:00",
+  "lane": "OP2",
+  "relationship_ref": "rel-imini-001",
+  "note": "UNSENT preparation artifact. No provider call is made by this tool.",
+  "packet": {
+    "schema_version": "dealix.external-action-packet.v2",
+    "action_id": "op2-imini-counter-2026-09-12",
+    "action_class": "EMAIL_SEND",
+    "purpose_class": "INBOUND_REPLY",
+    "destination": "founder_gmail_thread:imini_jannie",
+    "channel": "gmail",
+    "environment": "founder_income_lane",
+    "artifact_ref": "reports/founder/APPROVAL_CARD_IMINI.md#pending_exact_body",
+    "content_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "identity_or_relationship_ref": "rel-imini-001",
+    "consent_or_channel_eligibility_ref": "two_way_email_2026-08-24",
+    "suppression_check_ref": "op2-money-now-reconciliation-v1",
+    "suppression_clear": true,
+    "claim_evidence_refs": [
+      "op2-money-now-reconciliation-v1",
+      "rel-imini-001"
+    ],
+    "sender_identity_ref": "founder_gmail_identity",
+    "opt_out_mechanism_ref": "thread_reply_stop",
+    "risk_class": "MEDIUM",
+    "exact_scope": "one reply inside the existing iMini/Jannie two-way email thread; no new outbound",
+    "expires_at": "2026-09-15T03:00:28.735323+00:00",
+    "provider": "gmail",
+    "idempotency_key": "op2-imini-counter-2026-09-12-a1",
+    "packet_integrity_sha256": "3f70292faf3e9e8a3bbbde9482d06072b8d52ebebaefdafd13ee86db6fb30933",
+    "action_hash": "937837e8d392943d"
+  },
+  "action_hash": "937837e8d392943d",
+  "packet_integrity_sha256": "3f70292faf3e9e8a3bbbde9482d06072b8d52ebebaefdafd13ee86db6fb30933",
+  "pre_approval_decision": {
+    "verdict": "HOLD_NOT_EXECUTION_ELIGIBLE",
+    "action_hash": "937837e8d392943d",
+    "packet_integrity_sha256": "3f70292faf3e9e8a3bbbde9482d06072b8d52ebebaefdafd13ee86db6fb30933",
+    "provider_execution_allowed": false,
+    "approval_valid": false,
+    "runtime_authority_pass": false,
+    "canonical_authority_fresh": true,
+    "reasons": [
+      "FRESH_CLAIM_EVIDENCE_MISMATCH",
+      "APPROVAL_STATE_PENDING",
+      "APPROVAL_AUTHORITY_CLASS_MISMATCH",
+      "RUNTIME_AUTHORITY_DISABLED:connector_write,external_send"
+    ],
+    "required_next_action": "REPAIR_CANONICAL_EVIDENCE_OR_EXACT_APPROVAL"
+  },
+  "l5_executed": 0
+}

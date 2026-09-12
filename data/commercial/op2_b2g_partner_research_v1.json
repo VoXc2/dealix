@@ -1,0 +1,110 @@
+{
+  "schema": "dealix.op2-b2g-partner-research.v1",
+  "generated_at": "2026-09-12T03:09:17.258383+00:00",
+  "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_SUBMISSION_NO_CONSENT",
+  "authority": {
+    "relationship": false,
+    "consent": false,
+    "tender_submission": false,
+    "external_send": false,
+    "contract": false,
+    "payment": false
+  },
+  "default_bid_posture": "PARTNER_OR_NO_BID",
+  "warnings": [],
+  "b2g_items": [
+    {
+      "signal_id": "op2-2026-nupco-localization-digital",
+      "agency_or_channel": "NUPCO (National Unified Procurement Company) + LCGPA",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "scope": "Local-content compliance, framework-agreement qualification and integration with digital procurement platforms",
+      "eligibility": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "fit": "HEALTHCARE_LIFE_SCIENCES",
+      "partner_requirement": "EXPECTED_LOCAL_CONTENT_OR_PRIME",
+      "delivery_burden": "HIGH_LICENSES_STAFFING_GUARANTEES",
+      "economic_potential": "UNKNOWN_NOT_INVENTED",
+      "risk": "HIGH_IF_DIRECT_BID_WITHOUT_CREDENTIALS",
+      "bid_posture": "PARTNER_OR_NO_BID",
+      "source_ref": "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+      "evidence_refs": [
+        "https://meddeviceguide.com/blog/saudi-arabia-nupco-medical-device-procurement-guide",
+        "https://medstrato.com/blog/medical-device-procurement-sa-guide"
+      ],
+      "truth_class": "RESEARCH_ONLY_NOT_SUBMISSION",
+      "counts_as_relationship": false
+    }
+  ],
+  "top_priority_sectors": [
+    "finance_fintech_insurance",
+    "technology_saas_si",
+    "real_estate_proptech"
+  ],
+  "partner_candidates": [
+    {
+      "partner_id": "op2-accounting",
+      "type": "accounting",
+      "motion": "referral",
+      "sector_fit": [
+        "finance_fintech_insurance"
+      ],
+      "economic_score": 44.444,
+      "rationale": "Fatoora/accounting firms hold the exact Wave 25 client relationships.",
+      "relationship_state": "RESEARCH_ONLY",
+      "counts_as_relationship": false
+    },
+    {
+      "partner_id": "op2-cloud",
+      "type": "cloud_provider",
+      "motion": "integration",
+      "sector_fit": [
+        "technology_saas_si",
+        "healthcare"
+      ],
+      "economic_score": 32.0,
+      "rationale": "Sovereign/cloud residency work sits alongside cloud partners.",
+      "relationship_state": "RESEARCH_ONLY",
+      "counts_as_relationship": false
+    },
+    {
+      "partner_id": "op2-erp-fatoora",
+      "type": "erp_vendor",
+      "motion": "co_sell",
+      "sector_fit": [
+        "finance_fintech_insurance",
+        "retail_commerce_ecommerce"
+      ],
+      "economic_score": 22.4,
+      "rationale": "E-invoicing/ERP implementers already inside ZATCA Wave 25 scoped clients.",
+      "relationship_state": "RESEARCH_ONLY",
+      "counts_as_relationship": false
+    },
+    {
+      "partner_id": "op2-si-gov",
+      "type": "system_integrator",
+      "motion": "white_label",
+      "sector_fit": [
+        "government_b2g",
+        "technology_saas_si"
+      ],
+      "economic_score": 21.943,
+      "rationale": "Governed AI execution backend behind an SI with existing Etimad credentials.",
+      "relationship_state": "RESEARCH_ONLY",
+      "counts_as_relationship": false
+    },
+    {
+      "partner_id": "op2-cyber",
+      "type": "cyber_firm",
+      "motion": "co_sell",
+      "sector_fit": [
+        "technology_saas_si",
+        "government_b2g"
+      ],
+      "economic_score": 17.455,
+      "rationale": "NCA ECC-2/PDPL evidence work pairs with cybersecurity delivery partners.",
+      "relationship_state": "RESEARCH_ONLY",
+      "counts_as_relationship": false
+    }
+  ],
+  "counts_as_relationship": false,
+  "counts_as_pipeline": false
+}

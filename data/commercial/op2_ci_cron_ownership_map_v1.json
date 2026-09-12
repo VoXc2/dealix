@@ -1,0 +1,412 @@
+{
+  "schema": "dealix.op2-ci-cron-ownership-map.v1",
+  "generated_at": "2026-09-12T03:11:48.956596+00:00",
+  "scope": "GITHUB_ACTIONS_CRON_PLANE",
+  "complements": "scripts/ops/audit_dealix_schedulers.py (systemd + Hermes, OP1-owned)",
+  "read_only": true,
+  "workflow_count": 37,
+  "distinct_cron_slots": 31,
+  "collision_slot_count": 2,
+  "duplicate_slots": {
+    "0 4 * * *": [
+      "company-brain-daily.yml",
+      "daily-revenue-machine.yml",
+      "daily_digest.yml"
+    ],
+    "0 6 * * 0": [
+      "commercial-expand-weekly.yml",
+      "distribution_weekly_review.yml",
+      "founder_complete_autonomous_weekly.yml",
+      "founder_weekly_verify.yml",
+      "weekly-founder-content.yml"
+    ]
+  },
+  "workflows": [
+    {
+      "workflow": "autonomous_executive_day.yml",
+      "title": "Autonomous Executive Day",
+      "crons": [
+        "00 6 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "autonomous_executive_day.yml"
+    },
+    {
+      "workflow": "codeql.yml",
+      "title": "CodeQL",
+      "crons": [
+        "0 2 * * 1"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "codeql.yml"
+    },
+    {
+      "workflow": "commercial-expand-weekly.yml",
+      "title": "Commercial expand weekly",
+      "crons": [
+        "0 6 * * 0"
+      ],
+      "collision_crons": [
+        "0 6 * * 0"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "commercial-expand-weekly.yml"
+    },
+    {
+      "workflow": "company-brain-daily.yml",
+      "title": "Company Brain Daily",
+      "crons": [
+        "0 4 * * *"
+      ],
+      "collision_crons": [
+        "0 4 * * *"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "company-brain-daily.yml"
+    },
+    {
+      "workflow": "company_daily_operating_pack.yml",
+      "title": "Company Daily Operating Pack",
+      "crons": [
+        "30 5 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "company_daily_operating_pack.yml"
+    },
+    {
+      "workflow": "cto_weekly_anchor.yml",
+      "title": "CTO Weekly Anchor",
+      "crons": [
+        "0 6 * * 1"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "cto_weekly_anchor.yml"
+    },
+    {
+      "workflow": "daily-revenue-machine.yml",
+      "title": "Daily Revenue Machine",
+      "crons": [
+        "0 4 * * *"
+      ],
+      "collision_crons": [
+        "0 4 * * *"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "daily-revenue-machine.yml"
+    },
+    {
+      "workflow": "daily_digest.yml",
+      "title": "Founder Daily Digest",
+      "crons": [
+        "0 4 * * *"
+      ],
+      "collision_crons": [
+        "0 4 * * *"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "daily_digest.yml"
+    },
+    {
+      "workflow": "dealix-daily-self-runner.yml",
+      "title": "Dealix Daily Self Runner",
+      "crons": [
+        "15 4 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "dealix-daily-self-runner.yml"
+    },
+    {
+      "workflow": "dealix-v16-real-outreach.yml",
+      "title": "Dealix V16 Real Outreach Readiness",
+      "crons": [
+        "15 6 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "dealix-v16-real-outreach.yml"
+    },
+    {
+      "workflow": "distribution_draft_day.yml",
+      "title": "Distribution Draft Day",
+      "crons": [
+        "0 5 * * 0-4"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "distribution_draft_day.yml"
+    },
+    {
+      "workflow": "distribution_weekly_review.yml",
+      "title": "Distribution Weekly Review",
+      "crons": [
+        "0 6 * * 0"
+      ],
+      "collision_crons": [
+        "0 6 * * 0"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "distribution_weekly_review.yml"
+    },
+    {
+      "workflow": "enterprise-readiness.yml",
+      "title": "Enterprise Readiness",
+      "crons": [
+        "15 5 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "enterprise-readiness.yml"
+    },
+    {
+      "workflow": "founder_autonomous_ops_weekly.yml",
+      "title": "Founder Autonomous Ops Weekly",
+      "crons": [
+        "0 3 * * 0"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "founder_autonomous_ops_weekly.yml"
+    },
+    {
+      "workflow": "founder_business_autopilot.yml",
+      "title": "Founder Business Autopilot",
+      "crons": [
+        "10 5 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "founder_business_autopilot.yml"
+    },
+    {
+      "workflow": "founder_complete_autonomous_weekly.yml",
+      "title": "Founder complete autonomous weekly",
+      "crons": [
+        "0 6 * * 0"
+      ],
+      "collision_crons": [
+        "0 6 * * 0"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "founder_complete_autonomous_weekly.yml"
+    },
+    {
+      "workflow": "founder_content_weekly.yml",
+      "title": "Founder Content Weekly",
+      "crons": [
+        "0 6 * * 5"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "founder_content_weekly.yml"
+    },
+    {
+      "workflow": "founder_evening_evidence.yml",
+      "title": "Founder Evening Evidence",
+      "crons": [
+        "0 18 * * 0-4"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "founder_evening_evidence.yml"
+    },
+    {
+      "workflow": "founder_strongest_ops_daily.yml",
+      "title": "Founder strongest ops",
+      "crons": [
+        "30 5 * * 0-4"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "founder_strongest_ops_daily.yml"
+    },
+    {
+      "workflow": "founder_weekly_scorecard.yml",
+      "title": "Founder Weekly Scorecard",
+      "crons": [
+        "0 9 * * 5"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "founder_weekly_scorecard.yml"
+    },
+    {
+      "workflow": "founder_weekly_verify.yml",
+      "title": "Founder Weekly Verify",
+      "crons": [
+        "0 6 * * 0"
+      ],
+      "collision_crons": [
+        "0 6 * * 0"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "founder_weekly_verify.yml"
+    },
+    {
+      "workflow": "governed-full-ops-daily.yml",
+      "title": "Governed Full Ops Daily",
+      "crons": [
+        "0 */4 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "governed-full-ops-daily.yml"
+    },
+    {
+      "workflow": "intake_day.yml",
+      "title": "Intake Day v2",
+      "crons": [
+        "55 6 * * 1-5"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "intake_day.yml"
+    },
+    {
+      "workflow": "knowledge-vault-export.yml",
+      "title": "Knowledge Vault Export",
+      "crons": [
+        "20 4 * * 1"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "knowledge-vault-export.yml"
+    },
+    {
+      "workflow": "master_company_day.yml",
+      "title": "Master Company Day",
+      "crons": [
+        "30 6 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "master_company_day.yml"
+    },
+    {
+      "workflow": "master_stable_day.yml",
+      "title": "Master Stable Day",
+      "crons": [
+        "20 6 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "master_stable_day.yml"
+    },
+    {
+      "workflow": "micro_day.yml",
+      "title": "Micro Day",
+      "crons": [
+        "10 6 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "micro_day.yml"
+    },
+    {
+      "workflow": "pr-triage.yml",
+      "title": "PR Triage",
+      "crons": [
+        "0 5 * * 0"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "pr-triage.yml"
+    },
+    {
+      "workflow": "production_api_trust_smoke.yml",
+      "title": "Production API trust smoke",
+      "crons": [
+        "30 4 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "production_api_trust_smoke.yml"
+    },
+    {
+      "workflow": "real_revenue_day.yml",
+      "title": "Real Revenue Day",
+      "crons": [
+        "35 6 * * *"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "real_revenue_day.yml"
+    },
+    {
+      "workflow": "reliability_drills_scorecard.yml",
+      "title": "Reliability drills scorecard",
+      "crons": [
+        "15 6 * * 1"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "reliability_drills_scorecard.yml"
+    },
+    {
+      "workflow": "repository-hardening.yml",
+      "title": "Repository Hardening",
+      "crons": [
+        "20 2 * * 1"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "repository-hardening.yml"
+    },
+    {
+      "workflow": "revenue_day.yml",
+      "title": "Revenue Day v2",
+      "crons": [
+        "0 5 * * 1-5"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "revenue_day.yml"
+    },
+    {
+      "workflow": "scorecard.yml",
+      "title": "OpenSSF Scorecard",
+      "crons": [
+        "0 4 * * 1"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "scorecard.yml"
+    },
+    {
+      "workflow": "security.yml",
+      "title": "Security",
+      "crons": [
+        "0 3 * * 1"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "security.yml"
+    },
+    {
+      "workflow": "weekly-founder-content.yml",
+      "title": "Weekly Founder Content",
+      "crons": [
+        "0 6 * * 0"
+      ],
+      "collision_crons": [
+        "0 6 * * 0"
+      ],
+      "classification": "COLLISION_REVIEW",
+      "suggested_canonical_owner": "weekly-founder-content.yml"
+    },
+    {
+      "workflow": "weekly_self_improvement.yml",
+      "title": "Weekly self-improvement",
+      "crons": [
+        "0 19 * * 0"
+      ],
+      "collision_crons": [],
+      "classification": "UNIQUE_SLOT",
+      "suggested_canonical_owner": "weekly_self_improvement.yml"
+    }
+  ]
+}
