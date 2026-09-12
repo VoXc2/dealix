@@ -9,7 +9,9 @@ a conservative envelope. Paid fallback (R6) requires explicit approval.
 from __future__ import annotations
 
 import argparse
+import getpass
 import json
+import os
 import shutil
 import subprocess
 import urllib.request
@@ -20,6 +22,16 @@ from typing import Any
 STATE_PATH = Path("/opt/dealix/company-os/founder-os/model_economics/GO_BROKER_STATE.json")
 ROUTER_URL = "http://127.0.0.1:11999/v1/models"
 OLLAMA_URL = "http://127.0.0.1:11434/api/tags"
+
+# OpenCode resolves its provider/auth cache from the invoking identity's HOME.
+# A root-owned scheduler reading /root under-reports the catalog, so we pin the
+# canonical Dealix identity for live discovery.
+_OPENCODE_BIN_CANDIDATES = (
+    Path("/home/dealix/.opencode/bin/opencode"),
+    Path("/usr/local/bin/opencode"),
+    Path("/root/.opencode/bin/opencode"),
+)
+_CANONICAL_DEALIX_USER = "dealix"
 
 ROUTE_ORDER = (
     "R0_NO_MODEL",
@@ -76,17 +88,55 @@ def _run(cmd: list[str], timeout: int = 30) -> str:
         return ""
 
 
+def resolve_opencode_bin() -> str | None:
+    # Prefer the canonical owner's install: `/usr/local/bin/opencode` may be
+    # present but not executable by the `dealix` identity.
+    if resolve_canonical_owner():
+        for candidate in _OPENCODE_BIN_CANDIDATES:
+            if candidate.is_file() and os.access(candidate, os.X_OK):
+                return str(candidate)
+    found = shutil.which("opencode")
+    if found:
+        return found
+    for candidate in _OPENCODE_BIN_CANDIDATES:
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return str(candidate)
+    return None
+
+
+def resolve_canonical_owner() -> str | None:
+    """Prefer the canonical `dealix` identity when running as root."""
+    if os.geteuid() == 0:
+        try:
+            import pwd
+
+            pwd.getpwnam(_CANONICAL_DEALIX_USER)
+            return _CANONICAL_DEALIX_USER
+        except (ImportError, KeyError):
+            return None
+    return None
+
+
+def build_opencode_command(binary: str, args: list[str]) -> list[str]:
+    owner = resolve_canonical_owner()
+    if owner and owner != getpass.getuser() and shutil.which("sudo"):
+        return ["sudo", "-n", "-u", owner, "-H", binary, *args]
+    return [binary, *args]
+
+
 def discover_opencode() -> dict[str, str]:
-    binary = shutil.which("opencode") or shutil.which("opencode2") or ""
-    version = _run([binary, "--version"], timeout=20).strip() if binary else UNKNOWN
+    binary = resolve_opencode_bin()
+    version = _run(build_opencode_command(binary, ["--version"]), timeout=20).strip() if binary else UNKNOWN
     name = Path(binary).name if binary else UNKNOWN
     return {"binary": binary or UNKNOWN, "name": name, "version": version or UNKNOWN}
 
 
-def discover_catalog() -> list[str]:
-    if not shutil.which("opencode"):
+def discover_catalog(refresh: bool = False) -> list[str]:
+    binary = resolve_opencode_bin()
+    if not binary:
         return []
-    return [line.strip() for line in _run(["opencode", "models"], timeout=45).splitlines() if "/" in line]
+    args = ["models", "--refresh"] if refresh else ["models"]
+    return [line.strip() for line in _run(build_opencode_command(binary, args), timeout=60).splitlines() if "/" in line]
 
 
 def discover_router_models() -> list[str]:
@@ -211,9 +261,9 @@ def record_job(state: dict[str, Any], task_class: str, route: str, model: str, o
     return job
 
 
-def status_payload() -> dict[str, Any]:
+def status_payload(refresh_models: bool = False) -> dict[str, Any]:
     opencode = discover_opencode()
-    catalog = discover_catalog() if opencode["binary"] != UNKNOWN else []
+    catalog = discover_catalog(refresh=refresh_models) if opencode["binary"] != UNKNOWN else []
     state = load_state()
     return {
         "generated_at": datetime.now(UTC).isoformat(),
@@ -253,12 +303,13 @@ def main() -> int:
     parser.add_argument("--urgency", default="normal")
     parser.add_argument("--paid-approved", action="store_true")
     parser.add_argument("--record", action="store_true")
+    parser.add_argument("--refresh-models", action="store_true", help="Refresh the OpenCode model cache before discovery")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
     if args.plan:
         plan = plan_route(args.plan, args.complexity, args.value, args.urgency, args.paid_approved)
-        catalog = discover_catalog()
+        catalog = discover_catalog(refresh=args.refresh_models)
         plan["model_hint"] = pick_model(plan["route"], catalog, discover_ollama_models(), discover_router_models())
         if args.record:
             state = load_state()
@@ -268,7 +319,7 @@ def main() -> int:
         print(json.dumps(plan, indent=2, ensure_ascii=False) if args.json else "\n".join(f"{k}={v}" for k, v in plan.items()))
         return 0
 
-    status = status_payload()
+    status = status_payload(refresh_models=args.refresh_models)
     if args.json:
         print(json.dumps(status, indent=2, ensure_ascii=False))
     else:

@@ -77,6 +77,58 @@ def test_pick_model_prefers_free_then_included_then_strong() -> None:
     assert broker.pick_model("R0_NO_MODEL", catalog, [], []) == "none"
 
 
+def test_resolve_opencode_bin_prefers_owner_install_over_path(monkeypatch) -> None:
+    monkeypatch.setattr(broker, "resolve_canonical_owner", lambda: "dealix")
+    monkeypatch.setattr(broker.shutil, "which", lambda name: "/usr/local/bin/opencode")
+    monkeypatch.setattr(broker.os, "access", lambda path, mode: True)
+    monkeypatch.setattr(broker.Path, "is_file", lambda self: True)
+    assert broker.resolve_opencode_bin() == "/home/dealix/.opencode/bin/opencode"
+
+
+def test_resolve_opencode_bin_falls_back_to_path(monkeypatch) -> None:
+    monkeypatch.setattr(broker, "resolve_canonical_owner", lambda: None)
+    monkeypatch.setattr(broker.shutil, "which", lambda name: "/usr/local/bin/opencode")
+    assert broker.resolve_opencode_bin() == "/usr/local/bin/opencode"
+
+
+def test_resolve_opencode_bin_falls_back_to_canonical_install(monkeypatch) -> None:
+    monkeypatch.setattr(broker, "resolve_canonical_owner", lambda: None)
+    monkeypatch.setattr(broker.shutil, "which", lambda name: None)
+    monkeypatch.setattr(broker.os, "access", lambda path, mode: True)
+    monkeypatch.setattr(broker.Path, "is_file", lambda self: True)
+    assert broker.resolve_opencode_bin() == "/home/dealix/.opencode/bin/opencode"
+
+
+def test_build_opencode_command_switches_to_canonical_owner(monkeypatch) -> None:
+    monkeypatch.setattr(broker, "resolve_canonical_owner", lambda: "dealix")
+    monkeypatch.setattr(broker.getpass, "getuser", lambda: "root")
+    monkeypatch.setattr(broker.shutil, "which", lambda name: "/usr/bin/sudo" if name == "sudo" else None)
+    cmd = broker.build_opencode_command("/home/dealix/.opencode/bin/opencode", ["models"])
+    assert cmd[:5] == ["sudo", "-n", "-u", "dealix", "-H"]
+    assert cmd[5:] == ["/home/dealix/.opencode/bin/opencode", "models"]
+
+
+def test_build_opencode_command_stays_direct_for_non_root(monkeypatch) -> None:
+    monkeypatch.setattr(broker, "resolve_canonical_owner", lambda: None)
+    cmd = broker.build_opencode_command("/opt/opencode", ["--version"])
+    assert cmd == ["/opt/opencode", "--version"]
+
+
+def test_discover_catalog_passes_refresh_flag(monkeypatch) -> None:
+    captured: dict[str, list[str]] = {}
+
+    def fake_run(cmd, timeout=30):
+        captured["cmd"] = cmd
+        return "opencode/deepseek-v4-flash\nopencode/x-free\n"
+
+    monkeypatch.setattr(broker, "resolve_opencode_bin", lambda: "/opt/opencode")
+    monkeypatch.setattr(broker, "resolve_canonical_owner", lambda: None)
+    monkeypatch.setattr(broker, "_run", fake_run)
+    catalog = broker.discover_catalog(refresh=True)
+    assert captured["cmd"] == ["/opt/opencode", "models", "--refresh"]
+    assert catalog == ["opencode/deepseek-v4-flash", "opencode/x-free"]
+
+
 def test_daily_envelope_counts_and_reserves() -> None:
     state = {
         "jobs": [

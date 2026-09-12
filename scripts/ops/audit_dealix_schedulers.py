@@ -8,7 +8,9 @@ scheduling paths and possible responsibility overlaps. Never mutates schedulers.
 from __future__ import annotations
 
 import argparse
+import getpass
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -19,6 +21,15 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 _RESPONSIBILITY_KEYWORDS = ("watch", "scan", "audit", "proof", "recovery", "dispatch", "bridge", "cycle", "brief")
+
+# Hermes jobs live under the invoking Unix identity's HOME (~/.hermes). The
+# canonical Dealix cron owner is `dealix`; audit must locate that identity's
+# installation even when run as root (otherwise HERMES_CRON falsely reports 0).
+_HERMES_BIN_CANDIDATES = (
+    Path("/home/dealix/.local/bin/hermes"),
+    Path("/root/.local/bin/hermes"),
+)
+_HERMES_OWNER_CANDIDATES = ("dealix",)
 
 _HERMES_JOB_RE = re.compile(
     r"Name:\s*(?P<name>.+?)\n\s*Schedule:\s*(?P<schedule>.+?)\n.*?Script:\s*(?P<script>\S+)",
@@ -87,6 +98,57 @@ def _run(cmd: list[str], timeout: int = 20) -> str:
         return ""
 
 
+def resolve_hermes_bin() -> str | None:
+    """Locate the hermes CLI on PATH or at the canonical per-identity install."""
+    found = shutil.which("hermes")
+    if found:
+        return found
+    for candidate in _HERMES_BIN_CANDIDATES:
+        if candidate.is_file() and os.access(candidate, os.X_OK):
+            return str(candidate)
+    return None
+
+
+def resolve_hermes_owner() -> str | None:
+    """Return the Unix identity whose ~/.hermes holds the canonical cron jobs.
+
+    Honors DEALIX_HERMES_USER as an explicit override, then prefers the
+    canonical `dealix` identity when running as root so a root audit does not
+    silently read /root/.hermes and report zero jobs.
+    """
+    override = os.environ.get("DEALIX_HERMES_USER", "").strip()
+    if override:
+        return override
+    if os.geteuid() == 0:
+        try:
+            import pwd
+
+            for name in _HERMES_OWNER_CANDIDATES:
+                try:
+                    pwd.getpwnam(name)
+                    return name
+                except KeyError:
+                    continue
+        except ImportError:
+            return None
+    return None
+
+
+def build_hermes_command(hermes_bin: str) -> list[str]:
+    """Build a cron-list command, switching identity only when required."""
+    owner = resolve_hermes_owner()
+    if owner and owner != getpass.getuser() and shutil.which("sudo"):
+        return ["sudo", "-n", "-u", owner, "-H", hermes_bin, "cron", "list"]
+    return [hermes_bin, "cron", "list"]
+
+
+def inventory_hermes() -> list[dict[str, str]]:
+    hermes_bin = resolve_hermes_bin()
+    if not hermes_bin:
+        return []
+    return parse_hermes_cron(_run(build_hermes_command(hermes_bin), timeout=30))
+
+
 def inventory_systemd() -> list[dict[str, str]]:
     if not shutil.which("systemctl"):
         return []
@@ -108,12 +170,6 @@ def inventory_systemd() -> list[dict[str, str]]:
         exec_start = parse_exec_start(_run(["systemctl", "show", service, "-p", "ExecStart"])) if service != "UNKNOWN" else "UNKNOWN"
         jobs.append({"owner": "systemd", "name": f"{timer} -> {service}", "schedule": schedule, "target": exec_start})
     return jobs
-
-
-def inventory_hermes() -> list[dict[str, str]]:
-    if not shutil.which("hermes"):
-        return []
-    return parse_hermes_cron(_run(["hermes", "cron", "list"], timeout=30))
 
 
 def build_audit(jobs: list[dict[str, str]]) -> dict[str, Any]:

@@ -70,6 +70,39 @@ def test_overlap_candidates_group_same_responsibility_keyword() -> None:
     assert any(item["keyword"] == "watch" and len(item["jobs"]) == 2 for item in overlaps)
 
 
+def test_resolve_hermes_owner_honors_env_override(monkeypatch) -> None:
+    monkeypatch.setenv("DEALIX_HERMES_USER", "dealix")
+    assert scheduler_audit.resolve_hermes_owner() == "dealix"
+
+
+def test_resolve_hermes_owner_is_none_for_non_root_without_override(monkeypatch) -> None:
+    monkeypatch.delenv("DEALIX_HERMES_USER", raising=False)
+    monkeypatch.setattr(scheduler_audit.os, "geteuid", lambda: 1000)
+    assert scheduler_audit.resolve_hermes_owner() is None
+
+
+def test_build_hermes_command_switches_to_canonical_owner(monkeypatch) -> None:
+    monkeypatch.setattr(scheduler_audit, "resolve_hermes_owner", lambda: "dealix")
+    monkeypatch.setattr(scheduler_audit.getpass, "getuser", lambda: "root")
+    monkeypatch.setattr(scheduler_audit.shutil, "which", lambda name: "/usr/bin/sudo" if name == "sudo" else None)
+    cmd = scheduler_audit.build_hermes_command("/home/dealix/.local/bin/hermes")
+    assert cmd[:5] == ["sudo", "-n", "-u", "dealix", "-H"]
+    assert cmd[-2:] == ["cron", "list"]
+
+
+def test_build_hermes_command_stays_direct_for_owner(monkeypatch) -> None:
+    monkeypatch.setattr(scheduler_audit, "resolve_hermes_owner", lambda: None)
+    cmd = scheduler_audit.build_hermes_command("/home/dealix/.local/bin/hermes")
+    assert cmd == ["/home/dealix/.local/bin/hermes", "cron", "list"]
+
+
+def test_resolve_hermes_bin_falls_back_to_canonical_install(monkeypatch) -> None:
+    monkeypatch.setattr(scheduler_audit.shutil, "which", lambda name: None)
+    monkeypatch.setattr(scheduler_audit.os, "access", lambda path, mode: True)
+    monkeypatch.setattr(scheduler_audit.Path, "is_file", lambda self: True)
+    assert scheduler_audit.resolve_hermes_bin() == "/home/dealix/.local/bin/hermes"
+
+
 def test_build_audit_warns_only_on_duplicates() -> None:
     unique = scheduler_audit.build_audit([{"owner": "systemd", "name": "one", "target": "/bin/one"}])
     assert unique["verdict"] == "PASS"
