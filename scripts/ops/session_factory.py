@@ -957,9 +957,27 @@ def execute_opencode(
 
 
 def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
-    """Bounded local Ollama call. Network is loopback-only; failure is not fatal."""
-    prompt = (job.get("EXECUTOR") or {}).get("prompt") or job.get("BUSINESS_GOAL", "")
-    body = json.dumps({"model": "qwen3:4b-instruct-2507-q4_K_M", "prompt": prompt, "stream": False}).encode()
+    """Bounded local Ollama call with capped latency and generation size."""
+    executor = job.get("EXECUTOR") or {}
+    prompt = executor.get("prompt") or job.get("BUSINESS_GOAL", "")
+    try:
+        timeout_seconds = int(executor.get("timeout_seconds", 30))
+    except (TypeError, ValueError):
+        timeout_seconds = 30
+    timeout_seconds = max(5, min(timeout_seconds, 120))
+    try:
+        num_predict = int(executor.get("num_predict", 128))
+    except (TypeError, ValueError):
+        num_predict = 128
+    num_predict = max(32, min(num_predict, 256))
+    body = json.dumps(
+        {
+            "model": "qwen3:4b-instruct-2507-q4_K_M",
+            "prompt": prompt,
+            "stream": False,
+            "options": {"num_predict": num_predict},
+        }
+    ).encode()
     request = urllib.request.Request(
         "http://127.0.0.1:11434/api/generate",
         data=body,
@@ -968,7 +986,7 @@ def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     )
     started = now_epoch()
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
+        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
             payload = json.loads(response.read().decode("utf-8"))
         return {
             "ok": True,
@@ -978,7 +996,13 @@ def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
             "duration_s": round(now_epoch() - started, 3),
         }
     except Exception as exc:
-        return {"ok": False, "returncode": 1, "stdout": "", "stderr": redact(str(exc)), "duration_s": 0}
+        return {
+            "ok": False,
+            "returncode": 1,
+            "stdout": "",
+            "stderr": redact(str(exc)),
+            "duration_s": round(now_epoch() - started, 3),
+        }
 
 
 EXECUTORS = {
