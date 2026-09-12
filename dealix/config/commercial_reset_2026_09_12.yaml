@@ -263,12 +263,12 @@ campaigns:
     evidence: "Wave 25 covers taxpayers above SAR 187,500 VAT-taxable revenue in 2022-2025; notified taxpayers must integrate by 2027-02-01."
     guardrail: "Technical/operational readiness only; do not present Dealix as tax adviser or ZATCA certifier."
   - id: PRIVATE_SECTOR_CYBER_READINESS
-    status: HIGH_VALUE_PIPELINE
+    status: HIGH_VALUE_RESEARCH
     target: "private-sector entities not classified as critical national infrastructure"
     offer: GOVERNED_AI_AGENT_PILOT
     source: "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/"
     evidence: "NCA NCNICC establishes minimum cybersecurity controls for the relevant private-sector population."
-    guardrail: "Control mapping/readiness/evidence automation only; no certification claim."
+    guardrail: "Control mapping/readiness/evidence automation only; no certification claim. Research status does not create pipeline."
   - id: OPEN_BANKING_PARTNER_LANE
     status: PARTNER_FIRST
     target: "licensed/supervised financial institutions, fintechs and qualified technology partners"
@@ -284,23 +284,24 @@ campaigns:
     evidence: "Saudi business formation remains broad and active; Q2 2026 exceeded 71,000 new commercial registrations."
 
 sector_priority:
+  id_namespace: "dealix.commercial.economic_cell.Sector.value"
   A1:
-    - technology-saas-it
-    - construction-contractors
-    - wholesale-retail-ecommerce
-    - hospitality-food-tourism
-    - accounting-erp-ecosystem
-    - logistics-transport
+    - technology_saas_si
+    - construction_epc
+    - retail_commerce_ecommerce
+    - tourism_hospitality
+    - professional_services
+    - logistics_supply_chain
   A2:
-    - industrial-manufacturing
-    - professional-services
-    - real-estate
+    - industrial_manufacturing
+    - real_estate_proptech
     - healthcare
-    - education
+    - education_training
+    - telecom_media_marketing
   B:
-    - fintech-banking
-    - government-b2g
-  rule: "The canonical sector registry remains coverage. Priority tiers decide activation, not existence."
+    - finance_fintech_insurance
+    - government_b2g
+  rule: "Machine fields use canonical Sector.value IDs. The full 20-sector registry remains coverage; priority tiers decide activation depth, not existence."
 
 opportunity_scoring:
   conceptual_formula: "EconomicPain * Urgency * DecisionAccess * Evidence * SolutionFit * TimeToCash * ProofPotential / DeliveryComplexity / RegulatoryRisk"
@@ -320,6 +321,10 @@ pricing:
   public_fixed_prices: false
   customer_specific_only: true
   diagnostic: "FREE"
+  internal_reference_authority: "UNVERIFIED_INTERNAL_REFERENCE"
+  quote_authority: "CUSTOMER_SPECIFIC_AFTER_QUALIFIED_DISCOVERY_AND_EXACT_COMMERCIAL_APPROVAL"
+  benchmark_evidence_required: true
+  dynamic_offer_input: "dealix.commercial.dynamic_offer_input"
   doctrine: "Price = max(CostFloor, MarketFloor, ValueAdjustedFloor), then adjust for scope, integrations, data complexity, security/regulatory load, urgency, support, SLA, customization, expected economic value, reusability and strategic proof value."
   internal_reference_bands_sar:
     very_small_bounded_proof: "10000-25000"
@@ -329,7 +334,7 @@ pricing:
     multi_system_ai_os: "150000-500000+"
     enterprise_regulated_complex: "250000-1000000+"
     managed_ai_operations_monthly: "15000-75000+"
-  warning: "These are internal starting guardrails only. They are not public pricing, not a promise, and not doctrine. Refresh against current market, value, delivery cost and evidence before every named-customer quote."
+  warning: "These bands are unverified internal planning references only. They are not public pricing, not doctrine, and not quote authority. Refresh current market, customer value, V5 dynamic-offer inputs and delivery-cost evidence before every named-customer quote."
 
 proposal_contract:
   required:
