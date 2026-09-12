@@ -867,6 +867,17 @@ def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
         env["OPENCODE_PERMISSION"] = policy.read_text(encoding="utf-8").strip()
         argv.append("--auto")
     model = (job.get("EXECUTOR") or {}).get("model")
+    if not model:
+        selected_path = Path(
+            os.environ.get(
+                "DEALIX_OPENCODE_SELECTED_MODEL_FILE",
+                "/opt/dealix/control/opencode/state/selected-free-model",
+            )
+        )
+        if selected_path.is_file():
+            candidate = selected_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
+            if candidate and "/" in candidate and not any(ch.isspace() for ch in candidate):
+                model = candidate
     if model:
         argv += ["-m", str(model)]
     argv.append(str(prompt))
