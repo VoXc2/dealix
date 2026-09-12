@@ -13,6 +13,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -21,7 +22,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 ROUTES = REPO_ROOT / "data/commercial/op2_sector_diagnostic_routes_v1.json"
 DEFAULT_STATE = Path("/opt/dealix/control/state/sector_hermes_fabric")
 DEFAULT_FACTORY_STATE = Path("/opt/dealix/control/state/session_factory")
-DEFAULT_FACTORY = Path("/opt/dealix/control/runtime/session-factory-819c73e9f4be76ee252059ddef9d6a7c316f3ada/scripts/ops/session_factory.py")
+# The one canonical scheduler is the repo's own ``scripts/ops/session_factory.py``
+# (see ``hermes_arm_portfolio_controller``). Never hardcode a frozen
+# ``/opt/dealix/control/runtime/session-factory-<sha>`` snapshot: those pin an
+# obsolete version and drift from the checkout. Operators may point elsewhere
+# through an explicit override, otherwise we fail closed rather than guess.
+CANONICAL_FACTORY = REPO_ROOT / "scripts/ops/session_factory.py"
+FACTORY_SCRIPT_ENV = "DEALIX_SESSION_FACTORY_SCRIPT"
 PERMANENT_AGENTS = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
 DEEP_WIP_MAX = 3
 PATROL_TTL = timedelta(hours=6)
@@ -147,6 +154,28 @@ def _sector_job_recent(jobs: list[dict[str, Any]], sector_id: str, kind: str, tt
     return False
 
 
+def resolve_factory_script(explicit: Path | str | None = None) -> Path:
+    """Resolve the one canonical session factory, or fail closed.
+
+    Precedence: explicit CLI argument > ``DEALIX_SESSION_FACTORY_SCRIPT`` > the
+    repository's canonical ``scripts/ops/session_factory.py``. A second factory
+    is never invented and frozen runtime snapshots are never hardcoded. If no
+    candidate exists we raise instead of silently running an obsolete version.
+    """
+    candidates: list[Path] = []
+    if explicit:
+        candidates.append(Path(explicit))
+    env_override = os.environ.get(FACTORY_SCRIPT_ENV)
+    if env_override:
+        candidates.append(Path(env_override))
+    candidates.append(CANONICAL_FACTORY)
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    requested = ", ".join(str(candidate) for candidate in candidates)
+    raise FileNotFoundError(f"session factory script unavailable (tried: {requested})")
+
+
 def _load_factory_module(path: Path):
     spec = importlib.util.spec_from_file_location("dealix_session_factory_runtime", path)
     if spec is None or spec.loader is None:
@@ -180,8 +209,9 @@ def patrol_sector(sector_id: str, state_dir: Path) -> dict[str, Any]:
     return {"ok": True, "receipt": str(path), "sector_id": sector_id}
 
 
-def submit_due_jobs(fabric: dict[str, Any], state_dir: Path, factory_state: Path, factory_script: Path) -> dict[str, Any]:
-    factory = _load_factory_module(factory_script)
+def submit_due_jobs(fabric: dict[str, Any], state_dir: Path, factory_state: Path, factory_script: Path | None = None) -> dict[str, Any]:
+    resolved_factory = resolve_factory_script(factory_script)
+    factory = _load_factory_module(resolved_factory)
     jobs = _factory_jobs(factory_state)
     submitted: list[dict[str, Any]] = []
     script = Path(__file__).resolve()
@@ -243,7 +273,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Dealix 20-sector Hermes fabric")
     parser.add_argument("--state-dir", type=Path, default=DEFAULT_STATE)
     parser.add_argument("--factory-state", type=Path, default=DEFAULT_FACTORY_STATE)
-    parser.add_argument("--factory-script", type=Path, default=DEFAULT_FACTORY)
+    parser.add_argument("--factory-script", type=Path, default=None, help="override; defaults to the canonical repo scheduler")
     parser.add_argument("--patrol-sector")
     parser.add_argument("--submit", action="store_true")
     parser.add_argument("--json", action="store_true")
@@ -256,7 +286,11 @@ def main() -> int:
     fabric = write_fabric(args.state_dir)
     result: dict[str, Any] = {"fabric": fabric, "submit": {"submitted_count": 0, "submitted": []}}
     if args.submit:
-        result["submit"] = submit_due_jobs(fabric, args.state_dir, args.factory_state, args.factory_script)
+        try:
+            result["submit"] = submit_due_jobs(fabric, args.state_dir, args.factory_state, args.factory_script)
+        except FileNotFoundError as exc:
+            print(f"DEALIX_SECTOR_HERMES_FABRIC=FAIL {exc}", file=sys.stderr)
+            return 2
     if args.json:
         print(json.dumps(result, indent=2, ensure_ascii=False))
     else:

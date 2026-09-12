@@ -235,6 +235,11 @@ _SECRET_PATTERNS = (
     re.compile(r"(?i)(api[_-]?key|token|secret|password)\s*[=:]\s*\S+"),
 )
 
+# Executor result fields that exist only so acceptance checks can inspect the
+# *complete* process output. They are stripped before evidence is persisted, so
+# durable state stays secret-redacted and bounded via ``redact``.
+EPHEMERAL_RESULT_KEYS = frozenset({"stdout_full", "stderr_full"})
+
 
 # --------------------------------------------------------------------------
 # Small helpers
@@ -259,6 +264,11 @@ def redact(text: str | None, limit: int = 2000) -> str:
     if len(value) > limit:
         value = value[:limit] + "...[truncated]"
     return value
+
+
+def strip_ephemeral(result: dict[str, Any]) -> dict[str, Any]:
+    """Drop in-memory-only fields before persisting executor evidence."""
+    return {key: value for key, value in result.items() if key not in EPHEMERAL_RESULT_KEYS}
 
 
 def atomic_write(path: Path, payload: str, mode: int = 0o640) -> None:
@@ -838,13 +848,31 @@ def run_argv(
             "returncode": result.returncode,
             "stdout": redact(result.stdout),
             "stderr": redact(result.stderr),
+            "stdout_full": result.stdout or "",
+            "stderr_full": result.stderr or "",
             "duration_s": round(now_epoch() - started, 3),
             "argv": [Path(argv[0]).name, *argv[1:]],
         }
     except subprocess.TimeoutExpired:
-        return {"ok": False, "returncode": 124, "stdout": "", "stderr": "timeout", "duration_s": timeout}
+        return {
+            "ok": False,
+            "returncode": 124,
+            "stdout": "",
+            "stderr": "timeout",
+            "stdout_full": "",
+            "stderr_full": "timeout",
+            "duration_s": timeout,
+        }
     except OSError as exc:
-        return {"ok": False, "returncode": 127, "stdout": "", "stderr": redact(str(exc)), "duration_s": 0}
+        return {
+            "ok": False,
+            "returncode": 127,
+            "stdout": "",
+            "stderr": redact(str(exc)),
+            "stdout_full": "",
+            "stderr_full": str(exc),
+            "duration_s": 0,
+        }
 
 
 def execute_deterministic(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
@@ -992,6 +1020,7 @@ def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
             "ok": True,
             "returncode": 0,
             "stdout": redact(payload.get("response", ""))[:1000],
+            "stdout_full": payload.get("response", "") or "",
             "stderr": "",
             "duration_s": round(now_epoch() - started, 3),
         }
@@ -1000,6 +1029,7 @@ def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
             "ok": False,
             "returncode": 1,
             "stdout": "",
+            "stdout_full": "",
             "stderr": redact(str(exc)),
             "duration_s": round(now_epoch() - started, 3),
         }
@@ -1037,9 +1067,13 @@ def run_acceptance_checks(job: dict[str, Any], cwd: Path, executor_result: dict[
             target = cwd / str(check.get("path", ""))
             ok = target.is_file() and str(check.get("text", "")) in target.read_text(encoding="utf-8", errors="ignore")
         elif kind == "stdout_contains":
-            # Fail closed: an empty marker never passes.
+            # Fail closed: an empty marker never passes. Match against the full
+            # ephemeral process output, never the bounded evidence preview.
             marker = str(check.get("text", ""))
-            ok = bool(marker) and marker in str(executor_result.get("stdout") or "")
+            haystack = executor_result.get("stdout_full")
+            if not isinstance(haystack, str):
+                haystack = str(executor_result.get("stdout") or "")
+            ok = bool(marker) and marker in haystack
         else:
             ok = False
         results.append({"kind": kind, "ok": ok, "spec": check})
@@ -1130,9 +1164,10 @@ def run_job(
 
     transition(job, "VERIFYING", reason="verifying acceptance evidence")
     acceptance = run_acceptance_checks(job, _working_dir(job, repo_root), result)
-    job.setdefault("EVIDENCE", []).append({"at": now_iso(), "event": "execution", "result": result})
+    stored_result = strip_ephemeral(result)
+    job.setdefault("EVIDENCE", []).append({"at": now_iso(), "event": "execution", "result": stored_result})
     job.setdefault("EVIDENCE", []).append({"at": now_iso(), "event": "acceptance", "result": acceptance})
-    job["RESULT"] = {"executor": result, "acceptance": acceptance}
+    job["RESULT"] = {"executor": stored_result, "acceptance": acceptance}
 
     if acceptance.get("passed"):
         transition(job, "SUCCEEDED", reason=acceptance.get("detail", ""))

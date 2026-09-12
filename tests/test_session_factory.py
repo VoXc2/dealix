@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import subprocess
 from pathlib import Path
 
@@ -446,6 +447,54 @@ def test_stdout_contains_empty_marker_fails_closed(tmp_path: Path) -> None:
     outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
     assert outcome["status"] == "FAILED"
     assert outcome["acceptance"]["passed"] is False
+
+
+def test_stdout_contains_uses_full_output_beyond_evidence_preview(tmp_path: Path) -> None:
+    marker = "RECEIPT_AFTER_3000_CHARS"
+    job = _deterministic_job(
+        executor={"argv": ["python3", "-c", f"print('x' * 3500 + '{marker}')"]},
+        acceptance={
+            "criteria": "marker required after long stdout",
+            "checks": [{"kind": "exit_zero"}, {"kind": "stdout_contains", "text": marker}],
+        },
+    )
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "SUCCEEDED"
+    assert outcome["acceptance"]["passed"] is True
+
+
+def test_persisted_evidence_is_bounded_and_strips_full_stdout(tmp_path: Path) -> None:
+    job = _deterministic_job(
+        executor={"argv": ["python3", "-c", "print('y' * 5000)"]},
+        acceptance={"criteria": "exit zero", "checks": [{"kind": "exit_zero"}]},
+    )
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "SUCCEEDED"
+    persisted = json.loads((tmp_path / "jobs" / f"{job['JOB_ID']}.json").read_text(encoding="utf-8"))
+    executor_evidence = persisted["RESULT"]["executor"]
+    assert "stdout_full" not in executor_evidence
+    assert "stderr_full" not in executor_evidence
+    assert executor_evidence["stdout"].endswith("...[truncated]")
+    assert len(executor_evidence["stdout"]) <= 2100
+    assert "stdout_full" not in json.dumps(persisted["EVIDENCE"])
+
+
+def test_persisted_evidence_remains_secret_redacted(tmp_path: Path) -> None:
+    import base64
+
+    secret = "sk-abcdef1234567890"
+    encoded = base64.b64encode(f"api_key={secret}".encode()).decode()
+    job = _deterministic_job(
+        executor={"argv": ["python3", "-c", f"import base64;print(base64.b64decode('{encoded}').decode())"]},
+        acceptance={"criteria": "exit zero", "checks": [{"kind": "exit_zero"}]},
+    )
+    factory.submit_job(tmp_path, job)
+    factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    persisted = (tmp_path / "jobs" / f"{job['JOB_ID']}.json").read_text(encoding="utf-8")
+    assert secret not in persisted
+    assert "[REDACTED]" in persisted
 
 
 def test_execute_local_ai_honors_bounded_timeout_and_generation(tmp_path: Path, monkeypatch) -> None:
