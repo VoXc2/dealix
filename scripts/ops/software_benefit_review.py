@@ -5,11 +5,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from software_acquisition_factory import DEFAULT_REGISTRY, DEFAULT_STATE, load_json, write_json
+OPS_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(OPS_DIR))
+
+from software_acquisition_factory import DEFAULT_REGISTRY, DEFAULT_STATE, load_json, write_json  # noqa: E402
 
 REVIEW_SCHEMA = "dealix.software_benefit_review.v1"
 
@@ -54,7 +58,9 @@ def review_candidate(candidate: dict[str, Any], *, window_days: int) -> dict[str
         }
 
     vuln = str(candidate.get("vulnerability_status") or "UNKNOWN").upper()
-    if vuln in {"CRITICAL", "KNOWN_CRITICAL", "BLOCKED_CRITICAL"} or (security_incidents is not None and security_incidents > 0):
+    if vuln in {"CRITICAL", "KNOWN_CRITICAL", "BLOCKED_CRITICAL"} or (
+        security_incidents is not None and security_incidents > 0
+    ):
         return {
             "candidate_id": candidate_id,
             "window_days": window_days,
@@ -79,7 +85,7 @@ def review_candidate(candidate: dict[str, Any], *, window_days: int) -> dict[str
         or (cash_saved is not None and cash_saved > 0)
     )
     net_cash_positive = cash_saved is not None and cash_cost is not None and cash_saved > cash_cost
-    low_maintenance = maintenance_minutes is None or maintenance_minutes <= max(60.0, (founder_minutes_saved or 0.0))
+    low_maintenance = maintenance_minutes is None or maintenance_minutes <= max(60.0, founder_minutes_saved or 0.0)
 
     if positive_value and (success_rate is None or success_rate >= 0.90) and low_maintenance:
         return {
