@@ -108,6 +108,13 @@ export default function ServicesPage() {
             ))}
           </div>
           <p style={{ marginTop: "var(--sp-5)" }}><strong>Outcome:</strong> {group.outcome}</p>
+          {group.id === "intelligence" ? (
+            <div className="actions">
+              <TrackedLink href="/saudi-opportunity-radar" ctaId="services_saudi_opportunity_radar" surface="services_intelligence">
+                افتح Saudi Opportunity Radar
+              </TrackedLink>
+            </div>
+          ) : null}
         </section>
       ))}
 
