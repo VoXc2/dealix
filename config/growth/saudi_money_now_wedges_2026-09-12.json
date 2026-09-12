@@ -1,0 +1,35 @@
+{
+  "schema": "dealix.saudi_money_now_wedges.v1",
+  "verified_at": "2026-09-12",
+  "truth_law": "Research and regulatory evidence are market signals, not relationship, consent, certification, pipeline, revenue, or customer proof.",
+  "wedges": [
+    {
+      "id": "zatca_fatoora_wave25",
+      "authority": "ZATCA",
+      "signal": "Wave 25 includes taxpayers whose VAT-subject revenues exceeded SAR 187,500 in any of 2022, 2023, 2024, or 2025; ZATCA states integration with Fatoora is required no later than 2027-02-01 for notified taxpayers.",
+      "source_url": "https://zatca.gov.sa/ar/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "offer": "Free Fatoora Integration Readiness Diagnostic",
+      "buyer": ["Founder", "Finance", "CFO", "ERP/IT", "Operations"],
+      "proof_boundary": "Dealix assesses workflow, evidence, integration gaps and execution readiness; it does not issue tax rulings or certify ZATCA compliance."
+    },
+    {
+      "id": "sdaia_ai_provider_accreditation",
+      "authority": "SDAIA National Data Governance Platform",
+      "signal": "AI service-provider accreditation requires entity registration, appointment of an AI officer, completion of the questionnaire, and attachment of required product files before committee review.",
+      "source_url": "https://dgp.sdaia.gov.sa/wps/portal/pdp/services/aiserviceprovideraccreditation",
+      "offer": "Free AI Governance Readiness Diagnostic",
+      "buyer": ["CEO", "AI Officer", "CTO", "Risk/Compliance", "Product"],
+      "proof_boundary": "Dealix prepares evidence, governance workflows and readiness packs; only the competent authority can issue the accreditation or badge."
+    },
+    {
+      "id": "saudi_business_market_context",
+      "authority": "Saudi Ministry of Commerce",
+      "signal": "Q2 2026 business bulletin reports more than 1.91 million active commercial registrations; Ministry reporting also shows 19,042 AI-activity registrations in 2025.",
+      "source_url": "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-01.aspx",
+      "secondary_source_url": "https://mc.gov.sa/ar/mediacenter/News/Pages/26-04-26-02.aspx",
+      "offer": "Saudi Opportunity Snapshot",
+      "buyer": ["Founder", "Growth", "BD", "Market Entry"],
+      "proof_boundary": "Market size is prioritization evidence only and must not be promoted to pipeline or revenue."
+    }
+  ]
+}
