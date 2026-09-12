@@ -1,4 +1,4 @@
-"""Low-Touch Diagnostic Product — self-serve, automated delivery, low marginal cost."""
+"""Low-Touch Diagnostic Product — free at every depth, evidence-governed."""
 
 from __future__ import annotations
 
@@ -11,14 +11,16 @@ from pydantic import BaseModel, ConfigDict, Field
 from dealix.commercial.diagnostic_self_serve import DiagnosticInput, SelfServeDiagnostic
 from dealix.commercial.universal_diagnostic_factory import (
     FAMILY_AR,
-    FREE_DEPTHS,
     DiagnosticDepth,
     UniversalDiagnosticFactory,
 )
 
 UNKNOWN = "UNKNOWN"
+FREE_ALL_DEPTHS = "free_all_depths"
+# Compatibility export only. Diagnostics are never monetized; monetization starts
+# after qualified discovery via customer-specific delivery/pilot/implementation.
+QUOTE_REQUIRED = "legacy_do_not_use_diagnostic_is_free"
 
-QUOTE_REQUIRED = "quote_required_after_qualified_discovery"
 
 class DiagnosticProductRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -33,6 +35,15 @@ class DiagnosticProductRequest(BaseModel):
     email: str = UNKNOWN
     consent: bool = False
     depth: DiagnosticDepth = DiagnosticDepth.D1_RAPID
+    frequency: str = UNKNOWN
+    current_tools: str = UNKNOWN
+    manual_steps: int = 0
+    delay_days: int = 0
+    cost_hypothesis_sar: float = 0.0
+    impact_basis: dict[str, Any] = Field(default_factory=dict)
+    risk: str = UNKNOWN
+    desired_state: str = UNKNOWN
+
 
 class DiagnosticProductResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -53,12 +64,14 @@ class DiagnosticProductResult(BaseModel):
     next_step_cta: str = UNKNOWN
     qualified_discovery_path: str = UNKNOWN
     expected_impact_range: str
+    impact_truth_class: str = "UNKNOWN"
     opportunity_event: dict[str, Any] = Field(default_factory=dict)
     proof_receipt: dict[str, Any] = Field(default_factory=dict)
     price_sar: int = 0
-    pricing_basis: str = "free_d0_d2"
+    pricing_basis: str = FREE_ALL_DEPTHS
     delivery: str = "automated_pdf"
     proof_ref: str = ""
+
 
 class DiagnosticProductEngine:
     def __init__(self) -> None:
@@ -66,17 +79,22 @@ class DiagnosticProductEngine:
         self.diagnostic = SelfServeDiagnostic()
 
     def price(self, sector: str, depth: DiagnosticDepth) -> int:
-        # Founder policy: D0-D2 genuinely free (no card, no fake urgency).
-        # Deeper depths are never priced here; they need a customer-specific
-        # quote after qualified discovery.
+        # Founder constitution: every diagnostic depth is genuinely free.
         return 0
 
     def pricing_basis(self, depth: DiagnosticDepth) -> str:
-        return "free_d0_d2" if depth in FREE_DEPTHS else QUOTE_REQUIRED
+        return FREE_ALL_DEPTHS
 
     def evidence_gaps(self, req: DiagnosticProductRequest, out: Any) -> list[str]:
         gaps: list[str] = []
-        for field_name in ("workflow", "problem", "frequency", "current_tools", "risk", "desired_state"):
+        for field_name in (
+            "workflow",
+            "problem",
+            "frequency",
+            "current_tools",
+            "risk",
+            "desired_state",
+        ):
             if getattr(req, field_name, UNKNOWN) == UNKNOWN:
                 gaps.append(f"missing::{field_name}")
         gaps.append("evidence::system_export")
@@ -116,7 +134,9 @@ class DiagnosticProductEngine:
         for risk in out.risk_notes:
             items.append({"kind": "RISK", "item": risk, "truth_class": "PATTERN"})
         for opportunity in list(out.quick_wins) + list(out.automation_candidates):
-            items.append({"kind": "OPPORTUNITY", "item": opportunity, "truth_class": "PATTERN"})
+            items.append(
+                {"kind": "OPPORTUNITY", "item": opportunity, "truth_class": "PATTERN"}
+            )
         return items
 
     def opportunity_event(self, req: DiagnosticProductRequest) -> dict[str, Any]:
@@ -127,11 +147,15 @@ class DiagnosticProductEngine:
             "buyer_role": req.buyer_role,
             "problem": req.problem,
             "truth_class": "INTERNAL_SIGNAL",
+            "counts_as_relationship": False,
             "counts_as_pipeline": False,
+            "counts_as_revenue": False,
             "requires_human_review": True,
         }
 
-    def proof_receipt(self, req: DiagnosticProductRequest, depth: DiagnosticDepth, pricing_basis: str) -> dict[str, Any]:
+    def proof_receipt(
+        self, req: DiagnosticProductRequest, depth: DiagnosticDepth, pricing_basis: str
+    ) -> dict[str, Any]:
         return {
             "receipt_id": f"diag_{hashlib.sha256(req.request_id.encode()).hexdigest()[:8]}",
             "engine": "UniversalDiagnosticFactory",
@@ -145,8 +169,13 @@ class DiagnosticProductEngine:
 
     def run(self, req: DiagnosticProductRequest) -> DiagnosticProductResult:
         depth = req.depth
-        families = self.factory.compose(req.sector, req.company_size, req.buyer_role, req.problem, depth)
-        # Use self-serve diagnostic for quick wins
+        families = self.factory.compose(
+            req.sector,
+            req.company_size,
+            req.buyer_role,
+            req.problem,
+            depth,
+        )
         inp = DiagnosticInput(
             diagnostic_id=req.request_id,
             locale=req.locale,
@@ -155,17 +184,21 @@ class DiagnosticProductEngine:
             buyer_role=req.buyer_role,
             workflow=req.workflow,
             problem=req.problem,
-            manual_steps=6,
-            delay_days=7,
-            cost_hypothesis_sar=30000,
+            frequency=req.frequency,
+            current_tools=req.current_tools,
+            manual_steps=req.manual_steps,
+            delay_days=req.delay_days,
+            cost_hypothesis_sar=req.cost_hypothesis_sar,
+            impact_basis=req.impact_basis,
+            risk=req.risk,
+            desired_state=req.desired_state,
             consent=req.consent,
         )
         out = self.diagnostic.assess(inp)
-        price = self.price(req.sector, depth)
         basis = self.pricing_basis(depth)
         gaps = self.evidence_gaps(req, out)
-        cta_ar = "ابدأ جلسة اكتشاف (15 دقيقة) بعد الموافقة"
-        cta_en = "Start a 15-minute discovery session after approval"
+        cta_ar = "ابدأ جلسة اكتشاف بعد الموافقة"
+        cta_en = "Start discovery after consent"
         return DiagnosticProductResult(
             request_id=req.request_id,
             sector=req.sector,
@@ -183,11 +216,14 @@ class DiagnosticProductEngine:
             + ["no_automation_without_human_approval_gate"],
             next_step=out.recommended_next_step,
             next_step_cta=cta_ar if req.locale == "ar" else cta_en,
-            qualified_discovery_path="discovery" if req.consent else "request_consent_then_discovery",
+            qualified_discovery_path="discovery"
+            if req.consent
+            else "request_consent_then_discovery",
             expected_impact_range=out.expected_impact_range,
+            impact_truth_class=out.impact_truth_class,
             opportunity_event=self.opportunity_event(req),
             proof_receipt=self.proof_receipt(req, depth, basis),
-            price_sar=price,
+            price_sar=0,
             pricing_basis=basis,
             proof_ref=f"diag_{hashlib.sha256(req.request_id.encode()).hexdigest()[:8]}",
         )
@@ -195,9 +231,11 @@ class DiagnosticProductEngine:
     def to_dict(self, result: DiagnosticProductResult) -> dict[str, Any]:
         return result.model_dump(mode="json")
 
+
 __all__ = [
     "DiagnosticProductEngine",
     "DiagnosticProductRequest",
     "DiagnosticProductResult",
+    "FREE_ALL_DEPTHS",
     "QUOTE_REQUIRED",
 ]
