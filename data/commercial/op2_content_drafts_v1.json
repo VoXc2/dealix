@@ -1,10 +1,10 @@
 {
   "schema": "dealix.op2-content-drafts.v1",
-  "generated_at": "2026-09-12T03:05:13.497112+00:00",
+  "generated_at": "2026-09-12T06:27:48.206619+00:00",
   "owner_agent": "dealix-content",
   "publish_authority": false,
   "warnings": [],
-  "draft_count": 11,
+  "draft_count": 30,
   "drafts": [
     {
       "draft_id": "op2-draft-op2-2026-zatca-wave25-einvoicing",
@@ -511,6 +511,866 @@
         "https://regulations.ai/regulations/RAI-SA-NA-DGAHPXX-2025",
         "https://new.cst.gov.sa/en/about/program-and-initiatives/cloud-computing-special-economic-zone-technology",
         "https://www.lexology.com/library/detail.aspx?g=015b8434-0c62-4645-9839-dc7cd8066b63"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-etimad-government-procurement-snapshot",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "AVIATION_DEFENSE",
+      "signal_id": "op2-2026-etimad-government-procurement-snapshot",
+      "source_ref": "https://portal.etimad.sa/en-us/home/gettenderssection",
+      "authority_ref": "Etimad / Ministry of Finance",
+      "observed_at": "2026-09-12T00:00:00+03:00",
+      "fact_from_signal": "Etimad is the Saudi public procurement platform and publicly lists active and awarded competitions.",
+      "trigger": "Etimad publicly exposes a large active government-tender surface with IT among major activity categories.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "AVIATION_DEFENSE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: Etimad publicly exposes a large active government-tender surface with IT among major activity categories.. المصدر الرسمي: Etimad / Ministry of Finance. حقيقة موثّقة: Etimad is the Saudi public procurement platform and publicly lists active and awarded competitions. السؤال التشغيلي المطروح: Tender discovery, bid/no-bid evidence, requirements traceability, and compliant delivery proof. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "AVIATION_DEFENSE: what changed and why it matters now",
+          "body": "Context: Etimad publicly exposes a large active government-tender surface with IT among major activity categories.. Official source: Etimad / Ministry of Finance. Documented fact: Etimad is the Saudi public procurement platform and publicly lists active and awarded competitions. Operating question: Tender discovery, bid/no-bid evidence, requirements traceability, and compliant delivery proof. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "AVIATION_DEFENSE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من AVIATION_DEFENSE: Etimad is the Saudi public procurement platform and publicly lists active and awarded competitions. (المصدر: Etimad / Ministry of Finance). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://portal.etimad.sa/en-us/home/gettenderssection"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-sca-construction-project-awards",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "MANUFACTURING",
+      "signal_id": "op2-2026-sca-construction-project-awards",
+      "source_ref": "https://sca.sa/ar",
+      "authority_ref": "Saudi Contractors Authority",
+      "observed_at": "2026-07-19T00:00:00+03:00",
+      "fact_from_signal": "The Saudi Contractors Authority states construction is a major non-oil sector and publishes current project-market activity.",
+      "trigger": "Saudi Contractors Authority reported more than SAR 29B of projects awarded in June 2026 and a continuing future-project pipeline.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "MANUFACTURING: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: Saudi Contractors Authority reported more than SAR 29B of projects awarded in June 2026 and a continuing future-project pipeline.. المصدر الرسمي: Saudi Contractors Authority. حقيقة موثّقة: The Saudi Contractors Authority states construction is a major non-oil sector and publishes current project-market activity. السؤال التشغيلي المطروح: RFI, submittal, change-order, document-control and project exception cycle time. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "MANUFACTURING: what changed and why it matters now",
+          "body": "Context: Saudi Contractors Authority reported more than SAR 29B of projects awarded in June 2026 and a continuing future-project pipeline.. Official source: Saudi Contractors Authority. Documented fact: The Saudi Contractors Authority states construction is a major non-oil sector and publishes current project-market activity. Operating question: RFI, submittal, change-order, document-control and project exception cycle time. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "MANUFACTURING: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من MANUFACTURING: The Saudi Contractors Authority states construction is a major non-oil sector and publishes current project-market activity. (المصدر: Saudi Contractors Authority). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://sca.sa/ar"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-gastat-manufacturing-revenue-growth",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "MANUFACTURING",
+      "signal_id": "op2-2026-gastat-manufacturing-revenue-growth",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "authority_ref": "GASTAT",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "fact_from_signal": "GASTAT reported a 9.6% year-on-year increase in manufacturing operating revenues in May 2026.",
+      "trigger": "GASTAT reported manufacturing operating revenues up 9.6% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "MANUFACTURING: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: GASTAT reported manufacturing operating revenues up 9.6% year on year in May 2026.. المصدر الرسمي: GASTAT. حقيقة موثّقة: GASTAT reported a 9.6% year-on-year increase in manufacturing operating revenues in May 2026. السؤال التشغيلي المطروح: Downtime, quality exceptions, inventory visibility and manual operating evidence. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "MANUFACTURING: what changed and why it matters now",
+          "body": "Context: GASTAT reported manufacturing operating revenues up 9.6% year on year in May 2026.. Official source: GASTAT. Documented fact: GASTAT reported a 9.6% year-on-year increase in manufacturing operating revenues in May 2026. Operating question: Downtime, quality exceptions, inventory visibility and manual operating evidence. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "MANUFACTURING: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من MANUFACTURING: GASTAT reported a 9.6% year-on-year increase in manufacturing operating revenues in May 2026. (المصدر: GASTAT). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-gastat-logistics-june-sts",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "signal_id": "op2-2026-gastat-logistics-june-sts",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "authority_ref": "GASTAT / Transport General Authority",
+      "observed_at": "2026-08-20T00:00:00+03:00",
+      "fact_from_signal": "GASTAT published Short-Term Business Indicators Statistics for June 2026 on 20 August 2026.",
+      "trigger": "GASTAT June 2026 short-term business tables report strong transportation/storage operating-revenue growth; TGA reporting also shows rapid delivery-order expansion.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "TRANSPORT_LOGISTICS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: GASTAT June 2026 short-term business tables report strong transportation/storage operating-revenue growth; TGA reporting also shows rapid delivery-order expansion.. المصدر الرسمي: GASTAT / Transport General Authority. حقيقة موثّقة: GASTAT published Short-Term Business Indicators Statistics for June 2026 on 20 August 2026. السؤال التشغيلي المطروح: High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "TRANSPORT_LOGISTICS: what changed and why it matters now",
+          "body": "Context: GASTAT June 2026 short-term business tables report strong transportation/storage operating-revenue growth; TGA reporting also shows rapid delivery-order expansion.. Official source: GASTAT / Transport General Authority. Documented fact: GASTAT published Short-Term Business Indicators Statistics for June 2026 on 20 August 2026. Operating question: High-volume delivery exceptions, SLA breaches, dispatch visibility and customer-support load. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "TRANSPORT_LOGISTICS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من TRANSPORT_LOGISTICS: GASTAT published Short-Term Business Indicators Statistics for June 2026 on 20 August 2026. (المصدر: GASTAT / Transport General Authority). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication",
+        "https://mot.gov.sa/ar/logistics-sectors"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-seec-energy-efficiency-marketplace",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ENERGY",
+      "signal_id": "op2-2026-seec-energy-efficiency-marketplace",
+      "source_ref": "https://foras.seec.gov.sa/",
+      "authority_ref": "Saudi Energy Efficiency Center",
+      "observed_at": "2026-09-12T00:00:00+03:00",
+      "fact_from_signal": "SEEC Foras allows facility owners to publish energy-efficiency opportunities and licensed providers to compete.",
+      "trigger": "SEEC operates a live opportunity platform matching facilities with licensed energy-service providers and requiring audit and measurement/verification outputs.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ENERGY: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: SEEC operates a live opportunity platform matching facilities with licensed energy-service providers and requiring audit and measurement/verification outputs.. المصدر الرسمي: Saudi Energy Efficiency Center. حقيقة موثّقة: SEEC Foras allows facility owners to publish energy-efficiency opportunities and licensed providers to compete. السؤال التشغيلي المطروح: Energy audit evidence, measurement and verification, opportunity qualification and savings tracking. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ENERGY: what changed and why it matters now",
+          "body": "Context: SEEC operates a live opportunity platform matching facilities with licensed energy-service providers and requiring audit and measurement/verification outputs.. Official source: Saudi Energy Efficiency Center. Documented fact: SEEC Foras allows facility owners to publish energy-efficiency opportunities and licensed providers to compete. Operating question: Energy audit evidence, measurement and verification, opportunity qualification and savings tracking. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ENERGY: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ENERGY: SEEC Foras allows facility owners to publish energy-efficiency opportunities and licensed providers to compete. (المصدر: Saudi Energy Efficiency Center). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://foras.seec.gov.sa/"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-gastat-mining-revenue-growth",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "MINING_METALS",
+      "signal_id": "op2-2026-gastat-mining-revenue-growth",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "authority_ref": "GASTAT",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "fact_from_signal": "Mining and quarrying had the highest May 2026 operating-revenue increase reported by GASTAT at 38.7% year on year.",
+      "trigger": "GASTAT reported mining and quarrying operating revenues up 38.7% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "MINING_METALS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: GASTAT reported mining and quarrying operating revenues up 38.7% year on year in May 2026.. المصدر الرسمي: GASTAT. حقيقة موثّقة: Mining and quarrying had the highest May 2026 operating-revenue increase reported by GASTAT at 38.7% year on year. السؤال التشغيلي المطروح: Maintenance downtime, production exceptions, grade/asset data fragmentation and procurement cycle time. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "MINING_METALS: what changed and why it matters now",
+          "body": "Context: GASTAT reported mining and quarrying operating revenues up 38.7% year on year in May 2026.. Official source: GASTAT. Documented fact: Mining and quarrying had the highest May 2026 operating-revenue increase reported by GASTAT at 38.7% year on year. Operating question: Maintenance downtime, production exceptions, grade/asset data fragmentation and procurement cycle time. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "MINING_METALS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من MINING_METALS: Mining and quarrying had the highest May 2026 operating-revenue increase reported by GASTAT at 38.7% year on year. (المصدر: GASTAT). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-mc-retail-commerce-registrations",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-mc-retail-commerce-registrations",
+      "source_ref": "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx",
+      "authority_ref": "Ministry of Commerce",
+      "observed_at": "2026-07-09T00:00:00+03:00",
+      "fact_from_signal": "The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026.",
+      "trigger": "The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026, with wholesale and retail among leading activities.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026, with wholesale and retail among leading activities.. المصدر الرسمي: Ministry of Commerce. حقيقة موثّقة: The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026. السؤال التشغيلي المطروح: Conversion leakage, order exceptions, returns, support backlog and reconciliation. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026, with wholesale and retail among leading activities.. Official source: Ministry of Commerce. Documented fact: The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026. Operating question: Conversion leakage, order exceptions, returns, support backlog and reconciliation. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: The Ministry of Commerce reported more than 22,000 commercial registrations issued in June 2026. (المصدر: Ministry of Commerce). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-02.aspx"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-gastat-tourism-q1-release",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "signal_id": "op2-2026-gastat-tourism-q1-release",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "authority_ref": "GASTAT / Ministry of Tourism",
+      "observed_at": "2026-07-05T00:00:00+03:00",
+      "fact_from_signal": "GASTAT published Tourism Establishments Statistics for Q1 2026 on 5 July 2026.",
+      "trigger": "GASTAT published Tourism Establishments Statistics for Q1 2026 and continues quarterly monitoring of occupancy, room rates, stay length and tourism employment.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "TOURISM_QUALITY_OF_LIFE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: GASTAT published Tourism Establishments Statistics for Q1 2026 and continues quarterly monitoring of occupancy, room rates, stay length and tourism employment.. المصدر الرسمي: GASTAT / Ministry of Tourism. حقيقة موثّقة: GASTAT published Tourism Establishments Statistics for Q1 2026 on 5 July 2026. السؤال التشغيلي المطروح: Booking leakage, guest-response load, occupancy/revenue operations and service exceptions. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "TOURISM_QUALITY_OF_LIFE: what changed and why it matters now",
+          "body": "Context: GASTAT published Tourism Establishments Statistics for Q1 2026 and continues quarterly monitoring of occupancy, room rates, stay length and tourism employment.. Official source: GASTAT / Ministry of Tourism. Documented fact: GASTAT published Tourism Establishments Statistics for Q1 2026 on 5 July 2026. Operating question: Booking leakage, guest-response load, occupancy/revenue operations and service exceptions. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "TOURISM_QUALITY_OF_LIFE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من TOURISM_QUALITY_OF_LIFE: GASTAT published Tourism Establishments Statistics for Q1 2026 on 5 July 2026. (المصدر: GASTAT / Ministry of Tourism). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication",
+        "https://www.stats.gov.sa/en/w/methodology-and-quality-report-for-tourism-establishment-statistics-4.0"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-gastat-professional-services-sts",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "signal_id": "op2-2026-gastat-professional-services-sts",
+      "source_ref": "https://www.stats.gov.sa/en/search-publication",
+      "authority_ref": "GASTAT",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "fact_from_signal": "GASTAT short-term business tables for May 2026 include professional, scientific and technical activities.",
+      "trigger": "GASTAT May 2026 short-term business tables show positive operating-revenue movement for professional, scientific and technical activities.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "HUMAN_CAPITAL_INNOVATION: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: GASTAT May 2026 short-term business tables show positive operating-revenue movement for professional, scientific and technical activities.. المصدر الرسمي: GASTAT. حقيقة موثّقة: GASTAT short-term business tables for May 2026 include professional, scientific and technical activities. السؤال التشغيلي المطروح: Lead-to-proposal delay, utilization leakage, delivery coordination and billing evidence. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "HUMAN_CAPITAL_INNOVATION: what changed and why it matters now",
+          "body": "Context: GASTAT May 2026 short-term business tables show positive operating-revenue movement for professional, scientific and technical activities.. Official source: GASTAT. Documented fact: GASTAT short-term business tables for May 2026 include professional, scientific and technical activities. Operating question: Lead-to-proposal delay, utilization leakage, delivery coordination and billing evidence. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "HUMAN_CAPITAL_INNOVATION: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من HUMAN_CAPITAL_INNOVATION: GASTAT short-term business tables for May 2026 include professional, scientific and technical activities. (المصدر: GASTAT). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/search-publication"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-cst-ict-market-199b",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-cst-ict-market-199b",
+      "source_ref": "https://www.cst.gov.sa/en/media-center/news/N2026070101",
+      "authority_ref": "Communications, Space and Technology Commission",
+      "observed_at": "2026-07-01T00:00:00+03:00",
+      "fact_from_signal": "CST reported Saudi Arabia ranked first globally in the ITU ICT Development Index 2026.",
+      "trigger": "CST reported the Saudi ICT market reached SAR 199B by end-2025 with 8% five-year CAGR and 100% internet penetration.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: CST reported the Saudi ICT market reached SAR 199B by end-2025 with 8% five-year CAGR and 100% internet penetration.. المصدر الرسمي: Communications, Space and Technology Commission. حقيقة موثّقة: CST reported Saudi Arabia ranked first globally in the ITU ICT Development Index 2026. السؤال التشغيلي المطروح: Customer support scale, content operations, campaign attribution and digital-service reliability. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: CST reported the Saudi ICT market reached SAR 199B by end-2025 with 8% five-year CAGR and 100% internet penetration.. Official source: Communications, Space and Technology Commission. Documented fact: CST reported Saudi Arabia ranked first globally in the ITU ICT Development Index 2026. Operating question: Customer support scale, content operations, campaign attribution and digital-service reliability. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: CST reported Saudi Arabia ranked first globally in the ITU ICT Development Index 2026. (المصدر: Communications, Space and Technology Commission). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/media-center/news/N2026070101"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-hrdf-training-employment-scale",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "signal_id": "op2-2026-hrdf-training-employment-scale",
+      "source_ref": "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/",
+      "authority_ref": "Human Resources Development Fund (HRDF)",
+      "observed_at": "2026-02-05T00:00:00+03:00",
+      "fact_from_signal": "HRDF reported support contributing to employment of more than 562,000 citizens in private-sector establishments during 2025.",
+      "trigger": "HRDF reported more than 562,000 citizens employed through its programs in 2025, with more than 226,000 establishments benefiting and 45 sector training agreements.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "HUMAN_CAPITAL_INNOVATION: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: HRDF reported more than 562,000 citizens employed through its programs in 2025, with more than 226,000 establishments benefiting and 45 sector training agreements.. المصدر الرسمي: Human Resources Development Fund (HRDF). حقيقة موثّقة: HRDF reported support contributing to employment of more than 562,000 citizens in private-sector establishments during 2025. السؤال التشغيلي المطروح: Enrollment leakage, training scheduling, learner support and employer outcome evidence. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "HUMAN_CAPITAL_INNOVATION: what changed and why it matters now",
+          "body": "Context: HRDF reported more than 562,000 citizens employed through its programs in 2025, with more than 226,000 establishments benefiting and 45 sector training agreements.. Official source: Human Resources Development Fund (HRDF). Documented fact: HRDF reported support contributing to employment of more than 562,000 citizens in private-sector establishments during 2025. Operating question: Enrollment leakage, training scheduling, learner support and employer outcome evidence. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "HUMAN_CAPITAL_INNOVATION: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من HUMAN_CAPITAL_INNOVATION: HRDF reported support contributing to employment of more than 562,000 citizens in private-sector establishments during 2025. (المصدر: Human Resources Development Fund (HRDF)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.hrdf.org.sa/en/media-center/news/general/employment-562k/"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-mewa-agri-water-tech-investment",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "AGRICULTURE_FOOD",
+      "signal_id": "op2-2026-mewa-agri-water-tech-investment",
+      "source_ref": "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx",
+      "authority_ref": "Ministry of Environment, Water and Agriculture",
+      "observed_at": "2026-06-21T00:00:00+03:00",
+      "fact_from_signal": "MEWA highlighted scalable investment opportunities in smart irrigation, protected agriculture, aquaculture, food preservation and food-loss reduction.",
+      "trigger": "MEWA identified smart irrigation, protected agriculture, aquaculture, food-loss reduction, AI/IoT sensing and digital twins as investment-ready technology areas.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "AGRICULTURE_FOOD: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: MEWA identified smart irrigation, protected agriculture, aquaculture, food-loss reduction, AI/IoT sensing and digital twins as investment-ready technology areas.. المصدر الرسمي: Ministry of Environment, Water and Agriculture. حقيقة موثّقة: MEWA highlighted scalable investment opportunities in smart irrigation, protected agriculture, aquaculture, food preservation and food-loss reduction. السؤال التشغيلي المطروح: Resource efficiency, traceability, loss, quality exceptions and asset monitoring. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "AGRICULTURE_FOOD: what changed and why it matters now",
+          "body": "Context: MEWA identified smart irrigation, protected agriculture, aquaculture, food-loss reduction, AI/IoT sensing and digital twins as investment-ready technology areas.. Official source: Ministry of Environment, Water and Agriculture. Documented fact: MEWA highlighted scalable investment opportunities in smart irrigation, protected agriculture, aquaculture, food preservation and food-loss reduction. Operating question: Resource efficiency, traceability, loss, quality exceptions and asset monitoring. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "AGRICULTURE_FOOD: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من AGRICULTURE_FOOD: MEWA highlighted scalable investment opportunities in smart irrigation, protected agriculture, aquaculture, food preservation and food-loss reduction. (المصدر: Ministry of Environment, Water and Agriculture). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyForInnovation/Topics/Pages/slmReportIV.aspx"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-gastat-mobility-vehicle-repair-growth",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "signal_id": "op2-2026-gastat-mobility-vehicle-repair-growth",
+      "source_ref": "https://www.stats.gov.sa/en/w/news/209",
+      "authority_ref": "GASTAT",
+      "observed_at": "2026-07-20T00:00:00+03:00",
+      "fact_from_signal": "GASTAT reported 3.6% year-on-year operating-revenue growth for wholesale/retail trade and repair of motor vehicles and motorcycles in May 2026.",
+      "trigger": "GASTAT reported wholesale/retail trade and repair of motor vehicles and motorcycles operating revenues up 3.6% year on year in May 2026.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "TRANSPORT_LOGISTICS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: GASTAT reported wholesale/retail trade and repair of motor vehicles and motorcycles operating revenues up 3.6% year on year in May 2026.. المصدر الرسمي: GASTAT. حقيقة موثّقة: GASTAT reported 3.6% year-on-year operating-revenue growth for wholesale/retail trade and repair of motor vehicles and motorcycles in May 2026. السؤال التشغيلي المطروح: Vehicle uptime, service backlog, parts exceptions and maintenance coordination. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "TRANSPORT_LOGISTICS: what changed and why it matters now",
+          "body": "Context: GASTAT reported wholesale/retail trade and repair of motor vehicles and motorcycles operating revenues up 3.6% year on year in May 2026.. Official source: GASTAT. Documented fact: GASTAT reported 3.6% year-on-year operating-revenue growth for wholesale/retail trade and repair of motor vehicles and motorcycles in May 2026. Operating question: Vehicle uptime, service backlog, parts exceptions and maintenance coordination. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "TRANSPORT_LOGISTICS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من TRANSPORT_LOGISTICS: GASTAT reported 3.6% year-on-year operating-revenue growth for wholesale/retail trade and repair of motor vehicles and motorcycles in May 2026. (المصدر: GASTAT). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.stats.gov.sa/en/w/news/209"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-misa-rhq-trade-operations",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "TRANSPORT_LOGISTICS",
+      "signal_id": "op2-2026-misa-rhq-trade-operations",
+      "source_ref": "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf",
+      "authority_ref": "Ministry of Investment / Ministry of Industry and Mineral Resources",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "fact_from_signal": "MISA 2026 investor guidance includes the Regional Headquarters license for multinational companies managing MENA operations from Saudi Arabia.",
+      "trigger": "MISA 2026 investor guidance maintains a formal RHQ registration path, while MIM operates electronic Certificate of Origin issuance/tracking for exporters.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "TRANSPORT_LOGISTICS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: MISA 2026 investor guidance maintains a formal RHQ registration path, while MIM operates electronic Certificate of Origin issuance/tracking for exporters.. المصدر الرسمي: Ministry of Investment / Ministry of Industry and Mineral Resources. حقيقة موثّقة: MISA 2026 investor guidance includes the Regional Headquarters license for multinational companies managing MENA operations from Saudi Arabia. السؤال التشغيلي المطروح: Cross-border document control, customs/origin workflows, landed-cost visibility and regional reporting. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "TRANSPORT_LOGISTICS: what changed and why it matters now",
+          "body": "Context: MISA 2026 investor guidance maintains a formal RHQ registration path, while MIM operates electronic Certificate of Origin issuance/tracking for exporters.. Official source: Ministry of Investment / Ministry of Industry and Mineral Resources. Documented fact: MISA 2026 investor guidance includes the Regional Headquarters license for multinational companies managing MENA operations from Saudi Arabia. Operating question: Cross-border document control, customs/origin workflows, landed-cost visibility and regional reporting. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "TRANSPORT_LOGISTICS: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من TRANSPORT_LOGISTICS: MISA 2026 investor guidance includes the Regional Headquarters license for multinational companies managing MENA operations from Saudi Arabia. (المصدر: Ministry of Investment / Ministry of Industry and Mineral Resources). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://misa.gov.sa/app/uploads/2026/06/Investor-Guide_13-02_en.pdf",
+        "https://coo.mim.gov.sa/"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-sports-law-investment",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "signal_id": "op2-2026-sports-law-investment",
+      "source_ref": "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5",
+      "authority_ref": "Ministry of Sport",
+      "observed_at": "2026-06-11T00:00:00+03:00",
+      "fact_from_signal": "The Saudi Sports Law entered into force on 11 June 2026 and establishes a comprehensive governance framework for the sports sector.",
+      "trigger": "Saudi Sports Law entered into force in June 2026 and explicitly supports commercial/sports investment; privatization is opening additional private-sector operating surfaces.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "TOURISM_QUALITY_OF_LIFE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: Saudi Sports Law entered into force in June 2026 and explicitly supports commercial/sports investment; privatization is opening additional private-sector operating surfaces.. المصدر الرسمي: Ministry of Sport. حقيقة موثّقة: The Saudi Sports Law entered into force on 11 June 2026 and establishes a comprehensive governance framework for the sports sector. السؤال التشغيلي المطروح: Sponsorship pipeline, fan/member support, event operations and content execution. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "TOURISM_QUALITY_OF_LIFE: what changed and why it matters now",
+          "body": "Context: Saudi Sports Law entered into force in June 2026 and explicitly supports commercial/sports investment; privatization is opening additional private-sector operating surfaces.. Official source: Ministry of Sport. Documented fact: The Saudi Sports Law entered into force on 11 June 2026 and establishes a comprehensive governance framework for the sports sector. Operating question: Sponsorship pipeline, fan/member support, event operations and content execution. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "TOURISM_QUALITY_OF_LIFE: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من TOURISM_QUALITY_OF_LIFE: The Saudi Sports Law entered into force on 11 June 2026 and establishes a comprehensive governance framework for the sports sector. (المصدر: Ministry of Sport). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.mos.gov.sa/en/media/news/2026/06/11/announces-%D9%A5"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-ncnp-nonprofit-scale",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "HUMAN_CAPITAL_INNOVATION",
+      "signal_id": "op2-2026-ncnp-nonprofit-scale",
+      "source_ref": "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1",
+      "authority_ref": "National Center for Non-Profit Sector",
+      "observed_at": "2026-06-30T00:00:00+03:00",
+      "fact_from_signal": "NCNPS reported more than 7,200 nonprofit organizations by end-2025.",
+      "trigger": "NCNPS reported more than 7,200 nonprofit organizations by end-2025, 1.7M volunteers and a 1.4% GDP contribution.",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "HUMAN_CAPITAL_INNOVATION: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: NCNPS reported more than 7,200 nonprofit organizations by end-2025, 1.7M volunteers and a 1.4% GDP contribution.. المصدر الرسمي: National Center for Non-Profit Sector. حقيقة موثّقة: NCNPS reported more than 7,200 nonprofit organizations by end-2025. السؤال التشغيلي المطروح: Member/donor lifecycle, service-case coordination, reporting burden and impact evidence. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "HUMAN_CAPITAL_INNOVATION: what changed and why it matters now",
+          "body": "Context: NCNPS reported more than 7,200 nonprofit organizations by end-2025, 1.7M volunteers and a 1.4% GDP contribution.. Official source: National Center for Non-Profit Sector. Documented fact: NCNPS reported more than 7,200 nonprofit organizations by end-2025. Operating question: Member/donor lifecycle, service-case coordination, reporting burden and impact evidence. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "HUMAN_CAPITAL_INNOVATION: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من HUMAN_CAPITAL_INNOVATION: NCNPS reported more than 7,200 nonprofit organizations by end-2025. (المصدر: National Center for Non-Profit Sector). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-cst-ai-adoption-guide-tech",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-cst-ai-adoption-guide-tech",
+      "source_ref": "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+      "authority_ref": "CST (Communications, Space & Technology Commission)",
+      "observed_at": "2026-01-01T00:00:00+03:00",
+      "fact_from_signal": "CST published the Awareness Guide for AI Adoption in Technology Companies.",
+      "trigger": "CST published an AI adoption guide for technology companies, coinciding with 2026 designated the Year of AI",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: CST published an AI adoption guide for technology companies, coinciding with 2026 designated the Year of AI. المصدر الرسمي: CST (Communications, Space & Technology Commission). حقيقة موثّقة: CST published the Awareness Guide for AI Adoption in Technology Companies. السؤال التشغيلي المطروح: Responsible AI adoption readiness for internal operations and customer-facing AI/agent products. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: CST published an AI adoption guide for technology companies, coinciding with 2026 designated the Year of AI. Official source: CST (Communications, Space & Technology Commission). Documented fact: CST published the Awareness Guide for AI Adoption in Technology Companies. Operating question: Responsible AI adoption readiness for internal operations and customer-facing AI/agent products. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: CST published the Awareness Guide for AI Adoption in Technology Companies. (المصدر: CST (Communications, Space & Technology Commission)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-nca-ncnicc-private-sector",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-nca-ncnicc-private-sector",
+      "source_ref": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "observed_at": "2025-12-28T00:00:00+03:00",
+      "fact_from_signal": "NCA issued controls for private-sector entities that do not own or operate critical national infrastructure.",
+      "trigger": "NCA issued dedicated cybersecurity controls for private-sector non-CNI entities (document modified 28/12/2025)",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: NCA issued dedicated cybersecurity controls for private-sector non-CNI entities (document modified 28/12/2025). المصدر الرسمي: NCA (National Cybersecurity Authority). حقيقة موثّقة: NCA issued controls for private-sector entities that do not own or operate critical national infrastructure. السؤال التشغيلي المطروح: Minimum cybersecurity-control evidence for private-sector entities not owning critical infrastructure. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: NCA issued dedicated cybersecurity controls for private-sector non-CNI entities (document modified 28/12/2025). Official source: NCA (National Cybersecurity Authority). Documented fact: NCA issued controls for private-sector entities that do not own or operate critical national infrastructure. Operating question: Minimum cybersecurity-control evidence for private-sector entities not owning critical infrastructure. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: NCA issued controls for private-sector entities that do not own or operate critical national infrastructure. (المصدر: NCA (National Cybersecurity Authority)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/721bed5c-5304-497c-a5ac-a92a049e6306_NCNICC-AR-.pdf"
+      ],
+      "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
+      "allowed_use": [
+        "INTERNAL_DRAFT_ONLY"
+      ],
+      "counts_as_relationship": false,
+      "counts_as_pipeline": false
+    },
+    {
+      "draft_id": "op2-draft-op2-2026-nca-implementation-guidance-ecc-ccc",
+      "owner_agent": "dealix-content",
+      "channel": "linkedin_article_draft",
+      "status": "draft",
+      "approval_required": true,
+      "published": false,
+      "sector_family": "ICT",
+      "signal_id": "op2-2026-nca-implementation-guidance-ecc-ccc",
+      "source_ref": "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "observed_at": "2026-03-01T00:00:00+03:00",
+      "fact_from_signal": "NCA publishes implementation guidance to help entities implement ECC (e.g., GECC-2:2026).",
+      "trigger": "NCA publishes implementation guidance mapping controls to assessable deliverables and evidence",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "atoms": [
+        {
+          "locale": "ar",
+          "type": "article",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "السياق: NCA publishes implementation guidance mapping controls to assessable deliverables and evidence. المصدر الرسمي: NCA (National Cybersecurity Authority). حقيقة موثّقة: NCA publishes implementation guidance to help entities implement ECC (e.g., GECC-2:2026). السؤال التشغيلي المطروح: Turning ECC/CCC controls into assessable evidence and third-party assurance. الخطوة: تشخيص مجاني يوضّح أين يكمن الفارق لديكم — النتائج تبقى تقديرية حتى الاكتشاف، ولا نُعلن نتائج غير مُتحقَّق منها."
+        },
+        {
+          "locale": "en",
+          "type": "article",
+          "title": "ICT: what changed and why it matters now",
+          "body": "Context: NCA publishes implementation guidance mapping controls to assessable deliverables and evidence. Official source: NCA (National Cybersecurity Authority). Documented fact: NCA publishes implementation guidance to help entities implement ECC (e.g., GECC-2:2026). Operating question: Turning ECC/CCC controls into assessable evidence and third-party assurance. Next step: a free diagnostic to locate the gap for your context — outcomes stay estimate-only until discovery, and no unverified number is published."
+        },
+        {
+          "locale": "ar",
+          "type": "founder_post",
+          "title": "ICT: ما الذي تغيّر ولماذا يهم الآن؟",
+          "body": "إشارة من ICT: NCA publishes implementation guidance to help entities implement ECC (e.g., GECC-2:2026). (المصدر: NCA (National Cybersecurity Authority)). لا يعني هذا وجود طلب مؤكد — يعني فقط أن هذه نقطة تستحق تشخيصاً."
+        }
+      ],
+      "evidence_refs": [
+        "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/11bb8f2d-706a-4f18-80f1-40d620ebd845_GECC-.pdf"
       ],
       "truth_class": "DRAFT_FROM_RESEARCH_SIGNAL",
       "allowed_use": [

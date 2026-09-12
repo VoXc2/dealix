@@ -1,6 +1,6 @@
 {
   "schema": "dealix.op2-sector-diagnostic-routes.v1",
-  "generated_at": "2026-09-12T06:21:03.400890+00:00",
+  "generated_at": "2026-09-12T06:27:48.071353+00:00",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
     "relationship": false,
@@ -827,6 +827,107 @@
       "counts_as_revenue": false
     },
     {
+      "sector_id": "technology_saas_si",
+      "ar_name": "تقنية/SaaS",
+      "en_name": "Technology/SaaS",
+      "buyer": "CTO / CIO / data & AI governance lead",
+      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
+      "research_rank_score": 603.1922,
+      "market_evidence_status": "EVIDENCE_BACKED",
+      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
+      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "maturity_status": "INTERNAL_READY",
+      "diagnostic_entry": {
+        "factory": "dealix.commercial.universal_diagnostic_factory",
+        "free_depths": [
+          "D0_SNAPSHOT",
+          "D1_RAPID",
+          "D2_FUNCTIONAL"
+        ],
+        "priority_families": [
+          "A05",
+          "A11",
+          "A12",
+          "A13",
+          "A43"
+        ],
+        "route": "/book",
+        "api": "POST /api/v1/public/execution-diagnostic",
+        "card_required": false,
+        "roi_promised": false
+      },
+      "commercial_pattern": {
+        "offer_ladder": [
+          "AI Governance",
+          "Revenue Command"
+        ],
+        "procurement_paths": [
+          "direct"
+        ],
+        "compliance_constraints": [
+          "PDPL",
+          "NCA"
+        ],
+        "distribution_channels": [
+          "website_inbound",
+          "seo",
+          "founder_content"
+        ],
+        "acceptance_criteria": [
+          "baseline_recorded",
+          "intervention_defined",
+          "result_measured",
+          "customer_validates"
+        ],
+        "proof_requirements": [
+          "proof::lead→cash",
+          "proof::support→resolution"
+        ]
+      },
+      "crm_handoff": {
+        "canonical_agents": [
+          "dealix-pm",
+          "dealix-sales",
+          "dealix-delivery",
+          "dealix-engineer",
+          "dealix-content"
+        ],
+        "mirror_target": "revenue_ops_autopilot",
+        "hubspot_is_mirror_not_truth": true
+      },
+      "discovery_prep": {
+        "evidence_gaps": [
+          "platform/brief/scope",
+          "acceptance criteria",
+          "decision owner"
+        ],
+        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
+        "signal_ids": [
+          "op2-2026-sdaia-ai-governance-package",
+          "op2-2026-nca-ecc2-controls",
+          "op2-2026-nca-ccc-cloud-residency",
+          "op2-2026-monshaat-sme-digitalization",
+          "op2-2026-cst-ai-hub-cloud-zone",
+          "op2-2026-cst-ai-adoption-guide-tech",
+          "op2-2026-nca-ncnicc-private-sector",
+          "op2-2026-nca-implementation-guidance-ecc-ccc"
+        ],
+        "deadlines": [],
+        "evidence_refs": [
+          "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
+          "https://sdaia.gov.sa/en/SDAIA/about/Files/AIAdoptionFramework.pdf",
+          "https://aiinarabia.com/policy/sdaia-ai-adoption-framework-saudi-pdpl-gcc-governance-regime-deep-dive-2026-05-12",
+          "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/"
+        ]
+      },
+      "truth_class": "PATTERN_RESEARCH_ROUTING",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "counts_as_pipeline": false,
+      "counts_as_revenue": false
+    },
+    {
       "sector_id": "finance_fintech_insurance",
       "ar_name": "مالي/تأمين",
       "en_name": "Finance",
@@ -1282,104 +1383,6 @@
         "deadlines": [],
         "evidence_refs": [
           "https://ncnp.gov.sa/ar/media-center/%D8%B6%D9%85%D9%86-%D9%85%D8%B4%D9%87%D8%AF-%D8%A7%D9%84%D9%86%D9%85%D9%88-%D8%A7%D9%84%D9%85%D8%AA%D8%B3%D8%A7%D8%B1%D8%B9-%D9%84%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2-%D8%A7%D9%84%D9%88%D8%B7%D9%86%D9%8A-%D9%84%D8%AA%D9%86%D9%85%D9%8A%D8%A9-%D8%A7%D9%84%D9%82%D8%B7%D8%A7%D8%B9-%D8%BA%D9%8A%D8%B1-%D8%A7%D9%84%D8%B1%D8%A8%D8%AD%D9%8A-%D9%8A%D8%B5%D8%AF%D8%B1"
-        ]
-      },
-      "truth_class": "PATTERN_RESEARCH_ROUTING",
-      "allowed_use": [
-        "INTERNAL_RESEARCH_ONLY"
-      ],
-      "counts_as_pipeline": false,
-      "counts_as_revenue": false
-    },
-    {
-      "sector_id": "technology_saas_si",
-      "ar_name": "تقنية/SaaS",
-      "en_name": "Technology/SaaS",
-      "buyer": "CTO / CIO / data & AI governance lead",
-      "problem": "AI governance, model accountability, and auditability evidence for deployments touching personal data",
-      "research_rank_score": 240.075,
-      "market_evidence_status": "EVIDENCE_BACKED",
-      "market_evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND",
-      "buyer_demand_status": "UNKNOWN_NOT_EVIDENCE_BACKED",
-      "maturity_status": "INTERNAL_READY",
-      "diagnostic_entry": {
-        "factory": "dealix.commercial.universal_diagnostic_factory",
-        "free_depths": [
-          "D0_SNAPSHOT",
-          "D1_RAPID",
-          "D2_FUNCTIONAL"
-        ],
-        "priority_families": [
-          "A05",
-          "A11",
-          "A12",
-          "A13",
-          "A43"
-        ],
-        "route": "/book",
-        "api": "POST /api/v1/public/execution-diagnostic",
-        "card_required": false,
-        "roi_promised": false
-      },
-      "commercial_pattern": {
-        "offer_ladder": [
-          "AI Governance",
-          "Revenue Command"
-        ],
-        "procurement_paths": [
-          "direct"
-        ],
-        "compliance_constraints": [
-          "PDPL",
-          "NCA"
-        ],
-        "distribution_channels": [
-          "website_inbound",
-          "seo",
-          "founder_content"
-        ],
-        "acceptance_criteria": [
-          "baseline_recorded",
-          "intervention_defined",
-          "result_measured",
-          "customer_validates"
-        ],
-        "proof_requirements": [
-          "proof::lead→cash",
-          "proof::support→resolution"
-        ]
-      },
-      "crm_handoff": {
-        "canonical_agents": [
-          "dealix-pm",
-          "dealix-sales",
-          "dealix-delivery",
-          "dealix-engineer",
-          "dealix-content"
-        ],
-        "mirror_target": "revenue_ops_autopilot",
-        "hubspot_is_mirror_not_truth": true
-      },
-      "discovery_prep": {
-        "evidence_gaps": [
-          "platform/brief/scope",
-          "acceptance criteria",
-          "decision owner"
-        ],
-        "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
-        "signal_ids": [
-          "op2-2026-sdaia-ai-governance-package",
-          "op2-2026-nca-ecc2-controls",
-          "op2-2026-nca-ccc-cloud-residency",
-          "op2-2026-monshaat-sme-digitalization",
-          "op2-2026-cst-ai-hub-cloud-zone"
-        ],
-        "deadlines": [],
-        "evidence_refs": [
-          "https://sdaia.gov.sa/en/SDAIA/about/Pages/RegulationsAndPolicies.aspx",
-          "https://sdaia.gov.sa/en/SDAIA/about/Files/AIAdoptionFramework.pdf",
-          "https://aiinarabia.com/policy/sdaia-ai-adoption-framework-saudi-pdpl-gcc-governance-regime-deep-dive-2026-05-12",
-          "https://nca.gov.sa/en/regulatory-documents/controls-list/ecc/"
         ]
       },
       "truth_class": "PATTERN_RESEARCH_ROUTING",

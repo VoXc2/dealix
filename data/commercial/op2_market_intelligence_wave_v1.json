@@ -1861,6 +1861,212 @@
       "canonical_sector_id": "associations_nonprofits",
       "canonical_mapping_note": "HUMAN_CAPITAL_INNOVATION is the closest admitted broad radar family; canonical_sector_id controls Company OS routing.",
       "evidence_scope": "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"
+    },
+    {
+      "signal_id": "op2-2026-cst-ai-adoption-guide-tech",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+      "observed_at": "2026-01-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T06:40:00+03:00",
+      "provenance_ref": "CST Awareness Guide for AI Adoption in Technology Companies (observed 2026-09-12)",
+      "fresh_until": "2027-06-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "CST (Communications, Space & Technology Commission)",
+      "buyer": "CTO / product / strategy executive in a Saudi technology company",
+      "problem": "Responsible AI adoption readiness for internal operations and customer-facing AI/agent products",
+      "trigger": "CST published an AI adoption guide for technology companies, coinciding with 2026 designated the Year of AI",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies"
+      ],
+      "facts": [
+        "CST published the Awareness Guide for AI Adoption in Technology Companies.",
+        "The guide covers internal operations, customer-facing solutions, and AI-enabled implementation models including AI agents.",
+        "It defines a readiness assessment across five dimensions: context, data, infrastructure, skills/expertise, and organizational culture."
+      ],
+      "inferences": [
+        "Technology firms adopting AI/agents have a documented readiness frame that maps to research-relevant governance/readiness work.",
+        "A guide is not a mandate; it does not prove any specific firm wants external help."
+      ],
+      "unknowns": [
+        "No named technology company is linked to a procurement signal.",
+        "No binding obligation or penalty is attached to the guide."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Map which Saudi tech/SaaS firms publish AI product or agent launches",
+        "Confirm whether the guide is referenced in live procurement evaluations"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 4,
+        "data_availability": 3,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-ncnicc-private-sector",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+      "observed_at": "2025-12-28T00:00:00+03:00",
+      "ingested_at": "2026-09-12T06:40:00+03:00",
+      "provenance_ref": "NCA Cybersecurity Controls for Private-Sector Entities without Critical Infrastructure (issued 28/12/2025)",
+      "fresh_until": "2026-12-28T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "buyer": "CISO / IT-security owner in private-sector companies outside CNI scope",
+      "problem": "Minimum cybersecurity-control evidence for private-sector entities not owning critical infrastructure",
+      "trigger": "NCA issued dedicated cybersecurity controls for private-sector non-CNI entities (document modified 28/12/2025)",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/721bed5c-5304-497c-a5ac-a92a049e6306_NCNICC-AR-.pdf"
+      ],
+      "facts": [
+        "NCA issued controls for private-sector entities that do not own or operate critical national infrastructure.",
+        "The controls set a minimum cybersecurity baseline and aim to reduce internal and external cyber risk.",
+        "The NCA page lists the document as last modified on 28/12/2025."
+      ],
+      "inferences": [
+        "The scope now explicitly reaches non-CNI private companies, widening the research-relevant evidence-readiness surface.",
+        "It does not by itself create a customer or a procurement event."
+      ],
+      "unknowns": [
+        "Assessment/enforcement mechanism and timelines for non-CNI private entities are not yet evidenced.",
+        "No named buyer evidence."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Read the NCNICC primary document for control counts and applicability",
+        "Identify private firms with published security incidents or compliance programs"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
+    },
+    {
+      "signal_id": "op2-2026-nca-implementation-guidance-ecc-ccc",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/",
+      "observed_at": "2026-03-01T00:00:00+03:00",
+      "ingested_at": "2026-09-12T06:40:00+03:00",
+      "provenance_ref": "NCA implementation guidance list (ECC/CCC implementation guidance, observed 2026-09-12)",
+      "fresh_until": "2027-03-01T00:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "REGULATED_ENTERPRISE",
+      "authority_ref": "NCA (National Cybersecurity Authority)",
+      "buyer": "CISO / GRC / third-party risk owner",
+      "problem": "Turning ECC/CCC controls into assessable evidence and third-party assurance",
+      "trigger": "NCA publishes implementation guidance mapping controls to assessable deliverables and evidence",
+      "deadline": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "evidence_refs": [
+        "https://nca.gov.sa/en/regulatory-documents/guidelines-list/igcc/",
+        "https://cdn.nca.gov.sa/api/files/public/upload/11bb8f2d-706a-4f18-80f1-40d620ebd845_GECC-.pdf"
+      ],
+      "facts": [
+        "NCA publishes implementation guidance to help entities implement ECC (e.g., GECC-2:2026).",
+        "Guidance explicitly points to illustrative deliverables and evidence assessors may request.",
+        "Suppliers to in-scope entities are expected to provide ECC-aligned evidence."
+      ],
+      "inferences": [
+        "Evidence-readiness work is research-relevant for vendors serving in-scope entities as a supplier route.",
+        "This is guidance, not a certification that Dealix holds."
+      ],
+      "unknowns": [
+        "No named supplier has confirmed an evidence gap.",
+        "Assessment tooling availability is not verified."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Confirm the current IGCC document list and versions on the NCA portal",
+        "Map which Etimad evaluations score NCA evidence"
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 3,
+        "repeatability": 3,
+        "readiness": 3,
+        "distribution_density": 3,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false
+      }
     }
   ],
   "canonical_sector_bridge_policy": "canonical_sector_id is a validated bridge from the broad 15-family radar taxonomy to the canonical 20-sector Company OS. It is research-only and cannot create relationship, consent, opportunity, pipeline, quote, payment, or revenue."
