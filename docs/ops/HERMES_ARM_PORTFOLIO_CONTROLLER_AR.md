@@ -92,6 +92,21 @@ cron/systemd unit. Enqueue is idempotent per arm via the
 `arm_portfolio:<ARM-ID>` marker. The plan is written to the factory state dir by
 default (`HERMES_ARM_PORTFOLIO_PLAN.json`), outside the git checkout.
 
+## Job receipt acceptance (fail-closed)
+
+Every enqueued arm job is non-modifying and carries a prompt with the arm's
+evidence/context refs, the truth laws (`research != relationship`, `invoice !=
+payment`, no invented ROI/pipeline/revenue), and hard constraints (no external
+effect, no repository modification). Acceptance requires **both**:
+
+- `exit_zero`, and
+- `stdout_contains` the exact marker `ARM_PORTFOLIO_RECEIPT:<ARM-ID>`.
+
+The receipt must also report `FINDINGS`, `EVIDENCE_REFS_USED`,
+`RELATIONSHIP_TRUTH`, `PIPELINE_TRUTH`, `REVENUE_TRUTH`, `NEXT_SAFE_ACTION` and
+`L5_REQUIRED`. A run that exits zero but omits the marker fails closed. L5 jobs
+still park at `WAITING_L5`.
+
 ## Verify
 
 ```bash

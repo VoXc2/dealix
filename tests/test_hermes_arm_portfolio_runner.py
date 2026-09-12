@@ -57,6 +57,10 @@ def test_enqueue_submits_safe_jobs_and_skips_hold(tmp_path: Path) -> None:
     jobs = factory.all_jobs(tmp_path / "state")
     assert len(jobs) == len(enqueued_ids)
     assert all(job["STATUS"] == "READY" for job in jobs)
+    for job in jobs:
+        checks = job["ACCEPTANCE"]["checks"]
+        assert [check["kind"] for check in checks] == ["exit_zero", "stdout_contains"]
+        assert f"ARM_PORTFOLIO_RECEIPT:{job['CONTEXT_REFS'][0].split(':')[1]}" in job["EXECUTOR"]["prompt"]
 
 
 def test_l5_arm_enqueues_waiting_l5(tmp_path: Path) -> None:

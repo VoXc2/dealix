@@ -1012,6 +1012,10 @@ def run_acceptance_checks(job: dict[str, Any], cwd: Path, executor_result: dict[
         elif kind == "file_contains":
             target = cwd / str(check.get("path", ""))
             ok = target.is_file() and str(check.get("text", "")) in target.read_text(encoding="utf-8", errors="ignore")
+        elif kind == "stdout_contains":
+            # Fail closed: an empty marker never passes.
+            marker = str(check.get("text", ""))
+            ok = bool(marker) and marker in str(executor_result.get("stdout") or "")
         else:
             ok = False
         results.append({"kind": kind, "ok": ok, "spec": check})

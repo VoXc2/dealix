@@ -409,3 +409,40 @@ def test_run_argv_forwards_stdin_to_subprocess(tmp_path: Path, monkeypatch) -> N
     monkeypatch.setattr(factory.subprocess, "run", _run)
     factory.run_argv(["true"], tmp_path, stdin=subprocess.DEVNULL)
     assert captured["stdin"] is subprocess.DEVNULL
+
+
+def _receipt_job(stdout: str, marker: str = "ARM_PORTFOLIO_RECEIPT:ARM-001"):
+    return _deterministic_job(
+        executor={"argv": ["python3", "-c", f"print({stdout!r})"]},
+        acceptance={
+            "criteria": "receipt marker required",
+            "checks": [{"kind": "exit_zero"}, {"kind": "stdout_contains", "text": marker}],
+        },
+    )
+
+
+def test_stdout_contains_acceptance_passes_with_marker(tmp_path: Path) -> None:
+    job = _receipt_job("ARM_PORTFOLIO_RECEIPT:ARM-001")
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "SUCCEEDED"
+    assert outcome["acceptance"]["passed"] is True
+
+
+def test_stdout_contains_acceptance_fails_when_marker_missing(tmp_path: Path) -> None:
+    job = _receipt_job("exit zero but no receipt")
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "FAILED"
+    assert outcome["acceptance"]["passed"] is False
+    checks = {item["kind"]: item["ok"] for item in outcome["acceptance"]["checks"]}
+    assert checks["exit_zero"] is True
+    assert checks["stdout_contains"] is False
+
+
+def test_stdout_contains_empty_marker_fails_closed(tmp_path: Path) -> None:
+    job = _receipt_job("ARM_PORTFOLIO_RECEIPT:ARM-001", marker="")
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "FAILED"
+    assert outcome["acceptance"]["passed"] is False
