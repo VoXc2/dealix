@@ -5,6 +5,8 @@ from pathlib import Path
 
 import yaml
 
+from dealix.commercial.economic_cell import Sector
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "dealix/config/commercial_reset_2026_09_12.yaml"
@@ -21,6 +23,7 @@ LEGACY_OWNER_ALIASES = {
     "dealix-engineer",
     "dealix-content",
 }
+CANONICAL_SECTOR_IDS = {sector.value for sector in Sector}
 
 
 def _load() -> dict:
@@ -74,6 +77,16 @@ def test_runtime_is_lazy_resource_governed_and_orphan_free() -> None:
     assert fresh["execution"]["legacy_global_deep_wip_max_3"] == "deprecated"
 
 
+def test_sector_priorities_use_canonical_ids_without_duplicates() -> None:
+    data = _load()
+    priority = data["sector_priority"]
+    assert priority["id_namespace"] == "dealix.commercial.economic_cell.Sector.value"
+    configured = [sector for tier in ("A1", "A2", "B") for sector in priority[tier]]
+    assert configured
+    assert set(configured) <= CANONICAL_SECTOR_IDS
+    assert len(configured) == len(set(configured))
+
+
 def test_external_material_effects_default_closed() -> None:
     data = _load()
     autonomy = data["autonomy"]
@@ -107,15 +120,17 @@ def test_proposal_contract_blocks_overclaim_and_fixed_price_authority() -> None:
     } <= forbidden
 
 
-def test_money_now_campaigns_present_with_sources() -> None:
+def test_money_now_campaigns_present_with_sources_and_research_not_pipeline() -> None:
     data = _load()
     campaigns = {row["id"]: row for row in data["campaigns"]}
     assert campaigns["SAUDI_AI_ADOPTION"]["status"] == "MONEY_NOW"
     assert campaigns["FATOORA_WAVE_25"]["status"] == "MONEY_NOW"
     assert campaigns["OPERATIONS_AUTOMATION"]["status"] == "MONEY_NOW"
+    assert campaigns["PRIVATE_SECTOR_CYBER_READINESS"]["status"] == "HIGH_VALUE_RESEARCH"
     for campaign in campaigns.values():
         assert campaign["source"].startswith("https://")
         assert campaign["evidence"].strip()
+        assert "PIPELINE" not in campaign["status"]
 
 
 def test_function_routing_covers_commercial_closed_loop() -> None:
@@ -158,11 +173,15 @@ def test_playbook_and_prompt_preserve_truth_firewall_and_holding() -> None:
         assert phrase in combined
 
 
-def test_pricing_bands_are_explicitly_internal_only() -> None:
+def test_pricing_bands_are_unverified_internal_inputs_not_quote_authority() -> None:
     data = _load()
     pricing = data["pricing"]
     assert pricing["internal_reference_bands_sar"]
+    assert pricing["internal_reference_authority"] == "UNVERIFIED_INTERNAL_REFERENCE"
+    assert pricing["benchmark_evidence_required"] is True
+    assert pricing["dynamic_offer_input"] == "dealix.commercial.dynamic_offer_input"
+    assert "EXACT_COMMERCIAL_APPROVAL" in pricing["quote_authority"]
     warning = pricing["warning"].lower()
-    assert "internal" in warning
+    assert "unverified internal" in warning
     assert "not public pricing" in warning
-    assert "not doctrine" in warning
+    assert "not quote authority" in warning
