@@ -229,3 +229,5 @@ def test_share_state_applies_operator_group(tmp_path: Path, monkeypatch) -> None
     assert result["group"] == "dealix"
     assert result["paths"] >= 1
     assert any(len(call) == 3 and call[2] == 1234 for call in calls)
+    assert any(len(call) == 2 and call[0] == tmp_path and call[1] == 0o770 for call in calls)
+    assert any(len(call) == 2 and isinstance(call[1], int) and (call[1] & 0o060) == 0o060 for call in calls)

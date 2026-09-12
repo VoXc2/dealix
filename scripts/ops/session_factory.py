@@ -293,11 +293,12 @@ _CANONICAL_OPERATOR = "dealix"
 
 
 def share_state_with_operator(root: Path) -> dict[str, Any]:
-    """Grant the canonical operator group read access to factory state.
+    """Grant the canonical operator group controlled read/write access to factory state.
 
-    The factory frequently runs as root while Hermes runs as ``dealix``. A
-    no-agent watchdog under the operator identity cannot read root-owned 0640
-    state, so mirror the operator group onto the state tree after each command.
+    The factory may bootstrap as root while Hermes runs as ``dealix``. The
+    canonical operator must be able to claim/recover jobs without sudo, so the
+    state tree is shared only with the operator group and remains closed to
+    everyone else.
     """
     if os.geteuid() != 0:
         return {"shared": False, "reason": "not-root"}
@@ -308,12 +309,14 @@ def share_state_with_operator(root: Path) -> dict[str, Any]:
     shared = 0
     try:
         os.chown(root, -1, gid)
-        os.chmod(root, 0o750)  # noqa: S103 - operator group needs r-x to traverse
+        os.chmod(root, 0o770)  # noqa: S103 - canonical operator owns runtime mutations
         for path in root.rglob("*"):
             try:
                 os.chown(path, -1, gid)
-                if path.is_file():
-                    os.chmod(path, (path.stat().st_mode & 0o777) | 0o040)
+                if path.is_dir():
+                    os.chmod(path, (path.stat().st_mode & 0o777) | 0o070)  # noqa: S103 - operator group owns state dirs
+                elif path.is_file():
+                    os.chmod(path, (path.stat().st_mode & 0o777) | 0o060)
             except OSError:
                 continue
             shared += 1
