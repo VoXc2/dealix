@@ -4,14 +4,17 @@
   "market": "Saudi Arabia",
   "architecture": {
     "model": "agentic_holding_sector_company_mesh",
-    "canonical_source": "docs/architecture/DEALIX_AGENTIC_HOLDING_SECTOR_MESH.md",
+    "status": "CANONICAL",
+    "canonical_source": "docs/architecture/DEALIX_AGENTIC_HOLDING_CANONICAL_2026_09_12.md",
+    "canonical_contract": "config/company/agentic_holding_canonical_contract.json",
     "single_company_machine": true,
     "legacy_fixed_five_permanent_agents": "deprecated",
     "logical_agents": "dynamic_hierarchical_registry",
     "runtime_workers": "lazy_resource_governed",
     "sector_companies": "dynamic_from_canonical_sector_registry",
     "arm_pods": "dynamic_from_canonical_arm_registry",
-    "orphan_agents_allowed": false
+    "orphan_agents_allowed": false,
+    "process_per_logical_agent_forbidden": true
   },
   "commercial_truth": {
     "legacy_public_prices_authoritative": false,
@@ -46,6 +49,11 @@
   "execution": {
     "orchestrator": "Hermes",
     "executor": "scripts/ops/session_factory.py",
+    "coordination_default": "manager_for_bounded_specialists_handoff_for_ownership_transfer",
+    "handoff_contract_required": true,
+    "filtered_handoff_context": true,
+    "trace_handoffs_tools_guardrails": true,
+    "blocking_guardrails_before_material_side_effects": true,
     "opencode_first_for": [
       "RESEARCH",
       "REVIEW",
@@ -70,7 +78,8 @@
     "repo_writer_policy": "isolated_worktrees_and_resource_governed",
     "paid_spill_default": false,
     "routing_law": "cheapest_adequate_model_then_acceptance_gated_escalation",
-    "acceptance_receipt_required": true
+    "acceptance_receipt_required": true,
+    "verifier_required_for_material_outputs": true
   },
   "resource_governor_inputs": [
     "cpu_load",
@@ -87,9 +96,39 @@
     "contention_domain",
     "incident_state"
   ],
+  "connector_security": {
+    "protected_remote_tools_require_authorization": true,
+    "issuer_validation_required": true,
+    "issuer_bound_credentials": true,
+    "resource_bound_tokens": true,
+    "token_passthrough_forbidden": true,
+    "agent_identity_and_delegated_scope_explicit": true,
+    "credentials_in_prompt_context_forbidden": true,
+    "remote_metadata_ssrf_protection_required": true
+  },
+  "observability": {
+    "end_to_end_trace_required": true,
+    "trace_events": [
+      "agent_start",
+      "model_call",
+      "tool_call",
+      "handoff",
+      "guardrail",
+      "approval_check",
+      "acceptance_check",
+      "receipt",
+      "failure",
+      "retry",
+      "rollback"
+    ],
+    "facts_inferences_unknowns_separated": true,
+    "market_claim_provenance_required": true
+  },
   "authority": {
     "internal_bounded_work": "autonomous_when_policy_allows",
     "material_external_actions": "exact_action_bound_authority",
+    "delegated_authority_must_be_explicit": true,
+    "implicit_authority_transfer_forbidden": true,
     "self_approval_forbidden": true
   }
 }
