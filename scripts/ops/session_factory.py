@@ -764,7 +764,7 @@ def cleanup_worktree(job: dict[str, Any], *, repo_root: Path | None = None) -> d
 # --------------------------------------------------------------------------
 
 
-def run_argv(argv: list[str], cwd: Path, timeout: int = 600) -> dict[str, Any]:
+def run_argv(argv: list[str], cwd: Path, timeout: int = 600, env: dict[str, str] | None = None) -> dict[str, Any]:
     started = now_epoch()
     try:
         result = subprocess.run(
@@ -774,6 +774,7 @@ def run_argv(argv: list[str], cwd: Path, timeout: int = 600) -> dict[str, Any]:
             text=True,
             timeout=timeout,
             check=False,
+            env=env,
         )
         return {
             "ok": result.returncode == 0,
@@ -799,17 +800,29 @@ def execute_deterministic(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
 
 
 def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
-    """Launch ``opencode run`` for engineering/reasoning jobs (noninteractive)."""
+    """Launch ``opencode run --auto`` with a fail-closed permission policy.
+
+    ``--auto`` auto-approves every permission that is not an explicit deny, so we
+    inject the hardened autonomous policy (no residual ``ask`` rules) via
+    ``OPENCODE_PERMISSION``. Safe L0-L4 runs without a prompt; material actions
+    fail closed.
+    """
     binary = shutil.which("opencode")
     if not binary:
         return {"ok": False, "returncode": 127, "stdout": "", "stderr": "opencode-not-found", "duration_s": 0}
     prompt = job.get("EXECUTOR", {}).get("prompt") or job.get("BUSINESS_GOAL", "")
-    argv = [binary, "run"]
+    argv = [binary]
+    env = dict(os.environ)
+    policy = Path(os.environ.get("DEALIX_OPENCODE_PERMISSION_POLICY", str(REPO_ROOT / "config/opencode/autonomous-permissions.json")))
+    if policy.is_file():
+        env["OPENCODE_PERMISSION"] = policy.read_text(encoding="utf-8").strip()
+        argv.append("--auto")
+    argv.append("run")
     model = (job.get("EXECUTOR") or {}).get("model")
     if model:
         argv += ["-m", str(model)]
     argv.append(str(prompt))
-    return run_argv(argv, cwd, timeout=int(job.get("TIME_BUDGET") or 600))
+    return run_argv(argv, cwd, timeout=int(job.get("TIME_BUDGET") or 600), env=env)
 
 
 def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
