@@ -247,3 +247,23 @@ def test_resolve_opencode_binary_returns_none_without_path(tmp_path: Path, monke
     monkeypatch.setenv("HOME", str(tmp_path))
     monkeypatch.setattr(factory.shutil, "which", lambda _name: None)
     assert factory.resolve_opencode_binary() is None
+
+
+def test_execute_opencode_places_auto_after_run(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    def _capture(argv, cwd, timeout=600, env=None):
+        captured["argv"] = argv
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    result = factory.execute_opencode(job, tmp_path)
+    assert result["ok"] is True
+    argv = captured["argv"]
+    assert argv[:3] == [str(binary), "run", "--auto"]

@@ -860,13 +860,12 @@ def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     if not binary:
         return {"ok": False, "returncode": 127, "stdout": "", "stderr": "opencode-not-found", "duration_s": 0}
     prompt = job.get("EXECUTOR", {}).get("prompt") or job.get("BUSINESS_GOAL", "")
-    argv = [binary]
+    argv = [binary, "run"]
     env = dict(os.environ)
     policy = Path(os.environ.get("DEALIX_OPENCODE_PERMISSION_POLICY", str(REPO_ROOT / "config/opencode/autonomous-permissions.json")))
     if policy.is_file():
         env["OPENCODE_PERMISSION"] = policy.read_text(encoding="utf-8").strip()
         argv.append("--auto")
-    argv.append("run")
     model = (job.get("EXECUTOR") or {}).get("model")
     if model:
         argv += ["-m", str(model)]
