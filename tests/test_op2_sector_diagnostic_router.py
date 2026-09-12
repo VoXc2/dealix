@@ -54,3 +54,37 @@ def test_router_is_deterministic() -> None:
     rebuilt = router.build_routes()
     stored = _payload()
     assert [r["sector_id"] for r in rebuilt["routes"]] == [r["sector_id"] for r in stored["routes"]]
+
+
+def test_all_twenty_canonical_sectors_are_routed() -> None:
+    from dealix.commercial.economic_cell import Sector
+
+    payload = _payload()
+    assert payload["route_count"] == len(list(Sector)) == 20
+    assert {route["sector_id"] for route in payload["routes"]} == {sector.value for sector in Sector}
+    assert payload["evidence_backed_count"] >= 1
+    assert payload["pattern_only_count"] >= 1
+    for route in payload["routes"]:
+        assert route["commercial_pattern"]["offer_ladder"]
+        assert route["commercial_pattern"]["acceptance_criteria"]
+        if route["market_evidence_status"] != "EVIDENCE_BACKED":
+            assert "fresh official market signal" in route["discovery_prep"]["evidence_gaps"]
+
+
+def test_former_generic_sectors_have_specific_commercial_intelligence() -> None:
+    from dealix.commercial.economic_cell import Sector
+    from dealix.commercial.sector_company_factory import SECTOR_INTEL
+
+    sectors = [
+        Sector.MINING_METALS, Sector.RETAIL_COMMERCE_ECOMMERCE, Sector.TOURISM_HOSPITALITY,
+        Sector.TELECOM_MEDIA_MARKETING, Sector.EDUCATION_TRAINING, Sector.AGRICULTURE_FOOD_WATER,
+        Sector.MOBILITY_AUTOMOTIVE, Sector.EXPORT_IMPORT_RHQ, Sector.CREATIVE_SPORTS_GAMING,
+        Sector.ASSOCIATIONS_NONPROFITS,
+    ]
+    for sector in sectors:
+        intel = SECTOR_INTEL[sector]
+        assert len(intel["buyers"]) >= 3
+        assert len(intel["problems"]) >= 3
+        assert len(intel["workflows"]) >= 2
+        assert len(intel["offers"]) >= 2
+        assert intel["problems"] != ["revenue_leakage", "operational_exception_overload"]

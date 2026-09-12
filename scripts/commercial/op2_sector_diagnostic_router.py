@@ -30,6 +30,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from dealix.commercial.sector_company_blueprint import build_all_blueprints
+
 WAVE_PATH = REPO_ROOT / "data" / "commercial" / "op2_market_intelligence_wave_v1.json"
 ECONOMY_PATH = REPO_ROOT / "data" / "commercial" / "op2_sector_economy_ranking_v1.json"
 OUT_PATH = REPO_ROOT / "data" / "commercial" / "op2_sector_diagnostic_routes_v1.json"
@@ -59,15 +61,26 @@ SECTOR_FAMILY_TO_CANONICAL: dict[str, str] = {
 # Priority diagnostic families by canonical sector, chosen from the A01..A50
 # catalog. Used only to order the free diagnostic entry; not a claim of need.
 SECTOR_PRIORITY_FAMILIES: dict[str, list[str]] = {
-    "finance_fintech_insurance": ["A03", "A04", "A14", "A15", "A13"],
-    "technology_saas_si": ["A05", "A11", "A12", "A13", "A43"],
-    "healthcare": ["A44", "A08", "A18", "A13", "A45"],
-    "real_estate_proptech": ["A05", "A28", "A46", "A29"],
-    "logistics_supply_chain": ["A27", "A28", "A10", "A05"],
-    "industrial_manufacturing": ["A10", "A11", "A27", "A05"],
     "government_b2g": ["A28", "A36", "A13", "A15"],
-    "education_training": ["A05", "A08", "A06", "A12"],
+    "construction_epc": ["A10", "A28", "A29", "A15"],
+    "industrial_manufacturing": ["A10", "A11", "A27", "A05"],
+    "logistics_supply_chain": ["A27", "A28", "A10", "A05"],
+    "energy_utilities_oil_gas": ["A11", "A13", "A18", "A43"],
+    "mining_metals": ["A10", "A11", "A27", "A28"],
+    "real_estate_proptech": ["A05", "A28", "A46", "A29"],
+    "healthcare": ["A44", "A08", "A18", "A13", "A45"],
+    "finance_fintech_insurance": ["A03", "A04", "A14", "A15", "A13"],
     "retail_commerce_ecommerce": ["A05", "A08", "A09", "A27"],
+    "tourism_hospitality": ["A01", "A08", "A09", "A27"],
+    "professional_services": ["A01", "A02", "A03", "A15"],
+    "technology_saas_si": ["A05", "A11", "A12", "A13", "A43"],
+    "telecom_media_marketing": ["A05", "A08", "A09", "A12"],
+    "education_training": ["A05", "A08", "A06", "A12"],
+    "agriculture_food_water": ["A10", "A27", "A28", "A45"],
+    "mobility_automotive": ["A10", "A27", "A28", "A05"],
+    "export_import_rhq": ["A03", "A04", "A15", "A28"],
+    "creative_sports_gaming": ["A01", "A05", "A08", "A09"],
+    "associations_nonprofits": ["A01", "A06", "A08", "A15"],
 }
 
 
@@ -90,6 +103,7 @@ def build_routes() -> dict[str, Any]:
         warnings.append(f"sector economy ranking unreachable: {ECONOMY_PATH}")
 
     economy_by_sector = {cell["sector_id"]: cell for cell in economy.get("cells", []) or []}
+    blueprints = {item.sector_id: item for item in build_all_blueprints()}
 
     # Group wave signals by canonical sector, preserving evidence refs.
     per_sector: dict[str, list[dict[str, Any]]] = {}
@@ -99,19 +113,27 @@ def build_routes() -> dict[str, Any]:
             per_sector.setdefault(canonical, []).append(signal)
 
     routes: list[dict[str, Any]] = []
-    for sector_id, cell in economy_by_sector.items():
+    for sector_id, blueprint in blueprints.items():
+        cell = economy_by_sector.get(sector_id)
         signals = per_sector.get(sector_id, [])
-        if not signals:
-            continue
-        priority_families = SECTOR_PRIORITY_FAMILIES.get(sector_id, ["A01"])
+        evidence_backed = bool(cell and signals)
+        first_problem = blueprint.top_problems[0] if blueprint.top_problems else UNKNOWN
+        first_buyer = blueprint.buyers[0].role if blueprint.buyers else UNKNOWN
+        priority_families = SECTOR_PRIORITY_FAMILIES.get(sector_id)
+        if not priority_families and blueprint.problem_cells:
+            priority_families = blueprint.problem_cells[0].diagnostic_families[:5]
+        if not priority_families:
+            priority_families = ["A01"]
         routes.append(
             {
                 "sector_id": sector_id,
-                "ar_name": cell.get("ar_name", UNKNOWN),
-                "en_name": cell.get("en_name", UNKNOWN),
-                "buyer": cell.get("buyer", UNKNOWN),
-                "problem": cell.get("problem", UNKNOWN),
-                "research_rank_score": cell.get("research_rank_score", 0.0),
+                "ar_name": cell.get("ar_name", blueprint.ar_name) if cell else blueprint.ar_name,
+                "en_name": cell.get("en_name", blueprint.en_name) if cell else blueprint.en_name,
+                "buyer": cell.get("buyer", first_buyer) if cell else first_buyer,
+                "problem": cell.get("problem", first_problem) if cell else first_problem,
+                "research_rank_score": cell.get("research_rank_score", 0.0) if cell else 0.0,
+                "market_evidence_status": "EVIDENCE_BACKED" if evidence_backed else "PATTERN_ONLY_NEEDS_FRESH_SIGNAL",
+                "maturity_status": blueprint.maturity_status,
                 "diagnostic_entry": {
                     "factory": "dealix.commercial.universal_diagnostic_factory",
                     "free_depths": list(FREE_DEPTHS),
@@ -121,13 +143,22 @@ def build_routes() -> dict[str, Any]:
                     "card_required": False,
                     "roi_promised": False,
                 },
+                "commercial_pattern": {
+                    "offer_ladder": blueprint.offer_ladder,
+                    "procurement_paths": blueprint.procurement_paths,
+                    "compliance_constraints": blueprint.compliance_constraints,
+                    "distribution_channels": blueprint.distribution_channels,
+                    "acceptance_criteria": blueprint.acceptance_criteria,
+                    "proof_requirements": blueprint.proof_requirements,
+                },
                 "crm_handoff": {
                     "canonical_agents": CANONICAL_AGENTS,
                     "mirror_target": "revenue_ops_autopilot",
                     "hubspot_is_mirror_not_truth": True,
                 },
                 "discovery_prep": {
-                    "evidence_gaps": ["platform/brief/scope", "acceptance criteria", "decision owner"],
+                    "evidence_gaps": (["fresh official market signal"] if not evidence_backed else [])
+                    + ["platform/brief/scope", "acceptance criteria", "decision owner"],
                     "problem_state": "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION",
                     "signal_ids": [str(s.get("signal_id")) for s in signals],
                     "deadlines": [str(s.get("deadline")) for s in signals if s.get("deadline") not in (None, UNKNOWN)],
@@ -139,7 +170,7 @@ def build_routes() -> dict[str, Any]:
                 "counts_as_revenue": False,
             }
         )
-    routes.sort(key=lambda item: item["research_rank_score"], reverse=True)
+    routes.sort(key=lambda item: (item["market_evidence_status"] == "EVIDENCE_BACKED", item["research_rank_score"], item["sector_id"]), reverse=True)
 
     return {
         "schema": "dealix.op2-sector-diagnostic-routes.v1",
@@ -157,6 +188,8 @@ def build_routes() -> dict[str, Any]:
         },
         "warnings": warnings,
         "route_count": len(routes),
+        "evidence_backed_count": sum(1 for route in routes if route["market_evidence_status"] == "EVIDENCE_BACKED"),
+        "pattern_only_count": sum(1 for route in routes if route["market_evidence_status"] != "EVIDENCE_BACKED"),
         "routes": routes,
         "counts_as_pipeline": False,
         "counts_as_revenue": False,
