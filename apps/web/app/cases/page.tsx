@@ -1,8 +1,8 @@
 import { INDUSTRY_PLAYS } from "@/lib/sales-machine/ultimate-sales-os";
 
 export const metadata = {
-  title: "Cases — Dealix",
-  description: "Industries Dealix serves, with visible signals, weaknesses, and the right offer for each.",
+  title: "Industry Plays — Dealix",
+  description: "Evidence-bound industry plays for selecting one bounded commercial problem to validate."
 };
 
 export default function CasesPage() {
@@ -11,10 +11,9 @@ export default function CasesPage() {
       <div className="mx-auto max-w-6xl px-6 py-16">
         <header>
           <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">Industries & Plays</p>
-          <h1 className="mt-3 text-4xl font-semibold">ست صناعات، كل وحدة لها play</h1>
+          <h1 className="mt-3 text-4xl font-semibold">قطاعات متعددة، ولكل قطاع play قابل للمراجعة</h1>
           <p className="mt-3 max-w-2xl text-sm text-white/70">
-            ما في &quot;case studies&quot; ملفّقة. في plays واضحة مبنية على الإشارات العامة اللي نلاحظها
-            في كل صناعة، والعرض الأنسب لها.
+            هذه ليست case studies أو وعود نتائج. هذه plays أولية مبنية على إشارات عامة، وتحتاج تشخيصًا وbaseline قبل أي قرار تجاري.
           </p>
         </header>
 
@@ -45,7 +44,7 @@ export default function CasesPage() {
               <p className="mt-2 text-sm text-white/80">{p.openerEn}</p>
               <p className="text-xs text-white/60">{p.openerAr}</p>
               <p className="mt-2 text-xs text-white/50">Proof: {p.proofAngle}</p>
-              <p className="mt-1 text-xs text-emerald-200">First 7 days: {p.first7DayWin}</p>
+              <p className="mt-1 text-xs text-emerald-200">Next bounded step: ابدأ بـFree Execution Diagnostic لتحديد baseline قبل أي نطاق أو مدة.</p>
             </article>
           ))}
         </section>
