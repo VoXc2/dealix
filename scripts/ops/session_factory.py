@@ -44,6 +44,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from go_resource_broker import (
+    discover_catalog,
+    discover_ollama_models,
+    discover_router_models,
+    pick_model,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STATE_DIR = Path(os.environ.get("DEALIX_SESSION_FACTORY_STATE", "/opt/dealix/control/state/session_factory"))
 WORKTREE_ROOT = Path(os.environ.get("DEALIX_SESSION_FACTORY_WORKTREES", "/opt/dealix/worktrees/auto"))
@@ -868,16 +876,20 @@ def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
         argv.append("--auto")
     model = (job.get("EXECUTOR") or {}).get("model")
     if not model:
-        selected_path = Path(
-            os.environ.get(
-                "DEALIX_OPENCODE_SELECTED_MODEL_FILE",
-                "/opt/dealix/control/opencode/state/selected-free-model",
+        route = CLASS_TO_MODEL_CLASS.get(str(job.get("JOB_CLASS")), "R4_INCLUDED_HIGH")
+        catalog = discover_catalog(refresh=False)
+        model = pick_model(route, catalog, discover_ollama_models(), discover_router_models()) if catalog else None
+        if not model or model.endswith("UNKNOWN") or model == "PAID_PENDING_APPROVAL":
+            selected_path = Path(
+                os.environ.get(
+                    "DEALIX_OPENCODE_SELECTED_MODEL_FILE",
+                    "/opt/dealix/control/opencode/state/selected-free-model",
+                )
             )
-        )
-        if selected_path.is_file():
-            candidate = selected_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
-            if candidate and "/" in candidate and not any(ch.isspace() for ch in candidate):
-                model = candidate
+            if selected_path.is_file():
+                candidate = selected_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
+                if candidate and "/" in candidate and not any(ch.isspace() for ch in candidate):
+                    model = candidate
     if model:
         argv += ["-m", str(model)]
     argv.append(str(prompt))

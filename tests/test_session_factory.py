@@ -281,6 +281,9 @@ def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) 
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
     monkeypatch.setenv("DEALIX_OPENCODE_SELECTED_MODEL_FILE", str(selected))
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: [])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
     def _capture(argv, cwd, timeout=600, env=None):
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
@@ -291,3 +294,24 @@ def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) 
     argv = captured["argv"]
     assert argv[0:3] == [str(binary), "run", "--auto"]
     assert argv[3:5] == ["-m", "opencode/example-free"]
+
+
+def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode-go/deepseek-v4.1-flash"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: ["qwen3:4b"])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: ["dealix-local"])
+    def _capture(argv, cwd, timeout=600, env=None):
+        captured["argv"] = argv
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    assert factory.execute_opencode(job, tmp_path)["ok"] is True
+    assert captured["argv"][3:5] == ["-m", "opencode-go/deepseek-v4.1-flash"]
