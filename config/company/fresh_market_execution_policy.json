@@ -1,0 +1,95 @@
+{
+  "schema": "dealix.fresh_market_execution_policy.v2",
+  "effective_date": "2026-09-12",
+  "market": "Saudi Arabia",
+  "architecture": {
+    "model": "agentic_holding_sector_company_mesh",
+    "canonical_source": "docs/architecture/DEALIX_AGENTIC_HOLDING_SECTOR_MESH.md",
+    "single_company_machine": true,
+    "legacy_fixed_five_permanent_agents": "deprecated",
+    "logical_agents": "dynamic_hierarchical_registry",
+    "runtime_workers": "lazy_resource_governed",
+    "sector_companies": "dynamic_from_canonical_sector_registry",
+    "arm_pods": "dynamic_from_canonical_arm_registry",
+    "orphan_agents_allowed": false
+  },
+  "commercial_truth": {
+    "legacy_public_prices_authoritative": false,
+    "public_fixed_prices": false,
+    "free_diagnostic": true,
+    "diagnostic_payment_required": false,
+    "quote_policy": "customer_specific_after_qualified_discovery",
+    "pricing_basis": [
+      "current_market_evidence",
+      "scope",
+      "complexity",
+      "integration_burden",
+      "delivery_cost",
+      "risk",
+      "urgency",
+      "customer_value",
+      "support_sla",
+      "proof_potential",
+      "competitive_context"
+    ],
+    "discount_rule": "no_discount_without_scope_term_or_payment_tradeoff",
+    "invented_roi_forbidden": true,
+    "invented_revenue_forbidden": true,
+    "research_is_relationship": false,
+    "public_contact_is_consent": false,
+    "quote_is_invoice": false,
+    "invoice_is_payment": false,
+    "payment_is_revenue": false,
+    "delivery_is_customer_value": false,
+    "customer_value_is_public_proof": false
+  },
+  "execution": {
+    "orchestrator": "Hermes",
+    "executor": "scripts/ops/session_factory.py",
+    "opencode_first_for": [
+      "RESEARCH",
+      "REVIEW",
+      "ENGINEERING",
+      "COMMERCIAL_REASONING",
+      "DELIVERY_DESIGN",
+      "HIGH_VALUE_CONTENT"
+    ],
+    "deterministic_first_for": [
+      "HEALTH_CHECK",
+      "MONITORING",
+      "FINGERPRINT",
+      "SCHEDULER_AUDIT"
+    ],
+    "local_ai_for": [
+      "CLASSIFICATION",
+      "EXTRACTION",
+      "LOW_RISK_BOUNDED_REASONING"
+    ],
+    "resource_aware_concurrency_governor": true,
+    "legacy_global_deep_wip_max_3": "deprecated",
+    "repo_writer_policy": "isolated_worktrees_and_resource_governed",
+    "paid_spill_default": false,
+    "routing_law": "cheapest_adequate_model_then_acceptance_gated_escalation",
+    "acceptance_receipt_required": true
+  },
+  "resource_governor_inputs": [
+    "cpu_load",
+    "available_ram",
+    "swap_pressure",
+    "disk_io",
+    "provider_quota",
+    "model_quota",
+    "token_or_api_cost",
+    "worktree_availability",
+    "task_risk",
+    "expected_economic_value",
+    "duration",
+    "contention_domain",
+    "incident_state"
+  ],
+  "authority": {
+    "internal_bounded_work": "autonomous_when_policy_allows",
+    "material_external_actions": "exact_action_bound_authority",
+    "self_approval_forbidden": true
+  }
+}
