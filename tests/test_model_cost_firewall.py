@@ -57,13 +57,18 @@ def test_r3_does_not_use_unclassified_router_model_as_included_fallback() -> Non
     assert broker.pick_model("R3_INCLUDED_LIGHT", [], [], ["router/unknown-cost"]) == policy.UNKNOWN_INCLUDED_LIGHT
 
 
-def test_r4_prefers_included_deepseek_and_accepts_explicit_free_fallback() -> None:
+def test_r4_uses_included_deepseek_only_with_verified_use_balance_disabled() -> None:
     catalog = [
         "opencode/paid-a",
         "opencode/deepseek-v4-flash-free",
         "opencode-go/deepseek-v4.1-flash",
     ]
-    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], []) == "opencode-go/deepseek-v4.1-flash"
+    assert broker.pick_model(
+        "R4_INCLUDED_HIGH", catalog, [], [], broker.GO_COST_VERIFIED_DISABLED
+    ) == "opencode-go/deepseek-v4.1-flash"
+    assert broker.pick_model(
+        "R4_INCLUDED_HIGH", catalog, [], [], broker.GO_COST_UNKNOWN
+    ) == "opencode/deepseek-v4-flash-free"
     assert broker.pick_model(
         "R4_INCLUDED_HIGH", ["opencode/deepseek-v4-flash-free"], [], []
     ) == "opencode/deepseek-v4-flash-free"
