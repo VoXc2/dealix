@@ -4,6 +4,7 @@ import pytest
 
 from dealix.agentic_holding.runtime import AgentDispatcher, ResourceSnapshot, WorkItem, build_registry
 from dealix.agentic_holding.session_adapter import (
+    LOGICAL_IDENTITY_FIELDS,
     SessionWorkRequest,
     legacy_executor_owner,
     render_dispatch_plan,
@@ -51,10 +52,14 @@ def test_dynamic_group_owner_maps_to_legacy_session_factory_facade():
         session_factory=FakeSessionFactory,
     )
     assert job["OWNER_AGENT"] == "dealix-sales"
+    assert job["LOGICAL_AGENT_ID"] == "dealix.group.revenue"
+    assert job["LOGICAL_AGENT_PARENT"] == "dealix.group"
+    assert job["LOGICAL_AGENT_LAYER"] == "group"
+    assert job["LOGICAL_AGENT_ROLE"] == "revenue"
     assert "logical_agent:dealix.group.revenue" in job["CONTEXT_REFS"]
 
 
-def test_arm_keeps_legacy_owner_alias_but_preserves_logical_identity():
+def test_arm_keeps_legacy_owner_alias_but_persists_top_level_logical_identity():
     registry = _registry()
     agent = registry.agents["dealix.technology_saas_si.arm_code.operator"]
     assert legacy_executor_owner(agent) == "dealix-engineer"
@@ -66,6 +71,12 @@ def test_arm_keeps_legacy_owner_alias_but_preserves_logical_identity():
     )
     assert job["OWNER_AGENT"] == "dealix-engineer"
     assert job["MODIFYING"] is True
+    assert job["LOGICAL_AGENT_ID"] == agent.agent_id
+    assert job["LOGICAL_AGENT_PARENT"] == "dealix.technology_saas_si.arm_code"
+    assert job["LOGICAL_AGENT_LAYER"] == "arm"
+    assert job["LOGICAL_AGENT_ROLE"] == "operator"
+    assert job["LOGICAL_AGENT_SECTOR"] == "technology_saas_si"
+    assert job["LOGICAL_AGENT_ARM_ID"] == "arm_code"
     assert "arm:arm_code" in job["CONTEXT_REFS"]
 
 
@@ -94,6 +105,9 @@ def test_dispatch_plan_renders_only_governor_selected_jobs_and_never_submits():
     assert len(jobs) == 1
     receipt = session_adapter_receipt(jobs)
     assert receipt["jobs_rendered"] == 1
+    assert receipt["logical_agent_ids"] == ["dealix.group.revenue"]
+    assert receipt["logical_identity_fields"] == list(LOGICAL_IDENTITY_FIELDS)
+    assert receipt["logical_identity_preserved"] is True
     assert receipt["submitted"] is False
     assert receipt["material_external_effects_executed"] is False
 
