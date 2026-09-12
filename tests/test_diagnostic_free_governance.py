@@ -4,12 +4,13 @@ from dealix.commercial.low_touch_products.diagnostic_product import (
     DiagnosticProductEngine,
     DiagnosticProductRequest,
 )
-from dealix.commercial.universal_diagnostic_factory import DiagnosticDepth
+from dealix.commercial.universal_diagnostic_factory import DiagnosticDepth, FREE_DEPTHS
 
 
 def test_every_diagnostic_depth_is_free() -> None:
     engine = DiagnosticProductEngine()
 
+    assert FREE_DEPTHS == frozenset(DiagnosticDepth)
     for depth in DiagnosticDepth:
         assert engine.price("technology_saas_si", depth) == 0
         assert engine.pricing_basis(depth) == FREE_ALL_DEPTHS
