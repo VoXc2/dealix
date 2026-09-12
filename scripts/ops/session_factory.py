@@ -836,6 +836,18 @@ def execute_deterministic(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     return run_argv(list(executor["argv"]), cwd, timeout=timeout)
 
 
+def resolve_opencode_binary() -> str | None:
+    """Resolve OpenCode in both interactive shells and stripped cron environments."""
+    binary = shutil.which("opencode")
+    if binary:
+        return binary
+    home = Path(os.environ.get("HOME", str(Path.home()))).expanduser()
+    candidate = home / ".opencode" / "bin" / "opencode"
+    if candidate.is_file() and os.access(candidate, os.X_OK):
+        return str(candidate)
+    return None
+
+
 def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     """Launch ``opencode run --auto`` with a fail-closed permission policy.
 
@@ -844,7 +856,7 @@ def execute_opencode(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     ``OPENCODE_PERMISSION``. Safe L0-L4 runs without a prompt; material actions
     fail closed.
     """
-    binary = shutil.which("opencode")
+    binary = resolve_opencode_binary()
     if not binary:
         return {"ok": False, "returncode": 127, "stdout": "", "stderr": "opencode-not-found", "duration_s": 0}
     prompt = job.get("EXECUTOR", {}).get("prompt") or job.get("BUSINESS_GOAL", "")

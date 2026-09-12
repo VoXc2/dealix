@@ -231,3 +231,19 @@ def test_share_state_applies_operator_group(tmp_path: Path, monkeypatch) -> None
     assert any(len(call) == 3 and call[2] == 1234 for call in calls)
     assert any(len(call) == 2 and call[0] == tmp_path and call[1] == 0o770 for call in calls)
     assert any(len(call) == 2 and isinstance(call[1], int) and (call[1] & 0o060) == 0o060 for call in calls)
+
+
+def test_resolve_opencode_binary_falls_back_to_home(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / ".opencode" / "bin" / "opencode"
+    binary.parent.mkdir(parents=True)
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(factory.shutil, "which", lambda _name: None)
+    assert factory.resolve_opencode_binary() == str(binary)
+
+
+def test_resolve_opencode_binary_returns_none_without_path(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(factory.shutil, "which", lambda _name: None)
+    assert factory.resolve_opencode_binary() is None
