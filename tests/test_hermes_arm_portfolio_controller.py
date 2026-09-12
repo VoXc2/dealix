@@ -199,3 +199,77 @@ def test_registry_copy_is_not_mutated_by_planning() -> None:
     snapshot = copy.deepcopy(registry)
     ctrl.plan_portfolio(registry=registry, generated_at="fixed")
     assert registry == snapshot
+
+
+def test_build_job_prompt_and_acceptance_require_receipt_marker() -> None:
+    record = _arm(ctrl.plan_portfolio(generated_at="fixed"), "ARM-001")
+    job = ctrl.build_job(record)
+    marker = "ARM_PORTFOLIO_RECEIPT:ARM-001"
+    prompt = job["EXECUTOR"]["prompt"]
+    assert marker in prompt
+    for field in (
+        "FINDINGS",
+        "EVIDENCE_REFS_USED",
+        "RELATIONSHIP_TRUTH",
+        "PIPELINE_TRUTH",
+        "REVENUE_TRUTH",
+        "NEXT_SAFE_ACTION",
+        "L5_REQUIRED",
+    ):
+        assert field in prompt
+    assert "research != relationship" in prompt
+    assert "no external effect" in prompt.lower()
+    assert "no repository modification" in prompt.lower()
+    checks = job["ACCEPTANCE"]["checks"]
+    assert [check["kind"] for check in checks] == ["exit_zero", "stdout_contains"]
+    assert checks[1]["text"] == marker
+    assert marker in job["ACCEPTANCE"]["criteria"]
+
+
+def test_build_job_prompt_includes_evidence_refs() -> None:
+    evidence = ctrl.normalize_evidence(
+        {
+            "arms": {
+                "ARM-004": {
+                    "research_evidence_refs": ["evidence://r/1", "evidence://r/2"],
+                }
+            }
+        }
+    )
+    record = _arm(ctrl.plan_portfolio(evidence=evidence, generated_at="fixed"), "ARM-004")
+    prompt = ctrl.build_job(record)["EXECUTOR"]["prompt"]
+    assert "evidence://r/1" in prompt
+    assert "evidence://r/2" in prompt
+    assert "ARM_PORTFOLIO_RECEIPT:ARM-004" in prompt
+
+
+def test_build_job_prompt_without_refs_is_explicit() -> None:
+    record = _arm(ctrl.plan_portfolio(generated_at="fixed"), "ARM-006")
+    prompt = ctrl.build_job(record)["EXECUTOR"]["prompt"]
+    assert "NONE (no evidence refs supplied)" in prompt
+
+
+def test_l5_build_job_receipt_declares_l5_required() -> None:
+    evidence = ctrl.normalize_evidence(
+        {"arms": {"ARM-004": {"customer_evidence_refs": ["evidence://c/1"], "requires_external_send": True}}}
+    )
+    record = _arm(ctrl.plan_portfolio(evidence=evidence, generated_at="fixed"), "ARM-004")
+    job = ctrl.build_job(record)
+    assert job["AUTHORITY_LEVEL"] == "L5"
+    assert "L5_REQUIRED: YES" in job["EXECUTOR"]["prompt"]
+    assert job["ACCEPTANCE"]["checks"][1]["text"] == "ARM_PORTFOLIO_RECEIPT:ARM-004"
+
+
+def test_built_job_acceptance_is_fail_closed_on_missing_marker(tmp_path) -> None:
+    factory = ctrl.session_factory()
+    job = ctrl.build_job(_arm(ctrl.plan_portfolio(generated_at="fixed"), "ARM-001"))
+    with_marker = factory.run_acceptance_checks(
+        job, tmp_path, {"ok": True, "stdout": "ARM_PORTFOLIO_RECEIPT:ARM-001\nFINDINGS: none"}
+    )
+    assert with_marker["passed"] is True
+    without_marker = factory.run_acceptance_checks(
+        job, tmp_path, {"ok": True, "stdout": "exit zero but no receipt"}
+    )
+    assert without_marker["passed"] is False
+    checks = {item["kind"]: item["ok"] for item in without_marker["checks"]}
+    assert checks == {"exit_zero": True, "stdout_contains": False}

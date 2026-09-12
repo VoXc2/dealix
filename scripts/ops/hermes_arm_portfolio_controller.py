@@ -48,6 +48,7 @@ EVIDENCE_SCHEMA = "dealix.arm_portfolio_evidence.v1"
 SCORE_SEMANTICS = "PRIORITIZATION_HEURISTIC_NOT_FORECAST"
 L5_POLICY = "WAITING_L5_never_auto_executed"
 EXTERNAL_EFFECT = "NONE"
+RECEIPT_MARKER_PREFIX = "ARM_PORTFOLIO_RECEIPT:"
 
 CLASS_DEEP = "DEEP"
 CLASS_LIGHT = "LIGHT"
@@ -821,13 +822,56 @@ def render_summary(plan: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def build_arm_job_prompt(record: dict[str, Any]) -> str:
+    """Bounded, non-modifying, receipt-required prompt for one arm job."""
+    arm_id = record["arm_id"]
+    marker = f"{RECEIPT_MARKER_PREFIX}{arm_id}"
+    refs = record.get("evidence_refs") or []
+    ref_lines = "\n".join(f"- {ref}" for ref in refs) or "- NONE (no evidence refs supplied)"
+    l5_required = "YES" if record["l5_required"] else "NO"
+    return (
+        f"You are executing a bounded, non-modifying Dealix arm experiment for {arm_id} "
+        f"({record['name']}).\n"
+        f"First experiment: {record['next_safe_action']}\n"
+        f"Horizon: {record['horizon']}; promotion gate: {record['promotion_gate']}; "
+        f"evidence tier: {record['evidence']['tier']}.\n\n"
+        "Evidence / context refs (use only these; never invent):\n"
+        f"{ref_lines}\n\n"
+        "Truth laws (non-negotiable):\n"
+        "- research != relationship; public_contact != consent; proposal_view != buying_decision\n"
+        "- quote != invoice; invoice != payment; synthetic != customer_proof; deployment != correct_release\n"
+        "- Never invent ROI, pipeline, revenue, buyer intent, consent or proof.\n"
+        "- relationship/pipeline/revenue truth stays exactly as evidenced (default false).\n\n"
+        "Hard constraints:\n"
+        "- No external effect: no send, publish, post, pay, spend, deploy, DNS, DB or secret action.\n"
+        "- No repository modification: do not edit, create or delete files; do not commit, push or merge.\n"
+        "- Analysis and drafts only; L5 material effects are out of scope.\n\n"
+        "Return a concise structured final receipt that contains this exact marker on its own line:\n"
+        f"{marker}\n"
+        "followed by these labelled fields:\n"
+        "- FINDINGS: <concise findings>\n"
+        f"- EVIDENCE_REFS_USED: <comma-separated refs actually used, or NONE>\n"
+        "- RELATIONSHIP_TRUTH: <what is evidenced, else NONE>\n"
+        "- PIPELINE_TRUTH: <false unless evidenced, else NONE>\n"
+        "- REVENUE_TRUTH: <false unless evidenced, else NONE>\n"
+        f"- NEXT_SAFE_ACTION: {record['next_safe_action']}\n"
+        f"- L5_REQUIRED: {l5_required}\n"
+    )
+
+
 def build_job(record: dict[str, Any], *, repo_root: Path | None = None) -> dict[str, Any]:
-    """Build a session-factory job for one record. Never executes it here."""
+    """Build a session-factory job for one record. Never executes it here.
+
+    The prompt is non-modifying and the acceptance gate is fail-closed: the job
+    only succeeds when the executor exits zero AND prints the exact
+    ``ARM_PORTFOLIO_RECEIPT:<ARM-ID>`` marker in its stdout.
+    """
     factory = session_factory()
     job_class = record["model_job_class"]["job_class"]
     authority = record["model_job_class"]["authority_level"]
-    marker = f"arm_portfolio:{record['arm_id']}"
-    context_refs = [marker, *(record.get("evidence_refs") or [])][:8]
+    context_marker = f"arm_portfolio:{record['arm_id']}"
+    receipt_marker = f"{RECEIPT_MARKER_PREFIX}{record['arm_id']}"
+    context_refs = [context_marker, *(record.get("evidence_refs") or [])][:8]
     job = factory.make_job(
         owner_agent=str(record["owner"]),
         business_goal=f"[{record['arm_id']}] {record['name']}: {record['horizon']} first experiment",
@@ -839,10 +883,16 @@ def build_job(record: dict[str, Any], *, repo_root: Path | None = None) -> dict[
         ),
         priority=float(record["score"]["total"]),
         modifying=False,
-        executor={"prompt": record["next_safe_action"]},
+        executor={"prompt": build_arm_job_prompt(record)},
         acceptance={
-            "criteria": "bounded first experiment produces a draft/evidence artifact; no external effect",
-            "checks": [{"kind": "exit_zero"}],
+            "criteria": (
+                "exit zero AND stdout contains the exact receipt marker "
+                f"{receipt_marker}; no external effect; no repository modification"
+            ),
+            "checks": [
+                {"kind": "exit_zero"},
+                {"kind": "stdout_contains", "text": receipt_marker},
+            ],
         },
         context_refs=context_refs,
         next_action=record["next_safe_action"],
@@ -879,10 +929,12 @@ __all__ = [
     "EVIDENCE_SCHEMA",
     "L5_POLICY",
     "PLAYBOOKS_PATH",
+    "RECEIPT_MARKER_PREFIX",
     "REGISTRY_PATH",
     "SCHEMA",
     "SCORE_SEMANTICS",
     "already_enqueued",
+    "build_arm_job_prompt",
     "build_job",
     "build_record",
     "contract_failures",

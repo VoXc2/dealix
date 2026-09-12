@@ -409,3 +409,107 @@ def test_run_argv_forwards_stdin_to_subprocess(tmp_path: Path, monkeypatch) -> N
     monkeypatch.setattr(factory.subprocess, "run", _run)
     factory.run_argv(["true"], tmp_path, stdin=subprocess.DEVNULL)
     assert captured["stdin"] is subprocess.DEVNULL
+
+
+def _receipt_job(stdout: str, marker: str = "ARM_PORTFOLIO_RECEIPT:ARM-001"):
+    return _deterministic_job(
+        executor={"argv": ["python3", "-c", f"print({stdout!r})"]},
+        acceptance={
+            "criteria": "receipt marker required",
+            "checks": [{"kind": "exit_zero"}, {"kind": "stdout_contains", "text": marker}],
+        },
+    )
+
+
+def test_stdout_contains_acceptance_passes_with_marker(tmp_path: Path) -> None:
+    job = _receipt_job("ARM_PORTFOLIO_RECEIPT:ARM-001")
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "SUCCEEDED"
+    assert outcome["acceptance"]["passed"] is True
+
+
+def test_stdout_contains_acceptance_fails_when_marker_missing(tmp_path: Path) -> None:
+    job = _receipt_job("exit zero but no receipt")
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "FAILED"
+    assert outcome["acceptance"]["passed"] is False
+    checks = {item["kind"]: item["ok"] for item in outcome["acceptance"]["checks"]}
+    assert checks["exit_zero"] is True
+    assert checks["stdout_contains"] is False
+
+
+def test_stdout_contains_empty_marker_fails_closed(tmp_path: Path) -> None:
+    job = _receipt_job("ARM_PORTFOLIO_RECEIPT:ARM-001", marker="")
+    factory.submit_job(tmp_path, job)
+    outcome = factory.run_job(tmp_path, factory.load_job(tmp_path, job["JOB_ID"]))
+    assert outcome["status"] == "FAILED"
+    assert outcome["acceptance"]["passed"] is False
+
+
+def test_execute_local_ai_honors_bounded_timeout_and_generation(tmp_path: Path, monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class _Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return b'{"response":"sector analysis ok"}'
+
+    def _urlopen(request, timeout):
+        captured["timeout"] = timeout
+        captured["body"] = factory.json.loads(request.data.decode("utf-8"))
+        return _Response()
+
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _urlopen)
+    job = factory.make_job(
+        owner_agent="dealix-sales",
+        business_goal="sector canary",
+        job_class="LOCAL_AI",
+        authority_level="L2",
+        modifying=False,
+        executor={"prompt": "brief", "timeout_seconds": 75, "num_predict": 160},
+        acceptance={"criteria": "bounded local analysis"},
+    )
+    result = factory.execute_local_ai(job, tmp_path)
+    assert result["ok"] is True
+    assert captured["timeout"] == 75
+    assert captured["body"]["options"]["num_predict"] == 160
+
+
+def test_execute_local_ai_caps_requested_bounds(tmp_path: Path, monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class _Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return b'{"response":"ok"}'
+
+    def _urlopen(request, timeout):
+        captured["timeout"] = timeout
+        captured["body"] = factory.json.loads(request.data.decode("utf-8"))
+        return _Response()
+
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _urlopen)
+    job = factory.make_job(
+        owner_agent="dealix-sales",
+        business_goal="bounded",
+        job_class="LOCAL_AI",
+        authority_level="L2",
+        modifying=False,
+        executor={"prompt": "brief", "timeout_seconds": 999, "num_predict": 9999},
+        acceptance={"criteria": "bounded local analysis"},
+    )
+    assert factory.execute_local_ai(job, tmp_path)["ok"] is True
+    assert captured["timeout"] == 120
+    assert captured["body"]["options"]["num_predict"] == 256
