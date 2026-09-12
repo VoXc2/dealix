@@ -16,11 +16,14 @@ from dealix.agentic_holding.runtime import (
 )
 from dealix.agentic_holding.session_adapter import (
     LEGACY_EXECUTOR_OWNERS,
+    LOGICAL_IDENTITY_FIELDS,
     SessionWorkRequest,
     legacy_executor_owner,
     render_dispatch_plan,
     render_session_job,
+    resolve_live_base_sha,
     session_adapter_receipt,
+    submit_dispatch_plan,
 )
 
 __all__ = [
@@ -39,9 +42,12 @@ __all__ = [
     "build_current_registry",
     "build_registry",
     "LEGACY_EXECUTOR_OWNERS",
+    "LOGICAL_IDENTITY_FIELDS",
     "SessionWorkRequest",
     "legacy_executor_owner",
     "render_dispatch_plan",
     "render_session_job",
+    "resolve_live_base_sha",
     "session_adapter_receipt",
+    "submit_dispatch_plan",
 ]
