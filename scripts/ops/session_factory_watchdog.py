@@ -21,6 +21,32 @@ FAILURE_SPIKE_WINDOW_S = 3600
 FAILURE_SPIKE_THRESHOLD = 5
 
 
+def _governor_capacity(state_dir: Path) -> int | None:
+    """Return the ResourceGovernor's live deep capacity, or None when absent.
+
+    The watchdog never invents capacity authority: without governor state it
+    falls back to a conservative legacy-safe default instead of asserting a
+    global cap.
+    """
+    path = state_dir / "RESOURCE_GOVERNOR_STATE.json"
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    try:
+        capacity = int(payload.get("max_concurrent_deep"))
+    except (TypeError, ValueError):
+        return None
+    return capacity if capacity > 0 else None
+
+
+# Conservative monitoring default when no governor state exists. This is not
+# runtime capacity authority (ResourceGovernor is); it only bounds alerting.
+WATCHDOG_DEFAULT_CAPACITY = 3
+
+
 def _load(path: Path, default):
     if not path.is_file():
         return default
@@ -81,10 +107,18 @@ def evaluate(state_dir: Path, *, now: float | None = None) -> list[dict]:
     if len(recent_failures) >= FAILURE_SPIKE_THRESHOLD:
         findings.append({"kind": "FAILURE_SPIKE", "count": len(recent_failures), "window_s": FAILURE_SPIKE_WINDOW_S})
 
-    deep_wip_max = 3
+    capacity = _governor_capacity(state_dir)
+    deep_wip_max = capacity if capacity is not None else WATCHDOG_DEFAULT_CAPACITY
     active = sum(1 for job in jobs if job.get("STATUS") == "RUNNING" and job.get("MODIFYING"))
     if active > deep_wip_max:
-        findings.append({"kind": "DEEP_WIP_EXCEEDED", "active": active, "max": deep_wip_max})
+        findings.append(
+            {
+                "kind": "DEEP_WIP_EXCEEDED",
+                "active": active,
+                "max": deep_wip_max,
+                "governor_derived": capacity is not None,
+            }
+        )
 
     return findings
 

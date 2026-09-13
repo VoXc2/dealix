@@ -40,6 +40,7 @@ import shutil
 import subprocess
 import sys
 import time
+import urllib.parse
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
@@ -65,8 +66,13 @@ STATE_DIR = Path(os.environ.get("DEALIX_SESSION_FACTORY_STATE", "/opt/dealix/con
 WORKTREE_ROOT = Path(os.environ.get("DEALIX_SESSION_FACTORY_WORKTREES", "/opt/dealix/worktrees/auto"))
 FROZEN_RELEASE_SHA = os.environ.get("DEALIX_FROZEN_RELEASE_SHA", "8bb0a6c382c49ca288f7b579cae07676f006e229")
 
-def resolve_default_base_sha(repo_root: pathlib.Path | str | None = None) -> str:
-    """Resolve exact live base for autonomous jobs; never inherit stale frozen default blindly."""
+def resolve_live_base_sha(repo_root: pathlib.Path | str | None = None) -> str | None:
+    """Resolve the exact live base for autonomous jobs, or None.
+
+    This never falls back to the frozen release SHA: a None return means live
+    git resolution failed and the caller must fail closed (modifying jobs) or
+    apply an explicit non-modifying compatibility policy.
+    """
     # Prefer explicit env
     explicit = os.environ.get("DEALIX_AGENTIC_BASE_SHA", "").strip()
     if explicit:
@@ -86,7 +92,17 @@ def resolve_default_base_sha(repo_root: pathlib.Path | str | None = None) -> str
                     return sha
             except (OSError, subprocess.TimeoutExpired):
                 continue
-    # Fallback to frozen only when live resolution fails (preserves production release path)
+    return None
+
+
+def resolve_default_base_sha(repo_root: pathlib.Path | str | None = None) -> str:
+    """Resolve exact live base for autonomous jobs; never inherit stale frozen default blindly."""
+    live = resolve_live_base_sha(repo_root)
+    if live:
+        return live
+    # Fallback to frozen only when live resolution fails (preserves production
+    # release path). Modifying job creation must NOT use this fallback: see
+    # make_job, which resolves a strict live base for repo-writing work.
     return FROZEN_RELEASE_SHA
 
 # Autonomous OpenCode runs get their own control database. Sharing the single
@@ -147,7 +163,11 @@ CLASS_TO_MODEL_CLASS: dict[str, str] = {
 }
 
 PERMANENT_AGENTS = ("dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content")
-DEEP_WIP_MAX = 3
+# Operational ceiling for deep modifying concurrency. This is a bounded,
+# configurable governor input — not the legacy global DEEP_WIP_MAX=3 hard cap,
+# which Omega V3 supersedes. Live CPU/RAM/load derive the actual capacity.
+DEEP_WIP_CEILING_DEFAULT = 8
+DEEP_WIP_CEILING_HARD_MAX = 64
 
 # --------------------------------------------------------------------------
 # State machine
@@ -408,6 +428,16 @@ def make_job(
     next_action: str = "",
 ) -> dict[str, Any]:
     job = empty_job()
+    effective_modifying = bool(modifying) if modifying is not None else job_class in MODIFYING_CLASSES
+    if base_sha:
+        resolved_base: str | None = base_sha
+    elif effective_modifying:
+        # Modifying jobs must never receive frozen fallback authority: when
+        # live git resolution fails the base stays empty and worktree creation
+        # fails closed end-to-end (live-base-required-no-frozen-fallback).
+        resolved_base = resolve_live_base_sha()
+    else:
+        resolved_base = resolve_default_base_sha()
     job.update(
         {
             "JOB_ID": new_job_id(),
@@ -421,7 +451,7 @@ def make_job(
             "DEPENDENCIES": [],
             "AUTHORITY_LEVEL": authority_level,
             "REPO": str(REPO_ROOT),
-            "BASE_SHA": base_sha or resolve_default_base_sha(),
+            "BASE_SHA": resolved_base,
             "WORKTREE": None,
             "FILES_IN_SCOPE": files_in_scope or [],
             "FILES_FORBIDDEN": [".env", "*.secret", "auth.json"],
@@ -438,7 +468,7 @@ def make_job(
             "RESULT": None,
             "EVIDENCE": [],
             "NEXT_ACTION": next_action,
-            "MODIFYING": bool(modifying) if modifying is not None else job_class in MODIFYING_CLASSES,
+            "MODIFYING": effective_modifying,
             "EXECUTION_MODE": CLASS_TO_MODE.get(job_class, "deterministic"),
             "EXECUTOR": executor or {},
             "ACCEPTANCE": acceptance or {},
@@ -446,6 +476,44 @@ def make_job(
         }
     )
     return job
+
+
+_CANONICAL_AGENT_CACHE: dict[str, Any] = {"agents": None, "at": 0.0}
+_CANONICAL_AGENT_TTL_S = 300.0
+
+
+def canonical_agent_ids() -> set[str] | None:
+    """Return current canonical logical-agent ids, or None when unavailable.
+
+    Loads ``dealix/agentic_holding/runtime.py`` directly by file path (no
+    package ``__init__`` side effects) and caches the roster briefly. A None
+    return means the registry cannot be established right now; callers fail
+    closed for hierarchical identities rather than trusting caller text.
+    """
+    now = now_epoch()
+    cached = _CANONICAL_AGENT_CACHE.get("agents")
+    if cached is not None and now - float(_CANONICAL_AGENT_CACHE.get("at") or 0.0) < _CANONICAL_AGENT_TTL_S:
+        return set(cached)
+    try:
+        import importlib.util
+
+        path = REPO_ROOT / "dealix" / "agentic_holding" / "runtime.py"
+        spec = importlib.util.spec_from_file_location("dealix_agentic_holding_runtime_canonical", path)
+        if spec is None or spec.loader is None:
+            return None
+        module = importlib.util.module_from_spec(spec)
+        # slots=True dataclasses resolve string annotations via sys.modules.
+        sys.modules[spec.name] = module
+        try:
+            spec.loader.exec_module(module)
+            agents = set(module.build_current_registry().agents)
+        finally:
+            sys.modules.pop(spec.name, None)
+    except Exception:
+        return None
+    _CANONICAL_AGENT_CACHE["agents"] = agents
+    _CANONICAL_AGENT_CACHE["at"] = now
+    return set(agents)
 
 
 def validate_job(job: dict[str, Any]) -> list[str]:
@@ -460,10 +528,19 @@ def validate_job(job: dict[str, Any]) -> list[str]:
     if job.get("STATUS") not in STATES:
         errors.append(f"invalid:STATUS={job.get('STATUS')}")
     owner = job.get("OWNER_AGENT")
-    # Allow hierarchical Agentic Holding logical agents (dealix.*) while preserving 5 legacy aliases as compatibility facade
+    # The five permanent names are compatibility executor aliases (routing
+    # labels); hierarchical dealix.*.* identities must be registry-bound using
+    # the current canonical Agentic Holding registry. Caller text alone can
+    # never mint a logical agent identity.
     is_hierarchical = isinstance(owner, str) and owner.startswith("dealix.") and owner.count(".") >= 2
     if owner and owner not in PERMANENT_AGENTS and not is_hierarchical:
         errors.append(f"invalid:OWNER_AGENT={owner} (must be one of the five permanent agents or a hierarchical logical agent dealix.*.*)")
+    elif is_hierarchical and owner not in PERMANENT_AGENTS:
+        known = canonical_agent_ids()
+        if known is None:
+            errors.append(f"invalid:OWNER_AGENT={owner} (canonical agent registry unavailable; failing closed)")
+        elif owner not in known:
+            errors.append(f"invalid:OWNER_AGENT={owner} (unknown logical agent: not in the canonical registry)")
     dependencies = job.get("DEPENDENCIES") or []
     if not isinstance(dependencies, list):
         errors.append("invalid:DEPENDENCIES must be a list")
@@ -745,22 +822,39 @@ def read_resources() -> dict[str, Any]:
     }
 
 
+def operational_ceiling() -> int:
+    """Bounded operational ceiling for deep modifying concurrency.
+
+    Configurable via ``DEALIX_DEEP_WIP_CEILING`` (clamped to a hard maximum so
+    concurrency is never unbounded). This replaces the legacy global
+    DEEP_WIP_MAX=3 hard cap: roomy hosts may safely compute above 3 while
+    constrained hosts throttle down to 1.
+    """
+    try:
+        configured = int(os.environ.get("DEALIX_DEEP_WIP_CEILING", str(DEEP_WIP_CEILING_DEFAULT)))
+    except (TypeError, ValueError):
+        return DEEP_WIP_CEILING_DEFAULT
+    return max(1, min(configured, DEEP_WIP_CEILING_HARD_MAX))
+
+
 def compute_max_concurrent_deep(resources: dict[str, Any]) -> int:
-    """Bounded deep-work concurrency from live resources. Never exceeds DEEP_WIP_MAX."""
+    """ResourceGovernor-derived deep-work concurrency: live CPU/RAM/load plus the operational ceiling."""
     available = int(resources.get("mem_available_mb") or 0)
     cpu = max(1, int(resources.get("cpu_count") or 1))
     load1 = float(resources.get("load1") or 0.0)
+    ceiling = operational_ceiling()
     if available and available < 2500:
         return 1
-    if available and available < 4500:
-        capacity = 2
-    else:
-        capacity = 3
+    # Roughly one deep worker per ~2GiB headroom above a 2GiB reserve, and one
+    # per CPU below one reserved for the host supervisor.
+    by_mem = max(1, (available - 2048) // 2048) if available else 1
+    by_cpu = max(1, cpu - 1)
+    capacity = max(1, min(by_mem, by_cpu, ceiling))
     if load1 > cpu * 1.5:
         capacity = min(capacity, 2)
     if load1 > cpu * 3:
         capacity = 1
-    return max(1, min(capacity, DEEP_WIP_MAX))
+    return max(1, capacity)
 
 
 def governor_state(root: Path, resources: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -772,9 +866,9 @@ def governor_state(root: Path, resources: dict[str, Any] | None = None) -> dict[
         "generated_at": now_iso(),
         "resources": resources,
         "deep_wip_active": deep_active,
-        "deep_wip_max": DEEP_WIP_MAX,
+        "deep_wip_max": operational_ceiling(),
         "max_concurrent_deep": max_deep,
-        "deep_wip_available": max(0, min(max_deep, DEEP_WIP_MAX) - deep_active),
+        "deep_wip_available": max(0, max_deep - deep_active),
         "concurrency_policy": "read-only jobs may fan out wider; deep modifying jobs capped by live resources",
     }
     write_json(governor_path(root), payload)
@@ -952,23 +1046,365 @@ def opencode_db_path(job: dict[str, Any], db_dir: Path | None = None) -> Path:
     return base / f"{job.get('JOB_ID') or 'job'}.db"
 
 
-def execute_opencode(
-    job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None
+def _resolve_opencode_model(job: dict[str, Any]) -> tuple[str | None, dict[str, Any] | None]:
+    """Resolve a catalog-bound model, or ``(None, hold_result)``.
+
+    A ``-free`` suffix alone is NOT authority: caller-supplied and
+    selection-file candidates must also be present in the current discovered
+    catalog (current canonical availability evidence). Fabricated or stale
+    ``*-free`` ids HOLD instead of launching.
+    """
+    catalog = discover_catalog(refresh=False) or []
+    available = set(catalog)
+    model = (job.get("EXECUTOR") or {}).get("model")
+    if model:
+        # A caller-supplied model is never authority on its own. Accept only a
+        # currently-catalogued explicit-free id, or a catalogued included-Go id
+        # while live provider cost authority verifies balance fallback is
+        # disabled. Otherwise HOLD.
+        live_cost = str(provider_cost_authority().get("state"))
+        caller_allowed = (
+            is_explicit_free_model(model)
+            or (is_included_opencode_go_model(model) and live_cost == GO_COST_VERIFIED_DISABLED)
+        ) and model in available
+        if not caller_allowed:
+            return None, {
+                "ok": False,
+                "returncode": 79,
+                "stdout": "",
+                "stderr": "model-authority-unproven: caller model rejected without current catalog/cost evidence",
+                "duration_s": 0,
+            }
+        return str(model), None
+    route = CLASS_TO_MODEL_CLASS.get(str(job.get("JOB_CLASS")), "R4_INCLUDED_HIGH")
+    picked = pick_model(route, catalog, discover_ollama_models(), discover_router_models()) if catalog else None
+    if not picked or str(picked).endswith("UNKNOWN") or picked in (PAID_PENDING_APPROVAL, "none"):
+        selected_path = Path(
+            os.environ.get(
+                "DEALIX_OPENCODE_SELECTED_MODEL_FILE",
+                "/opt/dealix/control/opencode/state/selected-free-model",
+            )
+        )
+        if selected_path.is_file():
+            candidate = selected_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
+            # Stale selection files cannot mint model authority: the candidate
+            # must be an explicit-free id present in the current catalog.
+            if is_explicit_free_model(candidate) and candidate in available:
+                picked = candidate
+    if not picked or str(picked).endswith("UNKNOWN") or picked in (PAID_PENDING_APPROVAL, "none"):
+        # Unknown paid spill fails closed: never launch on a provider default.
+        return None, {
+            "ok": False,
+            "returncode": 79,
+            "stdout": "",
+            "stderr": "model-authority-unavailable: HOLD (no verified current free model)",
+            "duration_s": 0,
+        }
+    return str(picked), None
+
+
+OPENCODE_DAEMON_DEFAULT_URL = "http://127.0.0.1:4098"
+OPENCODE_DAEMON_HEALTH_PATH = "/global/health"
+_TERMINAL_FINISH = frozenset({"stop", "error", "aborted"})
+
+
+def daemon_base_url(env: dict[str, str] | None = None) -> str | None:
+    """Return the configured daemon URL only when it is explicitly loopback-only."""
+    src = env if env is not None else os.environ
+    raw = str(src.get("DEALIX_OPENCODE_DAEMON_URL") or "").strip() or OPENCODE_DAEMON_DEFAULT_URL
+    try:
+        parts = urllib.parse.urlparse(raw)
+    except ValueError:
+        return None
+    if parts.scheme != "http":
+        return None
+    host = (parts.hostname or "").lower()
+    if host not in ("127.0.0.1", "localhost", "::1"):
+        return None
+    port = parts.port or 80
+    bracketed = f"[{parts.hostname}]" if ":" in (parts.hostname or "") else (parts.hostname or "")
+    return f"http://{bracketed}:{port}"
+
+
+def split_daemon_model(model: str | None) -> tuple[str, str] | None:
+    """Split a pinned ``provider/id`` model for the daemon session contract."""
+    value = (model or "").strip()
+    if "/" not in value:
+        return None
+    provider, mid = value.split("/", 1)
+    provider, mid = provider.strip(), mid.strip()
+    if not provider or not mid or any(ch.isspace() for ch in value):
+        return None
+    return provider, mid
+
+
+def _daemon_request(
+    base: str, method: str, path: str, payload: dict[str, Any] | None = None, timeout: int = 15
+) -> tuple[int | None, str]:
+    data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    request = urllib.request.Request(
+        base + path, data=data, headers={"Content-Type": "application/json"}, method=method
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            return int(getattr(response, "status", 200)), response.read().decode("utf-8", errors="replace")
+    except Exception as exc:
+        return None, f"{type(exc).__name__}: {exc}"
+
+
+def _daemon_unavailable(reason: str) -> dict[str, Any]:
+    return {
+        "ok": False,
+        "returncode": 75,
+        "stdout": "",
+        "stderr": f"opencode-daemon-unavailable: {reason}",
+        "duration_s": 0,
+        "via": "daemon",
+        "daemon_unavailable": True,
+    }
+
+
+def daemon_health(base: str, timeout: int = 10) -> dict[str, Any]:
+    """Verify the existing daemon is healthy and version-compatible (read-only)."""
+    status, body = _daemon_request(base, "GET", OPENCODE_DAEMON_HEALTH_PATH, timeout=timeout)
+    if status != 200:
+        return {"healthy": False, "version": "", "http_status": status, "detail": redact(body, 300)}
+    try:
+        payload = json.loads(body or "{}")
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return {"healthy": False, "version": "", "http_status": status, "detail": "unparseable-health"}
+    if not isinstance(payload, dict):
+        return {"healthy": False, "version": "", "http_status": status, "detail": "unexpected-health-shape"}
+    version = str(payload.get("version") or "")
+    major = version.split(".", 1)[0] if version else ""
+    return {
+        "healthy": bool(payload.get("healthy")) and major == "1",
+        "version": version,
+        "http_status": status,
+    }
+
+
+def _daemon_session_id(body: str) -> str | None:
+    try:
+        payload = json.loads(body or "{}")
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    for container in (payload, payload.get("session"), payload.get("data")):
+        if isinstance(container, dict) and container.get("id"):
+            return str(container["id"])
+    return None
+
+
+def _daemon_abort(base: str, session_id: str, dir_query: str) -> None:
+    """Best-effort session abort; never raises."""
+    try:
+        _daemon_request(base, "POST", f"/session/{session_id}/abort?directory={dir_query}", {}, timeout=10)
+    except Exception:
+        pass
+
+
+def _daemon_terminal_state(payload: Any) -> tuple[bool, bool, str, str]:
+    """Tolerantly parse a session message payload -> (done, clean, text, error)."""
+    messages = payload.get("messages") if isinstance(payload, dict) else payload
+    if not isinstance(messages, list):
+        return False, False, "", ""
+    texts: list[str] = []
+    finish: str | None = None
+    error = ""
+    for message in messages:
+        if not isinstance(message, dict):
+            continue
+        info = message.get("info") if isinstance(message.get("info"), dict) else {}
+        # Live daemon shape nests role/finish/error under info; top-level
+        # keys are accepted when present. Prefer top-level, fall back to info.
+        role = str(message.get("role") or info.get("role") or "")
+        current = message.get("finish") or info.get("finish")
+        if current:
+            finish = str(current)
+        info_error = info.get("error")
+        if info_error:
+            error = str(info_error)[:500]
+        parts = message.get("parts") or []
+        if not isinstance(parts, list):
+            continue
+        for part in parts:
+            if not isinstance(part, dict):
+                continue
+            if part.get("type") == "text" and part.get("text"):
+                if role == "assistant":
+                    texts.append(str(part["text"]))
+            part_info = part.get("info") or {}
+            part_error = part.get("error") or (part_info.get("error") if isinstance(part_info, dict) else None)
+            if part_error:
+                error = str(part_error)[:500]
+    text = "\n".join(texts)
+    if finish in _TERMINAL_FINISH or error:
+        clean = finish == "stop" and not error
+        return True, clean, text, error or ("" if clean else f"finish={finish}")
+    return False, False, text, ""
+
+
+def execute_opencode_daemon(
+    job: dict[str, Any],
+    cwd: Path,
+    *,
+    model: str,
+    base_url: str | None = None,
+    timeout_s: float | None = None,
+    poll_interval: float = 2.0,
 ) -> dict[str, Any]:
-    """Launch a strictly headless, control-path-isolated ``opencode run --auto``.
+    """Bounded headless execution against the existing loopback OpenCode daemon.
 
-    Two hardenings keep autonomous jobs from deadlocking on the interactive
-    TUI's shared state:
+    Uses only the proven session contract (create -> prompt_async -> poll
+    messages -> abort on timeout). Never starts a daemon, never falls back to
+    the direct CLI here: transport/health failures return a
+    ``daemon_unavailable`` HOLD so the caller can decide explicitly.
+    """
+    started = now_epoch()
+    base = base_url or daemon_base_url()
+    if not base:
+        return _daemon_unavailable("daemon-url-not-loopback-or-invalid")
+    health = daemon_health(base)
+    if not health.get("healthy"):
+        return _daemon_unavailable(f"daemon-unhealthy version={health.get('version') or 'unknown'}")
+    split = split_daemon_model(model)
+    if not split:
+        return {
+            "ok": False,
+            "returncode": 79,
+            "stdout": "",
+            "stderr": "model-authority-unproven: daemon model is not a pinnable provider/id",
+            "duration_s": round(now_epoch() - started, 3),
+            "via": "daemon",
+        }
+    provider_id, model_id = split
+    directory = str(cwd)
+    dir_query = urllib.parse.quote(directory, safe="")
+    agent = str(os.environ.get("DEALIX_OPENCODE_DAEMON_AGENT") or "build").strip() or "build"
+    title = str(job.get("BUSINESS_GOAL") or job.get("JOB_ID") or "dealix-job")[:120]
 
-    * ``OPENCODE_DB`` points at a per-job SQLite database, so session creation
-      never blocks on the single shared ``opencode.db`` write lock (the observed
-      stall: the run logs ``init`` and then waits forever).
-    * stdin is ``/dev/null`` and the hardened permission policy is mandatory: a
-      job either starts with ``--auto`` under the explicit deny set or fails
-      closed *before* launch — it never waits for a human prompt.
+    status, body = _daemon_request(
+        base,
+        "POST",
+        f"/session?directory={dir_query}",
+        {"title": title, "agent": agent, "model": {"providerID": provider_id, "id": model_id}},
+        timeout=30,
+    )
+    session_id = _daemon_session_id(body) if status in (200, 201) else None
+    if not session_id:
+        return {
+            "ok": False,
+            "returncode": 75,
+            "stdout": "",
+            "stderr": redact(f"daemon-session-rejected: http={status} {body}", 500),
+            "stdout_full": "",
+            "stderr_full": body,
+            "duration_s": round(now_epoch() - started, 3),
+            "via": "daemon",
+            "session_id": None,
+        }
 
-    Model selection is unchanged, so the economic broker still controls cost and
-    paid spill stays disabled.
+    prompt = str((job.get("EXECUTOR") or {}).get("prompt") or job.get("BUSINESS_GOAL", ""))
+    status, body = _daemon_request(
+        base,
+        "POST",
+        f"/session/{session_id}/prompt_async?directory={dir_query}",
+        {
+            "model": {"providerID": provider_id, "modelID": model_id},
+            "agent": agent,
+            "parts": [{"type": "text", "text": prompt}],
+        },
+        timeout=30,
+    )
+    if status not in (200, 202, 204):
+        _daemon_abort(base, session_id, dir_query)
+        return {
+            "ok": False,
+            "returncode": 75,
+            "stdout": "",
+            "stderr": redact(f"daemon-prompt-rejected: http={status} {body}", 500),
+            "stdout_full": "",
+            "stderr_full": body,
+            "duration_s": round(now_epoch() - started, 3),
+            "via": "daemon",
+            "session_id": session_id,
+        }
+
+    try:
+        budget = int(job.get("TIME_BUDGET") or 600)
+    except (TypeError, ValueError):
+        budget = 600
+    computed_deadline = started + max(30, min(budget, 1800))
+    deadline = started + timeout_s if timeout_s is not None else computed_deadline
+    interval = max(0.01, min(float(poll_interval or 2.0), 30.0))
+    last_text = ""
+    while now_epoch() < deadline:
+        time.sleep(interval)
+        status, body = _daemon_request(
+            base, "GET", f"/session/{session_id}/message?directory={dir_query}", timeout=15
+        )
+        if status != 200 or not body:
+            continue
+        try:
+            payload = json.loads(body)
+        except (json.JSONDecodeError, ValueError, TypeError):
+            continue
+        done, clean, text, error = _daemon_terminal_state(payload)
+        last_text = text or last_text
+        if done:
+            full = last_text[:20000]
+            duration = round(now_epoch() - started, 3)
+            if clean:
+                return {
+                    "ok": True,
+                    "returncode": 0,
+                    "stdout": redact(full),
+                    "stderr": "",
+                    "stdout_full": full,
+                    "stderr_full": "",
+                    "duration_s": duration,
+                    "via": "daemon",
+                    "session_id": session_id,
+                    "model": model,
+                }
+            return {
+                "ok": False,
+                "returncode": 1,
+                "stdout": redact(full),
+                "stderr": redact(error or "daemon-finish-error", 500),
+                "stdout_full": full,
+                "stderr_full": error,
+                "duration_s": duration,
+                "via": "daemon",
+                "session_id": session_id,
+                "model": model,
+            }
+    _daemon_abort(base, session_id, dir_query)
+    full = last_text[:20000]
+    return {
+        "ok": False,
+        "returncode": 124,
+        "stdout": redact(full),
+        "stderr": "daemon-deadline-exceeded: session aborted",
+        "stdout_full": full,
+        "stderr_full": "daemon-deadline-exceeded",
+        "duration_s": round(now_epoch() - started, 3),
+        "via": "daemon",
+        "session_id": session_id,
+        "model": model,
+    }
+
+
+def execute_opencode_cli(
+    job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, model: str | None = None
+) -> dict[str, Any]:
+    """Legacy direct ``opencode run --auto`` launch (explicit opt-in only).
+
+    The direct CLI hangs before session creation on the current host even with
+    an isolated control database, so it is never implicit fallback: use
+    requires ``allow_cli_fallback`` / ``DEALIX_OPENCODE_ALLOW_CLI_FALLBACK``.
     """
     binary = resolve_opencode_binary()
     if not binary:
@@ -1006,49 +1442,10 @@ def execute_opencode(
     env["OPENCODE_DB"] = str(db_path)
     env.setdefault("OPENCODE_DISABLE_AUTOUPDATE", "1")
     env.setdefault("OPENCODE_DISABLE_MODELS_FETCH", "1")
-    model = (job.get("EXECUTOR") or {}).get("model")
-    if model:
-        # A caller-supplied model is never authority on its own. Accept only an
-        # explicit-free id, or an included-Go id while live provider cost
-        # authority verifies balance fallback is disabled. Otherwise HOLD.
-        live_cost = str(provider_cost_authority().get("state"))
-        caller_allowed = is_explicit_free_model(model) or (
-            is_included_opencode_go_model(model) and live_cost == GO_COST_VERIFIED_DISABLED
-        )
-        if not caller_allowed:
-            return {
-                "ok": False,
-                "returncode": 79,
-                "stdout": "",
-                "stderr": "model-authority-unproven: caller model rejected without canonical free/cost evidence",
-                "duration_s": 0,
-            }
-    if not model:
-        route = CLASS_TO_MODEL_CLASS.get(str(job.get("JOB_CLASS")), "R4_INCLUDED_HIGH")
-        catalog = discover_catalog(refresh=False)
-        model = pick_model(route, catalog, discover_ollama_models(), discover_router_models()) if catalog else None
-        if not model or str(model).endswith("UNKNOWN") or model == PAID_PENDING_APPROVAL:
-            selected_path = Path(
-                os.environ.get(
-                    "DEALIX_OPENCODE_SELECTED_MODEL_FILE",
-                    "/opt/dealix/control/opencode/state/selected-free-model",
-                )
-            )
-            if selected_path.is_file():
-                candidate = selected_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
-                # Stale selection files cannot mint model authority: only an
-                # explicit-free id counts as canonical free evidence.
-                if is_explicit_free_model(candidate):
-                    model = candidate
-    if not model or str(model).endswith("UNKNOWN") or model == PAID_PENDING_APPROVAL:
-        # Unknown paid spill fails closed: never launch on a provider default.
-        return {
-            "ok": False,
-            "returncode": 79,
-            "stdout": "",
-            "stderr": "model-authority-unavailable: HOLD (no verified current free model)",
-            "duration_s": 0,
-        }
+    if model is None:
+        model, hold = _resolve_opencode_model(job)
+        if hold is not None:
+            return hold
     argv += ["-m", str(model)]
     argv.append(str(prompt))
     return run_argv(
@@ -1058,6 +1455,31 @@ def execute_opencode(
         env=env,
         stdin=subprocess.DEVNULL,
     )
+
+
+def execute_opencode(
+    job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, allow_cli_fallback: bool | None = None
+) -> dict[str, Any]:
+    """Daemon-first headless OpenCode execution for Session Factory jobs.
+
+    The existing loopback daemon is the only automatic path: the direct CLI
+    hangs before session creation on the current host, so it is never implicit
+    fallback. CLI compatibility requires explicit opt-in via
+    ``allow_cli_fallback`` or ``DEALIX_OPENCODE_ALLOW_CLI_FALLBACK=1`` (with a
+    test proving the opt-in); otherwise a dead daemon fails closed as HOLD.
+    """
+    model, hold = _resolve_opencode_model(job)
+    if hold is not None:
+        return hold
+    daemon = execute_opencode_daemon(job, cwd, model=model)
+    if not daemon.get("daemon_unavailable"):
+        return daemon
+    if allow_cli_fallback is None:
+        flag = str(os.environ.get("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK") or "").strip().lower()
+        allow_cli_fallback = flag in ("1", "true", "yes", "on")
+    if allow_cli_fallback:
+        return execute_opencode_cli(job, cwd, db_dir=db_dir, model=model)
+    return daemon
 
 
 def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
@@ -1348,7 +1770,7 @@ def factory_status(root: Path) -> dict[str, Any]:
         "jobs_total": len(jobs),
         "counts": counts,
         "active_leases": len(active_leases(root)),
-        "deep_wip_max": DEEP_WIP_MAX,
+        "deep_wip_max": operational_ceiling(),
         "max_concurrent_deep": governor["max_concurrent_deep"],
         "deep_wip_available": governor["deep_wip_available"],
         "paid_spill": "DISABLED_BY_DEFAULT",

@@ -66,6 +66,17 @@ def test_deep_wip_exceeded_is_detected(tmp_path: Path) -> None:
     assert any(item["kind"] == "DEEP_WIP_EXCEEDED" for item in findings)
 
 
+def test_governor_capacity_overrides_monitoring_default(tmp_path: Path) -> None:
+    for index in range(4):
+        _write_job(tmp_path, f"JOB-G{index}", STATUS="RUNNING", MODIFYING=True, LEASE={"JOB_ID": f"JOB-G{index}"})
+    (tmp_path / "RESOURCE_GOVERNOR_STATE.json").write_text(
+        json.dumps({"schema": "dealix.resource_governor.v1", "max_concurrent_deep": 8}), encoding="utf-8"
+    )
+    assert watchdog._governor_capacity(tmp_path) == 8
+    findings = watchdog.evaluate(tmp_path, now=1000.0)
+    assert [item for item in findings if item.get("kind") == "DEEP_WIP_EXCEEDED"] == []
+
+
 def test_main_is_silent_and_zero_when_healthy(tmp_path: Path, capsys) -> None:
     code = watchdog.main(["--state-dir", str(tmp_path)])
     assert code == 0
