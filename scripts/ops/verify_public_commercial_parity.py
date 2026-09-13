@@ -50,12 +50,12 @@ REQUIRED_BY_PATH = {
         "free mini diagnostic",
     ),
     "/ai-team.html": (
-        "فريق ai تشغيلي داخل نظام شركة واحد",
-        "لا توجد باقات ثابتة عامة",
+        "noindex,nofollow",
+        "dealix_retired_public_surface",
     ),
     "/workflow.html": (
-        "customer-specific quote",
-        "no_live_send",
+        "noindex,nofollow",
+        "dealix_retired_public_surface",
     ),
     "/customer-portal.html": (
         "noindex,nofollow",

@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 
 import CTA from "@/components/CTA";
 import PageShell from "@/components/PageShell";
+import { sectorCatalog } from "@/lib/public-catalog";
 
 const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "sami.assiri11@gmail.com";
 const founderPhone = process.env.NEXT_PUBLIC_FOUNDER_PHONE?.trim() || "+966 59 778 8539";
@@ -113,8 +114,8 @@ export default function BookPage() {
         <p className="eyebrow">Free Execution Diagnostic</p>
         <h1 style={{ maxWidth: 860 }}>ابدأ بمشكلة تنفيذ واحدة — والتشخيص الأولي علينا</h1>
         <p style={{ maxWidth: 760, fontSize: "1.15rem", lineHeight: 1.7 }}>
-          اشرح لنا workflow أو قرارًا تشغيليًا مهمًا. عند الإرسال ننشئ فورًا Intake داخليًا ونوزع
-          work packets على شبكة Dealix الوكيلة المحكومة، مع توجيهها ديناميكيًا إلى وكلاء المجموعة والقطاع والتخصص المناسب لجمع فجوات الأدلة، وبناء فرضية المشكلة، واقتراح أصغر تدخل قابل للقياس.
+          اشرح لنا workflow أو قرارًا تشغيليًا مهمًا واختر قطاعك. عند الإرسال ننشئ Intake داخليًا ونوجّه
+          التحليل إلى ملف القطاع والقدرات المناسبة داخل Company Machine لجمع فجوات الأدلة، وبناء فرضية المشكلة، واقتراح أصغر تدخل قابل للقياس.
           لا نعتبر الفرضية مشكلة مثبتة قبل وجود baseline ودليل.
         </p>
 
@@ -144,7 +145,12 @@ export default function BookPage() {
             </label>
             <label style={labelStyle}>
               القطاع
-              <input name="sector" defaultValue="other" maxLength={120} style={fieldStyle} />
+              <select name="sector" defaultValue="other" style={fieldStyle}>
+                <option value="other">قطاع آخر / غير محدد</option>
+                {sectorCatalog.map((sector) => (
+                  <option key={sector.key} value={sector.key}>{sector.nameAr} — {sector.nameEn}</option>
+                ))}
+              </select>
             </label>
             <label style={labelStyle}>
               موقع الشركة

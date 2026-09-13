@@ -1,143 +1,69 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import Link from "next/link";
+import PageShell from "@/components/PageShell";
 
 export const metadata: Metadata = {
-  title: "المنتجات — Dealix",
-  description:
-    "خمسة أنظمة تشغيلية للشركات B2B السعودية: غرفة القيادة، عقل الشركة، صندوق الوارد والمتابعة، الثقة والامتثال، تسليم العملاء.",
+  title: "المنتجات والـRuntime — Dealix",
+  description: "Dealix OS ومنتجات تشغيلية قابلة للتركيب حول Company Brain والإيراد والتسليم والحوكمة والذكاء والتكاملات، بنطاق خاص بكل عميل.",
 };
 
-interface ProductSummary {
-  slug: string;
-  nameEn: string;
-  nameAr: string;
-  tagline: string;
-  problem: string;
-  delivery: string;
-  icon: string;
-}
-
-const PRODUCTS: ProductSummary[] = [
-  {
-    slug: "revenue-command-room-os",
-    nameEn: "Revenue Command Room OS",
-    nameAr: "نظام غرفة قيادة الإيراد",
-    tagline: "صفحة قرار واحدة للمؤسس، تتحدث يومياً بأرقام محققة.",
-    problem: "القرارات المالية متفرقة على ملفات وواتساب بدون مصدر واحد.",
-    delivery: "7 أيام للتشغيل الأول · مراجعة أسبوعية",
-    icon: "⚡",
-  },
-  {
-    slug: "company-brain-os",
-    nameEn: "Company Brain OS",
-    nameAr: "نظام عقل الشركة",
-    tagline: "ذاكرة موحّدة للشركة: قرارات، سياسات، سياق، تاريخ.",
-    problem: "المعرفة محبوسة في رؤوس الأفراد وملفات مبعثرة.",
-    delivery: "7 أيام للتشغيل الأول · تحديث مستمر",
-    icon: "🧠",
-  },
-  {
-    slug: "whatsapp-inbox-followup-os",
-    nameEn: "WhatsApp / Inbox Follow-up OS",
-    nameAr: "نظام متابعة الواتساب والوارد",
-    tagline: "طوابير متابعة منظمة من واتساب وإيميل بدون ضياع رسالة.",
-    problem: "متابعات تضيع بين الإشعارات ولا أحد يملكها.",
-    delivery: "5 أيام للتشغيل الأول · مراجعة يومية",
-    icon: "📥",
-  },
-  {
-    slug: "ai-trust-compliance-os",
-    nameEn: "AI Trust & Compliance OS",
-    nameAr: "نظام الثقة والامتثال",
-    tagline: "بوابات موافقة بشرية، سجلات تدقيق، حماية بيانات PDPL.",
-    problem: "كل خروج تلقائي يحمل خطر امتثال وإجراء قانوني.",
-    delivery: "مدمج مع كل الأنظمة الأخرى · تدقيق ربع سنوي",
-    icon: "🛡️",
-  },
-  {
-    slug: "client-delivery-os",
-    nameEn: "Client Delivery OS",
-    nameAr: "نظام تسليم العملاء",
-    tagline: "من اليوم صفر إلى التوسعة: خريطة عمل، أتمتة، احتفاظ، مراجعة.",
-    problem: "التسليم يعتمد على مجهود فردي بدون دليل أو proof report.",
-    delivery: "30 يوم للتشغيل الكامل · مراجعة شهرية",
-    icon: "📦",
-  },
+const products = [
+  { id: "dealix-os", nameAr: "Dealix OS", nameEn: "AI Business Operating System", text: "المنتج الرئيسي: Company Brain + Opportunity Graph + Action/Approval + Proof Ledger في مسار Signal → Decision → Action → Proof.", href: "/dealix-os" },
+  { id: "company-brain", nameAr: "Company Brain", nameEn: "Knowledge & Decision Memory", text: "سياق واحد للقرارات والسياسات والمعرفة والحقائق الحالية، مع فصل التاريخ عن CURRENT_ONLY authority.", href: "/dealix-os" },
+  { id: "revenue-command", nameAr: "Revenue Command", nameEn: "Commercial Operations Module", text: "أولويات ومتابعات وعروض وdecision briefs مرتبطة بأدلة وnext actions بدل dashboard نشاط فقط.", href: "/services#revenue" },
+  { id: "client-delivery", nameAr: "Client Delivery & Proof", nameEn: "Delivery Operations Module", text: "مراحل تسليم، acceptance، approvals وproof packs تساعد على فصل delivery عن customer-validated outcome.", href: "/services#productization" },
+  { id: "trust", nameAr: "AI Trust Controls", nameEn: "Governance & Reliability Module", text: "صلاحيات، approval boundaries، evaluations، traceability وreceipts لتشغيل agents وtools ضمن حدود واضحة.", href: "/services#trust" },
+  { id: "knowledge", nameAr: "Document & Knowledge Intelligence", nameEn: "Knowledge Operations Module", text: "بحث واستخراج وربط للوثائق والمعرفة التشغيلية مع provenance واستخدامها في decision workflows.", href: "/services#knowledge" },
+  { id: "market", nameAr: "Saudi Opportunity Intelligence", nameEn: "Market & Partner Intelligence Module", text: "Market signals وsector intelligence وpartner/procurement research مع Truth Firewall يمنع تحويل البحث إلى relationship أو pipeline تلقائيًا.", href: "/services#market" },
+  { id: "integration", nameAr: "Integration & MCP Fabric", nameEn: "Connector Runtime Module", text: "تكامل APIs وMCP والأدوات الحالية مع reliability checks، permissions ومسار rollback واضح.", href: "/services#integration" },
 ];
 
 export default function ProductsPage() {
   return (
-    <main className="min-h-screen bg-[#070A12] text-white">
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <header>
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">
-            Products
-          </p>
-          <h1 className="mt-3 text-4xl font-semibold">خمسة أنظمة تشغيلية</h1>
-          <p className="mt-3 max-w-2xl text-sm text-white/70">
-            كل نظام يحل مشكلة تشغيلية واضحة للشركات B2B السعودية. لا وعود
-            إيراد مضمونة، لا شعارات فارغة — فقط أنظمة تعمل وتُقاس أسبوعياً.
-          </p>
-        </header>
+    <PageShell>
+      <section className="card dot-pattern" style={{ textAlign: "center", paddingBlock: "clamp(42px,7vw,78px)" }}>
+        <p className="eyebrow">Products & Runtime</p>
+        <h1>منتج رئيسي، ووحدات تشغيل تتوسع فقط عندما يثبت الاستخدام.</h1>
+        <p style={{ maxWidth: 880, margin: "0 auto", fontSize: "1.08rem" }}>
+          Dealix OS هو المنتج الرئيسي. الوحدات أدناه capabilities قابلة للتركيب وليست باقات عامة أو التزامًا بأن كل عميل يحتاجها. النطاق والمدة والسعر تُحدد بعد Qualified Discovery لحالة العميل.
+        </p>
+        <div className="actions" style={{ justifyContent: "center" }}>
+          <Link href="/dealix-os">استكشف Dealix OS</Link>
+          <Link href="/book">ابدأ التشخيص المجاني</Link>
+        </div>
+      </section>
 
-        <section className="mt-10 grid gap-4 md:grid-cols-2">
-          {PRODUCTS.map((p) => (
-            <Link
-              key={p.slug}
-              href={`/products/${p.slug}`}
-              className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-amber-300/40 hover:bg-white/[0.07]"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-2xl" aria-hidden>
-                    {p.icon}
-                  </p>
-                  <h2 className="mt-3 text-lg font-semibold group-hover:text-amber-200">
-                    {p.nameAr}
-                  </h2>
-                  <p className="text-xs text-white/60">{p.nameEn}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-white/80">{p.tagline}</p>
-              <p className="mt-3 text-xs text-white/50">
-                المشكلة: {p.problem}
-              </p>
-              <div className="mt-4 flex flex-wrap items-center gap-3 text-xs">
-                <span className="rounded-full border border-amber-300/20 bg-amber-300/5 px-3 py-1 text-amber-200">
-                  {p.delivery}
-                </span>
-              </div>
-              <p className="mt-4 text-xs font-medium text-amber-300 group-hover:underline">
-                عرض التفاصيل ←
-              </p>
-            </Link>
+      <section>
+        <p className="eyebrow">Composable Product Layer</p>
+        <h2>نحوّل ما يثبت إلى IP وruntime قابل لإعادة الاستخدام.</h2>
+        <div className="cards" style={{ marginTop: "var(--sp-6)" }}>
+          {products.map((product) => (
+            <article className="card" id={product.id} key={product.id}>
+              <span className="badge badge-cyan">{product.nameEn}</span>
+              <h3 style={{ marginTop: 14 }}>{product.nameAr}</h3>
+              <p>{product.text}</p>
+              <Link href={product.href}>اعرف أكثر ↗</Link>
+            </article>
           ))}
-        </section>
+        </div>
+      </section>
 
-        <section className="mt-12 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-6 text-sm text-white/80">
-          <p className="font-medium text-amber-200">ملاحظة على النطاق والسعر</p>
-          <p className="mt-2">
-            كل نظام هنا يُحدد نطاقه وسعره بعد تشخيص لحجم شركتك وحدة المشكلة — لا رقم عام قبل
-            ذلك. لا setup مخفي، وكل setup قابل للاسترداد خلال 14 يوم. لا auto-renewal — نذكّرك
-            قبل 14 يوم من التجديد.
-          </p>
-        </section>
+      <section className="card card-gold">
+        <p className="eyebrow">Build → Prove → Productize</p>
+        <h2>لا نبدأ بفرض SaaS على كل مشكلة.</h2>
+        <p>
+          قد يكون الحل الأنسب workflow بسيطًا أو integration أو managed operation. عندما يثبت التكرار والقيمة، نرفع الجزء المتكرر إلى Dealix OS أو module قابل للتوسع. هذا يقلل build waste ويحافظ على economics واضحة.
+        </p>
+      </section>
 
-        <section className="mt-10 flex flex-wrap gap-3">
-          <Link
-            href="/book"
-            className="rounded-full bg-amber-300 px-6 py-3 text-sm font-semibold text-black transition hover:bg-amber-200"
-          >
-            احجز تشخيص
-          </Link>
-          <Link
-            href="/pricing"
-            className="rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-white/40"
-          >
-            كل التسعير
-          </Link>
-        </section>
-      </div>
-    </main>
+      <section className="card" style={{ textAlign: "center" }}>
+        <p className="eyebrow">Customer-Specific Scope</p>
+        <h2>لا fixed public price، ولا fixed delivery window.</h2>
+        <p style={{ maxWidth: 760, margin: "0 auto" }}>
+          نحدد ما يلزم فقط بعد Diagnostic وDiscovery. أي quote أو acceptance criteria أو rollout plan يخص العميل والنطاق المتفق عليه.
+        </p>
+        <div className="actions" style={{ justifyContent: "center" }}><Link href="/pricing">شاهد Engagement Path</Link></div>
+      </section>
+    </PageShell>
   );
 }

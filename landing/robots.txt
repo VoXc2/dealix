@@ -45,6 +45,10 @@ Disallow: /personal-operator.html
 Disallow: /webinar.html
 
 # Retired / unaudited commercial experiments.
+Disallow: /pricing.html
+Disallow: /services.html
+Disallow: /trust-center.html
+Disallow: /workflow.html
 Disallow: /annual-pricing.html
 Disallow: /academy.html
 Disallow: /community.html
