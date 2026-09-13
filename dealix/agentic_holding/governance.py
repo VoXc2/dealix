@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
@@ -60,7 +61,19 @@ def governance_rejection(envelope: GovernanceEnvelope, registry: AgentHierarchyR
             return "handoff_trace_mismatch"
         if packet.get("target_agent") != item.agent_id:
             return "handoff_target_mismatch"
-        if envelope.source_agent_id and packet.get("source_agent") != envelope.source_agent_id:
+
+        # A handoff is an explicit agent-to-agent authority transfer. The source
+        # identity must therefore be present, registry-backed, distinct from the
+        # target, and identical to the packet identity. Omitting source_agent_id
+        # must never turn an arbitrary packet string into trusted provenance.
+        source = (envelope.source_agent_id or "").strip()
+        if not source:
+            return "handoff_source_required"
+        if source not in registry.agents:
+            return "unknown_source_agent"
+        if source == item.agent_id:
+            return "self_handoff_forbidden"
+        if packet.get("source_agent") != source:
             return "handoff_source_mismatch"
 
     if envelope.material_output:
@@ -93,10 +106,21 @@ class GovernedAgentDispatcher:
     ) -> DispatchPlan:
         rejected: dict[str, str] = {}
         eligible: list[WorkItem] = []
+
+        # work_id is the durable identity in DispatchPlan receipts. Duplicates
+        # make a receipt ambiguous (the same id can otherwise appear selected
+        # and rejected at once), so every occurrence of a duplicate fails closed.
+        work_id_counts = Counter(envelope.work_item.work_id for envelope in envelopes)
+        duplicate_ids = {work_id for work_id, count in work_id_counts.items() if count > 1}
+
         for envelope in envelopes:
+            work_id = envelope.work_item.work_id
+            if work_id in duplicate_ids:
+                rejected[work_id] = "duplicate_work_id"
+                continue
             reason = governance_rejection(envelope, registry)
             if reason:
-                rejected[envelope.work_item.work_id] = reason
+                rejected[work_id] = reason
             else:
                 eligible.append(envelope.work_item)
 
@@ -115,6 +139,8 @@ def governance_context_refs(envelope: GovernanceEnvelope) -> tuple[str, ...]:
         f"effect_class:{envelope.effect_class}",
         f"coordination_mode:{envelope.coordination_mode}",
     ]
+    if envelope.source_agent_id:
+        refs.append(f"source_agent:{envelope.source_agent_id}")
     if envelope.verifier_agent_id:
         refs.append(f"verifier_agent:{envelope.verifier_agent_id}")
     refs.extend(f"evidence:{ref}" for ref in envelope.evidence_refs)
