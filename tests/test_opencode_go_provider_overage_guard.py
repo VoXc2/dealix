@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -79,7 +80,7 @@ def test_local_daily_envelope_is_telemetry_not_subscription_authority() -> None:
             for _ in range(broker.MAX_DAILY_INCLUDED_JOBS)
         ]
     }
-    envelope = broker.daily_envelope(state)
+    envelope = broker.daily_envelope(state, now=datetime(2026, 9, 12, tzinfo=UTC))
     assert envelope["included_jobs_remaining"] == 0
     assert envelope["headroom_source"] == (
         "local_telemetry_only__provider_limits_are_authoritative"
