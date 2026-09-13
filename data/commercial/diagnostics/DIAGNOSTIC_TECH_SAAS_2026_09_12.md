@@ -1,44 +1,47 @@
-# Free Diagnostic — Technology SaaS SI — Saudi — 2026-09-12
+# Research-Only Free Diagnostic Template — Technology / SaaS / SI — Saudi Arabia
 
-**Trace:** DIAG-TECH-20260912-001 | **Authority:** L2 | **Effect:** reversible_internal | **Verifier:** dealix.group.qa-verification
-**Sector:** technology_saas_si (ICT official) | **Buyer:** CTO / CIO | **Offer:** Free 7-Day Diagnostic — Proof Pack
-**Evidence age:** 2026-09-12 observed_at, source P1 MISA + Invest Riyadh sizing (Fintech $3.5B 25% CAGR, but Tech as ICT $12B+)
+**Trace:** DIAG-TECH-20260912-001  
+**Authority:** L2 internal preparation only  
+**Truth state:** `RESEARCH_ONLY` · `NOT_A_RELATIONSHIP` · `NOT_CUSTOMER_STATE` · `NOT_PIPELINE` · `NOT_REVENUE`  
+**Sector mapping:** ICT / technology-enabled B2B. Invest Saudi lists Information and Communication Technology among its sector opportunity categories. GASTAT's 2025 ICT-establishment survey explicitly measures establishment use of AI, cloud, IoT and other ICT capabilities by economic activity.
 
-## Executive Summary
-Saudi ICT is a Tier1 high-conviction sector (NREP, AI, cloud SEZ Riyadh, 70% digital payments target). Most mid-size SaaS firms leak revenue via fragmented CRM, manual onboarding, and unmeasured proof.
+## Verified public evidence
+- GASTAT 2025 ICT Access and Usage methodology: https://www.stats.gov.sa/en/w/methodology-and-quality-report-for-ict-access-and-usage-statistics-for-establishments-2025
+- Invest Saudi sector catalogue: https://www.investsaudi.sa/ar/sectors-opportunities
 
-## Current State (evidence-backed)
-- Buyer: CTO manages 5-15 engineers, uses HubSpot/manual sheets, no L0-L5 proof ledger.
-- Pain: revenue leakage 12-18% via bottleneck in lead→qualification→proposal.
-- Data: CRM audit (sample), no PDPL consent ledger.
+These sources support **sector relevance only**. They do not prove that any named company has a problem, budget, intent, consent, specific tools, a specific team size, revenue leakage, conversion loss, or willingness to buy from Dealix.
 
-## Evidence
-- MISA FDI 119B 2024, ICT is priority per NIS green energy/tech/healthcare/mobility.
-- Invest Riyadh: Fintech $3.5B 25% CAGR, ICT as enabler for all 15 sectors.
-- No fabricated relationship; intake via website inbound only.
+## Buyer-role hypotheses — validate before use
+Potential accountable roles may include a founder/CEO, CRO/Head of Sales, COO, CIO/CTO, RevOps/Sales Ops or Customer Success leader. The correct buyer is unknown until a real interaction or customer-provided evidence establishes ownership of the problem.
 
-## Main Constraints
-1. No governed pipeline (lead not scored)
-2. No pay proof (quote != payment)
-3. No Arabic-native CX
+## Diagnostic questions
+1. Which commercial or operating decision is currently slow, manual, fragmented or hard to audit?
+2. What systems and channels actually participate in that workflow today?
+3. What baseline can the customer provide for cycle time, handoffs, rework, missed follow-up, approval latency or founder/manager minutes?
+4. Which data, consent, security, procurement and integration constraints apply?
+5. Who owns the process and can validate whether a change created value?
+6. What evidence would justify stopping, continuing or expanding after a bounded test?
 
-## Opportunities
-- Revenue: automate lead scoring + governed proposal (+15% conversion hypothesis, needs validation)
-- Cost: reduce founder minutes 40% via Session Factory + ResourceGovernor
-- Process: AI readiness + automation diagnostic families
+## Dealix hypotheses to test — not claims
+- A governed decision/approval layer may reduce coordination friction when evidence shows fragmented handoffs.
+- A Free Diagnostic may expose an automation opportunity without requiring credentials, CRM access or a paid commitment.
+- OpenCode/Hermes may help Dealix build or adapt customer-specific internal artifacts after scope and authority are established.
 
-## ROI Hypothesis (labeled assumptions)
-- If conversion improves 10%, 5M SAR pipeline → 500k uplift (assumption, not guarantee). Floor hypothesis: break-even on pilot.
+No percentage improvement, ROI, conversion uplift, revenue leakage, team size, software stack or founder-minute reduction is assumed here.
 
-## Recommended Pilot
-30-day Revenue Command Pilot: diagnostic families A05 (Revenue Leakage) + A12 (Automation) + proof pack weekly, acceptance L2, kill/stop-loss if no qualified problem after 14d.
+## Commercial route
+`Real interaction -> Free Diagnostic -> Qualified Problem -> Qualified Discovery -> Customer-Specific Quote -> Bounded Pilot Decision -> Verified Payment -> Delivery -> Customer-Validated Proof`
 
-## Acceptance Criteria
-- Baseline before (pipeline, conversion, minutes)
-- Evidence after (audit log, proof pack L2)
-- Customer confirmation
+The Free Diagnostic has no fixed public price and no automatic paid follow-on. Duration, paid scope, price and acceptance criteria are customer-specific after discovery.
 
-## Next Step
-Free discovery questions (business objective, baseline, stakeholders, data, security, procurement, timeline, budget process) — draft only, no cold WhatsApp.
+## Acceptance gate before promotion
+Promote beyond `RESEARCH_ONLY` only when there is evidence of a real relationship/interaction and a customer-specific problem. Record:
+- source/evidence refs;
+- accountable owner;
+- baseline supplied or accepted by the customer;
+- consent/channel state;
+- measurable acceptance/stop criteria;
+- material-action approval requirements.
 
-**Next:** Send discovery draft to qualified inbound lead after human approval. No external send yet.
+## Next safe action
+Use this template to prepare questions or an internal diagnostic packet. Do not cold WhatsApp, scrape personal contacts, infer consent, send externally, quote, invoice, or claim ROI/revenue without the corresponding evidence and action-bound authority.
