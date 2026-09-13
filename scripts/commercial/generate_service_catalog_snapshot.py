@@ -1,65 +1,45 @@
 #!/usr/bin/env python3
-"""Generate service catalog TypeScript snapshot from the Python registry.
+"""Generate the frontend service-catalog snapshot from governed public truth.
 
-Reads auto_client_acquisition.service_catalog.registry (Wave 13 truth source)
-and writes apps/web/lib/service-catalog-snapshot.ts for the frontend.
+The internal Python registry intentionally retains historical/future planning
+entries. Public frontend data must not re-export those internal fixed prices or
+inactive packages. The governed public projection is produced by
+``scripts/dealix_export_service_catalog_json.py`` and contains only the current
+Free Mini Diagnostic -> qualified discovery -> customer-specific quote ->
+30-Day Revenue Command Pilot path.
 
-Article 4: no external calls.
-Article 8: all pricing carries is_estimate flag.
-Article 11: thin adapter — no new business logic.
+No external calls are made.
 """
 from __future__ import annotations
 
+import importlib.util
 import json
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
 OUT = ROOT / "apps" / "web" / "lib" / "service-catalog-snapshot.ts"
+EXPORTER = ROOT / "scripts" / "dealix_export_service_catalog_json.py"
+
+
+def _load_public_catalog() -> dict:
+    spec = importlib.util.spec_from_file_location("dealix_public_catalog_exporter", EXPORTER)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("unable to load governed public catalog exporter")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    payload = module.build_catalog_dict()
+    if payload.get("public_commercial_truth") != "one_governed_path":
+        raise RuntimeError("public commercial authority drift")
+    return payload
 
 
 def main() -> int:
-    from auto_client_acquisition.service_catalog import list_offerings
-
-    offerings = list_offerings()
-    serialized = []
-    for o in offerings:
-        entry: dict = {
-            "id": o.id,
-            "name_ar": o.name_ar,
-            "name_en": o.name_en,
-            "price_sar": o.price_sar,
-            "price_unit": o.price_unit,
-            "duration_days": o.duration_days,
-            "customer_journey_stage": o.customer_journey_stage,
-            "commercial_status": o.commercial_status,
-            "deliverables": list(o.deliverables),
-            "kpi_commitment_en": o.kpi_commitment_en,
-            "kpi_commitment_ar": o.kpi_commitment_ar,
-            "refund_policy_en": o.refund_policy_en,
-            "hard_gates": list(o.hard_gates),
-            "is_estimate": o.is_estimate,
-        }
-        if hasattr(o, "price_sar_max") and o.price_sar_max is not None:
-            entry["price_sar_max"] = o.price_sar_max
-        if hasattr(o, "price_monthly_sar_min") and o.price_monthly_sar_min is not None:
-            entry["price_monthly_sar_min"] = o.price_monthly_sar_min
-        if hasattr(o, "price_monthly_sar_max") and o.price_monthly_sar_max is not None:
-            entry["price_monthly_sar_max"] = o.price_monthly_sar_max
-        serialized.append(entry)
-
+    payload = _load_public_catalog()
     snapshot = {
-        "generated_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
-        "total_offerings": len(offerings),
-        "is_estimate": True,
-        "funnel_offerings": [o for o in serialized if o["customer_journey_stage"] != "transformation"],
-        "transformation_offerings": [o for o in serialized if o["customer_journey_stage"] == "transformation"],
-        "all_offerings": serialized,
+        "generated_from": "scripts/dealix_export_service_catalog_json.py",
+        "public_only": True,
+        **payload,
     }
-
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         "export const serviceCatalogSnapshot = "
@@ -68,7 +48,7 @@ def main() -> int:
         encoding="utf-8",
     )
     print(f"SERVICE_CATALOG_SNAPSHOT={OUT.relative_to(ROOT)}")
-    print(f"TOTAL_OFFERINGS={len(offerings)}")
+    print(f"PUBLIC_OFFERINGS={len(payload['offerings'])}")
     return 0
 
 

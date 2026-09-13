@@ -1,8 +1,9 @@
-# Dealix public crawl contract — 2026-08-26
+# Dealix public crawl contract — 2026-09-13
 # Canonical public domain: https://dealix.me
-# Only reviewed launch surfaces should be promoted as current commercial truth.
-# Historical/demo surfaces may remain in Git for evidence/reference but are not
-# customer-facing price, proof, compliance, accreditation or outcome authority.
+# Only reviewed launch surfaces are current commercial truth.
+# Historical, demo, internal and product-console surfaces may remain in Git for
+# compatibility/evidence but are not public pricing, proof, compliance, customer
+# outcome or production-readiness authority.
 
 User-agent: *
 Allow: /
@@ -23,6 +24,25 @@ Disallow: /pilot-day-0.html
 Disallow: /decisions.html
 Disallow: /command-center.html
 Disallow: /dashboard.html
+Disallow: /customer-decisions.html
+Disallow: /executive-command-center.html
+Disallow: /launch-readiness.html
+Disallow: /launch-status.html
+Disallow: /launchpad.html
+Disallow: /login.html
+Disallow: /market-radar.html
+Disallow: /pulse.html
+Disallow: /system-status.html
+Disallow: /posthog_snippet.html
+
+# Quarantined noncanonical public-looking surfaces pending route-specific review.
+Disallow: /architecture.html
+Disallow: /case-study-template.html
+Disallow: /copilot.html
+Disallow: /diagnostic-real-estate.html
+Disallow: /marketers.html
+Disallow: /personal-operator.html
+Disallow: /webinar.html
 
 # Retired / unaudited commercial experiments.
 Disallow: /annual-pricing.html
@@ -54,14 +74,14 @@ Disallow: /simulator.html
 Disallow: /ltv-calculator.html
 Disallow: /customer-portal.html
 Disallow: /vision.html
+Disallow: /autopilot.html
+Disallow: /bespoke-ai.html
+Disallow: /roadmap.html
+Disallow: /sector-report-b2b-services.html
+Disallow: /sector-report-realestate-sample.html
 
 # Reviewed supporting routes may exist but are not promoted by sitemap.
 Disallow: /ai-team.html
 
 Sitemap: https://dealix.me/sitemap.xml
 Sitemap: https://dealix.me/sitemap_dealix.xml
-Disallow: /autopilot.html
-Disallow: /bespoke-ai.html
-Disallow: /roadmap.html
-Disallow: /sector-report-b2b-services.html
-Disallow: /sector-report-realestate-sample.html
