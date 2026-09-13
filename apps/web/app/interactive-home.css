@@ -17,6 +17,7 @@
     linear-gradient(180deg, #f8fafc 0%, #f4f8fa 58%, #eef5f6 100%);
   font-family: Inter, "IBM Plex Sans Arabic", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   direction: rtl;
+  overflow-x: clip;
 }
 
 .dx-home *, .dx-home *::before, .dx-home *::after { box-sizing: border-box; }
@@ -43,7 +44,7 @@
   gap: 32px;
 }
 
-.dx-logo-link { display: inline-flex; align-items: center; justify-self: start; }
+.dx-logo-link { display: inline-flex; min-height: 44px; align-items: center; justify-self: start; }
 .dx-logo { width: 178px; height: auto; display: block; }
 .dx-nav-links { display: flex; align-items: center; justify-content: center; gap: clamp(18px, 3vw, 36px); }
 .dx-nav-links a { color: #526179; font-size: 0.88rem; font-weight: 700; transition: color 180ms ease, transform 180ms ease; }
@@ -65,7 +66,7 @@
 }
 .dx-nav-cta:hover { transform: translateY(-2px); border-color: rgba(34,211,238,.75); box-shadow: 0 12px 36px rgba(22,78,99,.12); }
 
-.dx-main { width: min(1220px, calc(100% - 36px)); margin: 0 auto; padding: 30px 0 90px; }
+.dx-main { width: min(1220px, calc(100% - 36px)); margin: 0 auto; padding: 30px 0 90px; display: block; }
 
 .dx-hero {
   --dx-pointer-x: 72%;
@@ -103,7 +104,7 @@
 .dx-orb-one { width: 380px; height: 380px; top: -220px; right: -110px; border: 1px solid rgba(34,211,238,.2); animation: dxFloat 10s ease-in-out infinite; }
 .dx-orb-two { width: 220px; height: 220px; bottom: -125px; left: 7%; background: radial-gradient(circle, rgba(22,78,99,.10), transparent 68%); animation: dxFloat 13s ease-in-out infinite reverse; }
 
-.dx-hero-copy { position: relative; z-index: 2; }
+.dx-hero-copy { position: relative; z-index: 2; min-width: 0; max-width: 100%; }
 .dx-signal-pill {
   width: fit-content;
   display: inline-flex;
@@ -230,7 +231,10 @@
   .dx-nav { grid-template-columns: auto 1fr; }
   .dx-nav-links { display: none; }
   .dx-nav-cta { justify-self: end; }
-  .dx-hero { grid-template-columns: 1fr; min-height: auto; padding: 54px 34px; }
+  .dx-hero { width: 100%; min-width: 0; max-width: 100%; grid-template-columns: minmax(0, 1fr); min-height: auto; padding: 54px 34px; }
+  .dx-hero > * { min-width: 0; max-width: 100%; }
+  .dx-signal-pill { max-width: 100%; flex-wrap: wrap; white-space: normal; }
+  .dx-command-head { flex-wrap: wrap; }
   .dx-command-card { max-width: 680px; transform: none; }
   .dx-section-head, .dx-system { grid-template-columns: 1fr; }
   .dx-value-grid { grid-template-columns: 1fr; }
@@ -239,13 +243,19 @@
 }
 
 @media (max-width: 640px) {
-  .dx-nav { width: min(100% - 24px, 1220px); min-height: 68px; gap: 12px; }
+  .dx-nav { width: min(1220px, calc(100% - 24px)); min-height: 68px; gap: 12px; }
   .dx-logo { width: 142px; }
-  .dx-nav-cta { min-height: 38px; padding: 0 13px; font-size: .72rem; }
-  .dx-main { width: min(100% - 24px, 1220px); padding-top: 16px; }
-  .dx-hero { padding: 42px 20px 24px; border-radius: 24px; gap: 38px; }
-  .dx-hero h1 { font-size: clamp(2.55rem, 13vw, 4.3rem); }
-  .dx-signal-pill { font-size: .64rem; }
+  .dx-nav-cta { min-height: 44px; padding: 0 13px; font-size: .72rem; }
+  .dx-main { width: min(1220px, calc(100% - 24px)); padding-top: 16px; }
+  .dx-hero { padding: 36px 18px 22px; border-radius: 24px; gap: 32px; }
+  .dx-hero h1 { max-width: 100%; font-size: clamp(2.15rem, 11.5vw, 3.65rem); line-height: 1.04; letter-spacing: -.04em; overflow-wrap: anywhere; }
+  .dx-hero-lead { max-width: 100%; margin-top: 22px !important; font-size: .98rem; line-height: 1.75; overflow-wrap: anywhere; }
+  .dx-signal-pill { width: 100%; max-width: 100%; justify-content: flex-start; font-size: .61rem; line-height: 1.45; letter-spacing: .02em; }
+  .dx-trust-line { gap: 8px 12px; margin-top: 24px; }
+  .dx-command-card { width: 100%; max-width: 100%; }
+  .dx-command-foot { line-height: 1.5; }
+  .dx-orb-one { right: -190px; }
+  .dx-orb-two { left: -150px; }
   .dx-actions { flex-direction: column; }
   .dx-btn { width: 100%; }
   .dx-command-card { padding: 12px; border-radius: 22px; }
@@ -259,7 +269,8 @@
   .dx-system { padding: 48px 22px; border-radius: 24px; }
   .dx-truth-grid { grid-template-columns: 1fr; }
   .dx-final-cta { border-radius: 24px; }
-  .dx-footer-links { gap: 14px 20px; }
+  .dx-footer-links { gap: 8px 18px; }
+  .dx-footer-links a { min-height: 44px; display: inline-flex; align-items: center; padding: 6px 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -270,4 +281,58 @@
     transition-duration: .001ms !important;
   }
   .dx-command-card { transform: none; }
+}
+
+/* Dealix public-site V3 capability + sector surfaces */
+.dx-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.dx-chip-card {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid #dce5ea;
+  border-radius: 18px;
+  color: var(--dx-ink);
+  background: rgba(255,255,255,.76);
+  font-size: .88rem;
+  font-weight: 800;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.dx-chip-card span { color: #0891b2; }
+.dx-chip-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,.56); box-shadow: 0 18px 40px rgba(15,23,42,.07); }
+.dx-sector-section { border-top: 1px solid #e3ecef; }
+.dx-sector-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.dx-sector-card {
+  min-height: 148px;
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  padding: 22px;
+  border: 1px solid #dce5ea;
+  border-radius: 22px;
+  color: var(--dx-ink);
+  background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(240,249,250,.88));
+  box-shadow: 0 16px 38px rgba(15,23,42,.045);
+  transition: transform 190ms ease, border-color 190ms ease, box-shadow 190ms ease;
+}
+.dx-sector-card:hover { transform: translateY(-5px); border-color: rgba(34,211,238,.58); box-shadow: 0 24px 50px rgba(15,23,42,.08); }
+.dx-sector-card span { color: #0e7490; font: 750 .65rem/1.35 "IBM Plex Mono", monospace; letter-spacing: .05em; }
+.dx-sector-card strong { color: var(--dx-ink); font-size: 1rem; line-height: 1.45; }
+.dx-sector-card b { color: #0891b2; justify-self: start; }
+
+@media (min-width: 981px) {
+  .dx-value-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .dx-chip-grid { grid-template-columns: 1fr; }
+  .dx-sector-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .dx-sector-grid { grid-template-columns: 1fr; }
 }

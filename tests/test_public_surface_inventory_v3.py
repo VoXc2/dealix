@@ -16,7 +16,7 @@ RETIRED = set(MANIFEST["retired_redirect"])
 
 def test_every_top_level_html_is_explicitly_classified() -> None:
     actual = {path.name for path in LANDING.glob("*.html")}
-    classified = CANONICAL | SUPPORTING | QUARANTINED | RETIRED
+    classified = {name for name in (CANONICAL | SUPPORTING | QUARANTINED | RETIRED) if name.endswith(".html")}
     assert actual == classified, {
         "unclassified": sorted(actual - classified),
         "missing_files": sorted(classified - actual),
