@@ -10,8 +10,6 @@
   "reviewed_fail_closed_or_supporting": [
     "checkout.html",
     "checkout-success.html",
-    "workflow.html",
-    "ai-team.html",
     "changelog.html",
     "dpa.html",
     "dpo.html",
@@ -92,13 +90,16 @@
     "pilot-tracker.html": "/proof.html",
     "roadmap.html": "/",
     "sector-report-b2b-services.html": "/proof.html",
-    "sector-report-realestate-sample.html": "/proof.html"
+    "sector-report-realestate-sample.html": "/proof.html",
+    "workflow.html": "/pricing",
+    "ai-team.html": "/agents"
   },
   "rules": {
-    "canonical_commercial_truth": "Free Mini Diagnostic -> qualified discovery -> customer-specific quote -> 30-Day Revenue Command Pilot -> proof -> stop/expand/redesign",
+    "canonical_commercial_truth": "Free Execution Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> Outcome Sprint/Pilot -> Proof Review -> Dealix Runtime or Stop/Expand/Redesign",
     "canonical_agent_architecture": "Dealix Holding -> Company Control Plane -> Sector Companies -> Arm Pods -> Specialist Logical Agents -> resource-governed runtime workers",
     "public_fixed_agent_count_authority": false,
     "public_fixed_pilot_price": false,
+    "public_fixed_pilot_duration_authority": false,
     "public_live_checkout": false,
     "unsupported_customer_proof": false,
     "unsupported_accreditation": false,
