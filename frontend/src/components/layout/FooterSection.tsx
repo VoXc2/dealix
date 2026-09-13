@@ -39,29 +39,28 @@ const NAV_COLUMNS: NavColumn[] = [
     titleEn: "Company",
     links: [
       { ar: "من نحن", en: "About Us", href: "/about" },
-      { ar: "قصص النجاح", en: "Case Studies", href: "/about" },
+      { ar: "الدليل والنتائج", en: "Proof & Evidence", href: "/about" },
       { ar: "الشركاء", en: "Partners", href: "/partners" },
-      { ar: "تسعير الخدمات", en: "Pricing", href: "/pricing" },
+      { ar: "نطاقات وأسعار مخصصة", en: "Customer-Specific Scope", href: "/pricing" },
     ],
   },
   {
     titleAr: "القانوني",
     titleEn: "Legal",
     links: [
-      { ar: "الثقة والامتثال", en: "Trust & Compliance", href: "/trust" },
+      { ar: "الثقة والضوابط", en: "Trust & Controls", href: "/trust" },
       { ar: "سياسة الخصوصية", en: "Privacy Policy", href: "/privacy" },
-      { ar: "شروط الخدمة", en: "Terms of Service", href: "/privacy" },
       { ar: "PDPL — حقوقك", en: "PDPL — Your Rights", href: "/trust" },
     ],
   },
 ];
 
 const TRUST_SIGNALS = [
-  { ar: "PDPL أصيل", en: "PDPL Compliant" },
-  { ar: "ZATCA جاهز", en: "ZATCA Ready" },
-  { ar: "Approval-First", en: "Approval-First" },
-  { ar: "لا outreach بارد", en: "No Cold Outreach" },
-  { ar: "Audit Trail كامل", en: "Full Audit Trail" },
+  { ar: "ضوابط تراعي PDPL", en: "PDPL-Aware Controls" },
+  { ar: "دعم جاهزية ZATCA", en: "ZATCA Readiness Support" },
+  { ar: "الموافقة أولاً", en: "Approval-First" },
+  { ar: "لا تواصل بارد", en: "No Cold Outreach" },
+  { ar: "أدلة قابلة للمراجعة", en: "Reviewable Evidence Trail" },
 ];
 
 /* ─── Component ─────────────────────────────────────── */
@@ -101,25 +100,17 @@ export function FooterSection({ className = "" }: FooterSectionProps) {
             </p>
             <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
               {isAr
-                ? "B2B Revenue OS · رؤية 2030 · PDPL · ZATCA"
-                : "B2B Revenue OS · Vision 2030 · PDPL · ZATCA"}
+                ? "B2B Revenue OS · رؤية 2030 · ضوابط PDPL · جاهزية ZATCA"
+                : "B2B Revenue OS · Vision 2030 · PDPL-Aware Controls · ZATCA Readiness"}
             </p>
 
-            {/* Contact */}
+            {/* Public contact — only publish verified channels. */}
             <div className="mt-4 space-y-1">
               <a
                 href="mailto:hello@dealix.me"
                 className="block text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 hello@dealix.me
-              </a>
-              <a
-                href="https://wa.me/966500000000"
-                className="block text-xs text-muted-foreground hover:text-foreground transition-colors"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {isAr ? "واتساب (على الموعد فقط)" : "WhatsApp (by appointment only)"}
               </a>
             </div>
           </div>
@@ -172,8 +163,8 @@ export function FooterSection({ className = "" }: FooterSectionProps) {
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {isAr
-                ? "شركة مسجّلة في المملكة العربية السعودية · خاضعة لأنظمة هيئة الاتصالات والفضاء والتقنية"
-                : "Registered in the Kingdom of Saudi Arabia · Subject to CITC regulations"}
+                ? "Saudi-first · حوكمة وأدلة قبل الادعاءات · حالة الامتثال تعتمد على النطاق والدليل"
+                : "Saudi-first · Governance and evidence before claims · Compliance status is scope- and evidence-dependent"}
             </p>
           </div>
           <div className="flex items-center gap-3 sm:ms-auto">
@@ -182,7 +173,7 @@ export function FooterSection({ className = "" }: FooterSectionProps) {
             </Link>
             <span className="text-muted-foreground/40">·</span>
             <Link href={`${base}/trust`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-              {isAr ? "الثقة والامتثال" : "Trust & Compliance"}
+              {isAr ? "الثقة والضوابط" : "Trust & Controls"}
             </Link>
             <span className="text-muted-foreground/40">·</span>
             <Link href={`${base}/learn`} className="text-xs text-muted-foreground hover:text-foreground transition-colors">

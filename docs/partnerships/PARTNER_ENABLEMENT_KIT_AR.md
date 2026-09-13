@@ -1,321 +1,268 @@
 # Partner Enablement Kit — حزمة تمكين الشركاء
-**Dealix — Agent #3**
 
-> **الغرض:** كل ما يحتاجه الشريك لبيع Dealix بفعالية. Pitch، materials، training، support.
+**Status:** CURRENT_ONLY commercial guidance for Dealix partner work.
+
+> **الغرض:** تمكين شريك مؤهل من فهم Dealix، اكتشاف المشكلة، تشغيل Free Execution Diagnostic، والمشاركة في صفقة محددة دون إنشاء سعر أو مدة أو ادعاء امتثال أو علاقة غير مثبتة.
+
+## قواعد الحقيقة قبل أي استخدام
+
+- Research ≠ Relationship.
+- Public Contact ≠ Consent.
+- Partner hypothesis ≠ Approved partner.
+- Draft ≠ Sent.
+- Discovery ≠ Quote.
+- Quote ≠ Invoice.
+- Invoice ≠ Payment.
+- Payment ≠ Revenue until verified.
+- Customer Value ≠ Public Proof without permission.
+- لا cold WhatsApp، ولا scraping لبيانات شخصية، ولا mass LinkedIn automation.
+- لا سعر عام ثابت، ولا مدة ثابتة، ولا خصم أو هامش أو التزام شريك ملزم قبل موافقة ونطاق موثقين.
+- لا ادعاء `PDPL compliant` أو `ZATCA compliant/ready` أو data residency أو شهادة أمنية بدون دليل مباشر يخص النطاق والنشر المعني.
 
 ---
 
-## 1. The Enablement Stack
+## 1. Enablement Stack
 
 ### 1.1 Materials
-- Pitch deck (co-branded)
-- One-pagers (per ICP)
-- Sample workflows
-- Case studies (anonymized)
-- Pricing card
-- Comparison matrix
-- FAQ
+- Pitch deck من السلطة التجارية الحالية فقط.
+- One-pager حسب المشكلة/القطاع بعد التحقق من الحاجة.
+- Sample workflows موصوفة بوضوح كأمثلة إذا لم تكن customer proof.
+- Proof/Case Study فقط إذا كان المصدر حقيقيًا، قابلًا للتدقيق، ومصرحًا باستخدامه.
+- Free Execution Diagnostic card.
+- Customer-specific proposal template.
+- Comparison matrix مبنية على حقائق قابلة للإثبات.
+- FAQ الحالي في هذا الملف.
 
 ### 1.2 Training
-- Onboarding (1-2 hours)
-- Sales process
-- Pitch practice
-- Objection handling
-- Co-selling with Dealix
+- Product and governance orientation.
+- Qualification and discovery.
+- Free Diagnostic handoff.
+- Evidence and claims discipline.
+- Objection handling.
+- Co-selling process.
 
 ### 1.3 Tools
-- CRM access (limited)
-- Co-branded templates
-- Dealix demo environment
-- Founder call (for support)
+- وصول محدود حسب الحاجة والمبدأ الأقل صلاحية.
+- Co-branded templates بعد اعتماد الهوية والاستخدام.
+- Demo/sandbox only when clearly labelled as demo/synthetic where applicable.
+- Founder / Dealix specialist support حسب الصفقة والحاجة.
 
 ### 1.4 Support
-- Partner Channel Agent (primary)
-- Founder (escalation)
-- Quarterly business review
-- Issue resolution
+- Specialist logical agent / partner work queue inside the canonical Dealix Company Machine.
+- Founder escalation when a commercial or material decision actually requires it.
+- Review cadence based on active opportunities and agreement, not a fixed public SLA.
 
 ---
 
-## 2. Onboarding (First 30 Days)
+## 2. Partner Qualification Before Onboarding
 
-### 2.1 Week 1
-- Welcome call
-- Sign agreement
-- Brand kit
-- Materials access
-- CRM access setup
+A company is not a Dealix partner merely because it appears in public research.
 
-### 2.2 Week 2
-- Training session 1 (overview)
-- Training session 2 (sales process)
-- Pitch practice
+Minimum evidence before promotion to an active partner lane:
+1. identifiable legal/business entity;
+2. relevant delivery or market-access capability;
+3. reciprocal interaction or permissioned introduction;
+4. conflict / risk review;
+5. commercial role hypothesis: referral, implementation, prime/subcontractor, reseller, specialist, or technology partner;
+6. evidence-backed next action;
+7. agreement/authority gate before representing Dealix externally as a formal partner.
 
-### 2.3 Week 3
-- Co-selling first deal
-- Founder support
-- Feedback loop
-
-### 2.4 Week 4
-- First deal close (or scheduled)
-- Performance review (informal)
-- Adjustments
+Public Saudi regulatory/provider lists are **qualification pools**, not proof of relationship.
 
 ---
 
-## 3. The Pitch Deck (Co-Branded)
+## 3. Onboarding
 
-### 3.1 Structure
-- Cover (partner + Dealix)
-- Problem
-- Solution
-- Differentiators
-- ICPs
-- Process
-- Pricing
-- Next step
+Onboarding duration is customer/partner-specific. Do not promise “30 days”, “week 1–4”, or a fixed go-live window unless it exists in the approved partner agreement.
 
-### 3.2 Customization
-- Partner logo
-- Partner contact
-- Co-branded colors
-- Founder-approved template
+Typical sequence:
+1. relationship and authority confirmation;
+2. partner role + sector fit;
+3. claims / consent / channel rules;
+4. current Dealix offer ladder;
+5. discovery and Free Execution Diagnostic practice;
+6. evidence/proof handling;
+7. proposal and handoff responsibilities;
+8. co-selling dry run;
+9. first qualified opportunity review;
+10. retrospective and adjustments.
 
 ---
 
-## 4. One-Pagers (Per ICP)
+## 4. Pitch Structure
 
-### 4.1 Marketing Agency
-- Pain: lead leakage, follow-up chaos
-- Solution: workflow + governance
-- Outcome: faster conversion
-- Pricing: from 9,999 SAR
+Use this sequence, adapting it to the buyer and evidence:
+1. customer problem / operating gap;
+2. verified context and signal;
+3. Free Execution Diagnostic;
+4. governed workflow / proposed intervention;
+5. authority and approval boundaries;
+6. evidence and acceptance criteria;
+7. customer-specific scope / duration / commercial terms only after qualified discovery;
+8. next bounded step.
 
-### 4.2 Clinic
-- Pain: appointment, no-show
-- Solution: follow-up recovery + PDPL
-- Outcome: more bookings
-- Pricing: from 12,000 SAR
-
-### 4.3 Education
-- Pain: enrollment leakage
-- Solution: follow-up + AI starter
-- Outcome: higher enrollment
-- Pricing: from 15,000 SAR
-
-### 4.4 (More per ICP)
+Never lead with an invented fixed package price or guaranteed outcome.
 
 ---
 
-## 5. Sample Workflows
+## 5. Sector One-Pagers
 
-### 5.1 What
-- Visual diagrams
-- Step-by-step
-- Tools used
-- Outcomes
+A sector page may state:
+- observed sector problem patterns;
+- relevant official Saudi signal/source;
+- diagnostic questions;
+- example workflow labelled as example;
+- evidence required to qualify the problem;
+- possible Dealix capabilities.
 
-### 5.2 Examples
-- Follow-up recovery (3 channels)
-- Lead scoring (HubSpot)
-- Proposal generation
-- Reporting dashboard
-
-### 5.3 Use Case
-- In pitch
-- In discovery
-- In proof
+A sector page must **not** state:
+- a fixed price “from X SAR” as binding authority;
+- fixed delivery duration;
+- guaranteed conversion/bookings/enrollment/revenue;
+- PDPL/ZATCA/security certification without evidence;
+- a named customer relationship that has not been proven.
 
 ---
 
-## 6. Case Studies
+## 6. Proof and Case Studies
 
-### 6.1 Anonymized
-- 3-5 by ICP
-- Real results (anonymized)
-- Methodology disclosed
-- Permission (where applicable)
+### 6.1 Internal proof
+May include tests, synthetic acceptance and internal execution receipts, but must be labelled accurately and never represented as customer value.
 
-### 6.2 Named (if available)
-- L5 with permission
-- Higher impact
-- Co-marketing
+### 6.2 Customer proof
+Requires:
+- real customer delivery evidence;
+- agreed acceptance/result context;
+- provenance;
+- permission for any public or named use.
 
----
-
-## 7. Pricing Card
-
-### 7.1 Standard
-- Diagnostic: 1,500-5,000
-- Workflow: 8,000-18,000
-- AI Starter: 18,000-35,000
-- Full OS: 35,000-90,000
-- Retainer: 3,000-15,000/month
-- Custom: 90,000+
-
-### 7.2 With Partner Margin
-- Show dealix price
-- Show partner margin
-- Show client price (same as Dealix price typically)
-- Or per agreement
-
-### 7.3 Discounts
-- Standard policy (PHASE 5)
-- Partner can suggest (founder approves)
+An anonymized claim is still a customer claim and must have real evidence behind it.
 
 ---
 
-## 8. Comparison Matrix
+## 7. Pricing and Commercial Terms
 
-### 8.1 vs CRM
-- Layer above
-- Workflow + governance
-- PDPL-native
+### Canonical flow
+`Free Execution Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> Outcome Sprint/Pilot -> Proof Review -> Runtime | Stop | Expand | Redesign`
 
-### 8.2 vs Agency
-- AI + human
-- Audit + governance
-- PDPL-native
-
-### 8.3 vs Freelancer
-- System, not individual
-- Documented
-- Scale
-
-### 8.4 vs ChatGPT
-- Business workflow
-- Approval gates
-- Saudi-specific
-
-**التفصيل:** `COMPETITOR_POSITIONING_AR.md`
+Rules:
+- Diagnostic = free by current default authority.
+- No public fixed price authority.
+- No public fixed duration authority.
+- Partner cannot invent price, margin, discount, refund, commitment, SLA, duration, renewal, or guarantee.
+- Quote must identify named customer, scope, acceptance criteria, duration/window, evidence basis and approved terms.
+- Partner margin/referral economics exist only if explicitly agreed for that partner/opportunity.
+- Binding quote/contract/tender remains a material approval/effect gate.
 
 ---
 
-## 9. FAQ
+## 8. Comparison Positioning
 
-### 9.1 Common Questions
-- "What's your pricing?" (PHASE 5)
-- "How long is delivery?" (PHASE 4)
-- "Do you replace our CRM?" (No, layer above)
-- "Is this PDPL compliant?" (Yes)
-- "Can you guarantee results?" (No, per `claim_policy.yaml`)
-- "How is this different from ChatGPT?" (workflow)
-- "What's the implementation time?" (per offer)
+### vs CRM
+- Dealix can orchestrate governed workflows around existing systems.
+- Do not claim universal replacement or integration until scope is verified.
 
-### 9.2 Source
-- All from official docs
-- Founder-approved
-- Update quarterly
+### vs Agency / Consultancy
+- Dealix combines governed agentic execution, workflow, evidence and human authority boundaries.
+- Do not claim lower cost or faster delivery without comparable evidence.
 
----
+### vs Freelancer
+- Emphasize repeatable operating system, provenance and governed execution where actually implemented.
 
-## 10. The Pitch Practice
-
-### 10.1 Format
-- 30 min session
-- Role-play
-- Founder or experienced team
-- Feedback
-
-### 10.2 Topics
-- Cold call
-- Discovery
-- Pitch
-- Objection
-- Close
-
-### 10.3 Frequency
-- Initial: 2-3 sessions
-- Quarterly: refresh
-- After major updates
+### vs General Chatbot
+- Dealix is positioned around business workflows, authority, evidence, Saudi-first context and tool orchestration—not open-ended chat alone.
 
 ---
 
-## 11. Co-Selling Support
+## 9. FAQ — Current Answers
 
-### 11.1 When Partner Needs Help
-- Discovery support
-- Pitch support
-- Objection support
-- Closing support
+**“What’s your pricing?”**  
+After qualified discovery we issue a customer-specific quote. The diagnostic is free. Price depends on scope, value, delivery cost, urgency, risk and acceptance criteria.
 
-### 11.2 How
-- Call with founder
-- Co-attend meeting
-- Co-write proposal
-- Joint close
+**“How long is delivery?”**  
+Customer-specific. We agree a duration/window only after scope and acceptance criteria are known; there is no hidden 7/30-day default.
 
-### 11.3 SLA
-- < 24 hours response
-- Same-day if urgent
+**“Do you replace our CRM?”**  
+Not by default. Dealix can operate above or alongside current systems; replacement is a separate scoped decision.
 
----
+**“Is Dealix PDPL compliant?”**  
+Do not answer “yes” as a blanket certification. Say: Dealix includes privacy/consent/audit controls designed to support PDPL-related obligations. Compliance status is entity-, processing-, deployment- and evidence-specific and must be verified for the relevant scope. Legal advice/certification is not implied.
 
-## 12. Performance Support
+**“Is Dealix ZATCA ready/compliant?”**  
+Do not give a blanket certification. Dealix can support e-invoicing readiness/integration workflows; actual taxpayer wave, integration status and compliance must be verified for the customer and deployed configuration.
 
-### 12.1 Quarterly Review
-- Metrics
-- Best/worst deals
-- Adjustments
-- Strategy
+**“Can you guarantee results?”**  
+No. Define acceptance criteria and measure verified outcomes; do not guarantee revenue/KPI lift.
 
-### 12.2 Annual Review
-- Year performance
-- Renewal decision
-- Tier upgrade/downgrade
+**“Can you automate WhatsApp/LinkedIn outreach?”**  
+No cold WhatsApp or mass/personal LinkedIn automation. Inbound/opt-in and permissioned workflows only; channel policy and consent are explicit gates.
 
-### 12.3 On-Demand
-- Issue resolution
-- New opportunity
-- Strategy session
+**“How is this different from ChatGPT?”**  
+Governed business execution: authority gates, tool/workflow integration, evidence provenance, sector context and reviewable outcomes.
 
 ---
 
-## 13. Co-Marketing Support
+## 10. Co-Selling
 
-### 13.1 Co-Branded Materials
-- Pitch deck
-- One-pagers
-- Case studies
-- Social posts
+Use co-selling only for a real, permissioned opportunity.
 
-### 13.2 Joint Events
-- Webinar
-- Workshop
-- Conference
+Dealix may help with:
+- discovery preparation;
+- Free Diagnostic;
+- technical/business qualification;
+- proposal drafting;
+- proof/acceptance design;
+- delivery-role design.
 
-### 13.3 Cross-Promotion
-- Partner's audience
-- Dealix's audience
-- Both benefit
+The partner must not send/publish/commit Dealix to a price, contract, tender, government-access claim, production architecture or compliance claim without the relevant authority.
 
 ---
 
-## 14. Termination Support
+## 11. Performance Review
 
-### 14.1 When Terminating
-- 30 days notice
-- Handoff active clients
-- Pay pending commissions
-- Brand usage stop
+Review using evidence, not vanity metrics:
+- qualified reciprocal interactions;
+- diagnostics completed;
+- qualified problems;
+- customer-specific quotes approved/sent;
+- verified payments;
+- customer-validated value;
+- proof permission;
+- delivery quality and risk;
+- partner contribution and economics.
 
-### 14.2 After Termination
-- No more leads
-- No more co-marketing
-- Existing clients: per agreement
-- Documentation archived
-
----
-
-## 15. Companion Files
-
-- Model: `PARTNER_COMMERCIAL_MODEL_AR.md`
-- Pricing: `PARTNER_PRICING_AND_MARGIN_AR.md`
-- Pipeline: `PARTNER_PIPELINE_PROCESS_AR.md`
-- Qualification: `PARTNER_QUALIFICATION_AR.md`
-- Channel: `PARTNERSHIP_CHANNEL_AR.md`
-- Existing: `docs/partners/PARTNER_PILOT_PIPELINE.yaml`
+Do not count research targets as pipeline or public signals as partner relationships.
 
 ---
 
-**Enablement = سلاح الشريك. founder يسلّح، الشريك يبيع، العميل يربح.**
+## 12. Co-Marketing
+
+Allowed only with evidence and permission:
+- co-branded materials after brand approval;
+- named customer/partner references only with permission;
+- no fake logos, fake testimonials or inferred endorsements;
+- no public performance/compliance claim without proof.
+
+---
+
+## 13. Termination / Handoff
+
+Notice period, pending commissions, client handoff, brand use and post-termination obligations are governed by the **signed partner agreement**. Do not invent a universal 30-day notice or payment obligation.
+
+---
+
+## 14. Companion Authority
+
+Use current canonical sources, not historical price sheets:
+- `data/brand/brand_authority.json`
+- current commercial truth authority / CURRENT_ONLY retrieval
+- `docs/security/BUSINESS_CLAIMS_SAFETY_POLICY_AR.md`
+- `docs/commercial/saudi_ai_readiness_diagnostic_crosswalk_2026.md`
+- GitHub issue `#1901` for current customer-specific commercial migration
+- GitHub issue `#1914` for Omega V3 execution/model authority
+
+Historical partner pricing/margin/package files are provenance only when they conflict with this document or newer canonical authority.
+
+---
+
+**Partner enablement = evidence + qualification + governed execution. No invented relationship, price, duration, compliance or proof.**

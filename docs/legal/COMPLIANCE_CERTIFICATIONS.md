@@ -1,121 +1,211 @@
-# Compliance & Certifications Inventory
+# Compliance, Assurance & Certification Evidence Inventory
 
-> **Status:** living document. Update when any certification status changes.
-> **Audience:** founder, prospective enterprise customers, prospective investors.
+> **Status:** CURRENT_ONLY evidence inventory.  
+> **Audience:** founder, delivery, sales, partners, enterprise diligence.  
+> **Rule:** source code can prove a control exists; it cannot by itself prove legal compliance, regulatory registration, production deployment, tax status, data residency, or a third-party certification.
 
----
+## 1. Evidence Classes
 
-## Current State (2026-05-12)
+Use only these statuses:
 
-### Achieved ✅
+| Status | Meaning |
+|---|---|
+| `VERIFIED_CURRENT` | Current primary evidence has been checked for the exact entity/deployment/scope. |
+| `CONTROL_IMPLEMENTED_NOT_ATTESTED` | A control/capability exists in source or process, but no blanket compliance/certification claim is authorized. |
+| `PLANNED` | Roadmap item; not current capability or certification. |
+| `UNKNOWN_HOLD` | Evidence is absent, stale, scope-ambiguous, or not independently verified. Do not market as achieved. |
+| `NOT_APPLICABLE_PROVEN` | Non-applicability has been assessed for a defined scope and evidence exists. |
 
-| Certification | Status | Evidence | Renewal |
-|---------------|--------|----------|---------|
-| **PDPL (Personal Data Protection Law)** | Compliant by design | `integrations/pdpl.py`, `api/middleware/http_stack.py` | Continuous |
-| **ZATCA Phase 2 e-Invoicing** | Wired (production-ready) | `integrations/zatca.py` (25 functions), invoice chaining | Continuous |
-| **Saudi Commercial Registration (CR)** | {CR_NUMBER if set} | MCI portal | Annual |
-| **VAT Registration** | {VAT_NUMBER if set} | ZATCA portal | Continuous |
-
-### In Progress 🟡
-
-| Certification | Status | Target completion | Owner |
-|---------------|--------|--------------------|-------|
-| **SDAIA Controller Registration** | Pre-DPO appointment | Q3 2026 (after first enterprise customer) | Founder |
-| **ISO 27001** | Not started; gap analysis pending | Q1 2027 | Future hire |
-| **SOC 2 Type II** | Not started | Q3 2027 (if US enterprise customer demands) | Future hire |
-
-### Not Pursued 🔴 (and why)
-
-| Certification | Reason for not pursuing now |
-|---------------|------------------------------|
-| HIPAA | Dealix doesn't process healthcare data; pursue if healthcare customer signs |
-| PCI-DSS Level 1 | Moyasar handles cardholder data; Dealix is out-of-scope |
-| GDPR (EU) | Not targeting EU customers; PDPL is functionally equivalent for Saudi customers |
+**Never convert `CONTROL_IMPLEMENTED_NOT_ATTESTED` into “Compliant”, “Certified”, “Ready”, or “Production-ready”.**
 
 ---
 
-## PDPL Compliance Detail
+## 2. Current Dealix Assurance Inventory
 
-Dealix's PDPL stance is the foundational moat. Every claim must be backed by code.
-
-### Article-by-Article Compliance Map
-
-| PDPL Article | Requirement | Dealix Implementation | File |
-|--------------|-------------|-----------------------|------|
-| Art. 5 (Lawful Basis) | Consent or other lawful basis before processing | Consent flows for email + WhatsApp | `integrations/pdpl.py:build_consent_request_*` |
-| Art. 11 (Notice) | Privacy notice before collection | Privacy policy page + just-in-time notices | `landing/privacy-policy.html` |
-| Art. 13 (Erasure) | Right to deletion within 30 days | Cascade erasure with audit trail | `integrations/pdpl.py:build_erasure_audit_entry` |
-| Art. 14 (Portability) | Right to data export (structured format) | JSON export per data subject | `integrations/pdpl.py:build_data_export` |
-| Art. 18 (Record-keeping) | 5-year audit log for data access | Middleware logging on 15 personal-data paths | `api/middleware/http_stack.py:_PERSONAL_DATA_PREFIXES` |
-| Art. 21 (Breach Notification) | Notify SDAIA within 72 hours | Breach notification builder + runbook | `integrations/pdpl.py:build_breach_notification` + `docs/ops/PDPL_BREACH_RUNBOOK.md` |
-| Art. 32 (DPO) | Designate DPO for significant processing | Appointment kit ready; activates at enterprise customer #1 | `docs/legal/DPO_APPOINTMENT_TEMPLATE.md` |
-
-### PDPL Sub-Processor Inventory
-
-(Sub-processors that may access personal data on Dealix's behalf — public list at `landing/sub-processors.html`)
-
-| Sub-processor | Location | Purpose | Data accessed | DPA in place? |
-|---------------|----------|---------|---------------|---------------|
-| Anthropic | US | LLM inference | Customer prompts (anonymized when possible) | Standard Anthropic terms |
-| OpenAI | US | LLM inference fallback | Same as Anthropic | Standard OpenAI terms |
-| Moyasar | KSA | Payment processing | Cardholder data (not seen by Dealix) | Standard Moyasar terms |
-| Meta Platforms | US/EU | WhatsApp Business Cloud | Phone numbers, message content | Meta Business Terms |
-| AWS (S3 me-south-1) | Bahrain (GCC) | Backups | Encrypted DB snapshots | AWS DPA |
-| Resend / SendGrid | US | Transactional email | Email addresses, names | Standard terms |
-| Google (Maps, CSE) | US | Lead enrichment | Public business data only | Standard terms |
-| Hunter.io | France | Email enrichment | Public domain emails | Standard terms |
-| Firecrawl | US | Page content extraction | Public web pages | Standard terms |
-| Wappalyzer | US | Tech fingerprint | Public site metadata | Standard terms |
-
-**Cross-border transfer note:** all transfers outside Saudi Arabia rely on Standard Contractual Clauses (SDAIA-approved or equivalent) and customer consent in the MSA.
+| Area | Current authority | Evidence type | Commercial wording allowed |
+|---|---|---|---|
+| Saudi PDPL | `CONTROL_IMPLEMENTED_NOT_ATTESTED` | Consent/audit/erasure/export/privacy-control code and policies | “PDPL-aware controls” / “controls designed to support PDPL obligations” |
+| ZATCA e-invoicing | `CONTROL_IMPLEMENTED_NOT_ATTESTED` | Source capabilities and readiness tooling | “ZATCA/e-invoicing readiness support”; verify taxpayer wave + deployed integration |
+| NCA cybersecurity controls | `CONTROL_IMPLEMENTED_NOT_ATTESTED` | Control mapping / gap assessment / governance | “NCA control mapping / readiness support”; never “NCA certified” |
+| ISO 27001 | `UNKNOWN_HOLD` unless a current certificate is attached | Third-party certificate required | No certification claim |
+| SOC 2 | `UNKNOWN_HOLD` unless a current report is attached | Independent report required | No attestation claim |
+| Commercial Registration | `UNKNOWN_HOLD` in this repository unless current official evidence is attached in the approved evidence store | Official Saudi registry evidence | Do not publish a number/status from placeholders |
+| VAT registration | `UNKNOWN_HOLD` in this repository unless current official evidence is attached in the approved evidence store | Official ZATCA evidence | Do not claim active registration from source/config |
+| Data residency | `UNKNOWN_HOLD` per deployment | Live provider/resource/location evidence | State only verified deployment-specific residency |
+| Encryption | `UNKNOWN_HOLD` per deployed service until runtime/config evidence is collected | Live deployment + key/config evidence | Distinguish designed/configured capability from deployed proof |
+| Uptime / incidents | `UNKNOWN_HOLD` unless current telemetry window is attached | Monitoring/incident evidence | No static uptime or “zero incidents” claims without dated telemetry |
 
 ---
 
-## ZATCA Phase 2 Compliance Detail
+## 3. PDPL — What We Can and Cannot Claim
 
-Dealix issues e-invoices for every paid customer. All invoices are:
+### Source controls currently available
 
-- UBL 2.1 compliant XML (`integrations/zatca.py:build_invoice_xml`)
-- QR code with TLV encoding per ZATCA spec (`integrations/zatca.py:build_qr_tlv`)
-- Cleared in real-time via Fatoorah API for B2B (or 24h reporting for B2C)
-- Chained with previous invoice hash (Phase 2 mandate)
-- Retained for 6 years (ZATCA mandate)
+Dealix contains implementation support for items such as:
+- consent records and consent-request preparation;
+- tenant-scoped access patterns;
+- personal-data export and erasure helpers;
+- audit trails;
+- breach-notification preparation;
+- data-processing/governance workflows.
 
-**For customers:** Dealix invoices appear in the customer's ZATCA portal automatically.
+These are **control evidence**, not a legal attestation that Dealix or a customer is fully compliant.
 
----
+### Breach notification
 
-## Pre-Enterprise-Customer Checklist
+The Saudi PDPL law requires a controller to notify the competent authority of qualifying breaches in accordance with the Regulations. The Implementing Regulations specify notification within **72 hours of awareness** when the incident may harm personal data/data subjects or conflict with their rights or interests (Implementing Regulations, Article 24). The controller must also notify affected data subjects without undue delay when the applicable harm threshold is met.
 
-Before signing any contract > 50K SAR/year, ensure:
+Operational consequence for Dealix:
+- breach tooling should prepare evidence and deadlines;
+- the incident must be assessed against the regulatory threshold;
+- legal/regulatory submission remains an authorized external action;
+- a source helper must never report “PDPL compliant = true” simply because controls exist.
 
-- [ ] CR number is current with MCI
-- [ ] VAT registration is active with ZATCA
-- [ ] Privacy policy at `landing/privacy-policy.html` is updated within 30 days
-- [ ] Sub-processors list at `landing/sub-processors.html` is current
-- [ ] DPO appointed (or Path A external retainer in place — see `docs/legal/DPO_APPOINTMENT_TEMPLATE.md`)
-- [ ] DPIA (Data Protection Impact Assessment) draft for the customer's use case
-- [ ] MSA template (`docs/legal/ENTERPRISE_MSA_TEMPLATE.md`) reviewed by counsel for that customer's specifics
-- [ ] Insurance: minimum 1M SAR cyber + 500K SAR professional indemnity
+### Registration / DPO / transfer obligations
 
----
+Whether controller registration, a DPO, DPIA, transfer safeguards, or other obligations apply depends on the legal entity and processing facts. Treat each as `UNKNOWN_HOLD` until current official evidence and scope analysis are available.
 
-## Pre-Investor Checklist
-
-Before any institutional fundraise:
-
-- [ ] All "Achieved" certifications above documented with evidence
-- [ ] "In Progress" items have written plans (not aspiration)
-- [ ] Cap table is clean (no informal verbal equity promises)
-- [ ] IP assignment agreements signed for any contractor who touched code
-- [ ] ZATCA history pulled showing clean tax compliance
+This document is operational governance, not legal advice.
 
 ---
 
-## Audit Trail
+## 4. ZATCA / E-Invoicing — Evidence Boundary
 
-Whenever a certification status changes, append a row here:
+Source code may demonstrate technical capabilities such as invoice construction, validation, QR/TLV helpers, hashes, or API adapters. It does **not** prove:
+- that the Dealix legal entity is registered for VAT;
+- that a particular taxpayer is in a particular integration wave;
+- that production credentials are valid;
+- that invoices are currently cleared/reported successfully;
+- that a customer is compliant;
+- that a deployed release equals the reviewed source.
 
-| Date | Change | Owner |
-|------|--------|-------|
-| 2026-05-12 | Initial document created; PDPL + ZATCA marked Achieved | Founder |
+A current ZATCA claim requires the relevant official taxpayer/wave evidence plus live integration receipts for the exact deployment/customer.
+
+Commercial wording:
+- allowed: “e-invoicing readiness/integration support”;
+- blocked without evidence: “ZATCA compliant”, “ZATCA certified”, “production-ready”, “all invoices clear automatically”.
+
+---
+
+## 5. Cybersecurity / NCA / ISO / SOC
+
+- Mapping controls to NCA guidance or running a gap assessment is not certification.
+- A repository security policy is not proof that the deployed system follows it.
+- ISO 27001 can be claimed only with a current certificate whose organization/scope matches the claim.
+- SOC 2 can be claimed only with the relevant current independent report and scope.
+- Pen-test, vulnerability-scan, incident, backup/restore and SLO claims require dated evidence.
+
+---
+
+## 6. Sub-Processors and Cross-Border Processing
+
+Do not maintain a static “current sub-processor” list by inferring from packages, old architecture, provider accounts, or historical documentation.
+
+For a customer/deployment, derive the list from:
+1. exact deployed services/providers;
+2. exact data categories and purposes;
+3. processor/sub-processor contractual terms;
+4. actual regions/data flows;
+5. required transfer safeguards and risk assessment;
+6. customer-specific agreement/notice.
+
+Provider presence in source code ≠ provider used in production. Provider credential presence ≠ authorized processing.
+
+---
+
+## 7. Evidence Required Before External Claims
+
+### Company / tax status
+- current official commercial-registration evidence;
+- current VAT/tax registration evidence where applicable;
+- exact legal entity name matching the claim.
+
+### PDPL
+- processing inventory / ROPA appropriate to scope;
+- lawful-basis/consent evidence where relevant;
+- privacy notices;
+- processor/sub-processor evidence;
+- transfer analysis where relevant;
+- security controls and incident procedure;
+- registration/DPO/DPIA evidence if applicable;
+- deployment-specific data-flow evidence.
+
+### ZATCA
+- taxpayer/wave evidence;
+- production integration identity/credentials (never exposed in reports);
+- dated validation/clearance/reporting receipts;
+- exact deployed release identity.
+
+### Security certifications
+- valid third-party certificate/report;
+- entity and scope match;
+- validity dates;
+- evidence reference safe to disclose.
+
+---
+
+## 8. Claims Firewall
+
+Blocked unless directly proven for the exact scope:
+- “PDPL Compliant” / “Saudi-PDPL compliant”;
+- “ZATCA Ready/Compliant/Certified” as a blanket company claim;
+- “Saudi data residency” as a blanket claim;
+- “ISO 27001 certified” / “SOC 2 compliant”;
+- “0 incidents” or fixed uptime without a dated telemetry window;
+- “production-ready” based only on source code/tests;
+- “registered / VAT active” based on placeholders or config;
+- guaranteed refund/KPI/revenue terms not present in an approved customer-specific agreement.
+
+Preferred wording:
+- “PDPL-aware controls”; 
+- “e-invoicing readiness support”; 
+- “control mapping / evidence pack”; 
+- “deployment-specific status available after verification”; 
+- “UNKNOWN/HOLD pending evidence”.
+
+---
+
+## 9. Production Evidence Is a Separate Layer
+
+`source capability != source acceptance != runtime acceptance != deployed identity != customer value != public proof`
+
+Before a public trust claim that depends on production:
+1. accepted source SHA;
+2. deployed Web/API/service SHA identity;
+3. live configuration/runtime evidence;
+4. backup/restore and rollback evidence where relevant;
+5. current telemetry/security evidence;
+6. public surface/index parity;
+7. claim-specific evidence reference.
+
+HTTP 200 alone is not release identity or Production Green.
+
+---
+
+## 10. Ownership and Update Rule
+
+Whenever an assurance status changes, record:
+- date/time;
+- entity/deployment/customer scope;
+- old status;
+- new status;
+- primary evidence reference;
+- verifier/reviewer;
+- expiry/recheck date if applicable.
+
+No agent may self-author a certificate or mark a control `VERIFIED_CURRENT` from its own generated report alone. Independent primary evidence is required.
+
+---
+
+## 11. Current Primary References
+
+- Saudi Data & AI Authority (SDAIA): Personal Data Protection Law and Implementing Regulations.
+- National Data Governance Platform: current PDPL services/guidance.
+- ZATCA official taxpayer/e-invoicing notices for customer-specific wave and integration status.
+- NCA official controls/guidelines for cybersecurity mapping.
+- Dealix `data/brand/brand_authority.json` for claim policy.
+- Dealix `docs/security/BUSINESS_CLAIMS_SAFETY_POLICY_AR.md`.
+- GitHub issue `#1901` for current commercial-authority migration.
+- GitHub issue `#1914` for current execution/model authority.
+
+**Evidence before claims. Controls before certification. Exact scope before commercial authority.**
