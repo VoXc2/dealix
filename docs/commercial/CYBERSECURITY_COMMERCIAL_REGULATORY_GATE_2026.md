@@ -28,6 +28,35 @@ Before any customer-specific quote, contract, tender, paid pilot or delivery tha
 4. **Government/CNI context** — apply the strictest evidence/eligibility gate; never infer that level-2 or general registration is sufficient.
 5. **Partner-delivered service** — verify the partner's current registration/license, exact licensed entity name, scope and responsibility split; public listing != partnership.
 
+## Official NCA Level-1 partner-qualification pool
+
+At the 2026-09-13 checkpoint, the NCA registration/licensing hub publicly lists the following entities under **Managed Security Operations Center Services — Level 1**:
+
+| Official listed entity | Internal Dealix status |
+|---|---|
+| الشركة السعودية لتقنية المعلومات (سايت) | `RESEARCH_PARTNER_FIT` |
+| شركة المتقدمة للتقنية والأمن السيبراني المحدودة (سرار) | `RESEARCH_PARTNER_FIT` |
+| شركة هبوب التقنية للاتصالات وتقنية المعلومات | `RESEARCH_PARTNER_FIT` |
+| شركة حلول الشرق الأوسط لتقنية المعلومات (سيبراني) | `RESEARCH_PARTNER_FIT` |
+| شركة تحكم التقنية المحدودة | `RESEARCH_PARTNER_FIT` |
+| شركة الإلكترونيات المتقدمة المحدودة | `RESEARCH_PARTNER_FIT` |
+
+Official source: https://nca.gov.sa/ar/registration-and-licensing/
+
+This list is a **qualification pool, not a relationship list**. Presence on the NCA page does not prove willingness to partner, current procurement eligibility for a specific competition, commercial fit, available delivery capacity, subcontracting permission, or consent to outreach.
+
+For any candidate, qualify before scarce founder/agent time is spent:
+1. exact legal entity and current NCA Level-1 listing still valid;
+2. relevant MDR/SOC/service references and target customer classes;
+3. overlap vs complementary Dealix role;
+4. AI/automation/integration/evidence layer where Dealix creates distinct value;
+5. partner/subcontracting route and procurement constraints;
+6. data/security boundary and liability allocation;
+7. economics, working-capital burden and expected value;
+8. actual reciprocal interaction before promotion to relationship/pipeline.
+
+Do not scrape personal data or mass-contact the list. Prefer official corporate partner/business channels or existing warm/permissioned routes only when an exact external-contact action is separately authorized.
+
 ## Dealix entry strategy
 
 Use cyber demand primarily to create **free, evidence-based readiness diagnostics** and partner qualification until the applicable registration/licensing boundary is proven.
@@ -73,4 +102,5 @@ A diagnostic must not claim certification, compliance, license coverage, penetra
 `CYBER_DIAGNOSTICS=RESEARCH/QUALIFICATION_READY`  
 `PAID_CYBER_SERVICE=HOLD_SCOPE_CLASSIFICATION`  
 `MANAGED_SOC_MDR=HOLD_NCA_LICENSE_AND_PARTNER_EVIDENCE`  
+`LEVEL1_PARTNER_POOL=OFFICIAL_NCA_LIST_RESEARCH_ONLY`  
 `EXTERNAL_ACTION=EXACT_L5_REQUIRED`
