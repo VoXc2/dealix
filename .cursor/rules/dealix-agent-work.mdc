@@ -1,48 +1,88 @@
 ---
-description: قواعد عمل الوكلاء — اقرأ السجل أولاً، التزم بالصلاحيات والممنوعات (لا إرسال/نشر خارجي)
+description: قواعد عمل Dealix Omega V3 — Agentic Holding + Session Factory + ResourceGovernor + current commercial/model authority
 globs:
   - .claude/agents/**
   - .codex/agents/**
   - docs/agents/**
+  - dealix/agentic_holding/**
+  - scripts/ops/session_factory.py
   - scripts/audit_agent_team.py
   - scripts/triage_open_prs.py
 ---
 
-# Dealix — Agent Work Rules / قواعد عمل الوكلاء
+# Dealix — Omega V3 Agent Work Rules / قواعد عمل الوكلاء
 
-## Read first / اقرأ أولاً
-- `AGENTS.md`
-- `docs/agents/AGENT_TEAM_REGISTRY.md`
-- `docs/agents/AGENT_PERMISSION_MATRIX.md`
-- the agent's own definition in `.claude/agents/` or `.codex/agents/`
+## Read authority first / اقرأ السلطة أولاً
+- nearest scoped `AGENTS.md`, then root `AGENTS.md` for repo conventions;
+- `docs/agents/README.md` and `docs/agents/AGENT_TEAM_REGISTRY.md` for the human governance mirror;
+- `dealix.agentic_holding.runtime.build_current_registry()` is the logical-agent roster authority;
+- Session Factory + ResourceGovernor are the one modifying-execution/admission fabric;
+- project/editor agent files are compatibility/execution surfaces, never fleet-size authority.
+
+Canonical architecture:
+`Dealix Holding -> Company Control Plane -> Sector Companies -> Arm Pods -> Specialist Logical Agents -> ResourceGovernor-bounded runtime workers`.
+
+Historical `dealix-pm/sales/delivery/engineer/content` names are compatibility aliases only.
 
 ## Before editing / قبل التعديل
-- identify the **business impact** (Revenue / Conversion / Delivery / Compliance / Security / Product readiness / Founder clarity / Cost reduction)
-- identify the **risk level** (low / medium / high) and your permission level (L0–L6)
-- identify the **verification command** (e.g. `make doctor`, `make prod-verify`, `python scripts/audit_agent_team.py`)
+- resolve exact live base/head and preserve a source-movement guard;
+- identify business impact and economic priority;
+- identify effect class: safe L0-L4 internal/repo work vs exact action-bound L5;
+- identify trusted data sensitivity; workers may never downgrade it for model capacity;
+- identify acceptance commands and an independent verifier;
+- use the admitted isolated worktree for modifying work; never direct-main mutation.
+
+## Safe autonomous execution
+Bounded L0-L4 source/test/verification work may proceed autonomously when admitted
+by current authority. Do not wait for a routine permission prompt merely to run a
+focused safe test or create a draft PR.
+
+Material L5 remains separate exact authority: merge/release, production deploy or
+migration, external send/publication, spend/payment/refund, binding quote/contract,
+tender submission, DNS/DB/secrets/provider/billing mutation, root/destructive
+operations.
+
+## Model/data law
+- automatic routing authority belongs only to the canonical Dealix model/cost/data broker;
+- founder unattended policy: **NO_DEEPSEEK**;
+- no silent paid spill;
+- caller args, worker env, provider defaults, last-used model or self-authored receipts cannot mint authority;
+- capacity never downgrades data sensitivity.
+
+## Commercial law
+`Free Execution Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> Outcome Sprint/Pilot -> Proof Review -> Dealix Runtime | Stop | Expand | Redesign`.
+
+No public fixed price/duration, fabricated proof, guaranteed outcome, cold WhatsApp,
+automated personal LinkedIn, scraping, or unsupported compliance/residency claims.
 
 ## Never / ممنوع
-- expose or commit secrets · commit a real `.env`
-- deploy production · merge to `main`
-- disable, delete, or weaken a doctrine guard test (`tests/test_no_*.py`)
-- weaken auth · modify payment logic for external effect without approval
-- send live WhatsApp / LinkedIn / cold outreach
-- promise guaranteed sales or invent CRM/revenue numbers
-- rename existing modules (extend, don't replace)
+- expose/commit secrets or a real `.env`;
+- mutate main directly, force-push, merge or deploy production from a coding worker;
+- disable/delete/weaken a fail-closed doctrine or authority regression to get green;
+- create a second scheduler, work queue, Company Brain, Opportunity Graph, model router, approval center or Proof Ledger;
+- send live outbound or create commercial truth from public research;
+- invent customer/revenue/payment/proof state.
 
 ## Prefer / يُفضَّل
-- small, focused PRs
-- deterministic scripts + tests
-- linking to existing docs over duplicating them
-- evidence-level labels (L0–L5) on every claim
-- the 8-field output contract footer (`docs/agents/AGENT_OUTPUT_CONTRACT.md`)
+- exact-head isolated worktrees and bounded changes;
+- deterministic scripts + focused tests;
+- registry-derived logical ownership;
+- Builder != Verifier;
+- evidence/provenance on every material claim;
+- repair existing canonical systems rather than adding frameworks or parallel stacks.
 
-## Agent selection / اختيار الوكيل
-- sales / proposals → `dealix-sales`
-- delivery / Proof Pack → `dealix-delivery`
-- code / pytest / API → `dealix-engineer`
-- docs / SOPs / templates → `dealix-content`
-- status / priorities / weekly → `dealix-pm`
+## Logical owner selection
+Choose the canonical Agentic Holding sector/arm/specialist identity matching the
+work. Compatibility aliases may front an editor session but do not constrain the
+logical fleet. New sectors/arms/specialists are represented through the registry,
+not by extending a fixed-five list.
 
-## Verify the fleet / تحقق الفريق
-`make agents-audit` — registry parity + frontmatter + governance docs + doctrine guards.
+## Verify governance
+Hosted source lint:
+`python scripts/audit_agent_team.py --strict`
+
+Sovereign runtime acceptance (full app environment):
+`python scripts/audit_agent_team.py --strict --require-dynamic-registry`
+
+A real PASS requires current registry authority and zero orphan/unmapped failures;
+file parity between Claude/Codex aliases is compatibility hygiene only.

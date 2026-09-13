@@ -12,9 +12,17 @@ See `token-optimizer/` for 12 guides covering: `.claudeignore` (40-90% savings),
 
 ### Agent governance
 The canonical control room for the agent fleet is [`docs/agents/`](docs/agents/). Start with [`docs/agents/README.md`](docs/agents/README.md):
-- [`AGENT_TEAM_REGISTRY.md`](docs/agents/AGENT_TEAM_REGISTRY.md) — the 5 real sub-agents (`dealix-pm/sales/delivery/engineer/content`), the 6 agent surfaces, and the 11 non-negotiables (with their guard tests).
+- [`AGENT_TEAM_REGISTRY.md`](docs/agents/AGENT_TEAM_REGISTRY.md) — human-readable mirror of the registry-derived Agentic Holding (`Dealix Holding -> Sector Companies -> Arm Pods -> Specialist Logical Agents -> ResourceGovernor-bounded runtime workers`). The historical `dealix-pm/sales/delivery/engineer/content` names are compatibility executor aliases only, never canonical fleet-size authority.
 - [`AGENT_PERMISSION_MATRIX.md`](docs/agents/AGENT_PERMISSION_MATRIX.md) (L0–L6) · [`AGENT_OUTPUT_CONTRACT.md`](docs/agents/AGENT_OUTPUT_CONTRACT.md) · [`AGENT_DAILY_RUNBOOK.md`](docs/agents/AGENT_DAILY_RUNBOOK.md) · [`AGENT_SECURITY_POLICY.md`](docs/agents/AGENT_SECURITY_POLICY.md) · [`TOKEN_BUDGET_POLICY.md`](docs/agents/TOKEN_BUDGET_POLICY.md) · [`PR_TRIAGE_POLICY.md`](docs/agents/PR_TRIAGE_POLICY.md).
 - Verify the fleet is governed: `make agents-audit` (CI runs `.github/workflows/agent-team-audit.yml` on every PR). Triage open PRs: `make pr-triage`.
+
+Current precedence for autonomous work:
+- `dealix.agentic_holding.runtime.build_current_registry()` / the Agentic Holding registry is logical roster authority; do not infer fleet size from editor-agent files.
+- Safe, bounded L0–L4 read/research/edit/test/verify work may run autonomously in exact-head isolated worktrees through the canonical Session Factory / ResourceGovernor path.
+- Builder and Verifier remain independent; modifying jobs require exact live source authority and current data/model policy.
+- Unattended automatic model execution follows the current canonical NO_DEEPSEEK model/cost/data authority; legacy model defaults do not mint authority.
+- Current commercial law is `Free Execution Diagnostic -> Qualified Discovery -> Customer-Specific Quote`; no public fixed price or fixed duration authority.
+- L5 material effects remain action-bound: protected-main merge, production deploy/restart/cutover, external send/publish, spend/payment/refund, binding quote/contract/tender, DNS, production DB/schema/data, secrets/provider/billing/root/destructive mutations.
 
 ### Repo anatomy
 - `api/` — FastAPI app entry, dependencies, middleware, 120+ routers, and schema definitions.
@@ -29,10 +37,10 @@ The canonical control room for the agent fleet is [`docs/agents/`](docs/agents/)
 - `docs/` — architecture, launch runbooks, compliance, and product docs.
 
 ### Primary goals for agents
-- Make small, safe changes only when asked.
-- Prefer fixing or clarifying existing code over adding new features.
-- Run/tests commands only when explicitly requested by the user.
-- Avoid changing deployment, secret, or production config unless the user explicitly asks.
+- Prefer the smallest reversible change that advances the current verified objective.
+- Prefer fixing or clarifying existing code over adding parallel systems or duplicate features.
+- Run focused tests and verification automatically for safe L0–L4 work when they are needed to establish evidence; use exact-head isolated worktrees and respect resource budgets.
+- Do not perform L5 deployment, secret, provider, billing, production-data, external-send, publish, spend, contract, tender, or protected-main effects without the required exact action-bound authority.
 
 ## Cursor Cloud specific instructions
 

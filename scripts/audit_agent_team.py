@@ -1,23 +1,17 @@
 #!/usr/bin/env python3
-"""Audit the Dealix agent team registry and governance surface.
+"""Audit Dealix Omega V3 agent governance without creating a second registry.
 
-This is a dependency-free (stdlib-only) auditor so it can run in the
-minimal `agent-team-audit` workflow without installing the full app.
-
-It answers the questions the founder asks about the agent fleet:
-  - Which agent surfaces exist and are non-empty?
-  - Are the Claude (`.md`) and Codex (`.toml`) sub-agents in parity?
-  - Does every Claude sub-agent declare the required frontmatter?
-  - Do all governance docs exist (registry, contract, matrix, ...)?
-  - Are the 11-non-negotiable doctrine guard tests present?
+The lightweight audit keeps GitHub's existing stdlib-only workflow usable while
+verifying that repository guidance points to the canonical Agentic Holding source.
+When the full application environment is available it also calls
+``dealix.agentic_holding.runtime.build_current_registry()`` and records the real
+registry receipt. Sovereign acceptance on device V MUST run the dynamic mode;
+source-only mode is governance lint, not runtime proof.
 
 Outputs:
   - reports/agents/agent_team_audit.json
   - reports/agents/agent_team_audit.md
-  - stdout line: ``DEALIX_AGENT_TEAM_AUDIT=PASS|FAIL``
-
-Exit code is 0 by default (report-only). Pass ``--strict`` to exit 1 when
-the verdict is FAIL — this is what CI uses so the audit can gate a PR.
+  - stdout: DEALIX_AGENT_TEAM_AUDIT=PASS|FAIL
 """
 
 from __future__ import annotations
@@ -27,24 +21,25 @@ import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Agent surfaces that must exist and be non-empty for a governed fleet.
 AGENT_DIRS: tuple[str, ...] = (
-    ".claude/agents",          # Claude Code sub-agents (markdown)
-    ".codex/agents",           # Codex sub-agents (toml mirror)
-    ".cursor/rules",           # Cursor operating rules
-    "core/agents",             # internal agent runtime (base + multi-agent)
-    "autonomous_growth/agents",  # autonomous growth agent swarm
-    "auto_client_acquisition",   # deterministic execution planes the agents call
-    "mcp_server",              # MCP tool surface (read-only business OS)
-    "prompts",                 # canonical operator prompts
+    ".claude/agents",
+    ".codex/agents",
+    ".cursor/rules",
+    "core/agents",
+    "dealix/agentic_holding",
+    "autonomous_growth/agents",
+    "auto_client_acquisition",
+    "mcp_server",
+    "prompts",
 )
 
-# Governance docs that must exist for the agent team to count as governed.
 REQUIRED_DOCS: tuple[str, ...] = (
     "AGENTS.md",
+    "docs/agents/README.md",
     "docs/agents/AGENT_TEAM_REGISTRY.md",
     "docs/agents/AGENT_OUTPUT_CONTRACT.md",
     "docs/agents/AGENT_PERMISSION_MATRIX.md",
@@ -54,25 +49,38 @@ REQUIRED_DOCS: tuple[str, ...] = (
     "docs/agents/PR_TRIAGE_POLICY.md",
 )
 
-# Docs that are good to have but do not fail the audit when missing.
 RECOMMENDED_DOCS: tuple[str, ...] = (
-    "docs/agents/README.md",
     "docs/ops/FOUNDER_DAILY_OPERATING_RHYTHM.md",
     "docs/ops/FOUNDER_AGENT_PLAYBOOK_AR.md",
 )
 
 CLAUDE_AGENT_DIR = ".claude/agents"
 CODEX_AGENT_DIR = ".codex/agents"
-
-# Frontmatter keys every Claude sub-agent must declare (identity = doctrine #9).
 REQUIRED_CLAUDE_FRONTMATTER: tuple[str, ...] = ("name", "description", "tools")
-
-# At least this many doctrine guard tests must exist (the 11 non-negotiables).
 MIN_DOCTRINE_GUARD_TESTS = 5
+
+LEGACY_FIXED_FIVE_MARKERS: tuple[str, ...] = (
+    "the 5 real sub-agents",
+    "5 real sub-agents",
+    "canonical sub-agents (the real roster)",
+)
+
+CURRENT_AUTHORITY_MARKERS: tuple[str, ...] = (
+    "agentic holding",
+    "resourcegovernor",
+    "session factory",
+)
 
 
 def _exists(rel: str) -> bool:
     return (ROOT / rel).exists()
+
+
+def _read(rel: str) -> str:
+    path = ROOT / rel
+    if not path.is_file():
+        return ""
+    return path.read_text(encoding="utf-8-sig")
 
 
 def _count_files(rel: str) -> int:
@@ -85,7 +93,6 @@ def _count_files(rel: str) -> int:
 
 
 def _frontmatter_block(text: str) -> str | None:
-    """Return the YAML frontmatter block between the first two ``---`` fences."""
     lines = text.splitlines()
     if not lines or lines[0].strip() != "---":
         return None
@@ -95,18 +102,11 @@ def _frontmatter_block(text: str) -> str | None:
     return None
 
 
-def _claude_agent_names() -> list[str]:
-    directory = ROOT / CLAUDE_AGENT_DIR
+def _agent_names(rel: str, pattern: str) -> list[str]:
+    directory = ROOT / rel
     if not directory.exists():
         return []
-    return sorted(p.stem for p in directory.glob("*.md"))
-
-
-def _codex_agent_names() -> list[str]:
-    directory = ROOT / CODEX_AGENT_DIR
-    if not directory.exists():
-        return []
-    return sorted(p.stem for p in directory.glob("*.toml"))
+    return sorted(path.stem for path in directory.glob(pattern))
 
 
 def _check_frontmatter() -> dict[str, dict[str, object]]:
@@ -133,11 +133,102 @@ def _doctrine_guard_tests() -> list[str]:
     tests_dir = ROOT / "tests"
     if not tests_dir.exists():
         return []
-    return sorted(p.name for p in tests_dir.glob("test_no_*.py"))
+    return sorted(path.name for path in tests_dir.glob("test_no_*.py"))
 
 
-def build_report() -> dict:
-    """Build the audit report dictionary. Pure (no I/O side effects)."""
+def _source_authority_status() -> dict[str, Any]:
+    runtime = _read("dealix/agentic_holding/runtime.py")
+    arm_registry = _read("dealix/commercial/arm_registry.py")
+    sector_factory = _read("dealix/commercial/sector_company_factory.py")
+    required_runtime = (
+        "def build_current_registry",
+        "class AgentHierarchyRegistry",
+        "orphan_failures",
+        "unmapped_arms",
+        "ResourceSnapshot",
+    )
+    runtime_ok = all(marker in runtime for marker in required_runtime)
+    arm_ok = "get_active_arms" in arm_registry and "CapabilityArm" in arm_registry
+    sector_ok = "SectorCompanyFactory" in sector_factory
+    return {
+        "ok": runtime_ok and arm_ok and sector_ok,
+        "runtime_markers_ok": runtime_ok,
+        "arm_registry_markers_ok": arm_ok,
+        "sector_factory_markers_ok": sector_ok,
+        "authority": "dealix.agentic_holding.runtime.build_current_registry",
+    }
+
+
+def _dynamic_registry_status() -> dict[str, Any]:
+    """Use the canonical runtime when dependencies are available.
+
+    The hosted agent-team audit intentionally installs no third-party packages.
+    Missing optional runtime dependencies therefore produce SOURCE_ONLY mode, not
+    a fake dynamic PASS. Device-V acceptance must require mode=DYNAMIC.
+    """
+    try:
+        from dealix.agentic_holding.runtime import build_current_registry
+
+        receipt = build_current_registry().receipt()
+    except Exception as exc:  # noqa: BLE001 - report exact dependency/runtime blocker
+        source = _source_authority_status()
+        return {
+            "mode": "SOURCE_ONLY",
+            "ok": source["ok"],
+            "runtime_receipt_proven": False,
+            "reason": f"dynamic_registry_unavailable:{type(exc).__name__}",
+            "source_authority": source,
+            "required_sovereign_command": "python scripts/audit_agent_team.py --strict --require-dynamic-registry",
+        }
+
+    orphan_failures = list(receipt.get("orphan_failures") or [])
+    unmapped_arms = list(receipt.get("unmapped_arms") or [])
+    return {
+        "mode": "DYNAMIC",
+        "ok": not orphan_failures and not unmapped_arms,
+        "runtime_receipt_proven": True,
+        "receipt": receipt,
+        "required_sovereign_command": "python scripts/audit_agent_team.py --strict --require-dynamic-registry",
+    }
+
+
+def _governance_authority_status() -> dict[str, Any]:
+    targets = {
+        "AGENTS.md": _read("AGENTS.md"),
+        "docs/agents/README.md": _read("docs/agents/README.md"),
+        "docs/agents/AGENT_TEAM_REGISTRY.md": _read("docs/agents/AGENT_TEAM_REGISTRY.md"),
+    }
+    legacy_hits: dict[str, list[str]] = {}
+    missing_markers: dict[str, list[str]] = {}
+    for path, text in targets.items():
+        lowered = text.lower()
+        hits = [marker for marker in LEGACY_FIXED_FIVE_MARKERS if marker in lowered]
+        if hits:
+            legacy_hits[path] = hits
+        missing = [marker for marker in CURRENT_AUTHORITY_MARKERS if marker not in lowered]
+        if missing:
+            missing_markers[path] = missing
+
+    root = targets["AGENTS.md"].lower()
+    old_test_rule = "run/tests commands only when explicitly requested by the user" in root
+    current_commercial_ok = (
+        "diagnostic" in root
+        and "qualified discovery" in root
+        and "customer-specific" in root
+    )
+    no_deepseek_ok = "no_deepseek" in root or "no deepseek" in root
+
+    return {
+        "ok": not legacy_hits and not missing_markers and not old_test_rule and current_commercial_ok and no_deepseek_ok,
+        "fixed_five_authority_hits": legacy_hits,
+        "missing_current_authority_markers": missing_markers,
+        "obsolete_explicit-test-only_rule_present": old_test_rule,
+        "current_commercial_law_present": current_commercial_ok,
+        "no_deepseek_present": no_deepseek_ok,
+    }
+
+
+def build_report(*, require_dynamic_registry: bool = False) -> dict[str, Any]:
     gaps: list[str] = []
     warnings: list[str] = []
 
@@ -158,40 +249,51 @@ def build_report() -> dict:
         if not ok:
             warnings.append(f"Missing recommended doc: {doc}")
 
-    claude_agents = _claude_agent_names()
-    codex_agents = _codex_agent_names()
+    claude_agents = _agent_names(CLAUDE_AGENT_DIR, "*.md")
+    codex_agents = _agent_names(CODEX_AGENT_DIR, "*.toml")
     claude_only = sorted(set(claude_agents) - set(codex_agents))
     codex_only = sorted(set(codex_agents) - set(claude_agents))
     parity_in_sync = not claude_only and not codex_only
     if claude_only:
-        warnings.append(f"Claude agents without a Codex mirror: {', '.join(claude_only)}")
+        warnings.append(f"Claude compatibility agents without Codex mirror: {', '.join(claude_only)}")
     if codex_only:
-        warnings.append(f"Codex agents without a Claude mirror: {', '.join(codex_only)}")
+        warnings.append(f"Codex compatibility agents without Claude mirror: {', '.join(codex_only)}")
 
     frontmatter = _check_frontmatter()
     for name, info in frontmatter.items():
         if not info["ok"]:
             missing = ", ".join(info["missing"])  # type: ignore[arg-type]
-            gaps.append(f"Claude agent '{name}' missing frontmatter: {missing}")
+            gaps.append(f"Claude compatibility agent '{name}' missing frontmatter: {missing}")
 
     doctrine_tests = _doctrine_guard_tests()
     doctrine_ok = len(doctrine_tests) >= MIN_DOCTRINE_GUARD_TESTS
     if not doctrine_ok:
-        gaps.append(
-            f"Only {len(doctrine_tests)} doctrine guard tests found "
-            f"(expected >= {MIN_DOCTRINE_GUARD_TESTS})"
-        )
+        gaps.append(f"Only {len(doctrine_tests)} doctrine guard tests found (expected >= {MIN_DOCTRINE_GUARD_TESTS})")
+
+    governance = _governance_authority_status()
+    if not governance["ok"]:
+        gaps.append("Root/docs agent guidance still conflicts with Omega V3 registry authority")
+
+    registry = _dynamic_registry_status()
+    if not registry["ok"]:
+        gaps.append("Canonical Agentic Holding registry/source authority failed validation")
+    if registry["mode"] != "DYNAMIC":
+        warnings.append("Dynamic Agentic Holding receipt not proven in this environment; sovereign V acceptance is still required")
+    if require_dynamic_registry and registry["mode"] != "DYNAMIC":
+        gaps.append("Dynamic Agentic Holding registry receipt required but unavailable")
 
     verdict = "FAIL" if gaps else "PASS"
-
     return {
-        "schema": "dealix.agent_team_audit/v1",
+        "schema": "dealix.agent_team_audit/v2",
         "generated_at_utc": datetime.now(UTC).isoformat(),
         "verdict": verdict,
+        "canonical_architecture": "Dealix Holding -> Company Control Plane -> Sector Companies -> Arm Pods -> Specialist Logical Agents -> ResourceGovernor-bounded runtime workers",
+        "fixed_five_authority": False,
+        "legacy_five": "compatibility_aliases_only",
         "agent_surfaces": surfaces,
-        "claude_agents": claude_agents,
-        "codex_agents": codex_agents,
-        "registry_parity": {
+        "compatibility_agent_files": {
+            "claude": claude_agents,
+            "codex": codex_agents,
             "in_sync": parity_in_sync,
             "claude_only": claude_only,
             "codex_only": codex_only,
@@ -199,92 +301,62 @@ def build_report() -> dict:
         "agent_frontmatter": frontmatter,
         "required_docs": required_docs,
         "recommended_docs": recommended_docs,
-        "doctrine_guard_tests": {
-            "count": len(doctrine_tests),
-            "ok": doctrine_ok,
-            "tests": doctrine_tests,
-        },
+        "governance_authority": governance,
+        "agentic_holding_registry": registry,
+        "doctrine_guard_tests": {"count": len(doctrine_tests), "ok": doctrine_ok, "tests": doctrine_tests},
         "gaps": gaps,
         "warnings": warnings,
     }
 
 
-def render_markdown(report: dict) -> str:
-    lines: list[str] = ["# Dealix Agent Team Audit", ""]
-    lines.append(f"- Verdict: **{report['verdict']}**")
-    lines.append(f"- Generated: `{report['generated_at_utc']}`")
-    lines.append(f"- Claude agents: {len(report['claude_agents'])} · "
-                 f"Codex agents: {len(report['codex_agents'])} · "
-                 f"Registry parity: {'in sync' if report['registry_parity']['in_sync'] else 'OUT OF SYNC'}")
+def render_markdown(report: dict[str, Any]) -> str:
+    registry = report["agentic_holding_registry"]
+    governance = report["governance_authority"]
+    compat = report["compatibility_agent_files"]
+    lines = [
+        "# Dealix Agent Governance Audit",
+        "",
+        f"- Verdict: **{report['verdict']}**",
+        f"- Generated: `{report['generated_at_utc']}`",
+        f"- Registry mode: **{registry['mode']}**",
+        f"- Fixed-five authority: **{report['fixed_five_authority']}**",
+        "",
+        "## Omega V3 authority",
+        f"- Governance guidance: {'PASS' if governance['ok'] else 'FAIL'}",
+        f"- Agentic Holding registry/source: {'PASS' if registry['ok'] else 'FAIL'}",
+        f"- Dynamic runtime receipt proven: {registry['runtime_receipt_proven']}",
+        "",
+        "## Compatibility surfaces",
+        f"- Claude files: {len(compat['claude'])}",
+        f"- Codex files: {len(compat['codex'])}",
+        f"- File parity: {'in sync' if compat['in_sync'] else 'out of sync'}",
+        "- These counts are compatibility hygiene, not logical-fleet architecture.",
+        "",
+        "## Gaps",
+    ]
+    lines.extend([f"- ❌ {gap}" for gap in report["gaps"]] or ["- None"])
+    lines.extend(["", "## Warnings"])
+    lines.extend([f"- ⚠ {warning}" for warning in report["warnings"]] or ["- None"])
     lines.append("")
-
-    lines.append("## Agent surfaces")
-    for rel, info in report["agent_surfaces"].items():
-        mark = "✅" if info["files"] else "❌"
-        lines.append(f"- {mark} `{rel}`: {info['files']} files")
-    lines.append("")
-
-    lines.append("## Sub-agent roster")
-    for name in report["claude_agents"]:
-        fm = report["agent_frontmatter"].get(name, {})
-        mark = "✅" if fm.get("ok") else "❌"
-        mirror = "↔ codex" if name in report["codex_agents"] else "⚠ no codex mirror"
-        lines.append(f"- {mark} `{name}` ({mirror})")
-    lines.append("")
-
-    lines.append("## Required governance docs")
-    for doc, ok in report["required_docs"].items():
-        lines.append(f"- {'✅' if ok else '❌'} `{doc}`")
-    lines.append("")
-
-    doctrine = report["doctrine_guard_tests"]
-    lines.append(f"## Doctrine guard tests ({doctrine['count']})")
-    lines.append(f"- {'✅' if doctrine['ok'] else '❌'} "
-                 f"{doctrine['count']} `tests/test_no_*.py` guards present")
-    lines.append("")
-
-    lines.append("## Gaps (fail the audit)")
-    if report["gaps"]:
-        lines.extend(f"- ❌ {gap}" for gap in report["gaps"])
-    else:
-        lines.append("- None")
-    lines.append("")
-
-    lines.append("## Warnings (non-blocking)")
-    if report["warnings"]:
-        lines.extend(f"- ⚠ {warning}" for warning in report["warnings"])
-    else:
-        lines.append("- None")
-    lines.append("")
-
     return "\n".join(lines)
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Audit the Dealix agent team.")
+    parser = argparse.ArgumentParser(description="Audit Dealix Omega V3 agent governance.")
+    parser.add_argument("--strict", action="store_true", help="Exit 1 when verdict is FAIL.")
+    parser.add_argument("--json-only", action="store_true")
     parser.add_argument(
-        "--strict",
+        "--require-dynamic-registry",
         action="store_true",
-        help="Exit 1 when the verdict is FAIL (used by CI to gate a PR).",
-    )
-    parser.add_argument(
-        "--json-only",
-        action="store_true",
-        help="Print the JSON report to stdout instead of the verdict line.",
+        help="Require build_current_registry() to execute and produce an orphan-free receipt (sovereign acceptance).",
     )
     args = parser.parse_args(argv)
 
-    report = build_report()
-
+    report = build_report(require_dynamic_registry=args.require_dynamic_registry)
     out_dir = ROOT / "reports" / "agents"
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "agent_team_audit.json").write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    (out_dir / "agent_team_audit.md").write_text(
-        render_markdown(report), encoding="utf-8"
-    )
+    (out_dir / "agent_team_audit.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (out_dir / "agent_team_audit.md").write_text(render_markdown(report), encoding="utf-8")
 
     if args.json_only:
         print(json.dumps(report, ensure_ascii=False, indent=2))
@@ -294,6 +366,7 @@ def main(argv: list[str] | None = None) -> int:
         for warning in report["warnings"]:
             print(f"WARN: {warning}", file=sys.stderr)
         print(f"DEALIX_AGENT_TEAM_AUDIT={report['verdict']}")
+        print(f"AGENTIC_HOLDING_REGISTRY_MODE={report['agentic_holding_registry']['mode']}")
 
     if args.strict and report["verdict"] == "FAIL":
         return 1
