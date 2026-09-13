@@ -1,76 +1,17 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Trust Center — Dealix</title>
-  <meta name="description" content="مركز ثقة Dealix: بوابات الإطلاق الحالية، ما هو مثبت وممنوع، وما يزال مفتوحًا في الإنتاج والخصوصية والدفع والعزل قبل استخدام عميل حقيقي." />
-  <meta name="theme-color" content="#0f172a" />
-  <link rel="canonical" href="https://dealix.me/trust-center.html" />
-  <meta property="og:title" content="Trust Center — Dealix" />
-  <meta property="og:description" content="بوابات الإطلاق المثبتة، الحدود المفتوحة، ومنهج Dealix في ربط كل Claim بدليل مناسب." />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="/assets/css/design-system.css" />
-  <style>
-    body{font-family:'IBM Plex Sans Arabic','Inter',sans-serif;line-height:1.75;background:#f8fafc;color:#0f172a}.wrap{max-width:1120px;margin:0 auto;padding:56px 24px}.nav-back{color:#64748b;text-decoration:none}.hero{background:linear-gradient(135deg,#0f172a,#164e63);color:#fff;border-radius:24px;padding:52px 38px;margin:24px 0 42px}.badge{display:inline-block;padding:6px 14px;border-radius:999px;border:1px solid rgba(103,232,249,.4);color:#a5f3fc;background:rgba(103,232,249,.08);font-weight:800;font-size:13px}.hero h1{font-size:clamp(34px,5vw,54px);margin:16px 0 12px;line-height:1.15}.hero p{max-width:850px;font-size:17px;color:#dbeafe}.status-line{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.pill{padding:7px 12px;border-radius:999px;font-size:12px;font-weight:800}.pill.enforced{background:#dcfce7;color:#166534}.pill.blocked{background:#fee2e2;color:#991b1b}.pill.review{background:#fef3c7;color:#92400e}.section{margin:42px 0}.section h2{font-size:clamp(25px,3.5vw,36px);margin:0 0 8px}.sub{color:#64748b;margin-bottom:22px}.gates{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px}.code{display:inline-block;direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,Menlo,monospace;background:#f1f5f9;border-radius:6px;padding:3px 8px;font-size:11px;color:#334155}.card h3{margin:9px 0 7px}.card p{color:#64748b;margin:0}.proof{margin-top:10px;padding:10px 12px;border-radius:9px;background:#f8fafc;color:#475569;font-size:13px}.open-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.open{background:#fff7ed;border:1px solid #fdba74;border-radius:16px;padding:22px}.open h3{margin:0 0 7px}.open p{color:#7c2d12;margin:0}.rule{background:#fff;border:1px solid #cbd5e1;border-radius:16px;padding:24px}.rule code{direction:ltr;unicode-bidi:isolate}.cta{background:#0f172a;color:#fff;border-radius:18px;padding:34px;text-align:center}.cta p{color:#cbd5e1}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:10px;background:#22d3ee;color:#0f172a;text-decoration:none;font-weight:900}.footer{text-align:center;color:#64748b;font-size:13px;margin-top:40px}@media(max-width:760px){.gates,.open-grid{grid-template-columns:1fr}}
-  </style>
+  <title>Dealix Trust — انتقل إلى الحوكمة الحالية</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="canonical" href="https://dealix.me/safety" />
+  <meta http-equiv="refresh" content="0; url=/safety" />
 </head>
 <body>
-  <main class="wrap">
-    <a href="/" class="nav-back">← Dealix</a>
-
-    <section class="hero">
-      <div class="badge">Saudi-first · Approval-first · Proof-backed</div>
-      <h1>الثقة = ما نستطيع إثباته، لا ما نستطيع كتابته.</h1>
-      <p>هذا المركز يفصل بين بوابات الإطلاق الحالية، ضوابط مثبتة أو مغطاة بعقود/اختبارات، وبين أعمال الثقة التي ما زالت مفتوحة. لا نستخدم كلمة “compliant” أو “secure” كبديل عن evidence.</p>
-      <div class="status-line">
-        <span class="pill enforced">ENFORCED / FAIL-CLOSED</span>
-        <span class="pill blocked">BLOCKED UNTIL PROVEN</span>
-        <span class="pill review">LEGAL / PRIVACY REVIEW WHERE REQUIRED</span>
-      </div>
-    </section>
-
-    <section class="section" id="gates">
-      <h2>٨ بوابات First-launch</h2>
-      <p class="sub">هذه هي قواعد المنتج الحالي. التنفيذ التقني يختلف حسب السطح؛ لذلك كل بطاقة تشرح دليلها بدل الادعاء أن كل قاعدة منفذة بالطريقة نفسها في كل مكان.</p>
-      <div class="gates">
-        <article class="card"><span class="code">NO_LIVE_SEND</span><h3>لا Customer-facing auto-send</h3><p>بوابة الإطلاق الحالية تجعل external send غير مسموح. موافقة إجراء منفردة لا تتجاوز Product-level block.</p><div class="proof">الدليل: first-launch gate + approval/action contracts. أي تمكين مستقبلي يحتاج consent/suppression/policy/connector checks منفصلة.</div></article>
-        <article class="card"><span class="code">NO_LIVE_CHARGE</span><h3>لا Checkout أو Charge عام</h3><p>المسار العام quote-only. صفحات Checkout الحالية fail-closed ولا تنشئ Invoice intent أو Payment request أو Revenue state.</p><div class="proof">الدليل: public commercial contract + payment/revenue evidence separation.</div></article>
-        <article class="card"><span class="code">NO_COLD_WHATSAPP</span><h3>لا Cold WhatsApp</h3><p>وجود رقم أو مصدر عام لا يساوي Consent. الرسائل الباردة الجماعية ليست جزءًا من المنتج.</p><div class="proof">الدليل: channel policy + consent/suppression posture. Controlled-live نفسه يبقى مغلقًا حتى إثبات التخزين الدائم.</div></article>
-        <article class="card"><span class="code">NO_LINKEDIN_AUTOMATION</span><h3>لا LinkedIn automation غير مصرح</h3><p>يمكن استخدام البحث اليدوي أو التكامل المصرح به، لكن لا bot impersonation أو mass messaging.</p><div class="proof">الدليل: commercial/governance policy؛ لا connector عام يكتسب سلطة إرسال من تلقاء نفسه.</div></article>
-        <article class="card"><span class="code">NO_SCRAPING</span><h3>لا Scraping مخالف</h3><p>مصادر الويب تحتاج Source/allowed-use policy. البيانات العامة لا تمنح تلقائيًا حق الاتصال بالشخص.</p><div class="proof">الدليل: source + consent contracts؛ web connectors تبقى bounded ومراجعة حسب المصدر.</div></article>
-        <article class="card"><span class="code">NO_FAKE_PROOF</span><h3>Synthetic ≠ Customer proof</h3><p>Demo أو synthetic أو internal evidence يظل موسومًا كذلك ولا يتحول إلى Case study أو نتيجة عميل.</p><div class="proof">الدليل: canonical Outcome/Proof contracts + Proof Pack policy.</div></article>
-        <article class="card"><span class="code">NO_FAKE_REVENUE</span><h3>Invoice intent ≠ Revenue</h3><p>Revenue يحتاج نفس الشركة + commercial scope معتمد + طلب دفع/فاتورة صادرة فعليًا + payment_received reconciled.</p><div class="proof">الدليل: revenue/payment proof chain. Deal stage أو proposal أو test checkout لا يكفي.</div></article>
-        <article class="card"><span class="code">NO_UNAPPROVED_TESTIMONIAL</span><h3>لا Logo/Testimonial/Case study بلا إذن</h3><p>النتيجة المثبتة لا تمنح وحدها حق النشر. Publication consent بوابة منفصلة.</p><div class="proof">الدليل: proof/publication policy؛ لا نخلط delivery evidence مع marketing permission.</div></article>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>ما يزال مفتوحًا — ولا ندّعي إغلاقه</h2>
-      <p class="sub">هذه ليست عيوبًا نخفيها؛ هي Go-live gates واضحة يجب أن تغلق قبل توسيع الـPilot أو Claims العامة.</p>
-      <div class="open-grid">
-        <article class="open"><h3>Production frontend ownership</h3><p>الدومين العام يجب أن يثبت أنه على الـcanonical production frontend، مع release identity واضحة. Direct Railway/API health وحدهما لا يكفيان.</p></article>
-        <article class="open"><h3>Real customer-sensitive data</h3><p>Data-flow، subprocessors/regions، purpose/lawful-basis decision، retention/deletion/export، incident ownership وtenant isolation المطلوبة للحالة يجب أن تكون مثبتة قبل الاعتماد على بيانات حساسة.</p></article>
-        <article class="open"><h3>Live payment / invoicing</h3><p>لا Checkout حي أو Charge عام. أي Invoice/Payment path فعلي يحتاج جهة إصدار، شروط، Tax/e-invoice review، evidence retention وreconciliation قبل الاستخدام.</p></article>
-        <article class="open"><h3>Compliance / certification claims</h3><p>Dealix لا يدّعي PDPL certification، SOC 2، Saudi data residency، ZATCA compliance أو أي Certification من هذه الصفحة. نعلن فقط controls/evidence المثبتة ونترك القرارات القانونية للمسؤول المناسب.</p></article>
-      </div>
-    </section>
-
-    <section class="section rule">
-      <h2>قواعد الادعاء</h2>
-      <p>أي Claim عام يجب أن يطابق نوع الدليل. Activity، Delivery، Payment، Revenue، Customer value، وPublication permission حالات منفصلة.</p>
-      <p><code>Missing evidence → Draft / Block / Unknown</code>، وليس “نجح”.</p>
-      <p>راجع <a href="/proof.html">Proof methodology</a> و<a href="/privacy.html">Privacy notice</a> للحدود الحالية.</p>
-    </section>
-
-    <section class="cta">
-      <h2>ابدأ بنطاق يمكن إثباته</h2>
-      <p>Free Mini Diagnostic → qualified discovery → quote-only 30-day Revenue Command Pilot. لا نطلب منك شراء تحول شامل قبل إثبات Workflow واحد.</p>
-      <a class="btn" href="/diagnostic.html">ابدأ Free Mini Diagnostic</a>
-    </section>
-
-    <p class="footer">© 2026 Dealix · Approval-first · Proof-backed · No unproven compliance claim</p>
+  <!-- DEALIX_RETIRED_PUBLIC_SURFACE: legacy static trust page is not compliance, certification, residency, or production authority. -->
+  <main>
+    <p>هذه النسخة القديمة من مركز الثقة متوقفة. <a href="/safety">انتقل إلى صفحة الحوكمة والسلامة الحالية</a>.</p>
   </main>
 </body>
 </html>
