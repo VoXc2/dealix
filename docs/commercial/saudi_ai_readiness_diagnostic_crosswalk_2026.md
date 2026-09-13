@@ -2,7 +2,7 @@
 
 Status: `RESEARCH_ONLY`
 
-Purpose: turn current official Saudi AI-adoption and AI-cybersecurity evidence into a reusable **free diagnostic research framework** for Dealix sector companies and arm pods. This document does not create buyer intent, relationship, consent, compliance certification, legal advice, pipeline, quote, invoice, revenue or customer proof.
+Purpose: turn current official Saudi AI-adoption, AI-cybersecurity and adjacent digital-integration evidence into a reusable **free diagnostic research framework** for Dealix sector companies and arm pods. This document does not create buyer intent, relationship, consent, compliance certification, tax/legal advice, pipeline, quote, invoice, revenue or customer proof.
 
 ## Current official evidence
 
@@ -14,6 +14,8 @@ Published 2026-07-27. The guide frames responsible AI adoption across internal o
 3. Infrastructure readiness
 4. Skills and expertise readiness
 5. Organizational culture readiness
+
+Official source: https://www.cst.gov.sa/en/media-center/news/N2026072701
 
 Commercial interpretation: these dimensions are suitable as **diagnostic lenses**, not as proof that a specific company has a problem or intends to buy.
 
@@ -34,7 +36,16 @@ Published 2026-07-05; consultation deadline 2026-08-05. The document scope inclu
 3. Cybersecurity resilience
 4. Third-party cybersecurity
 
+Official source: https://nca.gov.sa/en/news/2354/
+
 Commercial interpretation: use these domains as **risk-discovery prompts**. The consultation is not treated as final binding regulation, certification or proof of Dealix compliance.
+
+### ZATCA — Fatoora Wave 25 integration trigger
+Published 2026-07-24. ZATCA states that Wave 25 of the e-invoicing Integration Phase covers notified taxpayers whose VAT-subject revenues exceeded **SAR 187,500** during 2022, 2023, 2024 or 2025, with integration to the Fatoora Platform required for notified taxpayers by **2027-02-01**. ZATCA also notes that Phase Two adds integration, invoice-format and additional-field requirements beyond Phase One.
+
+Official source: https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx
+
+Commercial interpretation: this is a **workflow/integration-readiness trigger**, not proof that a company is in Wave 25, has received notice, is non-compliant, or needs Dealix. Use only after verifying the entity-specific notification/obligation and the current ZATCA requirements. Dealix does not provide tax/legal certification through this diagnostic.
 
 ## Free diagnostic research framework
 
@@ -92,6 +103,15 @@ Commercial interpretation: use these domains as **risk-discovery prompts**. The 
 - What contracts or customer-specific controls would be needed before production use?
 - Can a local/private route reduce exposure for sensitive tasks?
 
+### J. Saudi e-invoicing integration readiness — only when entity-specific relevance is verified
+- Has the entity actually received a ZATCA Wave 25 or other integration notification, and is the notification evidence available?
+- Which ERP/accounting/POS system is the source of invoice truth?
+- Is the current invoice format/data model able to satisfy the applicable Phase Two fields and integration contract?
+- Who owns certificate/credential handling and how are secrets isolated from automation agents?
+- Is there a non-production Fatoora integration test path, retry/idempotence design, audit trail and rollback/continuity plan?
+- What should remain deterministic and independently verified rather than model-driven?
+- Which requirements need confirmation from the entity's tax/compliance advisor or current ZATCA materials before any production change?
+
 ## Output of the free diagnostic
 
 Every sector-specific diagnostic derived from this crosswalk should produce:
@@ -101,11 +121,12 @@ Every sector-specific diagnostic derived from this crosswalk should produce:
 3. Current-state baseline or explicit `BASELINE_NOT_PROVEN`
 4. Readiness gaps mapped to CST dimensions
 5. Cybersecurity/risk questions mapped to NCA consultation domains where relevant
-6. Three highest-value bounded opportunities
-7. Quick wins that do not require production or L5 effects
-8. A customer-specific Outcome Sprint hypothesis only if qualified discovery supports it
-9. Acceptance criteria and stop conditions
-10. Explicit next decision: STOP / RESEARCH_MORE / DISCOVERY / CUSTOMER_SPECIFIC_QUOTE
+6. Saudi integration/compliance triggers mapped only where entity-specific applicability is independently verified
+7. Three highest-value bounded opportunities
+8. Quick wins that do not require production or L5 effects
+9. A customer-specific Outcome Sprint hypothesis only if qualified discovery supports it
+10. Acceptance criteria and stop conditions
+11. Explicit next decision: STOP / RESEARCH_MORE / DISCOVERY / CUSTOMER_SPECIFIC_QUOTE
 
 ## Sector adaptation rule
 
@@ -118,6 +139,7 @@ Examples of sector adaptations:
 - Manufacturing/industrial: maintenance knowledge, work-order evidence, procurement/admin workflows
 - Healthcare/life sciences: governed non-clinical operational workflows, evidence and access boundaries
 - Government/semi-government: procurement/readiness, evidence trails, data governance and partner-first delivery where prime eligibility is unproven
+- VAT-registered businesses with independently verified ZATCA integration scope: invoice-system readiness, deterministic integration controls, credential isolation, non-production testing and evidence trails
 
 ## Truth firewall
 
@@ -128,6 +150,8 @@ Examples of sector adaptations:
 - Demo/synthetic != customer outcome
 - Consultation != final binding regulation
 - Design alignment != certification/accreditation
+- Public ZATCA wave criteria != proof an entity is notified or non-compliant
+- Diagnostic != tax/legal advice or compliance certification
 - Quote != invoice
 - Invoice != payment
 - Payment != revenue until evidence exists
