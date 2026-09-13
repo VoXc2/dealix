@@ -8,7 +8,8 @@
     "research != relationship",
     "public_contact != consent",
     "sector_growth != deal_probability",
-    "regulatory_deadline != authorization_to_advise_or_certify"
+    "regulatory_deadline != authorization_to_advise_or_certify",
+    "consultation_document != final_binding_requirement"
   ],
   "signals": [
     {
@@ -33,17 +34,23 @@
       "id": "AI_ADOPTION_GUIDE_2026",
       "source_type": "official_regulator",
       "source": "https://www.cst.gov.sa/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+      "additional_sources": [
+        "https://www.cst.gov.sa/en/knowledge-center/reports/saudi-internet-report-25-dashboard"
+      ],
       "verified_on": "2026-09-13",
       "facts": [
         "CST guidance covers AI for internal operations, customer-facing use and AI agents.",
-        "The guide frames readiness across business context, data, infrastructure, skills and culture."
+        "The guide frames readiness across business context, data, infrastructure, skills and culture.",
+        "CST's Saudi Internet Report 2025 dashboard reports AI-tool adoption among Saudi internet users at 45.2% and states adoption was more than double the previous year.",
+        "The same dashboard reports work-related AI use at 17.3% and programming/technical use at 13.5%."
       ],
-      "what_it_proves": "AI adoption/readiness is an active operational topic for Saudi technology companies.",
-      "what_it_does_not_prove": "That any named company needs Dealix or has authorized outreach.",
+      "what_it_proves": "AI adoption/readiness is an active Saudi operational topic and AI-tool usage is already broad enough to justify evidence-backed workflow/readiness research.",
+      "what_it_does_not_prove": "That any named company needs Dealix, has budget or purchase intent, has authorized outreach, or will realize a claimed ROI.",
       "dealix_use": [
         "AI value-realization diagnostic",
         "governed agent workflow pilot",
-        "readiness-to-proof discovery"
+        "readiness-to-proof discovery",
+        "free execution diagnostic hypothesis design"
       ]
     },
     {
@@ -95,17 +102,20 @@
     {
       "id": "FATOORA_WAVE_25",
       "source_type": "official_tax_authority",
-      "source": "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "source": "https://www.zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
       "verified_on": "2026-09-13",
       "facts": [
-        "Wave 25 covers notified taxpayers above SAR 187,500 in VAT-taxable revenue in 2022-2025.",
-        "The published integration deadline for notified Wave 25 taxpayers is 2027-02-01."
+        "ZATCA announced Wave 25 on 24 July 2026 for notified taxpayers whose VAT-taxable revenues exceeded SAR 187,500 in 2022, 2023, 2024 or 2025.",
+        "The published integration deadline for notified Wave 25 taxpayers is 2027-02-01.",
+        "ZATCA states Phase Two requires integration of the taxpayer's e-invoicing solution with the Fatoora platform, a specified e-invoice format and additional invoice fields."
       ],
-      "what_it_proves": "A time-bound technical integration requirement exists for notified taxpayers in the stated wave.",
-      "what_it_does_not_prove": "That Dealix is a tax adviser, certifier, approved solution provider, or that a named taxpayer needs Dealix.",
+      "what_it_proves": "A time-bound technical integration requirement exists for notified taxpayers in the stated wave, with concrete solution-integration and invoice-data requirements.",
+      "what_it_does_not_prove": "That Dealix is a tax adviser, certifier, approved solution provider, or that a named taxpayer needs Dealix; this signal does not by itself establish penalties, non-compliance or legal advice.",
       "dealix_use": [
         "technical integration readiness",
         "ERP/accounting workflow discovery",
+        "integration-owner and evidence-gap mapping",
+        "invoice data-field readiness checklist",
         "evidence-based implementation planning"
       ]
     },
@@ -113,15 +123,25 @@
       "id": "PRIVATE_SECTOR_CYBER_CONTROLS",
       "source_type": "official_cybersecurity_authority",
       "source": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+      "additional_sources": [
+        "https://nca.gov.sa/en/news/2354/",
+        "https://nca.gov.sa/ar/public-consultations/"
+      ],
       "verified_on": "2026-09-13",
       "facts": [
-        "NCA publishes minimum cybersecurity controls relevant to the defined private-sector population outside critical national infrastructure."
+        "NCA publishes minimum cybersecurity controls relevant to the defined private-sector population outside critical national infrastructure.",
+        "NCA announced a public consultation on AI Cybersecurity Guidelines on 2026-07-05.",
+        "NCA described four AI cybersecurity domains: governance, defense, resilience and third-party cybersecurity.",
+        "NCA stated the consultation scope includes generative AI and agentic AI, with feedback deadline 2026-08-05.",
+        "NCA's current public-consultations page lists the AI Cybersecurity Guidelines consultation as closed."
       ],
-      "what_it_proves": "A formal control framework exists for relevant private-sector organizations.",
-      "what_it_does_not_prove": "Certification status, applicability to every company, non-compliance, audit authority or permission to make legal conclusions.",
+      "what_it_proves": "Formal private-sector cybersecurity controls exist for relevant organizations, while AI and agentic-AI cybersecurity governance was an active official Saudi policy consultation in 2026.",
+      "what_it_does_not_prove": "Certification status, applicability to every company, non-compliance, audit authority, legal conclusions, or that the closed consultation text is a final binding control.",
       "dealix_use": [
         "evidence automation",
         "control mapping workflow design",
+        "AI-agent governance diagnostic research",
+        "third-party-risk workflow hypotheses",
         "readiness artifact generation with human/compliance review"
       ]
     },
