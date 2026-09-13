@@ -116,3 +116,20 @@ def test_committed_autonomous_policy_passes() -> None:
     payload = audit.audit_config(policy, version="1.18.30")
     assert payload["verdict"] == "PASS"
     assert payload["residual_ask_rules"] == []
+
+
+def test_load_config_file_preserves_urls_in_project_config() -> None:
+    project = ROOT / "opencode.json"
+    config = audit.load_config_file(project)
+    assert config is not None
+    assert config["provider"]["ollama"]["options"]["baseURL"].startswith("http")
+    assert config["$schema"].startswith("https://")
+
+
+def test_committed_project_config_passes_audit() -> None:
+    project = ROOT / "opencode.json"
+    config = audit.load_config_file(project)
+    assert config is not None
+    payload = audit.audit_config(config, version="1.18.30")
+    assert payload["verdict"] == "PASS", payload
+    assert payload["residual_ask_rules"] == []

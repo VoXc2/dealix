@@ -47,10 +47,17 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from go_resource_broker import (
+    GO_COST_VERIFIED_DISABLED,
     discover_catalog,
     discover_ollama_models,
     discover_router_models,
     pick_model,
+    provider_cost_authority,
+)
+from model_cost_policy import (
+    PAID_PENDING_APPROVAL,
+    is_explicit_free_model,
+    is_included_opencode_go_model,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -803,7 +810,23 @@ def create_worktree(
     if target.exists():
         return {"ok": True, "path": str(target), "reused": True, "branch": branch_for(job)}
     target.parent.mkdir(parents=True, exist_ok=True)
-    base = job.get("BASE_SHA") or resolve_default_base_sha()
+    base = job.get("BASE_SHA")
+    if not base and job.get("MODIFYING"):
+        # Modifying jobs require an exact live base. A stale/frozen fallback
+        # must never mint base authority for repo-writing work.
+        return {"ok": False, "reason": "live-base-required-no-frozen-fallback"}
+    base = base or resolve_default_base_sha()
+    verify = subprocess.run(
+        [git, "-C", str(repo), "rev-parse", "--verify", f"{base}^{{commit}}"],
+        capture_output=True,
+        text=True,
+        timeout=10,
+        check=False,
+    )
+    resolved = verify.stdout.strip()
+    if verify.returncode != 0 or not resolved:
+        return {"ok": False, "reason": "live-base-unresolvable", "stderr": redact(verify.stderr)}
+    base = resolved
     result = subprocess.run(
         [git, "-C", str(repo), "worktree", "add", "-b", branch_for(job), str(target), base],
         capture_output=True,
@@ -984,11 +1007,27 @@ def execute_opencode(
     env.setdefault("OPENCODE_DISABLE_AUTOUPDATE", "1")
     env.setdefault("OPENCODE_DISABLE_MODELS_FETCH", "1")
     model = (job.get("EXECUTOR") or {}).get("model")
+    if model:
+        # A caller-supplied model is never authority on its own. Accept only an
+        # explicit-free id, or an included-Go id while live provider cost
+        # authority verifies balance fallback is disabled. Otherwise HOLD.
+        live_cost = str(provider_cost_authority().get("state"))
+        caller_allowed = is_explicit_free_model(model) or (
+            is_included_opencode_go_model(model) and live_cost == GO_COST_VERIFIED_DISABLED
+        )
+        if not caller_allowed:
+            return {
+                "ok": False,
+                "returncode": 79,
+                "stdout": "",
+                "stderr": "model-authority-unproven: caller model rejected without canonical free/cost evidence",
+                "duration_s": 0,
+            }
     if not model:
         route = CLASS_TO_MODEL_CLASS.get(str(job.get("JOB_CLASS")), "R4_INCLUDED_HIGH")
         catalog = discover_catalog(refresh=False)
         model = pick_model(route, catalog, discover_ollama_models(), discover_router_models()) if catalog else None
-        if not model or model.endswith("UNKNOWN") or model == "PAID_PENDING_APPROVAL":
+        if not model or str(model).endswith("UNKNOWN") or model == PAID_PENDING_APPROVAL:
             selected_path = Path(
                 os.environ.get(
                     "DEALIX_OPENCODE_SELECTED_MODEL_FILE",
@@ -997,10 +1036,20 @@ def execute_opencode(
             )
             if selected_path.is_file():
                 candidate = selected_path.read_text(encoding="utf-8").strip().splitlines()[0].strip()
-                if candidate and "/" in candidate and not any(ch.isspace() for ch in candidate):
+                # Stale selection files cannot mint model authority: only an
+                # explicit-free id counts as canonical free evidence.
+                if is_explicit_free_model(candidate):
                     model = candidate
-    if model:
-        argv += ["-m", str(model)]
+    if not model or str(model).endswith("UNKNOWN") or model == PAID_PENDING_APPROVAL:
+        # Unknown paid spill fails closed: never launch on a provider default.
+        return {
+            "ok": False,
+            "returncode": 79,
+            "stdout": "",
+            "stderr": "model-authority-unavailable: HOLD (no verified current free model)",
+            "duration_s": 0,
+        }
+    argv += ["-m", str(model)]
     argv.append(str(prompt))
     return run_argv(
         argv,
@@ -1243,7 +1292,10 @@ def process_queue(
 ) -> list[dict[str, Any]]:
     """Promote and run READY jobs within the live deep-work resource budget."""
     governor = governor_state(root)
-    budget = int(governor["deep_wip_available"]) if limit is None else limit
+    available = int(governor["deep_wip_available"])
+    # ResourceGovernor is the hard upper bound: a caller limit may only reduce
+    # capacity, never escalate past it.
+    budget = available if limit is None else min(int(limit), available)
     candidates = [
         job
         for job in all_jobs(root)

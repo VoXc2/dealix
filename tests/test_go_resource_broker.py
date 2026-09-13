@@ -68,7 +68,11 @@ def test_headroom_is_unknown_not_fake() -> None:
     assert plan["headroom"] == "UNKNOWN"
 
 
-def test_pick_model_prefers_free_and_verified_included_routes() -> None:
+def test_pick_model_prefers_free_and_verified_included_routes(monkeypatch) -> None:
+    # Live provider cost authority must verify balance-off; the explicit
+    # provider_state argument alone cannot mint it.
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_USE_BALANCE", "disabled")
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", "test_verified_disabled")
     catalog = [
         "opencode/paid-a",
         "opencode/some-free",
@@ -91,6 +95,19 @@ def test_pick_model_does_not_assume_go_cost_authority() -> None:
         "opencode/nemotron-3-ultra-free",
     ]
     assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], broker.GO_COST_UNKNOWN) == (
+        "opencode/nemotron-3-ultra-free"
+    )
+
+
+def test_pick_model_caller_state_cannot_mint_verified_go(monkeypatch) -> None:
+    monkeypatch.delenv("DEALIX_OPENCODE_GO_USE_BALANCE", raising=False)
+    monkeypatch.delenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", raising=False)
+    assert broker.provider_cost_authority()["state"] == broker.GO_COST_UNKNOWN
+    catalog = [
+        "opencode-go/deepseek-v4.1-flash",
+        "opencode/nemotron-3-ultra-free",
+    ]
+    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], broker.GO_COST_VERIFIED_DISABLED) == (
         "opencode/nemotron-3-ultra-free"
     )
 

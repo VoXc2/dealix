@@ -279,6 +279,10 @@ def test_execute_opencode_places_auto_after_run(tmp_path: Path, monkeypatch) -> 
     captured: dict[str, object] = {}
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    # Canonical free evidence: the broker resolves an explicit-free catalog model.
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/nemotron-3-ultra-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
     def _capture(argv, cwd, timeout=600, env=None, stdin=None):
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
@@ -390,6 +394,10 @@ def test_opencode_isolates_control_path_and_stdin(tmp_path: Path, monkeypatch) -
     policy.write_text('{"bash":{"*":"allow"}}', encoding="utf-8")
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: "/usr/bin/true")
+    # Canonical free evidence so the launch does not depend on host state.
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/nemotron-3-ultra-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
     captured: dict[str, object] = {}
 
     def _capture(argv, cwd, timeout=600, env=None, stdin=None):
@@ -584,3 +592,127 @@ def test_execute_local_ai_caps_requested_bounds(tmp_path: Path, monkeypatch) -> 
     assert factory.execute_local_ai(job, tmp_path)["ok"] is True
     assert captured["timeout"] == 120
     assert captured["body"]["options"]["num_predict"] == 256
+
+
+def _stub_opencode_env(tmp_path: Path, monkeypatch, *, selected_text=None) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    selected = tmp_path / "selected-model"
+    if selected_text is not None:
+        selected.write_text(selected_text, encoding="utf-8")
+    monkeypatch.setenv("DEALIX_OPENCODE_SELECTED_MODEL_FILE", str(selected))
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: [])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+
+
+def _never_launch(monkeypatch) -> list:
+    launched: list = []
+
+    def _boom(argv, cwd, timeout=600, env=None, stdin=None):
+        launched.append(argv)
+        raise AssertionError("executor launched without model authority")
+
+    monkeypatch.setattr(factory, "run_argv", _boom)
+    return launched
+
+
+def test_process_queue_caller_limit_cannot_exceed_governor(tmp_path: Path, monkeypatch) -> None:
+    available = int(factory.governor_state(tmp_path)["deep_wip_available"])
+    assert available >= 1
+    for index in range(available + 2):
+        factory.submit_job(tmp_path, _deterministic_job(modifying=True, business_goal=f"cap {index}"))
+    calls: list[str] = []
+
+    def _stub(root, job, **kwargs):
+        calls.append(job["JOB_ID"])
+        return {"ok": True, "status": "SUCCEEDED", "job": job}
+
+    monkeypatch.setattr(factory, "run_job", _stub)
+    factory.process_queue(tmp_path, limit=10**6)
+    assert len(calls) == available
+
+
+def test_process_queue_caller_limit_only_reduces(tmp_path: Path, monkeypatch) -> None:
+    available = int(factory.governor_state(tmp_path)["deep_wip_available"])
+    assert available >= 1
+    for index in range(available + 2):
+        factory.submit_job(tmp_path, _deterministic_job(modifying=True, business_goal=f"reduce {index}"))
+    calls: list[str] = []
+
+    def _stub(root, job, **kwargs):
+        calls.append(job["JOB_ID"])
+        return {"ok": True, "status": "SUCCEEDED", "job": job}
+
+    monkeypatch.setattr(factory, "run_job", _stub)
+    factory.process_queue(tmp_path, limit=1)
+    assert len(calls) == min(1, available)
+
+
+def test_execute_opencode_rejects_stale_nonfree_selected_model(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(tmp_path, monkeypatch, selected_text="opencode/paid-evil\n")
+    launched = _never_launch(monkeypatch)
+    result = factory.execute_opencode(_opencode_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert launched == []
+
+
+def test_execute_opencode_holds_when_model_authority_unavailable(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(tmp_path, monkeypatch, selected_text=None)
+    launched = _never_launch(monkeypatch)
+    result = factory.execute_opencode(_opencode_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "model-authority-unavailable" in result["stderr"]
+    assert launched == []
+
+
+def test_execute_opencode_rejects_caller_paid_model(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(tmp_path, monkeypatch, selected_text="opencode/legit-free\n")
+    launched = _never_launch(monkeypatch)
+    job = _opencode_job(executor={"prompt": "inspect", "model": "opencode/paid-evil"})
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "model-authority-unproven" in result["stderr"]
+    assert launched == []
+
+
+def _init_git_repo(path: Path) -> str:
+    path.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "init", "-q", str(path)], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.email", "t@example.com"], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.name", "tester"], check=True)
+    (path / "a.txt").write_text("a", encoding="utf-8")
+    subprocess.run(["git", "-C", str(path), "add", "."], check=True)
+    subprocess.run(["git", "-C", str(path), "commit", "-qm", "init"], check=True)
+    return subprocess.run(
+        ["git", "-C", str(path), "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+    ).stdout.strip()
+
+
+def test_create_worktree_requires_live_base_for_modifying(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    _init_git_repo(repo)
+    job = factory.make_job(
+        owner_agent="dealix-engineer",
+        business_goal="live base required",
+        job_class="ENGINEERING",
+        modifying=True,
+    )
+    job["REPO"] = str(repo)
+    job["BASE_SHA"] = None
+    missing = factory.create_worktree(job, repo_root=repo, worktree_root=tmp_path / "wt")
+    assert missing["ok"] is False
+    assert missing["reason"] == "live-base-required-no-frozen-fallback"
+
+    job["BASE_SHA"] = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+    bogus = factory.create_worktree(job, repo_root=repo, worktree_root=tmp_path / "wt")
+    assert bogus["ok"] is False
+    assert bogus["reason"] == "live-base-unresolvable"

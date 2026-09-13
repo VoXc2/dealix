@@ -167,7 +167,12 @@ def discover_ollama_models() -> list[str]:
 def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[str],
                provider_state: str | None = None) -> str:
     free = explicit_free_models(catalog)
-    state = provider_state or str(provider_cost_authority()['state'])
+    live = str(provider_cost_authority()['state'])
+    state = provider_state or live
+    if state == GO_COST_VERIFIED_DISABLED and live != GO_COST_VERIFIED_DISABLED:
+        # Caller/state-path input may only reduce capacity: it can never mint
+        # provider cost authority to unlock included-Go routing.
+        state = live
     included = included_opencode_go_models(catalog) if state == GO_COST_VERIFIED_DISABLED else []
     safe = [*included, *[model for model in free if model not in included]]
     if route in {'R0_NO_MODEL', 'R1_DETERMINISTIC'}:
