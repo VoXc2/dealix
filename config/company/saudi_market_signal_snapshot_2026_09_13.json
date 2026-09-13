@@ -9,25 +9,34 @@
     "public_contact != consent",
     "sector_growth != deal_probability",
     "regulatory_deadline != authorization_to_advise_or_certify",
-    "consultation_document != final_binding_requirement"
+    "consultation_document != final_binding_requirement",
+    "inspection_activity != named_entity_noncompliance"
   ],
   "signals": [
     {
       "id": "BUSINESS_FORMATION_Q2_2026",
       "source_type": "official_government",
       "source": "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-01.aspx",
+      "additional_sources": [
+        "https://www.stats.gov.sa/ar/w/news/212",
+        "https://mc.gov.sa/ar/mediacenter/News/Pages/07-04-26-01.aspx"
+      ],
       "verified_on": "2026-09-13",
       "facts": [
         "Saudi Ministry of Commerce reported more than 71,000 commercial registrations issued in Q2 2026.",
-        "The same release reported more than 1.91 million active commercial registrations.",
-        "The release highlighted tourism attractiveness and promising Vision 2030 activities including e-commerce and cloud computing."
+        "The same Q2 release reported more than 1.91 million active commercial registrations and highlighted tourism attractiveness plus promising Vision 2030 activities including e-commerce and cloud computing.",
+        "GASTAT reported that the e-commerce sales index increased 9.8% year over year in Q2 2026; retail increased 13.4%, wholesale 6.5% and motor-vehicle activity 2.4% in the same release.",
+        "A Ministry of Commerce Q1 2026 release reported more than 19,000 commercial registrations in artificial-intelligence activities, up 240% over five years."
       ],
-      "what_it_proves": "Broad Saudi business formation and official attention to selected growth activities.",
-      "what_it_does_not_prove": "Named buyer pain, relationship, consent, budget, decision access, urgency or purchase intent.",
+      "what_it_proves": "Broad Saudi business formation remains active, official sources highlight e-commerce/cloud/AI growth themes, and aggregate commerce indicators show continued digital and retail activity that justifies evidence-backed operational research.",
+      "what_it_does_not_prove": "Named buyer pain, relationship, consent, budget, decision access, urgency, purchase intent, sector-wide automation ROI or that aggregate growth translates into a specific Dealix opportunity.",
       "dealix_use": [
         "sector research prioritization",
         "free diagnostic hypothesis design",
-        "account-list research from lawful/public sources only"
+        "account-list research from lawful/public sources only",
+        "retail and e-commerce operations diagnostic hypothesis design",
+        "AI-enabled customer-support, order, returns and back-office workflow research",
+        "cloud and software operations readiness research"
       ]
     },
     {
@@ -125,23 +134,26 @@
       "source": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
       "additional_sources": [
         "https://nca.gov.sa/en/news/2354/",
-        "https://nca.gov.sa/ar/public-consultations/"
+        "https://nca.gov.sa/ar/public-consultations/",
+        "https://nca.gov.sa/ar/news/2593/"
       ],
       "verified_on": "2026-09-13",
       "facts": [
         "NCA publishes minimum cybersecurity controls relevant to the defined private-sector population outside critical national infrastructure.",
         "NCA announced a public consultation on AI Cybersecurity Guidelines on 2026-07-05.",
         "NCA described four AI cybersecurity domains: governance, defense, resilience and third-party cybersecurity.",
-        "NCA stated the consultation scope includes generative AI and agentic AI, with feedback deadline 2026-08-05.",
-        "NCA's current public-consultations page lists the AI Cybersecurity Guidelines consultation as closed."
+        "NCA stated the consultation scope includes generative AI and agentic AI, with feedback deadline 2026-08-05; the current public-consultations page lists that consultation as closed.",
+        "NCA announced on 2026-09-08 that it conducted inspection visits on cybersecurity-related activities at national entities, including entities and critical infrastructure from the public and private sectors, to verify implementation of regulatory requirements and strengthen compliance with cybersecurity requirements and best practices.",
+        "NCA also stated that monitoring and inspection activity continues under its regulatory mandate."
       ],
-      "what_it_proves": "Formal private-sector cybersecurity controls exist for relevant organizations, while AI and agentic-AI cybersecurity governance was an active official Saudi policy consultation in 2026.",
-      "what_it_does_not_prove": "Certification status, applicability to every company, non-compliance, audit authority, legal conclusions, or that the closed consultation text is a final binding control.",
+      "what_it_proves": "Formal private-sector cybersecurity controls exist for relevant organizations; AI and agentic-AI cybersecurity governance has been an active official Saudi policy topic; and NCA is actively exercising monitoring/inspection functions, which strengthens the value of evidence-readiness and governed control workflows for in-scope organizations.",
+      "what_it_does_not_prove": "Certification status, applicability to every company, non-compliance by any named organization, audit authority for Dealix, legal conclusions, customer demand, buyer intent, or that a closed consultation text is a final binding control.",
       "dealix_use": [
         "evidence automation",
-        "control mapping workflow design",
+        "control-to-evidence workflow design",
         "AI-agent governance diagnostic research",
         "third-party-risk workflow hypotheses",
+        "inspection and evidence-readiness workflow research",
         "readiness artifact generation with human/compliance review"
       ]
     },
