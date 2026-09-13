@@ -1,0 +1,163 @@
+{
+  "schema": "dealix.saudi_market_signal_snapshot.v1",
+  "as_of": "2026-09-13",
+  "market": "Saudi Arabia",
+  "authority": "MARKET_SIGNAL_ONLY_NOT_RELATIONSHIP_NOT_BUYER_DEMAND_NOT_PIPELINE",
+  "truth_law": [
+    "market_signal != named_customer_demand",
+    "research != relationship",
+    "public_contact != consent",
+    "sector_growth != deal_probability",
+    "regulatory_deadline != authorization_to_advise_or_certify"
+  ],
+  "signals": [
+    {
+      "id": "BUSINESS_FORMATION_Q2_2026",
+      "source_type": "official_government",
+      "source": "https://mc.gov.sa/ar/mediacenter/News/Pages/09-07-26-01.aspx",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "Saudi Ministry of Commerce reported more than 71,000 commercial registrations issued in Q2 2026.",
+        "The same release reported more than 1.91 million active commercial registrations.",
+        "The release highlighted tourism attractiveness and promising Vision 2030 activities including e-commerce and cloud computing."
+      ],
+      "what_it_proves": "Broad Saudi business formation and official attention to selected growth activities.",
+      "what_it_does_not_prove": "Named buyer pain, relationship, consent, budget, decision access, urgency or purchase intent.",
+      "dealix_use": [
+        "sector research prioritization",
+        "free diagnostic hypothesis design",
+        "account-list research from lawful/public sources only"
+      ]
+    },
+    {
+      "id": "AI_ADOPTION_GUIDE_2026",
+      "source_type": "official_regulator",
+      "source": "https://www.cst.gov.sa/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "CST guidance covers AI for internal operations, customer-facing use and AI agents.",
+        "The guide frames readiness across business context, data, infrastructure, skills and culture."
+      ],
+      "what_it_proves": "AI adoption/readiness is an active operational topic for Saudi technology companies.",
+      "what_it_does_not_prove": "That any named company needs Dealix or has authorized outreach.",
+      "dealix_use": [
+        "AI value-realization diagnostic",
+        "governed agent workflow pilot",
+        "readiness-to-proof discovery"
+      ]
+    },
+    {
+      "id": "TECH_ENTERPRISE_REGISTRATION",
+      "source_type": "official_regulator_service",
+      "source": "https://www.cst.gov.sa/en/business/services/Technology-Enterprise-Registration-Service",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "CST provides a technology-enterprise registration and reference-directory service for organizations in IT and emerging technologies.",
+        "The service page states registration is currently optional and has no registration fee."
+      ],
+      "what_it_proves": "A regulator-maintained technology-company classification/reference surface exists.",
+      "what_it_does_not_prove": "Consent to contact, partnership, qualification, customer need or endorsement by CST.",
+      "dealix_use": [
+        "lawful company-level market mapping",
+        "technology-sector taxonomy research"
+      ]
+    },
+    {
+      "id": "TOURISM_Q1_2026_STATISTICS",
+      "source_type": "official_statistics",
+      "source": "https://www.stats.gov.sa/ar/statistics-tabs/-/categories/124304?category=124304&tab=436312",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "GASTAT lists Tourism Establishments Statistics for Q1 2026 as the latest quarterly publication in the category."
+      ],
+      "what_it_proves": "Current official tourism-establishment data is available for evidence-backed sector research.",
+      "what_it_does_not_prove": "A specific hospitality operator has a qualified problem or budget.",
+      "dealix_use": [
+        "hospitality operations research",
+        "evidence refresh before sector prioritization"
+      ]
+    },
+    {
+      "id": "CONSTRUCTION_COST_INDEX_2026",
+      "source_type": "official_statistics",
+      "source": "https://www.stats.gov.sa/en/statistics-tabs?category=3453505&delta=20&start=1&tab=436312",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "GASTAT publishes a monthly Construction Cost Index and lists 2026 releases through June/July on the current statistics page."
+      ],
+      "what_it_proves": "A current official source exists for construction input-cost movement and cost-pressure research.",
+      "what_it_does_not_prove": "Project award volume, named-customer pain, deal probability or automation ROI.",
+      "dealix_use": [
+        "construction diagnostic context",
+        "procurement/change-order/RFI workflow hypothesis research"
+      ]
+    },
+    {
+      "id": "FATOORA_WAVE_25",
+      "source_type": "official_tax_authority",
+      "source": "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "Wave 25 covers notified taxpayers above SAR 187,500 in VAT-taxable revenue in 2022-2025.",
+        "The published integration deadline for notified Wave 25 taxpayers is 2027-02-01."
+      ],
+      "what_it_proves": "A time-bound technical integration requirement exists for notified taxpayers in the stated wave.",
+      "what_it_does_not_prove": "That Dealix is a tax adviser, certifier, approved solution provider, or that a named taxpayer needs Dealix.",
+      "dealix_use": [
+        "technical integration readiness",
+        "ERP/accounting workflow discovery",
+        "evidence-based implementation planning"
+      ]
+    },
+    {
+      "id": "PRIVATE_SECTOR_CYBER_CONTROLS",
+      "source_type": "official_cybersecurity_authority",
+      "source": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "NCA publishes minimum cybersecurity controls relevant to the defined private-sector population outside critical national infrastructure."
+      ],
+      "what_it_proves": "A formal control framework exists for relevant private-sector organizations.",
+      "what_it_does_not_prove": "Certification status, applicability to every company, non-compliance, audit authority or permission to make legal conclusions.",
+      "dealix_use": [
+        "evidence automation",
+        "control mapping workflow design",
+        "readiness artifact generation with human/compliance review"
+      ]
+    },
+    {
+      "id": "OPEN_BANKING_LICENSING_2026",
+      "source_type": "official_financial_regulator",
+      "source": "https://sama.gov.sa/en-US/MediaCenter/News/pages/news-1135.aspx",
+      "verified_on": "2026-09-13",
+      "facts": [
+        "SAMA announced licensing activity for fintech companies providing open-banking services after the regulatory sandbox phase."
+      ],
+      "what_it_proves": "Open banking has an active regulated commercial ecosystem in Saudi Arabia.",
+      "what_it_does_not_prove": "That Dealix is regulated, licensed, endorsed, or permitted to provide a regulated financial service.",
+      "dealix_use": [
+        "partner-first integration lane",
+        "governance and workflow automation research"
+      ]
+    }
+  ],
+  "activation_policy": {
+    "market_signal_can_create": [
+      "RESEARCH_JOB",
+      "SECTOR_HYPOTHESIS",
+      "FREE_DIAGNOSTIC_TEMPLATE",
+      "INTERNAL_ACCOUNT_RESEARCH"
+    ],
+    "market_signal_cannot_create": [
+      "RELATIONSHIP",
+      "CONSENT",
+      "QUALIFIED_PROBLEM",
+      "PIPELINE",
+      "QUOTE",
+      "INVOICE",
+      "REVENUE",
+      "PUBLIC_PROOF"
+    ],
+    "named_customer_progression_requires": "real interaction plus evidence-backed state transition"
+  }
+}
