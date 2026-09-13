@@ -1,0 +1,298 @@
+{
+  "schema_version": "dealix.omega.v3",
+  "adopted_at": "2026-09-13T08:00:00+03:00",
+  "status": "CANONICAL_EXECUTION_PRIORITY",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "architecture": {
+    "model": "agentic_holding_resource_governed",
+    "path": [
+      "dealix_holding",
+      "company_control_plane",
+      "sector_companies",
+      "arm_pods",
+      "specialist_logical_agents",
+      "bounded_runtime_workers"
+    ],
+    "one_company_machine": true,
+    "process_per_logical_agent": false,
+    "hermes_role": "founder_control_and_execution_interface",
+    "executor": "canonical_session_factory",
+    "engineering_fabric": "opencode_isolated_worktrees_sessions",
+    "independent_verifier_required": true
+  },
+  "truth_precedence": [
+    "live_vps_runtime",
+    "live_production_release_identity",
+    "live_github_main",
+    "exact_head_pr_worktree",
+    "canonical_company_machine_contracts",
+    "company_brain_opportunity_graph_approval_proof_economic_truth",
+    "omega_v3_plan",
+    "historical_material"
+  ],
+  "truth_firewall": [
+    "research!=relationship",
+    "public_contact!=consent",
+    "signal!=qualified_problem",
+    "draft!=sent",
+    "quote!=invoice",
+    "invoice!=payment",
+    "payment!=revenue",
+    "delivery!=customer_value",
+    "customer_value!=public_proof",
+    "merged!=deployed",
+    "http_200!=release_identity"
+  ],
+  "autonomy": {
+    "L0": "autonomous_observe",
+    "L1": "autonomous_analyze",
+    "L2": "autonomous_draft",
+    "L3": "autonomous_internal_execute",
+    "L4": "autonomous_repo_execute_with_acceptance",
+    "L5": "exact_action_authority_required"
+  },
+  "commercial": {
+    "initial_diagnostics": "FREE_CARD_FREE",
+    "public_fixed_price_authority": false,
+    "pricing": "customer_specific_after_qualified_discovery",
+    "cold_whatsapp": false,
+    "linkedin_scraping_or_mass_personal_automation": false
+  },
+  "status_vocabulary": ["PASS", "FAIL", "PARTIAL", "BLOCKED", "NOT_RUN", "NOT_PROVEN"],
+  "priority_formula": "EconomicValue*Urgency*Confidence*BuyerAccess*DealixFit*ProofPotential*ReusePotential/(TimeToValue*Cost*Risk*Contention)",
+  "resource_allocation_pre_production_green_pct": {
+    "production_runtime_trust": 30,
+    "market_revenue_commercial_b2g": 30,
+    "engineering_product": 15,
+    "website_growth": 10,
+    "security_observability_backups": 10,
+    "oss_experiments": 5
+  },
+  "opencode_roles": {
+    "scout": {"read": true, "search": true, "web": true, "write": false},
+    "analyst": {"read": true, "analyze": true, "draft": true, "write_source": false},
+    "builder": {"read": true, "write": true, "shell": true, "isolated_worktree_required": true},
+    "verifier": {"read": true, "test": true, "review": true, "write": false, "may_verify_own_work": false}
+  },
+  "job_required_fields": [
+    "job_id",
+    "trace_id",
+    "sector",
+    "arm",
+    "logical_owner",
+    "economic_priority",
+    "effect_class",
+    "exact_base_sha",
+    "worktree_or_session",
+    "model_tool_policy",
+    "resource_budget",
+    "max_runtime",
+    "max_retries",
+    "acceptance_criteria",
+    "verifier_identity",
+    "proof_required",
+    "rollback_or_kill_condition",
+    "idempotency_metadata"
+  ],
+  "fail_closed_if_unknown": ["authority", "cost", "exact_base", "logical_owner", "effect_class"],
+  "workload_weights": {
+    "public_source_watch": 1,
+    "read_only_analysis": 1,
+    "remote_model_reasoning": 2,
+    "focused_tests": 2,
+    "opencode_modifying_builder": 3,
+    "production_equivalent_canary": 3,
+    "heavy_local_model": 4
+  },
+  "parallel_lanes": [
+    {
+      "id": "A",
+      "priority": "P0",
+      "name": "dependency_determinism",
+      "owners": ["runtime", "engineering"],
+      "github_refs": ["PR#1789"],
+      "gate": "fresh_resolver_pip_check_imports_focused_tests_exact_head"
+    },
+    {
+      "id": "B",
+      "priority": "P0",
+      "name": "production_trust_selfhost",
+      "owners": ["production_trust"],
+      "github_refs": ["PR#1790", "PR#1791"],
+      "gate": "exact_sha_web_api_postgres_redis_caddy_backup_restore_rollback"
+    },
+    {
+      "id": "C",
+      "priority": "P0_P1",
+      "name": "agentic_runtime",
+      "owners": ["runtime", "model_economics"],
+      "github_refs": ["PR#1783"],
+      "gate": "canonical_registry_resource_governor_l5_hold_no_paid_spill_vps_canary"
+    },
+    {
+      "id": "D",
+      "priority": "P1",
+      "name": "commercial_truth_retrieval",
+      "owners": ["commercial", "data_knowledge"],
+      "github_refs": ["PR#1784"],
+      "gate": "current_authority_default_historical_explicit_regression_tests"
+    },
+    {
+      "id": "E",
+      "priority": "P1",
+      "name": "market_money_now_software_evolution",
+      "owners": ["market_intelligence", "account_intelligence", "software_acquisition"],
+      "github_refs": ["PR#1785"],
+      "gate": "exact_sha_idempotence_resource_throttle_research_truth_no_paid_spill"
+    },
+    {
+      "id": "F",
+      "priority": "P0",
+      "name": "website_public_truth_conversion",
+      "owners": ["website_growth"],
+      "github_refs": ["merged#1776"],
+      "gate": "full_route_inventory_claim_classification_conversion_truth_regression"
+    },
+    {
+      "id": "G",
+      "priority": "P0_TIME_BOUND",
+      "name": "b2g_partners",
+      "owners": ["b2g", "partnerships", "commercial", "delivery"],
+      "github_refs": ["ISSUE#1792"],
+      "deadline": "2026-09-16",
+      "gate": "eligibility_requirements_partner_economics_bid_no_bid"
+    },
+    {
+      "id": "H",
+      "priority": "P1",
+      "name": "diagnostics_offers_delivery_proof",
+      "owners": ["diagnostic", "commercial", "delivery", "proof"],
+      "gate": "qualified_evidence_before_offer_sellability_acceptance_proof"
+    },
+    {
+      "id": "I",
+      "priority": "P1",
+      "name": "security_supply_chain_backups",
+      "owners": ["security", "software_acquisition"],
+      "gate": "provenance_license_cve_kev_sbom_signature_sandbox_restore_rollback"
+    },
+    {
+      "id": "J",
+      "priority": "P1",
+      "name": "observability_learning",
+      "owners": ["observability", "learning"],
+      "gate": "otel_trace_agent_scorecards_eval_regression_promote_kill"
+    }
+  ],
+  "war_room_72h": [
+    {"hours": "0-6", "mission": "live_truth_and_trust_inventory"},
+    {"hours": "6-18", "mission": "repair_highest_blockers_in_parallel"},
+    {"hours": "18-36", "mission": "market_targeting_b2g_diagnostics_offers"},
+    {"hours": "36-54", "mission": "delivery_proof_observability_security_restore"},
+    {"hours": "54-72", "mission": "eval_learning_oss_admission_convergence_reallocation"}
+  ],
+  "cadence": {
+    "event_driven": ["production_incident", "customer_event", "regulatory_deadline", "tender_deadline"],
+    "hourly": ["health", "queue", "blockers", "source_delta"],
+    "every_4_hours": ["economic_reallocation"],
+    "daily": ["president_order", "market", "accounts", "diagnostics", "commercial", "delivery"],
+    "nightly": ["tests", "security", "evals", "backups", "learning"],
+    "weekly": ["sector_arm_agent_lifecycle", "oss_promote_kill", "proof_pack"],
+    "monthly": ["constitution", "market_reset", "risk", "infrastructure", "productization"]
+  },
+  "targeting_state_machine": [
+    "SIGNAL_ONLY",
+    "ACCOUNT_VERIFIED",
+    "RESEARCHED",
+    "PROBLEM_HYPOTHESIS",
+    "BUYER_HYPOTHESIS",
+    "RELATIONSHIP_ROUTE_FOUND",
+    "REAL_INTERACTION",
+    "QUALIFIED_PROBLEM",
+    "FREE_DIAGNOSTIC",
+    "DISCOVERY",
+    "CUSTOMER_SPECIFIC_OFFER",
+    "DECISION",
+    "VERIFIED_PAYMENT",
+    "DELIVERY",
+    "CUSTOMER_VALIDATED_PROOF",
+    "EXPANSION_PRODUCTIZATION"
+  ],
+  "capability_states": ["SELLABLE_VERIFIED", "SELLABLE_WITH_CONSTRAINTS", "PILOT_ONLY", "RESEARCH_ONLY", "BLOCKED"],
+  "proof_states": ["NOT_PROOF", "INTERNAL_EVIDENCE", "CUSTOMER_ACCEPTED", "PUBLIC_PROOF_APPROVED"],
+  "oss_admission_gate": [
+    "gap",
+    "provenance",
+    "exact_version_sha",
+    "license",
+    "maintenance",
+    "cve_kev",
+    "sbom_signature",
+    "security_data_boundary",
+    "resource_cost",
+    "duplication",
+    "sandbox_benchmark",
+    "rollback_remove",
+    "benefit_7d",
+    "benefit_30d",
+    "adopt_or_kill"
+  ],
+  "oss_candidates": {
+    "P0_ADOPT_PILOT": [
+      "Crawl4AI",
+      "changedetection.io",
+      "OpenTelemetry",
+      "Promptfoo",
+      "OSV-Scanner",
+      "Trivy",
+      "Syft",
+      "Gitleaks",
+      "restic",
+      "pgBackRest"
+    ],
+    "P1_PILOT": [
+      "OpenObserve",
+      "Uptime Kuma",
+      "SearXNG",
+      "Semgrep",
+      "Dagger",
+      "Plausible_or_Umami_choose_one",
+      "Langfuse",
+      "Metabase"
+    ],
+    "WATCH_HARVEST_ONLY": [
+      "Open Policy Agent",
+      "OpenBao",
+      "OpenFGA",
+      "LiteLLM",
+      "vLLM",
+      "Qdrant"
+    ],
+    "REJECT_DUPLICATE_DEFAULT": [
+      "second_crm",
+      "second_scheduler_workflow_engine",
+      "second_agent_fleet_authority",
+      "second_company_brain_opportunity_graph_proof_store",
+      "mass_linkedin_automation_scraping",
+      "unofficial_whatsapp_web_automation",
+      "blind_host_installers"
+    ]
+  },
+  "president_metrics": [
+    "verified_cash",
+    "qualified_problems",
+    "real_interactions",
+    "diagnostics_completed",
+    "customer_specific_offers",
+    "paid_pilots_projects",
+    "time_to_value",
+    "customer_validated_proof",
+    "expansion_repeatability",
+    "founder_minutes",
+    "compute_model_cost",
+    "cost_per_accepted_result",
+    "agent_accepted_result_rate",
+    "production_trust",
+    "policy_security_violations"
+  ]
+}
