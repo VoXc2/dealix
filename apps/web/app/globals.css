@@ -468,6 +468,7 @@ input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.30); }
 /* ── DEALIX V2 BRAND SURFACES ──────────────────────────── */
 .navbar-brand.brand-logo-link {
   gap: 0;
+  min-height: 44px;
 }
 
 .navbar-brand.brand-logo-link::before {
@@ -488,13 +489,13 @@ input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.30); }
 }
 
 .navbar .nav-actions .nav-secondary-action {
-  min-height: 38px;
+  min-height: 44px;
   padding: 0 16px;
   font-size: 0.82rem;
 }
 
 .navbar .nav-actions .nav-primary-action {
-  min-height: 38px;
+  min-height: 44px;
   padding: 0 18px;
   border-radius: var(--r-pill);
   background: #22D3EE;
@@ -533,7 +534,7 @@ input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.30); }
 
   .navbar .nav-actions .nav-primary-action {
     width: auto;
-    min-height: 38px;
+    min-height: 44px;
     padding-inline: 14px;
   }
 }

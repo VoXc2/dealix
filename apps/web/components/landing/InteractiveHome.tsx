@@ -31,6 +31,25 @@ const corporatePillars = [
   },
 ];
 
+const featuredSectors = [
+  { name: "الحكومة والقطاع العام", en: "Government & B2G", href: "/sectors/government-b2g" },
+  { name: "الإنشاءات وEPC", en: "Construction & EPC", href: "/sectors/construction-epc" },
+  { name: "الصناعة والتصنيع", en: "Industrial & Manufacturing", href: "/sectors/industrial-manufacturing" },
+  { name: "المالية وFinTech", en: "Finance, FinTech & Insurance", href: "/sectors/finance-fintech-insurance" },
+  { name: "التجزئة والتجارة الإلكترونية", en: "Retail & E-commerce", href: "/sectors/retail-commerce-ecommerce" },
+  { name: "السياحة والضيافة", en: "Tourism & Hospitality", href: "/sectors/tourism-hospitality" },
+  { name: "اللوجستيات وسلاسل الإمداد", en: "Logistics & Supply Chain", href: "/sectors/logistics-supply-chain" },
+  { name: "التقنية وSaaS", en: "Technology, SaaS & SI", href: "/sectors/technology-saas-si" },
+];
+
+const capabilityHighlights = [
+  "Strategy & Transformation", "AI Agents & Workflow Automation", "Revenue & Commercial Operations",
+  "Customer Operations", "Knowledge & Document Intelligence", "Data & Decision Intelligence",
+  "Procurement & Tender Intelligence", "Integration & MCP", "AI Governance & Reliability",
+  "Cybersecurity Operations Readiness", "Finance Operations & Fatoora Readiness", "Managed AI Operations",
+  "Saudi Market & Partner Intelligence", "Dealix OS & Productization",
+];
+
 const valueBlocks = [
   { label: "Revenue", title: "حركة اقتصادية، لا نشاط شكلي", text: "نربط الاستراتيجية والإشارات التجارية بأقرب next action يمكن أن يحرك Qualified Problem ثم Quote ثم Verified Payment." },
   { label: "Proof", title: "الدليل قبل الادعاء", text: "نفرّق بين activity وdelivery وoutcome وCustomer Proof، ونبني baseline وreceipts يمكن مراجعتها." },
@@ -99,7 +118,7 @@ export function InteractiveHome() {
       <header className="dx-nav-wrap">
         <nav className="dx-nav" aria-label="التنقل الرئيسي">
           <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — Saudi AI Systems Company" className="dx-logo" width={400} height={96} loading="eager" decoding="async" fetchPriority="high" /></Link>
-          <div className="dx-nav-links" role="list"><Link href="/company">الشركة</Link><Link href="/services">الحلول الاستراتيجية</Link><Link href="/dealix-os">Dealix OS</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">الحوكمة</Link></div>
+          <div className="dx-nav-links" role="list"><Link href="/company">الشركة</Link><Link href="/services">الخدمات</Link><Link href="/sectors">القطاعات</Link><Link href="/products">المنتجات</Link><Link href="/dealix-os">Dealix OS</Link><Link href="/proof-vault">Proof</Link></div>
           <Link href="/book" className="dx-nav-cta">Execution Diagnostic <span aria-hidden="true">↗</span></Link>
         </nav>
       </header>
@@ -130,7 +149,19 @@ export function InteractiveHome() {
 
         <section className="dx-section" style={deferredSectionStyle} aria-labelledby="dx-company-title">
           <div className="dx-section-head"><div><span className="dx-kicker">ONE COMPANY · FOUR ENGINES</span><h2 id="dx-company-title">أكبر من منتج واحد. وأبسط من شبكة شركات مبعثرة.</h2></div><p>Dealix تجمع الاستراتيجية والتنفيذ والذكاء والمنتجات تحت شركة واحدة. كل مسار له buyer ونتيجة وproof gate، بينما Dealix OS يبقى المنتج البرمجي الرئيسي الذي يتوسع فقط عندما تثبت القيمة.</p></div>
-          <div className="dx-value-grid">{corporatePillars.slice(0, 3).map((item, index) => <article className="dx-value-card" key={item.label}><div className="dx-card-number">0{index + 1}</div><span className="dx-card-label">{item.label}</span><h3>{item.title}</h3><p>{item.text}</p><Link href={item.href} className="dx-text-link">استكشف المسار <span aria-hidden="true">↗</span></Link><div className="dx-card-signal" aria-hidden="true"><span /></div></article>)}</div>
+          <div className="dx-value-grid">{corporatePillars.map((item, index) => <article className="dx-value-card" key={item.label}><div className="dx-card-number">0{index + 1}</div><span className="dx-card-label">{item.label}</span><h3>{item.title}</h3><p>{item.text}</p><Link href={item.href} className="dx-text-link">استكشف المسار <span aria-hidden="true">↗</span></Link><div className="dx-card-signal" aria-hidden="true"><span /></div></article>)}</div>
+        </section>
+
+        <section className="dx-section" style={deferredSectionStyle} aria-labelledby="dx-capabilities-title">
+          <div className="dx-section-head"><div><span className="dx-kicker">FULL CAPABILITY SYSTEM</span><h2 id="dx-capabilities-title">قدرات من الاستراتيجية إلى AI runtime — تُركب حسب الحالة.</h2></div><p>بدل بيع خدمة منفصلة لكل أداة، Dealix تجمع قدرات مترابطة يمكن تركيبها حول workflow واحد ثم توسيعها بعد إثبات القيمة.</p></div>
+          <div className="dx-chip-grid">{capabilityHighlights.map((item) => <Link key={item} href="/services" className="dx-chip-card">{item}<span aria-hidden="true">↗</span></Link>)}</div>
+          <div className="dx-actions"><Link href="/services" className="dx-btn dx-btn-secondary">شاهد كتالوج الخدمات الكامل</Link></div>
+        </section>
+
+        <section className="dx-section dx-sector-section" style={deferredSectionStyle} aria-labelledby="dx-sectors-title">
+          <div className="dx-section-head"><div><span className="dx-kicker">SECTOR-SPECIFIC EXECUTION</span><h2 id="dx-sectors-title">قطاعك يغيّر الـworkflow والـbuyer والـproof المطلوب.</h2></div><p>نستخدم Company Machine بملفات قطاعية مختلفة؛ البحث القطاعي يساعدنا على بدء التشخيص ولا يتحول وحده إلى claim عن عميل محدد.</p></div>
+          <div className="dx-sector-grid">{featuredSectors.map((sector) => <Link className="dx-sector-card" href={sector.href} key={sector.href}><span>{sector.en}</span><strong>{sector.name}</strong><b aria-hidden="true">↗</b></Link>)}</div>
+          <div className="dx-actions"><Link href="/sectors" className="dx-btn dx-btn-secondary">استكشف جميع القطاعات</Link></div>
         </section>
 
         <section className="dx-system" style={deferredSectionStyle} aria-labelledby="dx-product-title">
@@ -153,7 +184,7 @@ export function InteractiveHome() {
         </section>
       </main>
 
-      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — Saudi AI Systems Company" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/company">Company</Link><Link href="/services">Strategic Solutions</Link><Link href="/dealix-os">Dealix OS</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link><a href={`mailto:${founderEmail}`}>Founder Email</a><a href={founderPhoneHref}>Founder Phone</a></div><p>Founder Office: <a href={`mailto:${founderEmail}`}>{founderEmail}</a> · <a href={founderPhoneHref}>{founderPhone}</a></p><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · Strategy → Systems → Intelligence → Products · Signal → Decision → Action → Proof</small></div></footer>
+      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — Saudi AI Systems Company" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/company">Company</Link><Link href="/services">Services</Link><Link href="/sectors">Sectors</Link><Link href="/products">Products</Link><Link href="/dealix-os">Dealix OS</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link><a href={`mailto:${founderEmail}`}>Founder Email</a><a href={founderPhoneHref}>Founder Phone</a></div><p>Founder Office: <a href={`mailto:${founderEmail}`}>{founderEmail}</a> · <a href={founderPhoneHref}>{founderPhone}</a></p><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · Strategy → Systems → Intelligence → Products · Signal → Decision → Action → Proof</small></div></footer>
     </div>
   );
 }
