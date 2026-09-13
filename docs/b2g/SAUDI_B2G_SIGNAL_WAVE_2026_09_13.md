@@ -51,13 +51,31 @@ Required evidence before any external or binding action:
 
 Safest internal next action: build a reusable **Managed IT Operating Evidence Diagnostic** covering service inventory, SLA evidence, incident/request/change workflows, automation candidates, executive reporting, agent authority boundaries, cybersecurity evidence and acceptance/rollback design.
 
+## 3. Real Estate Development Fund — multimodal AI conversation platform
+
+Official Etimad competition: **مشروع تحسين أداة دردشة روبوتية التفاعلية على القنوات والمنصات**. Government entity: **صندوق التنمية العقارية**. Competition no. **2610109**; reference **260839005237**. The current scope upgrades the existing chatbot into an integrated AI platform supporting **text, voice and visual interaction**, integration with existing systems, and smooth handoff to human customer-service staff.
+
+Current public details reverified on **2026-09-13**: supplier inquiries closed **2026-09-11**; bid deadline/opening **2026-09-17**; public competition; **12-month** contract; tender documents **SAR 1,500**; initial guarantee required; expected award **2026-10-28**; expected service start **2026-12-30**.
+
+Official evidence:
+- https://tenders.etimad.sa/Tender/DetailsForVisitor?STenderId=Bk6GczajVinm0tY59tPKww%3D%3D
+- https://tenders.etimad.sa/Tender/OpenTenderDetailsReportForVisitor?tenderIdString=Bk6GczajVinm0tY59tPKww%3D%3D
+
+### Dealix fit hypothesis
+Potential Dealix value is strongest as a governed orchestration/evidence layer around conversation workflows, multimodal handoff, integration acceptance, agent authority boundaries, human escalation, operational evidence, quality monitoring and proof packs. The public notice does **not** establish Dealix prime eligibility, customer relationship, consortium status, access to the full scored criteria, or authority to purchase/submit.
+
+### Current decision
+`GO_PARTNER_FIRST_OR_NO_BID_RESEARCH__DIRECT_HOLD_MISSING_ELIGIBILITY_AND_TENDER_EVIDENCE`
+
+Safest internal next action: maintain a reusable free **AI Conversation Platform Readiness & Handoff Diagnostic** covering current-channel inventory, text/voice/visual flows, integration map, human-escalation controls, data sensitivity, model/provider boundaries, acceptance tests, observability, rollback and measurable service outcomes. No external contact, document purchase, bid bond, submission or commercial commitment is authorized here.
+
 ## Portfolio ordering
-These two notices join the current time-bound Saudi B2G research set:
-- MHRSD `مشروع تشغيل منظومة خدماتي` — offer deadline 2026-09-15;
-- Imam Turki Royal Nature Reserve `تشغيل مكتب إدارة البيانات` — offer deadline 2026-09-16;
-- REDF multimodal AI conversation-platform opportunity — deadline 2026-09-17, subject to current official-detail re-verification;
-- SDAIA/NIC HexaCloud migration — 2026-09-20;
-- Jeddah Development Authority managed IT — 2026-09-23.
+Current time-bound Saudi B2G research set:
+- MHRSD `مشروع تشغيل منظومة خدماتي` — offer deadline **2026-09-15**;
+- Imam Turki Royal Nature Reserve `تشغيل مكتب إدارة البيانات` — offer deadline **2026-09-16**;
+- REDF multimodal AI conversation platform — offer deadline **2026-09-17**, reverified 2026-09-13;
+- SDAIA/NIC HexaCloud migration — offer deadline **2026-09-20**;
+- Jeddah Development Authority managed IT — offer deadline **2026-09-23**.
 
 Priority rule: nearest deadline does not automatically mean highest economic priority. Rank on verified fit, legal/prime eligibility, partner route, non-overlap value, working-capital/guarantee burden, delivery risk, proof potential, and founder minutes.
 
