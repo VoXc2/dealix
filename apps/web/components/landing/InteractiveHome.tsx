@@ -31,6 +31,15 @@ const corporatePillars = [
   },
 ];
 
+const publicNavLinks = [
+  { href: "/company", label: "الشركة" },
+  { href: "/services", label: "الخدمات" },
+  { href: "/sectors", label: "القطاعات" },
+  { href: "/products", label: "المنتجات" },
+  { href: "/dealix-os", label: "Dealix OS" },
+  { href: "/proof-vault", label: "Proof" },
+];
+
 const featuredSectors = [
   { name: "الحكومة والقطاع العام", en: "Government & B2G", href: "/sectors/government-b2g" },
   { name: "الإنشاءات وEPC", en: "Construction & EPC", href: "/sectors/construction-epc" },
@@ -118,8 +127,17 @@ export function InteractiveHome() {
       <header className="dx-nav-wrap">
         <nav className="dx-nav" aria-label="التنقل الرئيسي">
           <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — Saudi AI Systems Company" className="dx-logo" width={400} height={96} loading="eager" decoding="async" fetchPriority="high" /></Link>
-          <div className="dx-nav-links" role="list"><Link href="/company">الشركة</Link><Link href="/services">الخدمات</Link><Link href="/sectors">القطاعات</Link><Link href="/products">المنتجات</Link><Link href="/dealix-os">Dealix OS</Link><Link href="/proof-vault">Proof</Link></div>
-          <Link href="/book" className="dx-nav-cta">Execution Diagnostic <span aria-hidden="true">↗</span></Link>
+          <div className="dx-nav-links" role="list">{publicNavLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</div>
+          <div className="dx-nav-actions">
+            <details className="dx-mobile-menu">
+              <summary aria-label="فتح قائمة التنقل"><span aria-hidden="true">☰</span></summary>
+              <div className="dx-mobile-menu-panel">
+                {publicNavLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
+                <Link href="/safety">الحوكمة</Link>
+              </div>
+            </details>
+            <Link href="/book" className="dx-nav-cta"><span className="dx-nav-cta-long">Execution Diagnostic</span><span className="dx-nav-cta-short">التشخيص</span> <span aria-hidden="true">↗</span></Link>
+          </div>
         </nav>
       </header>
 

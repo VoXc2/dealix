@@ -99,3 +99,24 @@ def test_mobile_home_overrides_global_main_grid_and_keeps_touch_targets() -> Non
     # Mobile and canonical public nav actions use at least a 44px tap target.
     assert "min-height: 44px" in home_css
     assert global_css.count("min-height: 44px") >= 3
+
+
+def test_mobile_public_navigation_remains_reachable_and_accessible() -> None:
+    nav = _read(WEB / "components/Nav.tsx")
+    home = _read(WEB / "components/landing/InteractiveHome.tsx")
+    global_css = _read(WEB / "app/globals.css")
+    home_css = _read(WEB / "app/interactive-home.css")
+
+    assert 'className="mobile-menu"' in nav
+    assert 'className="dx-mobile-menu"' in home
+    assert 'aria-label="فتح قائمة التنقل"' in nav
+    assert 'aria-label="فتح قائمة التنقل"' in home
+    assert "links.map" in nav
+    assert "publicNavLinks.map" in home
+    assert ".mobile-menu-panel" in global_css
+    assert ".dx-mobile-menu-panel" in home_css
+    assert "min-height: 48px" in global_css
+    assert "min-height: 48px" in home_css
+    for route in ("/services", "/sectors", "/products", "/dealix-os", "/proof-vault"):
+        assert route in nav
+        assert route in home

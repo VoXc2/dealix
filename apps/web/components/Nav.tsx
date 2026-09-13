@@ -21,8 +21,15 @@ export default function Nav() {
         {links.map((link) => <li key={link.href}><Link href={link.href}>{link.label}</Link></li>)}
       </ul>
       <div className="actions nav-actions">
+        <details className="mobile-menu">
+          <summary aria-label="فتح قائمة التنقل"><span aria-hidden="true">☰</span><span>القائمة</span></summary>
+          <div className="mobile-menu-panel">
+            {links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
+            <Link href="/safety">الحوكمة</Link>
+          </div>
+        </details>
         <Link href="/safety" className="btn btn-ghost nav-secondary-action">الحوكمة</Link>
-        <Link href="/book" className="nav-primary-action">التشخيص المجاني</Link>
+        <Link href="/book" className="nav-primary-action"><span className="nav-primary-full">التشخيص المجاني</span><span className="nav-primary-short">تشخيص</span></Link>
       </div>
     </nav>
   );
