@@ -1,0 +1,77 @@
+{
+  "schema": "dealix.commercial_truth_authority.v1",
+  "effective_date": "2026-09-13",
+  "default_retrieval_mode": "CURRENT_ONLY",
+  "purpose": "Prevent historical Dealix prices, offers, architecture counts, synthetic proof, and old runtime assumptions from becoming current commercial authority while preserving explicit historical lookup and provenance.",
+  "truth_laws": [
+    "research != relationship",
+    "public_contact != consent",
+    "draft != sent",
+    "quote != invoice",
+    "invoice != payment",
+    "payment != revenue",
+    "delivery != customer_value",
+    "customer_value != public_proof",
+    "HTTP_200 != current_release_identity"
+  ],
+  "current_invariants": {
+    "diagnostic": "FREE",
+    "public_fixed_price_authority": false,
+    "quote_policy": "customer_specific_after_qualified_discovery",
+    "architecture": "agentic_holding_sector_company_mesh",
+    "fixed_five_public_architecture_authority": false,
+    "synthetic_demo_is_customer_proof": false,
+    "research_signal_is_relationship": false
+  },
+  "current_authority": [
+    {"path": "config/company/fresh_market_execution_policy.json", "role": "commercial_and_execution_policy"},
+    {"path": "config/company/agentic_holding_canonical_contract.json", "role": "agentic_architecture_contract"},
+    {"path": "docs/architecture/DEALIX_AGENTIC_HOLDING_CANONICAL_2026_09_12.md", "role": "agentic_architecture_explanation"},
+    {"path": "config/company/saudi_market_signal_snapshot_2026_09_13.json", "role": "evidence_gated_market_signal_snapshot"},
+    {"path": "landing/public-surface-manifest.json", "role": "public_surface_authority"},
+    {"path": "landing/assets/data/services-catalog.json", "role": "public_service_catalog_authority"}
+  ],
+  "deprecated_prefixes": ["docs/phase-e/"],
+  "synthetic_prefixes": ["business/demo/", "docs/assets/demos/", "docs/assets/reports/"],
+  "historical_exact_paths": [
+    "docs/pricing.md",
+    "docs/REFUND_SOP.md",
+    "docs/SALES_PLAYBOOK.md",
+    "docs/B2B_SERVICES_PITCH.md",
+    "docs/POSITIONING_AND_ICP.md",
+    "docs/FINANCE_DASHBOARD.md",
+    "docs/V5_PHASE_E_CHECKLIST.md",
+    "docs/V5_PHASE_E_DAY_BY_DAY.md",
+    "docs/V6_GTM_EXECUTION_PLAN.md",
+    "docs/V7_FIRST_10_WARM_OUTREACH_PACK.md",
+    "docs/OBJECTION_HANDLING_V6.md",
+    "docs/ops/EXECUTE_NOW_AR.md",
+    "docs/ops/FOUNDER_DELIVERY_LADDER_AR.md",
+    "docs/ops/FIRST_CUSTOMER_WORKFLOW_AR.md",
+    "docs/90_DAY_BUSINESS_EXECUTION_PLAN.md"
+  ],
+  "legacy_content_markers": [
+    "499 SAR", "499 ريال", "Pilot 499", "Sprint 499",
+    "7-day pilot", "7 day pilot", "7-day sprint", "7 day sprint",
+    "sprint_499", "partner_2999", "partner_4999", "partner_12000", "partner_15000",
+    "1,500–2,500", "١٬٥٠٠–٢٬٥٠٠",
+    "PERMANENT_AGENTS == 5", "the 5 real sub-agents", "5 real sub-agents",
+    "5 وكلاء AI", "٥ وكلاء AI", "5 وكلاء، عمل حقيقي", "٥ وكلاء، عمل حقيقي",
+    "5 وكلاء + 8 موسعون", "٥ وكلاء + ٨ موسعين", "5 وكلاء أساسيون", "٥ وكلاء أساسيون",
+    "One Company, Five Core", "Core 5 + Extended 8 = 13",
+    "AI Operating Team mapping (5 Agents"
+  ],
+  "classes": {
+    "CURRENT_AUTHORITY": "May support current Dealix commercial/architecture claims when the exact statement is present and provenance is retained.",
+    "HISTORICAL_REFERENCE_NON_AUTHORITATIVE": "Preserve for provenance/history; exclude from current commercial retrieval by default.",
+    "DEPRECATED_REPLACED": "Superseded by current policy; exclude from current retrieval by default.",
+    "SYNTHETIC_DEMO_ONLY": "Synthetic/demo material; never infer customer relationship, payment, revenue, value or public proof.",
+    "UNCLASSIFIED_CONTEXT": "May be used as contextual evidence, but cannot by itself establish current public pricing, current Dealix architecture, verified relationship, revenue or public proof."
+  },
+  "history_mode": {
+    "allowed": true,
+    "must_be_explicit": true,
+    "label": "HISTORICAL_LOOKUP_ONLY",
+    "may_become_current_authority": false
+  }
+}

@@ -7,6 +7,11 @@ from threading import Lock
 from typing import Any
 from uuid import uuid4
 
+from dealix.commercial.commercial_truth_authority import (
+    classify_source,
+    should_exclude_from_current_retrieval,
+)
+
 _LOCK = Lock()
 _STORE: dict[str, list[dict[str, Any]]] = {}
 
@@ -22,11 +27,14 @@ def ingest_chunk(
         raise ValueError("source_id required")
     if not text.strip():
         raise ValueError("text required")
+    normalized_text = text.strip()
+    normalized_source = source_id.strip()
     chunk = {
         "chunk_id": f"chk_{uuid4().hex[:12]}",
-        "source_id": source_id.strip(),
+        "source_id": normalized_source,
         "title": (title or source_id).strip(),
-        "text": text.strip(),
+        "text": normalized_text,
+        "commercial_authority_class": classify_source(normalized_source, text=normalized_text),
     }
     with _LOCK:
         _STORE.setdefault(workspace_id, []).append(chunk)
@@ -38,7 +46,15 @@ def query_workspace(
     workspace_id: str,
     question: str,
     top_k: int = 3,
+    include_historical: bool = False,
 ) -> dict[str, Any]:
+    """Retrieve evidence while quarantining known legacy commercial truth.
+
+    Historical/deprecated/synthetic Dealix repository sources remain stored and
+    can be requested explicitly with ``include_historical=True``. They are
+    excluded from default current retrieval so old prices, fixed-five agent
+    claims, or synthetic proof cannot silently become current authority.
+    """
     q = question.strip().lower()
     if not q:
         return {
@@ -57,6 +73,24 @@ def query_workspace(
             "citations": [],
         }
 
+    if not include_historical:
+        chunks = [
+            chunk
+            for chunk in chunks
+            if not should_exclude_from_current_retrieval(
+                str(chunk.get("source_id") or ""),
+                text=str(chunk.get("text") or ""),
+            )
+        ]
+        if not chunks:
+            return {
+                "answer_mode": "insufficient_evidence",
+                "answer_ar": "المصادر المطابقة تاريخية أو غير مخولة كحقيقة تجارية حالية.",
+                "answer_en": "Matching sources are historical or not authorized as current commercial truth.",
+                "citations": [],
+                "commercial_truth_mode": "CURRENT_ONLY",
+            }
+
     tokens = [t for t in re.split(r"\W+", q) if len(t) > 2]
     scored: list[tuple[float, dict[str, Any]]] = []
     for c in chunks:
@@ -74,14 +108,24 @@ def query_workspace(
         }
 
     top = best[0]
+    classification = classify_source(
+        str(top.get("source_id") or ""), text=str(top.get("text") or "")
+    )
     citations = [
-        {"chunk_id": top["chunk_id"], "source_id": top["source_id"], "title": top.get("title")}
+        {
+            "chunk_id": top["chunk_id"],
+            "source_id": top["source_id"],
+            "title": top.get("title"),
+            "commercial_authority_class": classification,
+        }
     ]
+    mode = "HISTORICAL_LOOKUP_ONLY" if include_historical else "CURRENT_ONLY"
     return {
         "answer_mode": "evidence_backed",
         "answer_ar": f"ملخص من المصدر {top['source_id']}: {top['text'][:400]}",
         "answer_en": f"Summary from source {top['source_id']}: {top['text'][:400]}",
         "citations": citations,
+        "commercial_truth_mode": mode,
     }
 
 
