@@ -4,8 +4,9 @@ Public intake endpoints — unauthenticated and rate-limited.
 The legacy custom-AI request remains founder-reviewed. The canonical website
 entry point is POST /api/v1/public/execution-diagnostic: it captures a
 customer-initiated Free Execution Diagnostic, creates an internal handoff for
-the five canonical Dealix agents, and mirrors the intake into the ONE Revenue
-Ops Autopilot store.
+the canonical Omega V3 Agentic Holding, and mirrors the intake into the ONE
+Revenue Ops Autopilot store. Historical executor aliases are compatibility
+metadata only and never fleet-size or architecture authority.
 
 No customer message, publication, payment, binding quote, production mutation,
 or marketing consent is created by either endpoint.
@@ -130,9 +131,9 @@ def submit_execution_diagnostic(request: Request, payload: ExecutionDiagnosticIn
     """Start the internal evidence-first diagnostic workflow for an inbound lead.
 
     This endpoint performs only internal, reversible work: capture, evidence-gap
-    analysis and canonical agent handoff. It deliberately does not auto-send a
-    reply, declare a qualified problem, create an opportunity, issue a quote,
-    charge, publish, or mutate production infrastructure.
+    analysis and canonical Agentic Holding handoff. It deliberately does not
+    auto-send a reply, declare a qualified problem, create an opportunity, issue
+    a quote, charge, publish, or mutate production infrastructure.
     """
     del request  # required by the canonical slowapi decorator
     intake_id = f"webdiag_{uuid4().hex[:16]}"
@@ -180,6 +181,7 @@ def submit_execution_diagnostic(request: Request, payload: ExecutionDiagnosticIn
         handoff.get("evidence_completeness_pct"),
     )
 
+    holding = handoff.get("agentic_holding") or {}
     return {
         "status": "received",
         "intake_id": intake_id,
@@ -188,7 +190,12 @@ def submit_execution_diagnostic(request: Request, payload: ExecutionDiagnosticIn
         "evidence_completeness_pct": handoff.get("evidence_completeness_pct"),
         "next_questions": handoff.get("next_questions"),
         "agent_handoff": {
-            "agents": handoff.get("canonical_agents"),
+            "architecture": holding.get("architecture"),
+            "logical_agents": holding.get("logical_agents"),
+            "sector_companies": holding.get("sector_companies"),
+            "arm_pods": holding.get("arm_pods"),
+            "fixed_five_authority": False,
+            "routing_authority": handoff.get("routing_authority"),
             "work_packets_created": len(handoff.get("work_packets") or []),
         },
         "revenue_ops": mirror,

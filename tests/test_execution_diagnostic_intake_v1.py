@@ -8,13 +8,14 @@ from auto_client_acquisition.diagnostic_intake_orchestrator import (
 from dealix.revenue_ops_autopilot.store import reset_autopilot_store_for_tests
 
 
-CANONICAL_AGENTS = [
+LEGACY_EXECUTOR_ALIASES = [
     "dealix-pm",
     "dealix-sales",
     "dealix-delivery",
     "dealix-engineer",
     "dealix-content",
 ]
+LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
 
 
 def _record(*, followup_requested: bool = True) -> dict:
@@ -44,11 +45,23 @@ def _record(*, followup_requested: bool = True) -> dict:
     }
 
 
-def test_handoff_uses_exactly_five_canonical_agents_and_no_material_authority():
+def test_handoff_uses_agentic_holding_and_legacy_aliases_are_not_authority():
     handoff = build_agent_handoff(_record())
+    holding = handoff["agentic_holding"]
 
-    assert handoff["canonical_agents"] == CANONICAL_AGENTS
-    assert [row["agent"] for row in handoff["work_packets"]] == CANONICAL_AGENTS
+    assert holding["architecture"] == "agentic_holding_sector_company_mesh"
+    assert holding["logical_agents"] > 0
+    assert holding["sector_companies"] > 0
+    assert holding["arm_pods"] > 0
+    assert holding["orphan_failures"] == []
+    assert holding["fixed_five_authority"] is False
+    assert handoff["fixed_five_authority"] is False
+    assert handoff["routing_authority"] == "Company Operator -> Agentic Holding registry -> Session Factory"
+    assert handoff["legacy_executor_aliases"] == LEGACY_EXECUTOR_ALIASES
+    assert handoff["canonical_agents"] == LEGACY_EXECUTOR_ALIASES
+    assert handoff["canonical_agents_field_semantics"] == LEGACY_ALIAS_SEMANTICS
+    assert [row["agent"] for row in handoff["work_packets"]] == LEGACY_EXECUTOR_ALIASES
+    assert all(row["agent_semantics"] == LEGACY_ALIAS_SEMANTICS for row in handoff["work_packets"])
     assert handoff["evidence_completeness_pct"] == 100
     assert handoff["problem_state"] == "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION"
 
@@ -114,7 +127,7 @@ def test_mirror_is_idempotent_and_never_grants_marketing_consent(tmp_path):
     assert store.list_invoice_drafts(limit=20) == []
 
 
-def test_company_os_bridge_preserves_followup_scope_and_five_agent_work(tmp_path):
+def test_company_os_bridge_preserves_followup_scope_and_registry_truth(tmp_path):
     reset_autopilot_store_for_tests(tmp_path / "autopilot.json")
     record = _record(followup_requested=True)
     mirror_to_revenue_autopilot(record, build_agent_handoff(record))
@@ -125,7 +138,11 @@ def test_company_os_bridge_preserves_followup_scope_and_five_agent_work(tmp_path
     assert case["relationship_state"] == "INBOUND"
     assert case["consent_state"] == "INBOUND_REQUEST"
     assert case["external_followup_eligible"] is True
-    assert [packet["agent"] for packet in case["work_packets"]] == CANONICAL_AGENTS
+    assert case["agentic_holding"]["architecture"] == "agentic_holding_sector_company_mesh"
+    assert case["agentic_holding"]["fixed_five_authority"] is False
+    assert case["legacy_executor_aliases"] == LEGACY_EXECUTOR_ALIASES
+    assert case["routing_authority"] == "Company Operator -> Agentic Holding registry -> Session Factory"
+    assert all(packet["agent_semantics"] == LEGACY_ALIAS_SEMANTICS for packet in case["work_packets"])
     assert all(value is False for value in case["material_authority"].values())
     assert case["problem_state"] == "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION"
     assert case["evidence_refs"]

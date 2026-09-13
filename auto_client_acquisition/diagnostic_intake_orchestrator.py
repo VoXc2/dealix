@@ -1,10 +1,11 @@
 """Governed inbound diagnostic intake orchestration.
 
 This module converts a customer-initiated website intake into an internal work
-packet for the five canonical Dealix agents and mirrors the intake into the
-existing Revenue Ops Autopilot store. It does not send messages, publish,
-charge, create a binding quote, or promote an unproven problem to customer
-proof.
+packet for the canonical Omega V3 Agentic Holding and mirrors the intake into
+the existing Revenue Ops Autopilot store. Historical five executor names remain
+compatibility aliases only; they are not architecture or fleet-size authority.
+It does not send messages, publish, charge, create a binding quote, or promote
+an unproven problem to customer proof.
 
 Truth rules preserved:
 - inbound request != qualified problem
@@ -19,13 +20,16 @@ from __future__ import annotations
 import json
 from typing import Any
 
-_CANONICAL_AGENTS = (
+from dealix.agentic_holding.runtime import build_current_registry
+
+_LEGACY_EXECUTOR_ALIASES = (
     "dealix-pm",
     "dealix-sales",
     "dealix-delivery",
     "dealix-engineer",
     "dealix-content",
 )
+_LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
 
 _DIAGNOSTIC_FIELDS = (
     ("workflow", "ما الـworkflow أو القرار الذي تريد تحسينه الآن؟"),
@@ -80,6 +84,18 @@ def _material_authority_false() -> dict[str, bool]:
     }
 
 
+def _agentic_holding_receipt() -> dict[str, Any]:
+    registry = build_current_registry()
+    receipt = registry.receipt()
+    return {
+        **receipt,
+        "registry_source": "dealix.agentic_holding.runtime.build_current_registry",
+        "fixed_five_authority": False,
+        "legacy_executor_aliases": list(_LEGACY_EXECUTOR_ALIASES),
+        "routing_authority": "Company Operator -> Agentic Holding registry -> Session Factory",
+    }
+
+
 def build_agent_handoff(record: dict[str, Any]) -> dict[str, Any]:
     """Build a deterministic, non-material work packet for an inbound intake."""
     context = _parse_context(record)
@@ -98,36 +114,42 @@ def build_agent_handoff(record: dict[str, Any]) -> dict[str, Any]:
     if workflow and proof_metric and baseline:
         problem_state = "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION"
 
+    holding = _agentic_holding_receipt()
     work_packets = [
         {
             "agent": "dealix-pm",
+            "agent_semantics": _LEGACY_ALIAS_SEMANTICS,
             "objective": "Own intake priority, WIP, evidence gaps and next-action routing.",
             "authority": "L0-L3_INTERNAL_ONLY",
         },
         {
             "agent": "dealix-sales",
+            "agent_semantics": _LEGACY_ALIAS_SEMANTICS,
             "objective": "Resolve account context, buying committee and problem evidence without treating contact data as consent.",
             "authority": "L0-L3_INTERNAL_ONLY",
         },
         {
             "agent": "dealix-delivery",
+            "agent_semantics": _LEGACY_ALIAS_SEMANTICS,
             "objective": "Draft the diagnostic route, measurable baseline and smallest outcome sprint candidate.",
             "authority": "L0-L3_INTERNAL_ONLY",
         },
         {
             "agent": "dealix-engineer",
+            "agent_semantics": _LEGACY_ALIAS_SEMANTICS,
             "objective": "Assess data, integration, security and implementation dependencies for the stated workflow.",
             "authority": "L0-L3_INTERNAL_ONLY",
         },
         {
             "agent": "dealix-content",
+            "agent_semantics": _LEGACY_ALIAS_SEMANTICS,
             "objective": "Prepare the customer-facing diagnostic brief structure using only verified evidence and explicit unknowns.",
             "authority": "L0-L2_DRAFT_ONLY",
         },
     ]
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "intake_kind": "free_execution_diagnostic",
         "company": company,
         "sector": sector,
@@ -135,7 +157,13 @@ def build_agent_handoff(record: dict[str, Any]) -> dict[str, Any]:
         "evidence_completeness_pct": completeness,
         "context": context,
         "next_questions": next_questions,
-        "canonical_agents": list(_CANONICAL_AGENTS),
+        "agentic_holding": holding,
+        "fixed_five_authority": False,
+        "routing_authority": holding["routing_authority"],
+        # Compatibility only. Do not infer fleet size or runtime authority from this field.
+        "canonical_agents": list(_LEGACY_EXECUTOR_ALIASES),
+        "canonical_agents_field_semantics": _LEGACY_ALIAS_SEMANTICS,
+        "legacy_executor_aliases": list(_LEGACY_EXECUTOR_ALIASES),
         "work_packets": work_packets,
         "truth": {
             "qualified_problem": False,
@@ -325,6 +353,9 @@ def load_company_os_inbound_diagnostics(limit: int = 50) -> list[dict[str, Any]]
                     if diagnostic is not None
                     else list(handoff["next_questions"])
                 ),
+                "agentic_holding": handoff["agentic_holding"],
+                "routing_authority": handoff["routing_authority"],
+                "legacy_executor_aliases": handoff["legacy_executor_aliases"],
                 "work_packets": handoff["work_packets"],
                 "next_action": "complete_evidence_backed_diagnostic_internal",
                 "external_followup_eligible": followup_requested,
