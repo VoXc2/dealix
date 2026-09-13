@@ -1150,6 +1150,16 @@ def run_job(
     recover_expired: bool = False,
 ) -> dict[str, Any]:
     """Execute one READY job through launch -> verify -> record -> cleanup."""
+    errors = validate_job(job)
+    if errors:
+        return {
+            "ok": False,
+            "status": "BLOCKED",
+            "reason": "canonical-admission-rejected",
+            "errors": errors,
+            "job": job,
+        }
+
     repo_root = repo_root or Path(job.get("REPO") or REPO_ROOT)
     owner = owner or job.get("OWNER_AGENT", "dealix-pm")
 

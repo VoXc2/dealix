@@ -61,6 +61,26 @@ def test_validate_rejects_non_permanent_owner() -> None:
     assert any("OWNER_AGENT" in error for error in errors)
 
 
+def test_run_job_revalidates_direct_entry_before_execution(tmp_path: Path, monkeypatch) -> None:
+    job = _deterministic_job(owner_agent="dealix-rogue")
+    called = False
+
+    def forbidden_executor(*_args, **_kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("invalid job reached executor")
+
+    monkeypatch.setitem(factory.EXECUTORS, "deterministic", forbidden_executor)
+    outcome = factory.run_job(tmp_path, job)
+
+    assert outcome["ok"] is False
+    assert outcome["status"] == "BLOCKED"
+    assert outcome["reason"] == "canonical-admission-rejected"
+    assert any("OWNER_AGENT" in error for error in outcome["errors"])
+    assert called is False
+    assert factory.read_lease(tmp_path, job["JOB_ID"]) is None
+
+
 def test_illegal_transition_is_rejected() -> None:
     job = factory.make_job(owner_agent="dealix-pm", business_goal="x", job_class="DETERMINISTIC")
     with pytest.raises(ValueError):
