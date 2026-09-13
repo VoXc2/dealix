@@ -161,8 +161,8 @@ run_optional "lead_to_cash_draft_only" \
   --mode draft_only \
   --output "$OUT_DIR/lead_to_cash.json" || true
 
-if [[ "$MODE" == "weekly" && -f scripts/run_weekly_proof_pack.py ]]; then
-  run_optional "weekly_proof_pack" "$PY" scripts/run_weekly_proof_pack.py || true
+if [[ "$MODE" == "weekly" && -f scripts/commercial/run_weekly_proof_pack.py ]]; then
+  run_optional "weekly_proof_pack" "$PY" scripts/commercial/run_weekly_proof_pack.py || true
 fi
 
 "$PY" - "$OUT_DIR" <<'PY'

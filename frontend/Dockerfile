@@ -11,9 +11,13 @@ COPY . .
 ARG NEXT_PUBLIC_API_URL=https://api.dealix.me
 ARG NEXT_PUBLIC_SITE_URL=https://dealix.me
 ARG NEXT_PUBLIC_USE_DEALIX_OPS_PROXY=1
+# Immutable source identity for /healthz release parity (exact SHA, not HTTP 200).
+# Railway: set RAILWAY_GIT_COMMIT_SHA passthrough or build-arg; Vercel: automatic.
+ARG NEXT_PUBLIC_GIT_SHA=unknown
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
     NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NEXT_PUBLIC_USE_DEALIX_OPS_PROXY=$NEXT_PUBLIC_USE_DEALIX_OPS_PROXY \
+    NEXT_PUBLIC_GIT_SHA=$NEXT_PUBLIC_GIT_SHA \
     NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 

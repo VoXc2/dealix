@@ -445,8 +445,8 @@ weekly() {
   if [[ -f scripts/founder_weekly_loop.sh ]]; then
     run_step "founder weekly loop" bash scripts/founder_weekly_loop.sh
   fi
-  if [[ -f scripts/run_weekly_proof_pack.py ]]; then
-    run_step "weekly proof pack" python3 scripts/run_weekly_proof_pack.py
+  if [[ -f scripts/commercial/run_weekly_proof_pack.py ]]; then
+    run_step "weekly proof pack" python3 scripts/commercial/run_weekly_proof_pack.py
   fi
 }
 

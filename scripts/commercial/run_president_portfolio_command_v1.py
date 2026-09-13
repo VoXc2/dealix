@@ -15,7 +15,17 @@ REGISTRY=ROOT/'config'/'company'/'dealix_arm_registry.json'
 DIMENSIONS=ROOT/'config'/'company'/'dealix_portfolio_dimensions.json'
 DEFAULT_CANDIDATES=ROOT/'data'/'self_operating_company_os'/'portfolio_candidates.json'
 DEFAULT_TARGETS=ROOT/'data'/'self_operating_company_os'/'targets.json'
-OUT_ROOT=ROOT/'reports'/'president_portfolio_command'
+def _default_out_root()->Path:
+    """Runtime reports must never dirty the canonical checkout.
+
+    Honor DEALIX_RUNTIME_REPORTS_ROOT (e.g. /opt/dealix/control/reports) so
+    autonomous/company runs write outside the git worktree and cannot poison
+    Source Sync. The in-repo fallback stays gitignored (see .gitignore).
+    """
+    override=os.getenv('DEALIX_RUNTIME_REPORTS_ROOT','').strip()
+    if override: return Path(override)/'president_portfolio_command'
+    return ROOT/'reports'/'president_portfolio_command'
+OUT_ROOT=_default_out_root()
 FORBIDDEN_ENV={'DEALIX_EXTERNAL_SEND','DEALIX_EMAIL_LIVE_SEND','DEALIX_WHATSAPP_OUTBOUND','DEALIX_PUBLIC_PUBLISH','DEALIX_PAID_SPEND','DEALIX_PAYMENT_EXECUTION','DEALIX_PRODUCTION_MUTATION','DEALIX_DNS_MUTATION','DEALIX_DB_MUTATION','DEALIX_SECRET_MUTATION','DEALIX_IDENTITY_MUTATION','AUTO_MERGE_ENABLED','AUTO_DEPLOY_ENABLED'}
 REAL_STAGES={'REAL_INTERACTION','VERIFIED_RELATIONSHIP','QUALIFIED_PROBLEM','FREE_MINI_DIAGNOSTIC','QUALIFIED_DISCOVERY','CUSTOMER_SPECIFIC_QUOTE','VERIFIED_PAYMENT','PAYMENT_EVIDENCE','DELIVERY','DELIVERY_EVIDENCE','CUSTOMER_VALIDATED_PROOF'}
 SUPPRESSED={'SUPPRESSED','OPTED_OUT','WITHDRAWN'}

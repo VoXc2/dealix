@@ -17,7 +17,29 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config" / "company" / "strategy_execution_orchestrator_v1.json"
-OUT_ROOT = ROOT / "reports" / "strategy_execution_orchestrator"
+
+
+def _default_out_root() -> Path:
+    """Runtime reports must never dirty the canonical checkout.
+
+    Honor DEALIX_RUNTIME_REPORTS_ROOT (e.g. /opt/dealix/control/reports) so
+    autonomous/company runs write outside the git worktree and cannot poison
+    Source Sync. The in-repo fallback stays gitignored (see .gitignore).
+    """
+    override = os.getenv("DEALIX_RUNTIME_REPORTS_ROOT", "").strip()
+    if override:
+        return Path(override) / "strategy_execution_orchestrator"
+    return ROOT / "reports" / "strategy_execution_orchestrator"
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+OUT_ROOT = _default_out_root()
 
 FORBIDDEN_TRUE = {
     "DEALIX_EXTERNAL_SEND",
@@ -259,7 +281,7 @@ def main() -> int:
     out = write_outputs(config, state, actions, ventures, oss, tripwire)
     summary = {
         "ok": not tripwire,
-        "output": str(out.relative_to(ROOT)),
+        "output": _display_path(out),
         "top_actions": len(actions),
         "venture_experiments": len(ventures),
         "oss_benchmarks": len(oss),

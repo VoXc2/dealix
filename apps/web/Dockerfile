@@ -18,6 +18,10 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+# Immutable source identity for /healthz release parity (exact SHA, not HTTP 200).
+# Pass via build-arg from CI: docker build --build-arg GIT_SHA=$(git rev-parse HEAD) ...
+ARG GIT_SHA=unknown
+ENV GIT_SHA=${GIT_SHA}
 
 RUN groupadd --system --gid 1001 nodejs \
   && useradd --system --uid 1001 --gid nodejs nextjs
