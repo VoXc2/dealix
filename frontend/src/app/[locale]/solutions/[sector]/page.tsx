@@ -61,7 +61,7 @@ export default async function SectorPage({ params }: { params: Promise<{ locale:
         <div className="mt-4 rounded-xl border border-gold-500/20 bg-gold-500/10 p-4">
           <p className="text-sm font-bold text-gold-400">{isAr ? "المنتج الرئيسي: Dealix AI Business Operating System" : "Main Product: Dealix AI Business Operating System"}</p>
           <p className="text-xs text-white/60 mt-1">{isAr ? "نظام تشغيل إيرادات B2B — محرك الإيرادات + حوكمة AI + إثبات — منفتح على كل القطاعات والحكومة، يعمل بأفضل شكل" : "B2B Revenue Operating System — Revenue Engine + AI Governance + Proof — open to all sectors & government, works in best form"}</p>
-          <p className="text-xs text-white/40 mt-2">5 core + 8 extended = 13 agents • 44 arms • 500 cells • DeepWIP≤3 • L0-L5</p>
+          <p className="text-xs text-white/40 mt-2">Resource-governed • L0-L5 proof • Economic cells</p>
         </div>
 
         <h2 className="text-2xl font-bold mt-10 mb-2">{isAr ? "ماذا يقدم Dealix تقنياً لهذا القطاع؟" : "What Dealix Serves Technically for This Sector?"}</h2>
@@ -93,7 +93,7 @@ export default async function SectorPage({ params }: { params: Promise<{ locale:
           <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-5">
             <h4 className="font-bold text-sm text-emerald-400">{isAr ? "الحكومة" : "Government"}</h4>
             <p className="text-xs text-white/60 mt-2">{isAr ? "نخدم كل القطاعات والحكومة — B2G Readiness، Etimad، Jadeer، NCA، PDPL، ZATCA — كلها محكومة" : "We serve all sectors & government — B2G Readiness, Etimad, Jadeer, NCA, PDPL, ZATCA — all governed"}</p>
-            <p className="text-xs text-white/40 mt-2">DeepWIP≤3 • 5 core + 8 extended = 13 agents • 20 sectors • 50 families</p>
+            <p className="text-xs text-white/40 mt-2">Resource-governed • L0-L5 proof • 20 sectors • 50 families</p>
           </div>
         </div>
 
@@ -106,7 +106,7 @@ export default async function SectorPage({ params }: { params: Promise<{ locale:
             <li>• dealix-engineer: {isAr ? "إنتاج، أتمتة، تكامل" : "production, automation, integration"}</li>
             <li>• dealix-content: {isAr ? "محتوى، توزيع، ثقة" : "content, distribution, trust"}</li>
           </ul>
-          <p className="text-xs text-white/40 mt-3">{isAr ? "كل قطاع = شركة افتراضية مؤتمتة، ليس 20 مشروع منفصل. DeepWIP ≤3 يحافظ على التركيز." : "Each sector = virtual company (temporary capability), not 20 separate projects. DeepWIP ≤3 keeps focus."}</p>
+          <p className="text-xs text-white/40 mt-3">{isAr ? "كل قطاع = شركة افتراضية مؤقتة، ليس 20 مشروع منفصل. التشغيل محكوم بالموارد يحافظ على التركيز." : "Each sector = temporary virtual company, not 20 separate projects. Resource-governed execution keeps focus."}</p>
         </div>
       </div>
     </div>

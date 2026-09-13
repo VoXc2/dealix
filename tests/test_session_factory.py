@@ -306,6 +306,8 @@ def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> 
     captured: dict[str, object] = {}
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_USE_BALANCE", "disabled")
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", "test_verified_disabled")
     monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode-go/deepseek-v4.1-flash"])
     monkeypatch.setattr(factory, "discover_ollama_models", lambda: ["qwen3:4b"])
     monkeypatch.setattr(factory, "discover_router_models", lambda: ["dealix-local"])

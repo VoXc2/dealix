@@ -1,3 +1,9 @@
+from dealix.agentic_holding.governance import (
+    GovernanceEnvelope,
+    GovernedAgentDispatcher,
+    governance_context_refs,
+    governance_rejection,
+)
 from dealix.agentic_holding.runtime import (
     ARM_POD_ROLES,
     GROUP_ROLES,
@@ -50,4 +56,8 @@ __all__ = [
     "resolve_live_base_sha",
     "session_adapter_receipt",
     "submit_dispatch_plan",
+    "GovernanceEnvelope",
+    "GovernedAgentDispatcher",
+    "governance_rejection",
+    "governance_context_refs",
 ]
