@@ -204,6 +204,12 @@ doctor: env-check alembic-heads security-smoke ## Health check — env contract 
 alembic-heads: ## Fail if alembic reports >1 migration head
 	$(PYTHON) scripts/check_alembic_single_head.py
 
+agents-audit: ## Audit agent-team governance (strict — same gate as CI agent-team-audit)
+	$(PYTHON) scripts/audit_agent_team.py --strict
+
+pr-triage: ## Triage open PRs into buckets (report-only — never merges or comments)
+	$(PYTHON) scripts/triage_open_prs.py
+
 # ── Database ───────────────────────────────────────────────────
 db-init: ## Initialize database tables (dev only)
 	$(PYTHON) -c "import asyncio; from db.session import init_db; asyncio.run(init_db())"
