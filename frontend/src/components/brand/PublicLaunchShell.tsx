@@ -16,12 +16,11 @@ export function PublicLaunchShell({ children, compactNav = false }: { children: 
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { href: `${base}/services`, ar: "الخدمات", en: "Services", label: "Services" },
     { href: `${base}/solutions`, ar: "الحلول", en: "Solutions", label: "Solutions" },
-    { href: `${base}/pricing`, ar: "التسعير", en: "Pricing", label: "Pricing" },
+    { href: `${base}/sectors`, ar: "القطاعات", en: "Sectors", label: "Sectors" },
+    { href: `${base}/about`, ar: "كيف يعمل", en: "How it Works", label: "How it Works" },
+    { href: `${base}/trust`, ar: "الإثبات", en: "Proof", label: "Proof" },
     { href: `${base}/learn`, ar: "تعلّم", en: "Learn", label: "Learn" },
-    { href: `${base}/about`, ar: "عن Dealix", en: "About", label: "About" },
-    { href: `${base}/trust`, ar: "الثقة", en: "Trust", label: "Trust" },
   ];
 
   return (
@@ -29,6 +28,20 @@ export function PublicLaunchShell({ children, compactNav = false }: { children: 
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--dealix-navy)] focus:text-white focus:rounded-lg focus:left-4">
         {isAr ? "تخطي إلى المحتوى" : "Skip to content"}
       </a>
+      {/* Top company explanation bar — slim premium strip */}
+      <div className="bg-[var(--dealix-navy)] text-white text-[11px] sm:text-xs leading-none border-b border-white/10">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-2 flex items-center justify-between gap-3">
+          <p className="truncate font-medium tracking-wide">
+            <span className="font-semibold">Dealix</span>
+            <span className="opacity-80 hidden sm:inline"> — {isAr ? "نظام تشغيل أعمال بالذكاء الاصطناعي للشركات في السعودية" : "Saudi-first AI Business Operating System"}</span>
+            <span className="opacity-60 hidden lg:inline"> · {isAr ? "من الإشارة إلى التنفيذ والنتيجة الموثقة" : "From signal to governed execution and measurable outcomes"}</span>
+          </p>
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] tracking-widest uppercase opacity-60 font-semibold flex-shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" aria-hidden />
+            {isAr ? "تشغيل محكوم" : "Governed OS"}
+          </span>
+        </div>
+      </div>
       <header className="border-b border-[var(--dealix-deep-green)]/15 bg-white/95 dark:bg-background/95 sticky top-0 z-30 backdrop-blur-md">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <Link href={base} aria-label="Dealix — Home" className="flex-shrink-0">

@@ -22,9 +22,9 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
   return (
     <div className="min-h-screen bg-navy-900 text-white" dir={isAr ? "rtl" : "ltr"}>
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="inline-flex items-center gap-2 bg-gold-500/10 border border-gold-500/20 rounded-full px-4 py-1.5 mb-4">
+        <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 mb-4">
           <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-          <span className="text-xs font-bold text-gold-400">{isAr ? "المنتج الرئيسي: Dealix AI Business OS — منفتح على كلشي" : "Main Product: Dealix AI Business OS — Open to Everything"}</span>
+          <span className="text-xs font-bold text-cyan-400">{isAr ? "المنتج الرئيسي: Dealix AI Business OS — منفتح على كلشي" : "Main Product: Dealix AI Business OS — Open to Everything"}</span>
         </div>
         <h1 className="text-4xl font-bold mb-3">{isAr ? "حلول لكل القطاعات" : "Solutions for Every Sector"}</h1>
         <p className="text-white/60 mb-2 max-w-2xl">
@@ -39,7 +39,7 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
               <div className="text-3xl mb-3">{s.icon}</div>
               <h3 className="font-bold">{isAr ? s.nameAr : s.nameEn}</h3>
               <p className="text-sm text-white/50 mt-1">{isAr ? s.problemsAr.slice(0,2).join(" • ") : s.problemsEn.slice(0,2).join(" • ")}</p>
-              <p className="text-xs text-gold-400 mt-3">{isAr ? s.servicesAr.length : s.servicesEn.length} {isAr ? "خدمات" : "services"} • {isAr ? "يديرها الاجينتس" : "managed by agents"}</p>
+              <p className="text-xs text-cyan-400 mt-3">{isAr ? s.servicesAr.length : s.servicesEn.length} {isAr ? "خدمات" : "services"} • {isAr ? "يديرها الاجينتس" : "managed by agents"}</p>
             </Link>
           ))}
         </div>

@@ -76,7 +76,7 @@ export default function BookCallPage() {
     <PublicGtmShell compactNav>
       <div dir={dir} className="mx-auto max-w-3xl px-6 py-12 grid-pattern">
         <div className="mb-6">
-          <Badge variant="gold" className="mb-3">
+          <Badge variant="default" className="mb-3">
             <Clock className="size-3 mr-1" />
             {isAr ? "٢٠ دقيقة" : "20 minutes"}
           </Badge>
@@ -236,7 +236,7 @@ export default function BookCallPage() {
                 </div>
 
                 <div className="pt-2">
-                  <Button type="submit" variant="gold" size="lg" className="w-full">
+                  <Button type="submit" variant="default" size="lg" className="w-full">
                     {isAr ? "احجز التشخيص" : "Book Diagnostic"}
                     {isAr ? <ArrowLeft className="size-4" /> : <ArrowRight className="size-4" />}
                   </Button>

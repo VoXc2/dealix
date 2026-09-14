@@ -1,6 +1,15 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="40" height="40" rx="8" fill="#001F3F"/>
-  <path d="M20 4L36 20L20 36L4 20L20 4Z" fill="#D4AF37" opacity="0.15"/>
-  <path d="M20 8L32 20L20 32L8 20L20 8Z" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
-  <text x="20" y="25" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="700" font-size="16" fill="#FFFFFF">D</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Dealix mark">
+  <defs>
+    <linearGradient id="mark-d" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0C2742"/>
+      <stop offset="1" stop-color="#0E7490"/>
+    </linearGradient>
+    <linearGradient id="mark-s" x1="0" y1="21" x2="24" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06B6D4"/>
+      <stop offset="1" stop-color="#0891B2"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#mark-d)"/>
+  <path fill="white" fill-rule="evenodd" clip-rule="evenodd" d="M14 12h16c10.5 0 18 8 18 18s-7.5 18-18 18H14V12Zm8 8v20h8c6.1 0 10.5-4.6 10.5-10.5S36.1 20 30 20H22Z"/>
+  <path d="M8 22 20 30 8 38Z" fill="url(#mark-s)"/>
 </svg>

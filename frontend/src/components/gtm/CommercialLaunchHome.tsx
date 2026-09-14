@@ -248,7 +248,7 @@ function StarRating({ count }: { count: number }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: count }).map((_, i) => (
-        <span key={i} className="text-gold-400 text-sm">★</span>
+        <span key={i} className="text-cyan-400 text-sm">★</span>
       ))}
     </div>
   );
@@ -343,7 +343,7 @@ export function CommercialLaunchHome() {
             animate={{ scale: [1, 1.15, 1], opacity: [0.18, 0.28, 0.18] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(212,175,55,0.25) 0%, transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, rgba(6, 182, 212,0.25) 0%, transparent 70%)" }}
           />
           <motion.div
             animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.22, 0.12] }}
@@ -361,7 +361,7 @@ export function CommercialLaunchHome() {
           {[...Array(6)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute rounded-full bg-gold-400/20"
+              className="absolute rounded-full bg-cyan-400/20"
               style={{
                 width: 4 + (i % 3) * 4,
                 height: 4 + (i % 3) * 4,
@@ -381,8 +381,8 @@ export function CommercialLaunchHome() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="relative z-10 mb-6"
         >
-          <Badge className="border-gold-500/40 bg-gold-500/10 text-gold-300 text-xs px-4 py-1.5 rounded-full backdrop-blur-sm">
-            <span className="inline-block w-2 h-2 rounded-full bg-gold-400 me-2 animate-pulse" />
+          <Badge className="border-cyan-500/40 bg-cyan-500/10 text-cyan-300 text-xs px-4 py-1.5 rounded-full backdrop-blur-sm">
+            <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 me-2 animate-pulse" />
             {isAr ? "ZATCA Wave 24 — الموعد النهائي يونيو 2026" : "ZATCA Wave 24 — Deadline June 2026"}
           </Badge>
         </motion.div>
@@ -408,14 +408,14 @@ export function CommercialLaunchHome() {
               {isAr ? (
                 <>
                   حوّل إشارات شركتك إلى{" "}
-                  <span className="bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">
                     تنفيذ حقيقي يمكن إثباته
                   </span>
                 </>
               ) : (
                 <>
                   Turn your company signals into{" "}
-                  <span className="bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">
                     real, provable execution
                   </span>
                 </>
@@ -440,7 +440,7 @@ export function CommercialLaunchHome() {
               <Button
                 asChild
                 size="lg"
-                className="w-full sm:w-auto bg-gradient-to-r from-gold-500 to-gold-400 text-navy-500 font-bold hover:from-gold-400 hover:to-gold-300 shadow-lg shadow-gold-500/25 text-base h-12 px-8 min-h-[48px]"
+                className="w-full sm:w-auto bg-gradient-to-r from-cyan-500 to-cyan-400 text-navy-500 font-bold hover:from-cyan-400 hover:to-cyan-300 shadow-lg shadow-cyan-500/25 text-base h-12 px-8 min-h-[48px]"
               >
                 <Link href={`${base}/dealix-diagnostic`} aria-label={isAr ? "ابدأ التشخيص المجاني" : "Start Free Diagnostic"}>
                   {isAr ? "ابدأ تشخيصك المجاني" : "Start Free Diagnostic"}
@@ -458,11 +458,11 @@ export function CommercialLaunchHome() {
               </Button>
             </motion.div>
             <motion.div variants={fadeUp} custom={3.5} className="mt-3 flex items-center justify-center gap-4 text-xs">
-              <Link href={`${base}/solutions`} className="text-white/50 hover:text-gold-400 underline underline-offset-4 transition-colors">
+              <Link href={`${base}/solutions`} className="text-white/50 hover:text-cyan-400 underline underline-offset-4 transition-colors">
                 {isAr ? "استكشف حلول القطاعات" : "Explore Sector Solutions"}
               </Link>
               <span className="text-white/20">·</span>
-              <Link href={`${base}/proof-pack`} className="text-white/50 hover:text-gold-400 underline underline-offset-4 transition-colors">
+              <Link href={`${base}/proof-pack`} className="text-white/50 hover:text-cyan-400 underline underline-offset-4 transition-colors">
                 {isAr ? "شاهد Proof Pack" : "See Proof Pack"}
               </Link>
             </motion.div>
@@ -509,7 +509,7 @@ export function CommercialLaunchHome() {
                 key={i}
                 className="flex-shrink-0 flex items-center gap-3 px-6 py-3 rounded-xl border border-white/8 bg-white/4 backdrop-blur-sm"
               >
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-gold-500/30 to-gold-400/10 border border-gold-500/20 flex items-center justify-center text-gold-400 font-bold text-sm">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500/30 to-cyan-400/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-sm">
                   {logo.initials}
                 </div>
                 <span className="text-white/60 text-sm whitespace-nowrap font-medium">{logo.name}</span>
@@ -531,7 +531,7 @@ export function CommercialLaunchHome() {
           viewport={{ once: true, margin: "-60px" }}
           className="text-center mb-12"
         >
-          <motion.p variants={fadeUp} className="text-gold-400 text-sm font-semibold uppercase tracking-widest mb-3">
+          <motion.p variants={fadeUp} className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">
             {isAr ? "المنصة" : "Platform"}
           </motion.p>
           <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-bold">
@@ -557,7 +557,7 @@ export function CommercialLaunchHome() {
               variants={fadeUp}
               custom={i}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="group rounded-2xl border border-white/8 bg-white/4 backdrop-blur-sm p-6 hover:border-gold-500/30 hover:bg-white/7 transition-colors cursor-default"
+              className="group rounded-2xl border border-white/8 bg-white/4 backdrop-blur-sm p-6 hover:border-cyan-500/30 hover:bg-white/7 transition-colors cursor-default"
               style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}
             >
               <div className="text-3xl mb-4">{f.icon}</div>
@@ -602,7 +602,7 @@ export function CommercialLaunchHome() {
               custom={i}
               className="text-center rounded-2xl border border-white/8 bg-white/4 backdrop-blur-sm py-8 px-4"
             >
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-gold-300 to-gold-500 bg-clip-text text-transparent leading-none mb-3">
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-cyan-300 to-cyan-500 bg-clip-text text-transparent leading-none mb-3">
                 {s.valueEn}
               </div>
               <p className="text-white/70 text-sm font-medium">{isAr ? s.labelAr : s.labelEn}</p>
@@ -622,7 +622,7 @@ export function CommercialLaunchHome() {
           viewport={{ once: true, margin: "-60px" }}
           className="text-center mb-12"
         >
-          <motion.p variants={fadeUp} className="text-gold-400 text-sm font-semibold uppercase tracking-widest mb-3">
+          <motion.p variants={fadeUp} className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">
             {isAr ? "الأسعار" : "Pricing"}
           </motion.p>
           <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-bold">
@@ -647,14 +647,14 @@ export function CommercialLaunchHome() {
               custom={i}
               className={`relative rounded-2xl border p-8 flex flex-col gap-5 ${
                 plan.popular
-                  ? "border-gold-500/50 bg-gradient-to-b from-gold-500/8 to-transparent shadow-xl shadow-gold-500/10"
+                  ? "border-cyan-500/50 bg-gradient-to-b from-cyan-500/8 to-transparent shadow-xl shadow-cyan-500/10"
                   : "border-white/8 bg-white/4"
               } backdrop-blur-sm`}
-              style={plan.popular ? { boxShadow: "0 0 40px rgba(212,175,55,0.12), inset 0 1px 0 rgba(255,255,255,0.07)" } : {}}
+              style={plan.popular ? { boxShadow: "0 0 40px rgba(6, 182, 212,0.12), inset 0 1px 0 rgba(255,255,255,0.07)" } : {}}
             >
               {plan.popular && (
                 <div className={`absolute -top-3.5 ${isAr ? "left-6" : "right-6"}`}>
-                  <Badge className="bg-gold-500 text-navy-500 border-0 font-bold px-3 py-1 text-xs">
+                  <Badge className="bg-cyan-500 text-navy-500 border-0 font-bold px-3 py-1 text-xs">
                     {isAr ? "الأكثر شيوعاً" : "Most Popular"}
                   </Badge>
                 </div>
@@ -684,7 +684,7 @@ export function CommercialLaunchHome() {
                 size="lg"
                 className={`w-full font-semibold ${
                   plan.popular
-                    ? "bg-gradient-to-r from-gold-500 to-gold-400 text-navy-500 hover:from-gold-400 hover:to-gold-300 shadow-md shadow-gold-500/20"
+                    ? "bg-gradient-to-r from-cyan-500 to-cyan-400 text-navy-500 hover:from-cyan-400 hover:to-cyan-300 shadow-md shadow-cyan-500/20"
                     : "bg-white/8 border border-white/15 text-white hover:bg-white/14"
                 }`}
               >
@@ -719,7 +719,7 @@ export function CommercialLaunchHome() {
         <div className="grid gap-4 md:grid-cols-4">
           {[
             { step: "01", ar: "إشارة", en: "Signal", descAr: "إشارة تشغيلية حقيقية", descEn: "Real operational signal", color: "border-cyan-500/20 bg-cyan-500/10" },
-            { step: "02", ar: "قرار", en: "Decision", descAr: "دليل + أولوية + اقتصاديات", descEn: "Evidence + priority + economics", color: "border-gold-500/20 bg-gold-500/10" },
+            { step: "02", ar: "قرار", en: "Decision", descAr: "دليل + أولوية + اقتصاديات", descEn: "Evidence + priority + economics", color: "border-cyan-500/20 bg-cyan-500/10" },
             { step: "03", ar: "إجراء", en: "Action", descAr: "تنفيذ محكوم بصلاحية واضحة", descEn: "Governed execution with clear authority", color: "border-emerald-500/20 bg-emerald-500/10" },
             { step: "04", ar: "إثبات", en: "Proof", descAr: "خط أساس → دليل → قبول", descEn: "Baseline → evidence → acceptance", color: "border-violet-500/20 bg-violet-500/10" },
           ].map((s) => (
@@ -735,7 +735,7 @@ export function CommercialLaunchHome() {
       {/* BEST OFFERS — BEST IN MARKET                                            */}
       <section className="py-20 px-4 max-w-6xl mx-auto">
         <div className="text-center mb-10">
-          <p className="text-gold-400 text-sm font-semibold uppercase tracking-widest mb-3">
+          <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">
             {isAr ? "أفضل العروض في السوق" : "Best Offers in Market"}
           </p>
           <h2 className="text-3xl md:text-4xl font-bold">
@@ -751,8 +751,8 @@ export function CommercialLaunchHome() {
             { ar: "تقييم جاهزية AI مجاني", en: "Free AI Readiness Scan", valAr: "حوكمة AI + اقتصاديات", valEn: "AI governance + economics", agents: "engineer, pm" },
             { ar: "فحص جاهزية ZATCA مجاني", en: "Free ZATCA Readiness Check", valAr: "تشخيص فاتورة + تكامل", valEn: "Fatoora diagnostic + integration", agents: "engineer" },
           ].map((offer) => (
-            <div key={offer.en} className="rounded-2xl border border-gold-500/20 bg-gradient-to-br from-gold-500/10 to-white/5 p-6 backdrop-blur">
-              <h3 className="font-bold text-gold-400">{isAr ? offer.ar : offer.en}</h3>
+            <div key={offer.en} className="rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 to-white/5 p-6 backdrop-blur">
+              <h3 className="font-bold text-cyan-400">{isAr ? offer.ar : offer.en}</h3>
               <p className="text-sm text-white/60 mt-1">{isAr ? offer.valAr : offer.valEn}</p>
               <p className="text-xs text-white/40 mt-3">{offer.agents} • {isAr ? "مجاني" : "Free"} • {isAr ? "محكوم وموثق" : "Governed"}</p>
             </div>
@@ -774,7 +774,7 @@ export function CommercialLaunchHome() {
           className="max-w-6xl mx-auto"
         >
           <motion.div variants={fadeUp} className="text-center mb-12">
-            <p className="text-gold-400 text-sm font-semibold uppercase tracking-widest mb-3">
+            <p className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3">
               {isAr ? "كيف نثبت القيمة" : "How we prove value"}
             </p>
             <h2 className="text-3xl md:text-4xl font-bold">
@@ -799,7 +799,7 @@ export function CommercialLaunchHome() {
                   &ldquo;{isAr ? t.quoteAr : t.quoteEn}&rdquo;
                 </p>
                 <div className="flex items-center gap-3 pt-2 border-t border-white/8">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold-500/40 to-emerald-600/30 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-500/40 to-emerald-600/30 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                     {(isAr ? t.nameAr : t.nameEn)[0]}
                   </div>
                   <div>
@@ -842,7 +842,7 @@ export function CommercialLaunchHome() {
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(212,175,55,0.08) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(6, 182, 212,0.08) 0%, transparent 70%)" }}
         />
         <motion.div
           variants={stagger}
@@ -859,14 +859,14 @@ export function CommercialLaunchHome() {
             {isAr ? (
               <>
                 ابدأ رحلتك نحو{" "}
-                <span className="bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">
                   إيراد أكثر
                 </span>
               </>
             ) : (
               <>
                 Start your journey to{" "}
-                <span className="bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">
                   more revenue
                 </span>
               </>
@@ -910,14 +910,14 @@ export function CommercialLaunchHome() {
                     aria-describedby={emailError ? "cta-email-error" : undefined}
                     autoComplete="email"
                     placeholder={isAr ? "البريد الإلكتروني للشركة" : "Work email address"}
-                    className="flex-1 h-12 min-h-[48px] rounded-xl bg-white/8 border border-white/15 px-4 text-white placeholder-white/40 text-sm focus:outline-none focus:border-gold-500/60 focus:bg-white/12 transition-colors focus-visible:ring-2 focus-visible:ring-gold-400"
+                    className="flex-1 h-12 min-h-[48px] rounded-xl bg-white/8 border border-white/15 px-4 text-white placeholder-white/40 text-sm focus:outline-none focus:border-cyan-500/60 focus:bg-white/12 transition-colors focus-visible:ring-2 focus-visible:ring-cyan-400"
                   />
                   <Button
                     type="submit"
                     size="lg"
                     disabled={emailStatus === "loading"}
                     aria-busy={emailStatus === "loading"}
-                    className="h-12 min-h-[48px] px-7 bg-gradient-to-r from-gold-500 to-gold-400 text-navy-500 font-bold hover:from-gold-400 hover:to-gold-300 whitespace-nowrap shadow-lg shadow-gold-500/25 disabled:opacity-60"
+                    className="h-12 min-h-[48px] px-7 bg-gradient-to-r from-cyan-500 to-cyan-400 text-navy-500 font-bold hover:from-cyan-400 hover:to-cyan-300 whitespace-nowrap shadow-lg shadow-cyan-500/25 disabled:opacity-60"
                   >
                     {emailStatus === "loading" ? (isAr ? "جارٍ الإرسال…" : "Sending…") : isAr ? "ابدأ مجاناً" : "Start Free"}
                   </Button>
@@ -1003,7 +1003,7 @@ export function CommercialLaunchHome() {
               ]
           ).map((f) => (
             <details key={f.q} className="group rounded-xl border border-white/10 bg-white/5 px-5 py-4 open:bg-white/8 transition-colors">
-              <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-semibold text-sm text-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 rounded-lg">
+              <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-semibold text-sm text-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg">
                 {f.q}
                 <span aria-hidden className="text-white/40 group-open:rotate-180 transition-transform">▾</span>
               </summary>
@@ -1024,7 +1024,7 @@ export function CommercialLaunchHome() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-10">
             {/* Brand */}
             <div className="lg:col-span-2">
-              <div className="text-xl font-bold bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent mb-3">
+              <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent mb-3">
                 Dealix
               </div>
               <p className="text-white/50 text-sm leading-relaxed max-w-xs">
@@ -1047,7 +1047,7 @@ export function CommercialLaunchHome() {
                   { ar: "الشركاء", en: "Partners", href: "/partners" },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={`${base}${link.href}`} className="hover:text-gold-400 transition-colors">
+                    <Link href={`${base}${link.href}`} className="hover:text-cyan-400 transition-colors">
                       {isAr ? link.ar : link.en}
                     </Link>
                   </li>
@@ -1067,7 +1067,7 @@ export function CommercialLaunchHome() {
                   { ar: "الشروط والأحكام", en: "Terms", href: "/terms" },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={`${base}${link.href}`} className="hover:text-gold-400 transition-colors">
+                    <Link href={`${base}${link.href}`} className="hover:text-cyan-400 transition-colors">
                       {isAr ? link.ar : link.en}
                     </Link>
                   </li>
@@ -1084,7 +1084,7 @@ export function CommercialLaunchHome() {
             </p>
             <div className="flex gap-4">
               <span className="text-emerald-500/70">PDPL</span>
-              <span className="text-gold-500/70">ZATCA Ready</span>
+              <span className="text-cyan-500/70">ZATCA Ready</span>
               <span className="text-white/40">Saudi-First</span>
             </div>
           </div>

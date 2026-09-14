@@ -22,8 +22,8 @@ export function HermesAgentWidget() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 rounded-2xl border border-gold-500/20 bg-navy-900/90 backdrop-blur-xl shadow-2xl z-50 overflow-hidden">
-      <div className="bg-gradient-to-r from-gold-500 to-gold-400 text-navy-900 px-4 py-3 flex items-center gap-2">
+    <div className="fixed bottom-4 right-4 w-80 rounded-2xl border border-cyan-500/20 bg-navy-900/90 backdrop-blur-xl shadow-2xl z-50 overflow-hidden">
+      <div className="bg-gradient-to-r from-cyan-500 to-cyan-400 text-navy-900 px-4 py-3 flex items-center gap-2">
         <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-lg">🤖</div>
         <div>
           <div className="font-bold text-sm">Hermes</div>
@@ -33,7 +33,7 @@ export function HermesAgentWidget() {
       </div>
       <div className="h-64 overflow-y-auto p-3 space-y-2">
         {messages.map((m, i) => (
-          <div key={i} className={m.role === "hermes" ? "bg-white/10 rounded-lg p-2 text-sm" : "bg-gold-500/20 rounded-lg p-2 text-sm ml-6"}>
+          <div key={i} className={m.role === "hermes" ? "bg-white/10 rounded-lg p-2 text-sm" : "bg-cyan-500/20 rounded-lg p-2 text-sm ml-6"}>
             <div className="text-xs text-white/40 mb-1">{m.role === "hermes" ? "Hermes" : isAr ? "أنت" : "You"}</div>
             <div className="text-white/90">{m.text}</div>
           </div>
@@ -49,7 +49,7 @@ export function HermesAgentWidget() {
         </div>
         <div className="flex gap-2">
           <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send(input)} placeholder={isAr ? "اكتب..." : "Type..."} className="flex-1 bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/40" />
-          <Button onClick={() => send(input)} size="sm" className="bg-gold-500 text-navy-900 hover:bg-gold-400">
+          <Button onClick={() => send(input)} size="sm" className="bg-cyan-500 text-navy-900 hover:bg-cyan-400">
             {isAr ? "إرسال" : "Send"}
           </Button>
         </div>

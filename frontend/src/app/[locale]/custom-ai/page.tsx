@@ -324,7 +324,7 @@ export default function CustomAiPage() {
                 <div className="pt-2">
                   <Button
                     type="submit"
-                    variant="gold"
+                    variant="default"
                     size="lg"
                     className="w-full"
                     disabled={loading}

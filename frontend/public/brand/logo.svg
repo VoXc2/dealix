@@ -1,6 +1,22 @@
-<svg width="160" height="48" viewBox="0 0 160 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="40" height="40" rx="8" fill="#001F3F" y="4"/>
-  <path d="M20 8L32 20L20 32L8 20L20 8Z" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
-  <text x="20" y="25" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="700" font-size="16" fill="#FFFFFF">D</text>
-  <text x="52" y="30" font-family="Poppins, sans-serif" font-weight="700" font-size="22" fill="#001F3F">dealix</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 96" width="400" height="96" role="img" aria-label="Dealix — AI Business Operating System">
+  <defs>
+    <linearGradient id="dealix-d" x1="8" y1="8" x2="80" y2="88" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0C2742"/>
+      <stop offset="0.45" stop-color="#0E7490"/>
+      <stop offset="1" stop-color="#164E63"/>
+    </linearGradient>
+    <linearGradient id="dealix-signal" x1="0" y1="30" x2="34" y2="66" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#06B6D4"/>
+      <stop offset="1" stop-color="#0891B2"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(4 4) scale(1.35)">
+    <path fill="url(#dealix-d)" fill-rule="evenodd" clip-rule="evenodd" d="M12 8h20c14 0 24 10.75 24 24S46 56 32 56H12V8Zm10 10v28h10c8.2 0 14-6.1 14-14s-5.8-14-14-14H22Z"/>
+    <path d="M6 21.5 24.5 32 6 42.5Z" fill="url(#dealix-signal)"/>
+  </g>
+  <g transform="translate(102 13)">
+    <text x="0" y="39" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="750" letter-spacing="-1.5" fill="#0C2742">Dealix</text>
+    <text x="1" y="62" font-family="IBM Plex Sans Arabic, Arial, sans-serif" font-size="18" font-weight="600" fill="#0891B2">ديليكس</text>
+    <text x="0" y="82" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="650" letter-spacing="2.4" fill="#64748B">AI BUSINESS OPERATING SYSTEM</text>
+  </g>
 </svg>

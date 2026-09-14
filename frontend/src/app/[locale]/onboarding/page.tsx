@@ -30,7 +30,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             <Link key={s.id} href={`/${locale}/dealix-diagnostic?sector=${s.id}`} className="rounded-xl border border-white/10 bg-white/5 p-5 hover:bg-white/10">
               <div className="font-bold">{isAr ? s.ar : s.en}</div>
               <div className="text-xs text-white/40 mt-1">{s.id}</div>
-              <div className="text-sm text-gold-400 mt-3">{isAr ? "ابدأ" : "Start"} →</div>
+              <div className="text-sm text-cyan-400 mt-3">{isAr ? "ابدأ" : "Start"} →</div>
             </Link>
           ))}
         </div>

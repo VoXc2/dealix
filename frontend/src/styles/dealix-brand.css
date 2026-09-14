@@ -6,9 +6,9 @@
   --dealix-navy:         #001F3F;
   --dealix-navy-hover:   #000a1e;
   --dealix-navy-light:   #0a2040;
-  --dealix-gold:         #D4AF37;
-  --dealix-gold-hover:   #c29d2e;
-  --dealix-gold-light:   #F4E89F;
+  --dealix-gold:         #06B6D4;
+  --dealix-gold-hover:   #0891B2;
+  --dealix-gold-light:   #22D3EE;
 
   /* Neutrals */
   --dealix-black:        #0A0A0A;
@@ -78,7 +78,7 @@
 /* ── Background patterns ─────────────────────────────── */
 /* Navy + Gold geometric dot pattern */
 .bg-dot-pattern {
-  background-image: radial-gradient(circle, rgba(212, 175, 55, 0.15) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(6, 182, 212, 0.15) 1px, transparent 1px);
   background-size: 16px 16px;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .animate-gold-shimmer {
-  background: linear-gradient(90deg, #D4AF37 0%, #F4E89F 50%, #D4AF37 100%);
+  background: linear-gradient(90deg, #06B6D4 0%, #F4E89F 50%, #06B6D4 100%);
   background-size: 200% auto;
   animation: gold-shimmer 3s linear infinite;
 }
@@ -132,7 +132,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 

@@ -23,7 +23,7 @@ export function InteractiveTechDemo() {
   ];
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-      <h3 className="font-bold text-gold-400">{isAr ? "جرب التقنية تفاعلياً" : "Try Tech Interactively"}</h3>
+      <h3 className="font-bold text-cyan-400">{isAr ? "جرب التقنية تفاعلياً" : "Try Tech Interactively"}</h3>
       <p className="text-xs text-white/50 mt-1">{isAr ? "اختر قطاعك وشاهد التشخيص التقني بدون شوائب" : "Pick sector, see technical diagnostic without impurities"}</p>
       <div className="grid gap-4 md:grid-cols-2 mt-4">
         <div>
