@@ -15,7 +15,7 @@ aiosqlite>=0.20.0  # async SQLite driver — required by tests/test_pg_event_sto
 ruff>=0.7.0
 black>=24.10.0
 mypy>=1.13.0
-types-pyyaml>=6.0.12.20260815
+types-pyyaml>=6.0.12.20260906
 types-requests>=2.33.0.20260906
 
 # Security
