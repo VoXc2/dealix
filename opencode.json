@@ -25,6 +25,12 @@
     "skill": "allow",
     "bash": {
       "*": "allow",
+      "scripts/ops/dealix-pr-ready-safe*": "allow",
+      "scripts/ops/dealix-pr-merge-safe*": "allow",
+      "scripts/ops/dealix-feature-push-safe*": "allow",
+      "scripts/ops/dealix-root-service-recover*": "allow",
+      "scripts/ops/dealix-frontend-clean*": "allow",
+      "scripts/ops/verify_hermes_smart*": "allow",
       "git push origin main": "deny",
       "git push origin main *": "deny",
       "git push * main": "deny",
