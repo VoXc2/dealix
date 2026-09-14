@@ -9,9 +9,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: { path: string; freq: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
     { path: "", freq: "weekly", priority: 1.0 },
     { path: "/dealix-diagnostic", freq: "weekly", priority: 0.95 },
+    { path: "/sectors", freq: "weekly", priority: 0.88 },
+    { path: "/solutions", freq: "weekly", priority: 0.88 },
     { path: "/services", freq: "monthly", priority: 0.9 },
     { path: "/risk-score", freq: "weekly", priority: 0.9 },
     { path: "/proof-pack", freq: "monthly", priority: 0.85 },
+    { path: "/trust", freq: "monthly", priority: 0.6 },
+    { path: "/about", freq: "monthly", priority: 0.55 },
     { path: "/partners", freq: "monthly", priority: 0.8 },
     { path: "/learn", freq: "weekly", priority: 0.8 },
     { path: "/privacy", freq: "yearly", priority: 0.4 },
