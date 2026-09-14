@@ -1,9 +1,16 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import yaml
+
+# Standalone-script bootstrap: this verifier is invoked directly (cron/systemd),
+# where the repo root is not automatically importable. Mirrors session_factory.
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from dealix.agentic_holding.runtime import (
     ARM_POD_ROLES,
@@ -16,7 +23,6 @@ from dealix.agentic_holding.runtime import (
     build_current_registry,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
 CANONICAL_CONFIG = ROOT / "dealix/config/commercial_reset_2026_09_12.yaml"
 
 

@@ -1,0 +1,50 @@
+{
+  "artifact": "dealix.final_launch.founder_actions.v1",
+  "generated_at": "2026-09-14T12:25:00Z",
+  "principle": "human action only where automation is impossible/inappropriate under current authority",
+  "actions": [
+    {
+      "ACTION_ID": "FOUNDER-RAILWAY-REDEPLOY-001",
+      "PLATFORM_OR_SYSTEM": "Railway (Dealix-sa project)",
+      "WHY_HUMAN_REQUIRED": "Railway CLI is unlinked/absent; no standing automation credential. Production cutover is L5.",
+      "EXACT_TARGET": "Services: web (dealix.me/www) and api (api.dealix.me)",
+      "EXACT_ACTION": "railway login && railway link (select Dealix-sa project) then redeploy web and api from main commit 693d7189 (or merge branch launch/omega-final-closure-20260914 first for the brand fix).",
+      "EXPECTED_RESULT": "Running web build no longer emits noindex; running api git_sha == main and POST /api/v1/public/execution-diagnostic returns 200 (not 404).",
+      "RISK": "low — standard redeploy; previous image retained",
+      "ROLLBACK": "Railway 'Redeploy' previous successful deployment",
+      "HOW_DEALIX_VERIFIES": "curl -s https://api.dealix.me/health | git_sha==main; curl https://dealix.me/ | no noindex; POST synthetic TEST diagnostic -> 200 then delete",
+      "WHAT_CONTINUES_AUTOMATICALLY_AFTER": "autonomous company dispatcher, session factory, content/runtime cadence"
+    },
+    {
+      "ACTION_ID": "FOUNDER-RAILWAY-WWW-TLS-002",
+      "PLATFORM_OR_SYSTEM": "Railway custom domain",
+      "WHY_HUMAN_REQUIRED": "DNS/custom-domain ownership action",
+      "EXACT_TARGET": "www.dealix.me",
+      "EXACT_ACTION": "In Railway service settings add/verify custom domain www.dealix.me and follow the DNS target shown; wait for 'Certificate issued'.",
+      "EXPECTED_RESULT": "TLS cert CN=www.dealix.me (or incl. SAN); no browser cert error on https://www.dealix.me",
+      "RISK": "low",
+      "ROLLBACK": "remove custom-domain entry; apex and api unaffected",
+      "HOW_DEALIX_VERIFIES": "openssl s_client -servername www.dealix.me shows valid cert; curl -I https://www.dealix.me without -k",
+      "WHAT_CONTINUES_AUTOMATICALLY_AFTER": "sentinel RAILWAY/WWW checks clear"
+    },
+    {
+      "ACTION_ID": "FOUNDER-SOCIAL-OAUTH-003",
+      "PLATFORM_OR_SYSTEM": "LinkedIn / Meta / TikTok / YouTube",
+      "WHY_HUMAN_REQUIRED": "OAuth ownership approval + platform audit require account owner identity",
+      "EXACT_TARGET": "LinkedIn Company Page; Meta Business/IG; TikTok Content Posting app; YouTube Data project",
+      "EXACT_ACTION": "Complete each platform's one-time OAuth/audit consent in the platform dashboard (exact scopes: LinkedIn w_organization_social + r_organization_social; Meta instagram_content_publish + pages_manage_posts; TikTok video.publish after audit; YouTube upload scope).",
+      "EXPECTED_RESULT": "Adapters can be wired to official APIs and a private canary run",
+      "RISK": "low",
+      "ROLLBACK": "revoke app authorization",
+      "HOW_DEALIX_VERIFIES": "channel_readiness.json updates to READY_NEEDS_PERMISSION->LIVE_AUTOMATED after canary receipt",
+      "WHAT_CONTINUES_AUTOMATICALLY_AFTER": "scheduled content distribution via the canonical calendar"
+    }
+  ],
+  "not_required_from_founder": [
+    "session-factory daemon parser fix (done: code + tests)",
+    "weekly service rc127 fix (done)",
+    "dirty-source dispatch hold (done)",
+    "brand no-gold + second logo + top bar in deployed apps/web (done, awaiting deploy)",
+    "sector/diagnostic/lead/backup/rollback verification (done)"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "artifact": "dealix.final_launch.content_video_factory.v1",
+  "generated_at": "2026-09-14T12:32:00Z",
+  "source_sha": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+  "content_factory": {
+    "status": "PARTIAL",
+    "canonical_modules": ["dealix/commercial/content_factory.py", "dealix/marketing_factory/weekly_pack.py", "scripts/dealix_content_factory_daily.py"],
+    "calendar": "dealix/marketing_factory/content_calendar.seed.yaml",
+    "note": "multiple content-calendar implementations remain (consolidation = P2 follow-up); daily runner is draft-only, no external publish",
+    "synthetic_content_object": {
+      "CONTENT_ID": "SYNTH-20260914-TECHSI-DIAG-001",
+      "SOURCE_EVIDENCE": "verified Dealix capability: Free Execution Diagnostic (in-repo E2E) + technology-saas-si sector profile",
+      "CLAIM_STATUS": "CAPABILITY_VERIFIED (no customer outcome claimed)",
+      "CONSENT_STATUS": "NOT_APPLICABLE (no personal/customer data, no customer proof)",
+      "CTA": "تشخيص مجاني / Free Diagnostic",
+      "channels": {
+        "long_form": "How a Saudi B2B turns a workflow signal into a governed, measurable diagnostic",
+        "linkedin_company": "3-line executive framing + diagnostic CTA (draft)",
+        "instagram": "carousel: signal -> diagnostic -> governed action -> proof requirement (draft)",
+        "tiktok_reel": "30s script: 'most automation projects fail before measurement' (draft)",
+        "youtube_short": "45s script adaptation (draft)",
+        "x": "single post: signal->governed execution, no vanity claims (draft)",
+        "newsletter": "email adaptation with sender identity + opt-out (draft)"
+      },
+      "provenance_rule": "no fabricated proof, no invented customers, no spam duplication"
+    }
+  },
+  "video_factory": {
+    "status": "NOT_CONFIGURED",
+    "toolchain_available": {"ffmpeg": "6.1.1", "PIL": true, "moviepy": false, "remotion": false, "arabic_font": false, "arabic_shaping_libs": false},
+    "package_prepared": {
+      "AR_script": "SYNTH video: 'من الإشارة إلى التنفيذ المحكوم' (60s)",
+      "EN_adaptation": "Synthetic Dealix education: signal -> governed execution (no gold, navy/cyan)",
+      "scene_plan": ["logo reveal (D-mark)", "problem", "diagnostic", "governed execution", "proof requirement", "CTA"],
+      "captions": "AR + EN SRT stubs",
+      "thumbnail": "not rendered",
+      "renders": {"9x16": "NOT_RENDERED", "16x9": "NOT_RENDERED"},
+      "reason": "no Arabic font/shaping + no programmatic video pipeline installed; per no-new-infrastructure policy, not installed at closure",
+      "license_manifest": "all assets synthetic (logo SVG owned by Dealix); no third-party media"
+    }
+  },
+  "verdict": "No fabricated claims or customers; content drafts unpublised; video pipeline honestly NOT_CONFIGURED."
+}

@@ -33,7 +33,7 @@ export default function SectorsPage() {
               <h3 style={{ marginTop: 14 }}>{sector.nameAr}</h3>
               <p>{sector.focus}</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginTop: 14 }}>
-                {sector.capabilityIds.slice(0, 4).map((id) => <span className="badge badge-gold" key={id}>{capabilityById[id].nameAr}</span>)}
+                {sector.capabilityIds.slice(0, 4).map((id) => <span className="badge badge-cyan" key={id}>{capabilityById[id].nameAr}</span>)}
               </div>
               <div className="actions" style={{ marginTop: 20 }}>
                 <Link href={`/sectors/${sector.slug}`}>عرض ملف القطاع</Link>
@@ -43,7 +43,7 @@ export default function SectorsPage() {
         </div>
       </section>
 
-      <section className="card card-gold">
+      <section className="card card-cyan">
         <p className="eyebrow">Truth Boundary</p>
         <h2>Sector intelligence ليست claim عن شركتك.</h2>
         <p>

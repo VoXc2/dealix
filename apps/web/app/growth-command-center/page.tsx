@@ -62,7 +62,7 @@ export default function GrowthCommandCenterPage() {
         <h2>أقوى خدمات Dealix التي تقنع الشركات حسب الألم</h2>
         <div className="cards" style={{ marginTop: "var(--sp-6)" }}>
           {services.map(([title, description]) => (
-            <article className="card hover-gold" key={title}>
+            <article className="card hover-cyan" key={title}>
               <h3>{title}</h3>
               <p>{description}</p>
             </article>
@@ -84,7 +84,7 @@ export default function GrowthCommandCenterPage() {
       </section>
 
       <section className="grid-2">
-        <article className="card card-gold" dir="rtl">
+        <article className="card card-cyan" dir="rtl">
           <p className="eyebrow">Sales Agent</p>
           <h2>يتكلم بصوت الشركة — لكن بتصريح واضح</h2>
           <p>

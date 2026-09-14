@@ -119,7 +119,7 @@ export default function BookPage() {
           لا نعتبر الفرضية مشكلة مثبتة قبل وجود baseline ودليل.
         </p>
 
-        <div className="divider-gold" />
+        <div className="divider-cyan" />
 
         <form onSubmit={onSubmit} style={{ display: "grid", gap: 18, maxWidth: 920 }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
@@ -254,7 +254,7 @@ export default function BookPage() {
           </div>
         ) : null}
 
-        <div className="divider-gold" />
+        <div className="divider-cyan" />
 
         <h3>تواصل مباشر مع Founder Office</h3>
         <div className="actions" style={{ marginTop: "var(--sp-3)", flexWrap: "wrap" }}>

@@ -1,0 +1,57 @@
+{
+  "artifact": "dealix.final_launch.agent_handoff.v1",
+  "generated_at": "2026-09-14T12:20:00Z",
+  "source_sha": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+  "verifier": "independent-president-verifier",
+  "claim": "REAL runtime routing (not a static JSON example)",
+  "runtime_evidence": {
+    "handoff_builder": {
+      "file": "auto_client_acquisition/diagnostic_intake_orchestrator.py:99 build_agent_handoff",
+      "registry": "dealix.agentic_holding.runtime.build_current_registry",
+      "routing_authority": "Company Operator -> Agentic Holding registry -> Session Factory",
+      "live_result": "POST /api/v1/public/execution-diagnostic returned agent_handoff{logical_agents:3856, sector_companies:20, arm_pods:848}"
+    },
+    "session_factory_lifecycle_job": {
+      "job_id": "JOB-20260914T113405-5210001",
+      "owner": "dealix.technology_saas_si.arm_15_saudi_radar.scout",
+      "class": "MONITORING",
+      "execution_mode": "deterministic",
+      "status": "SUCCEEDED",
+      "chain": ["market_signal", "sector_pack", "diagnostic_draft", "sales_artifact", "delivery_sim", "proof_sim", "president_brief"],
+      "receipt_steps": 7,
+      "external_effect": "NONE",
+      "evidence": "/opt/dealix/control/state/session_factory/jobs/JOB-20260914T113405-5210001.json"
+    },
+    "real_model_backed_job": {
+      "job_id": "JOB-20260914T120848-9190001",
+      "owner": "dealix.technology_saas_si.arm_28_verification.scout",
+      "class": "LOCAL_AI",
+      "execution_mode": "local_ai",
+      "model": "ollama qwen3:4b-instruct-2507-q4_K_M (local, no external provider)",
+      "status": "SUCCEEDED",
+      "duration_s": 31.17,
+      "output_excerpt": "Evidence gap: limited empirical data on long-term impact ... Governed next action: cross-sector pilot with measurable KPIs.",
+      "note": "Proves Session Factory -> ResourceGovernor -> real model execution, unattended"
+    },
+    "opencode_daemon_real_completions": {
+      "note": "Three live daemon sessions completed with text using the opencode/muse-spark-1.3-contributor-free model, validating the OpenCode execution surface",
+      "sessions": [
+        {"id": "ses_f6422167fffecjXx14wkTpAGDX", "output": "DEALIX_CURRENT_DAEMON_OK"},
+        {"id": "ses_f6419dcbfffe7GvkAtHKv3HgGJ", "output": "RUNTIME_POST_MAIN_OK"},
+        {"id": "ses_f6424c958ffeAxU6ZM3QKIlyLF", "output": "RUNTIME_DAEMON_RECHECK_OK"}
+      ],
+      "parser_fix": "scripts/ops/session_factory.py _daemon_terminal_state now recognizes OpenCode 1.18.x info.time.completed (no finish field); verified live via _daemon_terminal_state(real_payload) -> done=True clean=True text=DEALIX_CURRENT_DAEMON_OK"
+    },
+    "builder_verifier_separation": {
+      "builder_rules": "tests/test_session_factory.py::test_daemon_parser_* (author context)",
+      "independent_check": "live daemon payload fetched over HTTP and parsed by production function; acceptance suite cases B (failure), C (recovery), E (lease contention) exercised independently",
+      "verdict": "SEPARATED"
+    }
+  },
+  "live_handoff_boundaries": {
+    "external_effect": "NONE",
+    "l5_policy": "WAITING_L5_never_auto_executed",
+    "tenant": "internal-synthetic"
+  },
+  "status": "PASS"
+}

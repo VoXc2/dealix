@@ -1,0 +1,17 @@
+{
+  "artifact": "dealix.final_launch.security_acceptance.v1",
+  "generated_at": "2026-09-14T12:20:00Z",
+  "source_sha": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+  "verifier": "independent-president-verifier",
+  "controls": [
+    {"control": "SECRETS", "status": "PASS", "evidence": "scripts/ops/verify_secret_literals.py -> SECRET_LITERAL_SCAN=PASS (0); scripts/check_no_secrets.py -> no exposed secrets in tracked files", "test": "verify_secret_literals + check_no_secrets", "evidence_ref": "artifacts/final-launch/security_acceptance.json#SECRETS"},
+    {"control": "OPENCODE_PERMISSION_ENFORCEMENT", "status": "PASS", "evidence": "scripts/ops/audit_opencode_permissions.py -> PASS; schema v1; 47 deny rules; MISSING_HARD_DENIES=none; HARD_MATERIAL_FAIL_CLOSED=True", "evidence_ref": "security_acceptance.json#OPENCODE"},
+    {"control": "TENANT_ISOLATION", "status": "PASS", "evidence": "tests/test_autonomous_tenant_isolation.py + zatca + pdpl isolation: 34 passed (with pdpl + consent send)", "test": "pytest tenant/pdpl/consent", "evidence_ref": "security_acceptance.json#TENANT"},
+    {"control": "RATE_LIMITING", "status": "PASS", "evidence": "public intake uses canonical limiter LIMITS['leads_create']=10/minute moving-window per IP/api-key", "evidence_ref": "api/routers/public_intake.py"},
+    {"control": "INPUT_VALIDATION", "status": "PASS", "evidence": "pydantic ExecutionDiagnosticIntake min/max + Literal enums; invalid payload -> 422", "evidence_ref": "api/routers/public_intake.py"},
+    {"control": "SECURITY_HEADERS", "status": "PARTIAL", "evidence": "apps/web/next.config.js sets CSP, HSTS, X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff, Referrer-Policy, Permissions-Policy; no middleware.ts; api adds frame-ancestors none", "evidence_ref": "apps/web/next.config.js"},
+    {"control": "NEXT_PUBLIC_EXPOSURE", "status": "PARTIAL_FINDING", "evidence": "apps/web/lib/api.ts references NEXT_PUBLIC_DEALIX_ADMIN_API_KEY; recommend removing client admin-key usage in favor of server proxy", "severity": "P1-internal (no runtime value confirmed baked)", "evidence_ref": "apps/web/lib/api.ts:57"},
+    {"control": "IDEMPOTENCY_LEDGER", "status": "PASS", "evidence": "dealix/commercial/idempotency_ledger.py states RESERVED/COMMITTED/UNKNOWN/ABORTED; UNKNOWN cannot retry until reconciliation", "evidence_ref": "dealix/commercial/idempotency_ledger.py"}
+  ],
+  "overall": "PASS_WITH_PARTIALS"
+}

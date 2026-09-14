@@ -1,0 +1,19 @@
+{
+  "artifact": "dealix.final_launch.channel_readiness.v1",
+  "generated_at": "2026-09-14T12:20:00Z",
+  "source_sha": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+  "principle": "official supported APIs only; no browser scraping / bot evasion; truthful state",
+  "channels": [
+    {"channel": "LINKEDIN_COMPANY", "status": "DRAFT_ONLY", "evidence": "integrations/linkedin.py returns disabled=True, forbids scraping, official Marketing API intended; no org OAuth/scopes configured", "blocker": "OAUTH_REQUIRED: w_organization_social + org id/page admin"},
+    {"channel": "LINKEDIN_FOUNDER", "status": "DRAFT_ONLY", "evidence": "internal draft/queue only; no browser automation, no mass connect/DM", "blocker": "none for drafts"},
+    {"channel": "INSTAGRAM", "status": "NOT_CONFIGURED", "evidence": "no Meta SDK; Metricool adapter default DRAFT_OR_REVIEW_ONLY, auto_publish_default=false", "blocker": "OAUTH_REQUIRED: Meta business/page + IG professional account"},
+    {"channel": "FACEBOOK", "status": "NOT_CONFIGURED", "evidence": "no Meta SDK; social_automation config only", "blocker": "OAUTH_REQUIRED: Meta page"},
+    {"channel": "TIKTOK", "status": "NOT_CONFIGURED", "evidence": "no Content Posting API client/app", "blocker": "PLATFORM_AUDIT_REQUIRED: app audit + video.publish"},
+    {"channel": "YOUTUBE", "status": "NOT_CONFIGURED", "evidence": "no Data API client; script libraries only", "blocker": "EXTERNAL_PROVIDER: project verification"},
+    {"channel": "X", "status": "NOT_CONFIGURED", "evidence": "no X API client; policy = follow-recommendation queue, no like/follow/reply spam", "blocker": "OAUTH_REQUIRED"},
+    {"channel": "WHATSAPP", "status": "READY_NEEDS_PERMISSION", "evidence": "integrations/whatsapp.py WhatsApp Cloud API client (httpx+tenacity); green_api.py transitional transport", "blocker": "PERMISSION: Meta WhatsApp Business + inbound opt-in only"},
+    {"channel": "EMAIL", "status": "QUARANTINED", "evidence": "integrations/email.py live send quarantined; no method performs external send", "blocker": "policy: none until lawful basis/consent + sender identity verified"}
+  ],
+  "browser_automation_used": false,
+  "note": "No channel is claimed LIVE_AUTOMATED. These are truthful readiness states; none blocks the core launch because the commercial front door is the website diagnostic + inbound, not outbound social."
+}

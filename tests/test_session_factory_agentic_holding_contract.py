@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 from dealix.agentic_holding.runtime import build_current_registry
@@ -104,3 +107,32 @@ def test_watchdog_uses_governor_capacity_not_hardcoded_three(tmp_path: Path) -> 
     findings = watchdog.evaluate(state, now=1_800_000_000.0)
     capacity_findings = [finding for finding in findings if finding.get("kind") == "DEEP_WIP_EXCEEDED"]
     assert capacity_findings == [], capacity_findings
+
+
+def test_hierarchical_owner_resolves_when_run_as_standalone_script(tmp_path: Path) -> None:
+    """Reproduce the real standalone-scheduler condition (cron/systemd).
+
+    The factory is invoked as a script from a neutral cwd with no PYTHONPATH.
+    ``canonical_agent_ids`` must still resolve the canonical registry instead of
+    failing closed to "registry unavailable" just because the repo root is not
+    importable by default.
+    """
+    code = (
+        "import importlib.util\n"
+        f"spec = importlib.util.spec_from_file_location('sf_standalone', {str(FACTORY_SCRIPT)!r})\n"
+        "m = importlib.util.module_from_spec(spec)\n"
+        "spec.loader.exec_module(m)\n"
+        "ids = m.canonical_agent_ids()\n"
+        "print('NONE' if ids is None else ('HAS' if 'dealix.group.engineering' in ids else 'MISS'))\n"
+    )
+    env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=str(tmp_path),
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=180,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "HAS", (result.stdout, result.stderr)

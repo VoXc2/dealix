@@ -4,6 +4,7 @@ import "./corporate-pages.css";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { PostHogProviderWithInit } from "@/lib/analytics/posthog"; // posthog.tsx (JSX)
+import TopInfoBar from "@/components/TopInfoBar";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 
@@ -92,6 +93,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#001F3F] focus:text-white focus:rounded-lg focus:right-4"
+        >
+          تخطي إلى المحتوى · Skip to content
+        </a>
+        <TopInfoBar />
         <PostHogProviderWithInit>{children}</PostHogProviderWithInit>
       </body>
     </html>

@@ -22,7 +22,7 @@
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
   <circle cx="1030" cy="80" r="240" fill="#22D3EE" opacity="0.055"/>
-  <circle cx="1080" cy="570" r="300" fill="#D4AF37" opacity="0.025"/>
+  <circle cx="1080" cy="570" r="300" fill="#06B6D4" opacity="0.025"/>
 
   <g transform="translate(78 82) scale(2.5)">
     <path fill="url(#d)" fill-rule="evenodd" clip-rule="evenodd" d="M12 8h20c14 0 24 10.75 24 24S46 56 32 56H12V8Zm10 10v28h10c8.2 0 14-6.1 14-14s-5.8-14-14-14H22Z"/>
@@ -39,8 +39,8 @@
     <text x="0" y="0" font-size="44" font-weight="640" fill="#F8FAFC">Signals into Action.</text>
     <text x="0" y="59" font-size="44" font-weight="640" fill="#22D3EE">Execution with Governance.</text>
     <text x="0" y="118" font-size="44" font-weight="640" fill="#F8FAFC">Measurable Outcomes.</text>
-    <rect x="0" y="158" width="62" height="4" rx="2" fill="#D4AF37"/>
-    <text x="84" y="166" font-size="17" font-weight="650" letter-spacing="3.5" fill="#D4AF37">REVENUE + PROOF + COMMAND</text>
+    <rect x="0" y="158" width="62" height="4" rx="2" fill="#06B6D4"/>
+    <text x="84" y="166" font-size="17" font-weight="650" letter-spacing="3.5" fill="#06B6D4">REVENUE + PROOF + COMMAND</text>
   </g>
 
   <g transform="translate(850 330)" font-family="Inter, Arial, sans-serif">

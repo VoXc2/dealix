@@ -140,7 +140,7 @@ export default function FounderCommandRoomPage() {
               width: "100%",
               padding: "12px 14px",
               borderRadius: 10,
-              border: "1px solid rgba(212,175,55,0.3)",
+              border: "1px solid rgba(6,182,212,0.3)",
               background: "rgba(255,255,255,0.04)",
               color: "inherit",
               marginBottom: "var(--sp-4)",
@@ -197,7 +197,7 @@ export default function FounderCommandRoomPage() {
       {data && s && (
         <>
           {/* Launch readiness banner */}
-          <section className="card card-gold" style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--sp-4)" }}>
+          <section className="card card-cyan" style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--sp-4)" }}>
             <span className={`badge ${data.launch.status === "READY" ? "badge-emerald" : "badge-amber"}`}>
               {data.launch.status === "READY" ? "جاهز للإطلاق · Launch ready" : "جاهزية جزئية · Partial readiness"}
             </span>
@@ -205,7 +205,7 @@ export default function FounderCommandRoomPage() {
               عملاء مدفوعون نحو البوابة التجارية (Article 13): <b>{data.launch.paid}/{data.launch.article13_target}</b> · Paid customers
             </span>
             <span style={{ flex: "0 0 160px", background: "rgba(255,255,255,0.08)", borderRadius: 8, height: 12, overflow: "hidden", display: "block" }}>
-              <span style={{ width: `${paidPct}%`, height: "100%", background: "linear-gradient(90deg,#10B981,#D4AF37)", display: "block" }} />
+              <span style={{ width: `${paidPct}%`, height: "100%", background: "linear-gradient(90deg,#10B981,#06B6D4)", display: "block" }} />
             </span>
           </section>
 
@@ -291,7 +291,7 @@ export default function FounderCommandRoomPage() {
               <div style={{ marginTop: "var(--sp-4)" }}>
                 {data.offer_ladder.map((o, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                    <span className="badge badge-gold" style={{ flex: "0 0 28px", justifyContent: "center" }}>{i + 1}</span>
+                    <span className="badge badge-cyan" style={{ flex: "0 0 28px", justifyContent: "center" }}>{i + 1}</span>
                     <span style={{ flex: 1 }}>{o.name}</span>
                     <span className="stat-label">{o.detail}</span>
                   </div>

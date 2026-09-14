@@ -58,7 +58,7 @@ export default function CompanyPage() {
         </ul>
       </section>
 
-      <section className="card card-gold" style={{ textAlign: "center" }}>
+      <section className="card card-cyan" style={{ textAlign: "center" }}>
         <p className="eyebrow">How we engage</p>
         <h2>نبدأ بمشكلة تجارية أو تشغيلية واحدة، لا بقائمة منتجات.</h2>
         <p style={{ maxWidth: 720, margin: "0 auto" }}>

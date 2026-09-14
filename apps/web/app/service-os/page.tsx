@@ -31,7 +31,7 @@ export default function ServiceOsPage() {
       <section className="grid-3" aria-label="Service OS readiness">
         {statusRows.map(([name, ready]) => (
           <article className="card" key={String(name)}>
-            <span className="badge badge-gold">{ready ? "READY" : "CHECK"}</span>
+            <span className="badge badge-cyan">{ready ? "READY" : "CHECK"}</span>
             <h2>{name}</h2>
             <p>{ready ? "جاهز ضمن حزمة Service OS." : "يحتاج فحص قبل الإطلاق."}</p>
           </article>

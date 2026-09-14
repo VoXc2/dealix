@@ -74,7 +74,7 @@ export default function BrandPage() {
               ["Deep Teal", "#164E63", "Systems / operating control"],
               ["Signal Cyan", "#22D3EE", "Action / motion / active state"],
               ["Cloud", "#F8FAFC", "Clarity / proof readability"],
-              ["Proof Gold", "#D4AF37", "Verified outcome accent only"],
+              ["Command Cyan", "#06B6D4", "Verified outcome accent only"],
             ].map(([name, hex, meaning]) => (
               <div key={hex} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                 <div className="h-28" style={{ backgroundColor: hex }} aria-hidden="true" />
@@ -87,7 +87,8 @@ export default function BrandPage() {
             ))}
           </div>
           <p className="mt-4 text-sm text-slate-500">
-            Gold is not a primary palette. It is reserved for verified proof and restrained premium emphasis.
+            Public Dealix brand uses navy, cyan and neutrals only — no gold. Cyan is the single
+            action/proof accent; amber is reserved for semantic status (pending/warning), never branding.
           </p>
         </section>
 

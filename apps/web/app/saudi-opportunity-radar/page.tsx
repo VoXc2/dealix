@@ -133,7 +133,7 @@ export default function SaudiOpportunityRadarPage() {
         </div>
       </section>
 
-      <section className="card card-gold">
+      <section className="card card-cyan">
         <p className="eyebrow">TRUTH FIREWALL</p>
         <h2>الإشارة الرسمية دليل على تغير البيئة — وليست دليلًا أن شركة بعينها تريد الشراء.</h2>
         <div className="cards">

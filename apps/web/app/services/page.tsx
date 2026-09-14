@@ -42,14 +42,14 @@ export default function ServicesPage() {
               <h3 style={{ marginTop: "var(--sp-4)" }}>{item.nameAr}</h3>
               <p>{item.summary}</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
-                {item.outcomes.map((outcome) => <span className="badge badge-gold" key={outcome}>{outcome}</span>)}
+                {item.outcomes.map((outcome) => <span className="badge badge-cyan" key={outcome}>{outcome}</span>)}
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="card card-gold">
+      <section className="card card-cyan">
         <p className="eyebrow">Sector Fit</p>
         <h2>نفس القدرة لا تُطبّق بالطريقة نفسها في كل قطاع.</h2>
         <p>

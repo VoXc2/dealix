@@ -98,7 +98,7 @@ export default function SalesAgentLabPage() {
           {error && <p className="text-coral" style={{ marginTop: 16 }}>{error}</p>}
         </form>
 
-        <article className="card card-gold">
+        <article className="card card-cyan">
           <p className="eyebrow">Safety state</p>
           <h2>Baseline: draft_only</h2>
           <ul>

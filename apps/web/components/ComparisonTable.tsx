@@ -6,8 +6,8 @@ export default function ComparisonTable({ rows }: { rows: { feature: string; dea
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
         <thead>
           <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
-            <th style={{ textAlign: "right", padding: "var(--sp-3)", color: "var(--dealix-gold)" }}>الميزة</th>
-            <th style={{ textAlign: "center", padding: "var(--sp-3)", color: "var(--dealix-gold)" }}>Dealix</th>
+            <th style={{ textAlign: "right", padding: "var(--sp-3)", color: "var(--dealix-cyan)" }}>الميزة</th>
+            <th style={{ textAlign: "center", padding: "var(--sp-3)", color: "var(--dealix-cyan)" }}>Dealix</th>
             <th style={{ textAlign: "center", padding: "var(--sp-3)", color: "rgba(255,255,255,0.50)" }}>الحلول التقليدية</th>
           </tr>
         </thead>

@@ -4,7 +4,7 @@ export default function CommercialLaunchPage() {
   const data = commercialLaunchControlSnapshot;
   return (
     <main className="grid mx-auto max-w-7xl p-8">
-      <section className="card card-gold dot-pattern">
+      <section className="card card-cyan dot-pattern">
         <p className="eyebrow">Dealix Commercial Launch Control</p>
         <h1>{data.verdict}</h1>
         <p style={{ maxWidth: 900 }}>{data.release_name} — {data.release_mode}</p>
@@ -26,7 +26,7 @@ export default function CommercialLaunchPage() {
       </section>
 
       <section className="grid-2">
-        <article className="card card-gold">
+        <article className="card card-cyan">
           <p className="eyebrow">Products</p>
           <h2>Launch products</h2>
           <ul>

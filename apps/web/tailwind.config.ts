@@ -12,7 +12,7 @@ const config: Config = {
         // Dealix brand palette
         dealix: {
           navy:    "#001F3F",
-          gold:    "#D4AF37",
+          cyan:    "#06B6D4",
           black:   "#0A0A0A",
           slate:   "#364558",
           ocean:   "#0066FF",
@@ -33,7 +33,7 @@ const config: Config = {
         "5xl": "2.5rem",
       },
       boxShadow: {
-        gold:  "0 0 28px rgba(212,175,55,0.30)",
+        cyan:  "0 0 28px rgba(6,182,212,0.30)",
         navy:  "0 8px 32px rgba(0,31,63,0.25)",
       },
     },

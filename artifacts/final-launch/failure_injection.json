@@ -1,0 +1,60 @@
+{
+  "artifact": "dealix.final_launch.failure_injection.v1",
+  "generated_at": "2026-09-14T12:20:00Z",
+  "source_sha": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+  "method": "canonical built-in acceptance suite + live operator-interruption recovery + stale-lease expiry",
+  "session_factory_acceptance": {
+    "command": "python scripts/ops/session_factory.py acceptance --json",
+    "overall": "PASS",
+    "checks": {
+      "A_deterministic_success": {"status": "SUCCEEDED", "lease_released": true, "marker": true},
+      "B_failure_detected": {"status": "FAILED", "acceptance_passed": false, "lease_released": true},
+      "C_recovery": {"recoverable_count": 1, "after_recover": "RECOVERABLE", "after_rerun": "SUCCEEDED"},
+      "D_l5_gate": {"status": "WAITING_L5", "reason": "L5 not auto-executed"},
+      "E_lease_contention": {"first_acquired": true, "second_acquired": false, "reason": "LEASE_HELD_LIVE"},
+      "F_redaction": {"api_key": "[REDACTED]", "token": "Authorization: Bearer [REDACTED]"}
+    }
+  },
+  "live_injected_failures": [
+    {
+      "class": "runner_hard_interrupt (operator shell timeout)",
+      "job_id": "JOB-20260914T115944-0900001",
+      "observed": "job stuck RUNNING; lease file leaked; governor deep_wip_active=1",
+      "detected": true,
+      "classified": "STALE_LEASE + NO_TERMINAL_STATE",
+      "recovery": "aborted daemon session, transitioned job to FAILED, released lease, removed leaked worktree",
+      "receipt": "/opt/dealix/control/state/session_factory/jobs/JOB-20260914T115944-0900001.json"
+    },
+    {
+      "class": "stale_lease_ttl",
+      "job_id": "JOB-20260914T115944-0900001",
+      "observed": "lease LEASE_EXPIRES_EPOCH passed with no running job",
+      "result": "governor auto-excluded expired lease; deep_wip_active 1 -> 0; capacity restored without manual mutation",
+      "self_healing": "PASS (expired leases are ignored, never blindly rerun)"
+    },
+    {
+      "class": "invalid_agent_identity",
+      "observed": "submit with owner 'launch-verify-president' and 'dealix.market_intel'",
+      "result": "rejected (fail-closed: must be permanent alias or registry-bound dealix.*.*)",
+      "receipt": "inline submit errors"
+    },
+    {
+      "class": "free_provider_non_responsive",
+      "job_ids": ["JOB-20260914T114823-9540001", "JOB-20260914T120536-4400001"],
+      "observed": "opencode/muse-spark-1.2 and 1.3 did not emit info.time.completed within budget; jobs aborted/recovered",
+      "classification": "EXTERNAL_PROVIDER (transient); local_ai path healthy",
+      "code_fix": "P1 fixed: _daemon_terminal_state now recognizes info.time.completed so completed-but-finish-less daemon responses terminate immediately instead of exhausting the budget"
+    },
+    {
+      "class": "dirty_source_dispatch",
+      "observed": "untracked frontend/.next.bak.rootpolluted (81M) caused SOURCE_SYNC HOLD_UNSANCTIONED_DIRTY rc=21",
+      "recovery": "removed artifact; source-sync now ALREADY_CURRENT rc=0"
+    },
+    {
+      "class": "weekly_job_rc127",
+      "observed": "timeout(1) could not invoke as_dealix shell function",
+      "recovery": "reordered to `as_dealix timeout ...`; service ExecMainStatus=0"
+    }
+  ],
+  "status": "PASS"
+}

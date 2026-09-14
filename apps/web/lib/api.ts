@@ -44,30 +44,7 @@ export const apiClient: AxiosInstance = axios.create({
   timeout: 30_000,
 });
 
-const OPS_PROXY_PREFIXES = [
-  "/api/v1/ops-autopilot",
-  "/api/v1/evidence",
-  "/api/v1/sales/pipeline",
-  "/api/v1/support",
-  "/api/v1/knowledge/search",
-  "/api/v1/invoices",
-];
-
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const publicAdminKey = process.env.NEXT_PUBLIC_DEALIX_ADMIN_API_KEY || "";
-  const useOpsProxy = process.env.NEXT_PUBLIC_USE_DEALIX_OPS_PROXY === "1";
-  const url = config.url || "";
-  if (
-    typeof window !== "undefined" &&
-    useOpsProxy &&
-    !publicAdminKey &&
-    OPS_PROXY_PREFIXES.some((p) => url.startsWith(p))
-  ) {
-    config.url = `/api/dealix-proxy${url}`;
-    if (config.headers) {
-      delete config.headers["X-Admin-API-Key"];
-    }
-  }
   const token = getToken();
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;

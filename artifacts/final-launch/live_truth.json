@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-09-14T12:30:00Z",
+  "reconciled_by": "independent-president-verifier (post adversarial review)",
+  "repo": {
+    "root": "/opt/dealix/workspace/dealix",
+    "branch": "launch/omega-final-closure-20260914",
+    "head": "3ffcdb4d2353381ad1fecbca56fec5fc03ad3133",
+    "integration_branch_head_after_closure": "see final commit on branch",
+    "origin_main": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+    "main_working_tree": "clean at origin/main when branch not checked out"
+  },
+  "canonical_frontend": {
+    "deployed": "apps/web (Dockerfile.web -> Railway; served HTML matches apps/web/app/layout.tsx)",
+    "unwired_stale": "frontend/ (Next 16 + next-intl [locale] tree; no Railway service references it; DO NOT DELETE, classified stale/compat)",
+    "evidence": "served robots.txt routes (/control-plane /agents /approvals /self-evolving) and homepage routes match apps/web"
+  },
+  "production": {
+    "web": {
+      "urls": ["https://dealix.me", "https://www.dealix.me"],
+      "build_tag_observed": "nbXHDympYMwGnN6Dc2js2",
+      "running_sha": "UNKNOWN (healthz exposes service name only)",
+      "robots_meta": {"//": "index, follow", "/book": "index, follow", "/products": "index, follow", "/sectors": "noindex", "/sectors/healthcare": "noindex"},
+      "stale_evidence": [
+        "production CSS c4c53d27abfb48d0.css contains brand gold (D4AF37 / 37 'gold' occurrences)",
+        "no TopInfoBar strip in production HTML",
+        "sectors pages serve noindex although current source build serves index,follow",
+        "production build tag != local build xdWVSi1QcSGN9mLnD978P"
+      ],
+      "identity_status": "FAIL_STALE"
+    },
+    "api": {
+      "url": "https://api.dealix.me/health",
+      "running_sha": "8099b00",
+      "main_ancestor": false,
+      "execution_diagnostic_route": "HTTP 404 in production (route exists on main)",
+      "identity_status": "FAIL_STALE"
+    },
+    "authority": "Railway CLI unlinked/absent -> redeploy requires founder (L5)"
+  },
+  "dns_tls": {
+    "dealix.me": "Cloudflare; cert CN=dealix.me valid to 2026-12-04",
+    "api.dealix.me": "Cloudflare; cert CN=dealix.me valid to 2026-12-04",
+    "www.dealix.me": "CNAME e2adtsx4.up.railway.app; cert CN=*.up.railway.app (MISMATCH -> browser cert error)"
+  },
+  "server": {
+    "hostname": "srv1916256",
+    "cpu": 4,
+    "ram": "15Gi (4.6Gi used)",
+    "disk": "193G (74%, 50G free)",
+    "failed_units": [],
+    "note": "dealix-omega-weekly fixed (rc 0); dealix-autonomous-company blocked only by sentinel external checks (www TLS + railway unlinked)"
+  },
+  "runtime": {
+    "scheduler": "scripts/ops/session_factory.py + watchdog (single authority; no APScheduler/node-cron)",
+    "session_factory_chain_verified": "JOB-20260914T120848-9190001 local_ai SUCCEEDED (real qwen output, 31s)",
+    "daemon_parser_fix": "corrected after adversarial review: terminal = finish in {stop,error,aborted} OR error OR (assistant completed AND finish absent). finish=tool-calls is NOT terminal. Verified on real 27-message tool loop (no premature termination).",
+    "opencode": {"version": "1.18.30", "daemons": ["127.0.0.1:4098", "127.0.0.1:4099"], "permission_audit": "PASS (v1 schema, 47 deny rules)"},
+    "hermes": {"gateway": "127.0.0.1:18789 live", "skills": 38},
+    "model_router": {"router": "127.0.0.1:11999", "shim": "127.0.0.1:12000", "policy": "NO_DEEPSEEK fail-closed", "local": "ollama dealix-qwen3-32k"}
+  },
+  "brand": {
+    "finding": "The deployed frontend apps/web now carries navy/cyan no-gold brand, second-logo geometry and TopInfoBar in SOURCE; production still serves the stale gold build until redeploy.",
+    "public_brand_gold_count_source": 0,
+    "test": "tests/launch/test_public_brand_no_gold.py"
+  },
+  "verification_scripts": {
+    "note": "verify_agentic_holding_runtime.py self-bootstraps sys.path (fixed post-review); no PYTHONPATH needed"
+  }
+}

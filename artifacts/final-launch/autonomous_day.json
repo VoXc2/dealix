@@ -1,0 +1,29 @@
+{
+  "artifact": "dealix.final_launch.autonomous_day.v1",
+  "generated_at": "2026-09-14T12:25:00Z",
+  "source_sha": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+  "command": "PYTHONPATH=/opt/dealix/workspace/dealix python scripts/commercial/run_company_os_daily.py --client dealix --mode draft-only --limit 1",
+  "mode": "draft-only",
+  "external_effect": "NONE",
+  "rc": 0,
+  "stages": {
+    "runtime_health": "session_factory status healthy; opencode daemon healthy 1.18.30; hermes gateway live",
+    "president_priority": "PRESIDENT_PORTFOLIO_COMMAND=PASS (ranked 11 targets, deep_wip 0, stopped 0, blocked 0)",
+    "strategy_orchestrator": "DEALIX_STRATEGY_ORCHESTRATOR_VERIFY=PASS (top_actions 3, venture_experiments 2)",
+    "market_intelligence": "market radar available (read-only, no authority minting)",
+    "sector_assignment": "COMPANY_ARM_PORTFOLIO_REGISTRY=PASS",
+    "diagnostic": "INBOUND_EXECUTION_DIAGNOSTIC_BRIDGE=PASS",
+    "commercial_prep": "draft-only artifacts; no quote/invoice/payment",
+    "content_opportunity": "content factory draft-only runner available",
+    "delivery": "delivery templates present; no customer delivery claimed",
+    "proof": "proof engine present; no public proof (no real customer validation)",
+    "verification": "ONE_COMPANY_LAW=PASS; MATERIAL_AUTHORITY_ALL_FALSE=PASS; ECONOMIC_TRUTH_METRICS=PASS; NO_PREMATURE_SAAS_METRICS=PASS; OSS_AUTOINSTALL_FALSE=PASS; VENTURE_BUILD_GUARD=PASS",
+    "founder_brief": "reports/president_portfolio_command/2026-09-14"
+  },
+  "outputs": [
+    "reports/strategy_execution_orchestrator/2026-09-14",
+    "reports/president_portfolio_command/2026-09-14"
+  ],
+  "tripwire_violations": [],
+  "status": "PASS"
+}

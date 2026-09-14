@@ -65,7 +65,7 @@ export default async function SectorDetailPage({ params }: { params: Promise<{ s
         </div>
       </section>
 
-      <section className="card card-gold">
+      <section className="card card-cyan">
         <p className="eyebrow">Evidence First</p>
         <h2>هذه الصفحة ليست تشخيصًا مسبقًا لشركتك.</h2>
         <p>

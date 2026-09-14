@@ -504,11 +504,23 @@ def canonical_agent_ids() -> set[str] | None:
         module = importlib.util.module_from_spec(spec)
         # slots=True dataclasses resolve string annotations via sys.modules.
         sys.modules[spec.name] = module
+        # runtime.py imports sibling packages (e.g. dealix.commercial.arm_registry).
+        # When this module runs as a standalone script (cron/systemd), REPO_ROOT is
+        # not on sys.path and the import fails closed to "registry unavailable".
+        # Ensure the repo root is importable for the duration of the load only.
+        added_root = str(REPO_ROOT) not in sys.path
+        if added_root:
+            sys.path.insert(0, str(REPO_ROOT))
         try:
             spec.loader.exec_module(module)
             agents = set(module.build_current_registry().agents)
         finally:
             sys.modules.pop(spec.name, None)
+            if added_root:
+                try:
+                    sys.path.remove(str(REPO_ROOT))
+                except ValueError:
+                    pass
     except Exception:
         return None
     _CANONICAL_AGENT_CACHE["agents"] = agents
@@ -1213,6 +1225,8 @@ def _daemon_terminal_state(payload: Any) -> tuple[bool, bool, str, str]:
     texts: list[str] = []
     finish: str | None = None
     error = ""
+    last_completed = False
+    last_finish: str | None = None
     for message in messages:
         if not isinstance(message, dict):
             continue
@@ -1226,6 +1240,17 @@ def _daemon_terminal_state(payload: Any) -> tuple[bool, bool, str, str]:
         info_error = info.get("error")
         if info_error:
             error = str(info_error)[:500]
+        # OpenCode 1.18.x signals assistant-message completion with
+        # info.time.completed. Normally `finish` is also present
+        # (stop | tool-calls | error | aborted), and intermediate
+        # tool-using steps report finish="tool-calls" while still being
+        # COMPLETE at the message level. We must therefore only treat a
+        # message as terminal for the session when finish is a terminal
+        # value, OR when finish is entirely absent (an empty/errored
+        # completion that would otherwise never terminate).
+        time_info = info.get("time") if isinstance(info.get("time"), dict) else {}
+        last_completed = role == "assistant" and bool(time_info.get("completed"))
+        last_finish = str(current) if current else None
         parts = message.get("parts") or []
         if not isinstance(parts, list):
             continue
@@ -1240,9 +1265,13 @@ def _daemon_terminal_state(payload: Any) -> tuple[bool, bool, str, str]:
             if part_error:
                 error = str(part_error)[:500]
     text = "\n".join(texts)
-    if finish in _TERMINAL_FINISH or error:
-        clean = finish == "stop" and not error
-        return True, clean, text, error or ("" if clean else f"finish={finish}")
+    completed_without_finish = last_completed and last_finish is None
+    if finish in _TERMINAL_FINISH or error or completed_without_finish:
+        if finish in ("error", "aborted"):
+            clean = False
+        else:
+            clean = not error
+        return True, clean, text, error or ("" if clean else f"finish={finish or 'completed'}")
     return False, False, text, ""
 
 

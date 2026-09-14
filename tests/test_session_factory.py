@@ -1053,3 +1053,87 @@ def test_daemon_timeout_aborts_session(tmp_path: Path, monkeypatch) -> None:
     assert result["returncode"] == 124
     assert result["session_id"] == "sess-9"
     assert any("abort" in url for _method, url in fake.calls)
+
+
+def test_daemon_parser_detects_completed_without_finish_field() -> None:
+    """OpenCode 1.18.x empty-completion shape: info.time.completed, no finish.
+
+    Captured from a real job (JOB-20260914T114823-9540001) where the provider
+    returned an empty assistant message with no `finish` field. Without a
+    fallback the poller never observed terminal state and exhausted the full
+    job budget.
+    """
+    payload = {
+        "messages": [
+            {
+                "info": {
+                    "role": "user",
+                    "time": {"created": 1789386515442},
+                    "agent": "build",
+                },
+                "parts": [{"type": "text", "text": "do the bounded task"}],
+            },
+            {
+                "info": {
+                    "role": "assistant",
+                    "time": {"created": 1789386517335, "completed": 1789387115763},
+                    "agent": "build",
+                    "modelID": "muse-spark-1.2-contributor-free",
+                    "providerID": "opencode",
+                },
+                "parts": [],
+            },
+        ]
+    }
+    done, clean, _text, error = factory._daemon_terminal_state(payload)
+    assert done is True, "completed assistant message must be terminal"
+    assert clean is True
+    assert error == ""
+
+
+def test_daemon_parser_does_not_terminate_on_inflight_tool_calls() -> None:
+    """Real tool-loop shape: assistant finish='tool-calls' with time.completed.
+
+    Captured from live session ses_f640bfb14ffeDdLGOwU6kCVZoh (27 messages).
+    Every intermediate assistant step is complete at the message level
+    (time.completed set) but carries finish='tool-calls'. Treating it as
+    terminal truncates multi-step jobs into false successes.
+    """
+    payload = {
+        "messages": [
+            {"info": {"role": "user", "time": {"created": 1}}, "parts": [{"type": "text", "text": "task"}]},
+            {
+                "info": {
+                    "role": "assistant",
+                    "finish": "tool-calls",
+                    "time": {"created": 2, "completed": 3},
+                },
+                "parts": [{"type": "step-start"}, {"type": "tool", "tool": "read"}],
+            },
+        ]
+    }
+    done, clean, _text, _error = factory._daemon_terminal_state(payload)
+    assert done is False, "finish=tool-calls must not terminate the session"
+    assert clean is False
+
+
+def test_daemon_parser_terminates_on_real_tool_loop_final_stop() -> None:
+    """The final assistant message in a real tool loop carries finish='stop'."""
+    payload = {
+        "messages": [
+            {"info": {"role": "user", "time": {"created": 1}}, "parts": [{"type": "text", "text": "task"}]},
+            {
+                "info": {"role": "assistant", "finish": "tool-calls", "time": {"created": 2, "completed": 3}},
+                "parts": [{"type": "tool", "tool": "read"}],
+            },
+            {
+                "info": {"role": "assistant", "finish": "stop", "time": {"created": 4, "completed": 5}},
+                "parts": [{"type": "text", "text": "final answer"}],
+            },
+        ]
+    }
+    done, clean, text, error = factory._daemon_terminal_state(payload)
+    assert done is True
+    assert clean is True
+    assert "final answer" in text
+    assert error == ""

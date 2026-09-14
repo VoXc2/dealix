@@ -1,0 +1,32 @@
+{
+  "artifact": "dealix.final_launch.production_identity.v1",
+  "generated_at": "2026-09-14T12:20:00Z",
+  "source_main_sha": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+  "integration_branch_sha": "3ffcdb4d2353381ad1fecbca56fec5fc03ad3133",
+  "expected_build_id": "xdWVSi1QcSGN9mLnD978P (local apps/web next build, 2026-09-14T11:24Z) — NOT yet deployed",
+  "chain": {
+    "CURRENT_MAIN_SHA": "693d7189a3aeb3e9d10aab2bac7654a0863df8cf",
+    "DEPLOYED_WEB": {
+      "url": "https://dealix.me, https://www.dealix.me",
+      "build_tag_observed": "nbXHDympYMwGnN6Dc2js2",
+      "running_sha": "UNKNOWN",
+      "sha_exposed_by_healthz": false,
+      "healthz_body": "{\"status\":\"ok\",\"service\":\"dealix-web\"}",
+      "stale_markers": ["<meta name=robots content=noindex> present in served HTML while source layout.tsx sets index:true"],
+      "identity_status": "FAIL_STALE"
+    },
+    "DEPLOYED_API": {
+      "url": "https://api.dealix.me/health",
+      "running_sha": "8099b00",
+      "main_ancestor": false,
+      "identity_status": "FAIL_STALE",
+      "note": "8099b00 predates main 693d7189 (history rewritten); production API 404s the current execution-diagnostic contract"
+    }
+  },
+  "authority": {
+    "railway_cli_state": "ABSENT/UNLINKED",
+    "deployment_authority": "L5 founder (no standing automation authority for production cutover)",
+    "result": "cannot redeploy from automation; exact founder action packet prepared"
+  },
+  "verdict": "PRODUCTION_IDENTITY_STALE — requires Railway redeploy of web+api from main"
+}

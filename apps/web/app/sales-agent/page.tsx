@@ -43,7 +43,7 @@ export default function SalesAgentPage() {
             {capabilities.map((item) => <li key={item}>{item}</li>)}
           </ul>
         </article>
-        <article className="card card-gold">
+        <article className="card card-cyan">
           <p className="eyebrow">Guardrails</p>
           <h2>ما الحدود؟</h2>
           <ul>

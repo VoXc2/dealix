@@ -74,7 +74,7 @@ function statusClass(status: string) {
   if (status === "Active") return "badge badge-emerald";
   if (status === "Guarded") return "badge badge-amber";
   if (status === "Locked") return "badge badge-coral";
-  return "badge badge-gold";
+  return "badge badge-cyan";
 }
 
 export default function CommandCenterPage() {
@@ -114,7 +114,7 @@ export default function CommandCenterPage() {
               <p><strong>Question:</strong> {lane.question}</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--sp-2)", marginBottom: "var(--sp-4)" }}>
                 {lane.metrics.map((metric) => (
-                  <span className="badge badge-gold" key={metric}>{metric}</span>
+                  <span className="badge badge-cyan" key={metric}>{metric}</span>
                 ))}
               </div>
               <p><strong>Today:</strong> {lane.action}</p>
@@ -124,7 +124,7 @@ export default function CommandCenterPage() {
       </section>
 
       <section className="grid-2">
-        <article className="card card-gold">
+        <article className="card card-cyan">
           <p className="eyebrow">Founder decision</p>
           <h2>قرار اليوم</h2>
           <p>

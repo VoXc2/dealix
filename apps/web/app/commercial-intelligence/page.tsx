@@ -234,7 +234,7 @@ export default function CommercialIntelligencePage() {
 
       {snapshot && (
         <>
-          <section className="card card-gold">
+          <section className="card card-cyan">
             <span className="badge badge-emerald">Evidence-governed</span>
             <h3 style={{ marginTop: "var(--sp-4)" }}>حدود التشغيل ثابتة</h3>
             <p>
@@ -296,7 +296,7 @@ export default function CommercialIntelligencePage() {
                     <li key={objective.id} style={{ marginBottom: 12 }}>
                       <b>{objective.department} · {objective.metric}</b>
                       <div className="stat-label">{objective.objective}</div>
-                      <span className="badge badge-gold">
+                      <span className="badge badge-cyan">
                         {EVIDENCE_LABELS[objective.evidence_required] ?? objective.evidence_required}
                       </span>
                     </li>
@@ -342,7 +342,7 @@ export default function CommercialIntelligencePage() {
                         </td>
                         <td style={{ padding: 12 }}>{opportunity.stage}</td>
                         <td style={{ padding: 12 }}>{EVIDENCE_LABELS[opportunity.evidence_level] ?? opportunity.evidence_level}</td>
-                        <td style={{ padding: 12 }}><span className="badge badge-gold">{opportunity.score}/100</span></td>
+                        <td style={{ padding: 12 }}><span className="badge badge-cyan">{opportunity.score}/100</span></td>
                         <td style={{ padding: 12 }}>{opportunity.next_action}</td>
                         <td style={{ padding: 12 }}>
                           <span className="badge badge-amber">
@@ -389,7 +389,7 @@ export default function CommercialIntelligencePage() {
           </section>
 
           {decisionPlan && (
-            <section className="card card-gold" aria-live="polite">
+            <section className="card card-cyan" aria-live="polite">
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                 <div>
                   <p className="eyebrow">Buyer Decision Spine · Internal draft</p>
@@ -403,7 +403,7 @@ export default function CommercialIntelligencePage() {
               <div className="grid-3" style={{ marginTop: "var(--sp-4)" }}>
                 {decisionPlan.buying_committee.map((member) => (
                   <article className="card" key={member.role}>
-                    <span className="badge badge-gold">{member.role}</span>
+                    <span className="badge badge-cyan">{member.role}</span>
                     <h4>{member.decision_question_ar}</h4>
                     <p>{member.value_frame_ar}</p>
                     <p className="stat-label">الدليل: {member.proof_required}</p>

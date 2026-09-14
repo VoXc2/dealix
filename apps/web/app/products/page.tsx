@@ -48,7 +48,7 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      <section className="card card-gold">
+      <section className="card card-cyan">
         <p className="eyebrow">Build → Prove → Productize</p>
         <h2>لا نبدأ بفرض SaaS على كل مشكلة.</h2>
         <p>

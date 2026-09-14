@@ -35,7 +35,7 @@ export default function CompanyBrainOSPage() {
       <section className="cards">
         {modules.map(([title, text]) => (
           <article className="card" key={title}>
-            <span className="badge badge-gold">Module</span>
+            <span className="badge badge-cyan">Module</span>
             <h2 style={{ fontSize: "1.35rem", marginTop: "var(--sp-4)" }}>{title}</h2>
             <p>{text}</p>
           </article>
@@ -55,7 +55,7 @@ export default function CompanyBrainOSPage() {
         </div>
       </section>
 
-      <section className="card card-gold" style={{ textAlign: "center" }}>
+      <section className="card card-cyan" style={{ textAlign: "center" }}>
         <p className="eyebrow">Start with proof</p>
         <h2>ابدأ بـ7 أيام على ألم واحد، ثم وسّع بعد الإثبات.</h2>
         <p>أفضل مدخل تجاري: تشخيص، خريطة ألم، أول dashboard، queue مراجعة، وخطة 30 يوم.</p>

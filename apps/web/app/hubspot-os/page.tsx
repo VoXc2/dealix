@@ -44,7 +44,7 @@ export default function HubSpotOSPage() {
         <div className="cards">
           {hubspotTargetGroups.map((group) => (
             <article className="card" key={group.name}>
-              <span className="badge badge-gold">{group.industry}</span>
+              <span className="badge badge-cyan">{group.industry}</span>
               <h3 style={{ marginTop: "var(--sp-4)" }}>{group.name}</h3>
               <p><strong>Sector:</strong> {group.sector}</p>
               <p><strong>Best offer:</strong> {group.offer}</p>
@@ -55,7 +55,7 @@ export default function HubSpotOSPage() {
       </section>
 
       <section className="grid-2">
-        <article className="card card-gold">
+        <article className="card card-cyan">
           <p className="eyebrow">Launch tasks</p>
           <h2>مهام موجودة وتدعم الإطلاق</h2>
           <ul>{hubspotLaunchTasks.map((task) => <li key={task}>{task}</li>)}</ul>

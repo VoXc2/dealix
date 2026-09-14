@@ -31,7 +31,7 @@ const checks = [
     title: "Control Plane",
     desc:  "Internal workflow operating surface",
     href:  "/control-plane",
-    badge: "badge-gold",
+    badge: "badge-cyan",
     ext:   false,
   },
   {
@@ -39,7 +39,7 @@ const checks = [
     title: "Safety Layer",
     desc:  "Approval-first & policy-governed execution",
     href:  "/safety",
-    badge: "badge-gold",
+    badge: "badge-cyan",
     ext:   false,
   },
   {
@@ -69,7 +69,7 @@ export default function StatusPage() {
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 20, flexWrap: "wrap" }}>
           <span className="badge badge-emerald">✓ جميع الأنظمة تعمل</span>
-          <span className="badge badge-gold">آخر تحقق: الآن</span>
+          <span className="badge badge-cyan">آخر تحقق: الآن</span>
         </div>
       </section>
 

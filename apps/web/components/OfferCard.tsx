@@ -6,7 +6,7 @@ export default function OfferCard({ icon, title, description, href, badge }: { i
   return (
     <article className="card" style={{ position: "relative" }}>
       {badge && (
-        <span className="badge badge-gold" style={{ position: "absolute", top: "var(--sp-4)", left: "var(--sp-4)" }}>
+        <span className="badge badge-cyan" style={{ position: "absolute", top: "var(--sp-4)", left: "var(--sp-4)" }}>
           {badge}
         </span>
       )}

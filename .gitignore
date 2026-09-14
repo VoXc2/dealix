@@ -23,6 +23,8 @@ credentials/
 !tests/test_wave8_customer_credentials_check.py
 !docs/WAVE8_CUSTOMER_CREDENTIAL_READINESS.md
 !docs/wave8/customer_credentials.example.env
+# Launch security regression test — scans source, contains no credentials
+!tests/launch/test_no_privileged_browser_credentials.py
 # The secret scanner itself — code, not a secret (CI: "V3 — No secrets check")
 !scripts/check_no_secrets.py
 service-account*.json
