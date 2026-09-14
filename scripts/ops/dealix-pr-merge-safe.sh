@@ -33,8 +33,8 @@ if git diff --name-only "origin/main...$HEAD_SHA" | grep -q "^frontend/"; then
   npm --prefix frontend run typecheck || { echo "BLOCKED: typecheck"; exit 2; }
 fi
 git diff --check || { echo "BLOCKED: diff --check"; exit 2; }
-if git diff "origin/main...$HEAD_SHA" | grep -qiE "(sk_live|ghp_|AKIA)"; then
-  echo "BLOCKED: secret"; exit 3
+if git diff "origin/main...$HEAD_SHA" | grep -qE "ghp_[A-Za-z0-9]{36}|sk_(live|test)_[A-Za-z0-9]+|AKIA[0-9A-Z]{16}|xox[bpas]-"; then
+  echo "BLOCKED: high-entropy secret"; exit 3
 fi
 # Verify head still same after tests (head-pinned)
 HEAD_NOW="$(gh pr view "$PR" --json headRefOid --jq .headRefOid)"

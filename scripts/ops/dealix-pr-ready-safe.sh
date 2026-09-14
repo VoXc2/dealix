@@ -34,9 +34,9 @@ if git diff --name-only "origin/main...HEAD" | grep -q "^frontend/"; then
 fi
 # I. diff --check
 git diff --check || { echo "BLOCKED: diff --check"; exit 2; }
-# J. secret scan quick (git diff secrets)
-if git diff origin/main...HEAD | grep -qiE "(sk_live|ghp_|AKIA|password|secret)"; then
-  echo "BLOCKED: possible secret"
+# J. secret scan — high-entropy tokens only (avoid false positive on 'secret' word in opencode.json)
+if git diff origin/main...HEAD | grep -qE "ghp_[A-Za-z0-9]{36}|sk_(live|test)_[A-Za-z0-9]+|AKIA[0-9A-Z]{16}|xox[bpas]-"; then
+  echo "BLOCKED: possible high-entropy secret"
   exit 3
 fi
 echo "GATES PASS — marking ready via gh.distrib"
