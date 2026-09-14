@@ -53,7 +53,10 @@ export function buildFunnelMetadata(locale: string, key: FunnelKey): Metadata {
     description: content.desc,
     openGraph: { title: content.title, description: content.desc, url, images: OG_IMAGE },
     twitter: { card: "summary_large_image", title: content.title, description: content.desc },
-    alternates: { canonical: url, languages: { ar: `${SITE}/ar${meta.path}`, en: `${SITE}/en${meta.path}` } },
+    alternates: {
+      canonical: url,
+      languages: { ar: `${SITE}/ar${meta.path}`, en: `${SITE}/en${meta.path}`, "x-default": `${SITE}/ar${meta.path}` },
+    },
     icons: { icon: "/brand/logo-mark.svg" },
   };
 }
@@ -75,7 +78,7 @@ export function buildHomeMetadata(locale: string): Metadata {
       : ["Revenue Ops", "PDPL", "ZATCA", "B2B Saudi Arabia", "AI Governance", "Revenue OS"],
     openGraph: { title, description, url, images: OG_IMAGE, type: "website", locale: isAr ? "ar_SA" : "en_US" },
     twitter: { card: "summary_large_image", title, description },
-    alternates: { canonical: url, languages: { ar: `${SITE}/ar`, en: `${SITE}/en` } },
+    alternates: { canonical: url, languages: { ar: `${SITE}/ar`, en: `${SITE}/en`, "x-default": `${SITE}/ar` } },
     icons: { icon: "/brand/logo-mark.svg", apple: "/brand/logo-mark.svg" },
     robots: { index: true, follow: true },
   };
@@ -90,6 +93,6 @@ export function buildArticleMetadata(locale: string, titleAr: string, titleEn: s
     title: `${title} — Dealix`,
     description,
     openGraph: { title, description, url, images: OG_IMAGE, type: "article" },
-    alternates: { canonical: url, languages: { ar: `${SITE}/ar/learn/${slug}`, en: `${SITE}/en/learn/${slug}` } },
+    alternates: { canonical: url, languages: { ar: `${SITE}/ar/learn/${slug}`, en: `${SITE}/en/learn/${slug}`, "x-default": `${SITE}/ar/learn/${slug}` } },
   };
 }

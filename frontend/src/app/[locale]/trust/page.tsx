@@ -13,7 +13,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: isAr
       ? "سياسة الخصوصية، PDPL، ZATCA، Approval-First، ولا outreach بارد. Dealix مبني على الثقة والامتثال."
       : "Privacy policy, PDPL, ZATCA, Approval-First, and no cold outreach. Dealix is built on trust and compliance.",
-    alternates: { canonical: `https://dealix.me/${locale}/trust` },
+    alternates: {
+      canonical: `https://dealix.me/${locale}/trust`,
+      languages: { ar: "https://dealix.me/ar/trust", en: "https://dealix.me/en/trust", "x-default": "https://dealix.me/ar/trust" },
+    },
   };
 }
 

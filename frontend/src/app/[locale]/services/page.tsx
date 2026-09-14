@@ -13,7 +13,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: isAr
       ? "من التشخيص المجاني إلى مشاريع AI المخصصة — كل مستوى يبني على الإثبات قبل التوسع."
       : "From free diagnostic to custom AI projects — every tier builds on proof before expansion.",
-    alternates: { canonical: `https://dealix.me/${locale}/services` },
+    alternates: {
+      canonical: `https://dealix.me/${locale}/services`,
+      languages: { ar: "https://dealix.me/ar/services", en: "https://dealix.me/en/services", "x-default": "https://dealix.me/ar/services" },
+    },
   };
 }
 

@@ -13,7 +13,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: isAr
       ? "رسالتنا، قيمنا، والتزامنا بـ PDPL و ZATCA. Dealix مبني للثقة والامتثال في السوق السعودي."
       : "Our mission, values, and commitment to PDPL & ZATCA. Dealix is built for trust and compliance in the Saudi market.",
-    alternates: { canonical: `https://dealix.me/${locale}/about` },
+    alternates: {
+      canonical: `https://dealix.me/${locale}/about`,
+      languages: { ar: "https://dealix.me/ar/about", en: "https://dealix.me/en/about", "x-default": "https://dealix.me/ar/about" },
+    },
   };
 }
 

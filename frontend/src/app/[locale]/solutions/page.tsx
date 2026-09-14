@@ -9,7 +9,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: isAr ? "الحلول حسب القطاع — Dealix" : "Solutions by Sector — Dealix",
     description: isAr ? "اختر قطاعك وشاهد الخدمات المتاحة بتشغيل محكوم وموثق" : "Choose your sector and see available services with governed, evidence-backed execution",
-    alternates: { canonical: `https://dealix.me/${locale}/solutions` },
+    alternates: {
+      canonical: `https://dealix.me/${locale}/solutions`,
+      languages: { ar: "https://dealix.me/ar/solutions", en: "https://dealix.me/en/solutions", "x-default": "https://dealix.me/ar/solutions" },
+    },
   };
 }
 
