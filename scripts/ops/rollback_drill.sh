@@ -7,6 +7,8 @@
 #
 # Modes:
 #   --dry-run    (default)  Print every step, touch nothing. Safe in prod.
+#   --record-last-good       Pin current HEAD into $LAST_GOOD_FILE. Touches
+#                            only that file; use after a verified-green release.
 #   --real       Actually perform the rollback. Requires CONFIRM=YES env.
 #
 # Run on the prod server (or matching staging) as root:
@@ -25,8 +27,8 @@ MODE="${1:---dry-run}"
 APP_DIR="${APP_DIR:-/opt/dealix}"
 SERVICE="${SERVICE:-dealix-api}"
 HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:8001/health/deep}"
-LAST_GOOD_FILE="${APP_DIR}/.last_good_sha"
-LOG_FILE="/var/log/dealix_rollback_drill.$(date +%Y%m%dT%H%M%SZ).log"
+LAST_GOOD_FILE="${LAST_GOOD_FILE:-$APP_DIR/.last_good_sha}"
+LOG_FILE="${LOG_FILE:-/var/log/dealix_rollback_drill.$(date +%Y%m%dT%H%M%SZ).log}"
 
 log() { echo "[$(date -u +%H:%M:%SZ)] $*" | tee -a "$LOG_FILE"; }
 die() { log "FATAL: $*"; exit "${2:-1}"; }
@@ -35,7 +37,19 @@ die() { log "FATAL: $*"; exit "${2:-1}"; }
 log "=== Rollback drill start (mode=$MODE) ==="
 
 [[ -d "$APP_DIR/.git" ]] || die "Not a git checkout: $APP_DIR" 1
-[[ -f "$LAST_GOOD_FILE" ]] || die "Missing $LAST_GOOD_FILE — cannot roll back" 1
+
+# ── Record mode: pin the current HEAD as the last-good SHA ──────────────────
+# Operator/runbook step after a verified-green release. Writes only
+# $LAST_GOOD_FILE (overridable for tests); changes nothing else.
+if [[ "$MODE" == "--record-last-good" ]]; then
+  RECORD_SHA=$(cd "$APP_DIR" && git rev-parse HEAD) || die "git rev-parse failed" 1
+  printf '%s\n' "$RECORD_SHA" > "$LAST_GOOD_FILE"
+  log "Recorded last-good SHA: $RECORD_SHA → $LAST_GOOD_FILE"
+  log "=== Record complete. No service state changed. ==="
+  exit 0
+fi
+
+[[ -f "$LAST_GOOD_FILE" ]] || die "Missing $LAST_GOOD_FILE — cannot roll back (run with --record-last-good after a verified-green release)" 1
 
 CURRENT_SHA=$(cd "$APP_DIR" && git rev-parse --short HEAD)
 TARGET_SHA=$(tr -d '[:space:]' < "$LAST_GOOD_FILE" | head -c 10)

@@ -44,4 +44,9 @@ echo "=== Metadata ==="
 tar -C "$BACKUP_DIR" -czf "$BACKUP_DIR/dealix-backup-$STAMP.tar.gz" "$STAMP"
 rm -rf "$TARGET"
 
+# Integrity: checksum manifest + verify the archive reads back before reporting OK.
+sha256sum "$BACKUP_DIR/dealix-backup-$STAMP.tar.gz" > "$BACKUP_DIR/dealix-backup-$STAMP.tar.gz.sha256"
+tar -tzf "$BACKUP_DIR/dealix-backup-$STAMP.tar.gz" >/dev/null
+sha256sum -c "$BACKUP_DIR/dealix-backup-$STAMP.tar.gz.sha256"
+
 echo "DEALIX_BACKUP_OK $BACKUP_DIR/dealix-backup-$STAMP.tar.gz"

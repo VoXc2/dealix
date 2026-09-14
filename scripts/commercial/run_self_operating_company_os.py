@@ -29,7 +29,29 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT_ROOT = ROOT / "reports" / "self_operating_company_os"
+
+
+def _default_out_root() -> Path:
+    """Runtime reports must never dirty the canonical checkout.
+
+    Honor DEALIX_RUNTIME_REPORTS_ROOT (e.g. /opt/dealix/control/reports) so
+    autonomous/company runs write outside the git worktree and cannot poison
+    Source Sync. The in-repo fallback stays gitignored (see .gitignore).
+    """
+    override = os.getenv("DEALIX_RUNTIME_REPORTS_ROOT", "").strip()
+    if override:
+        return Path(override) / "self_operating_company_os"
+    return ROOT / "reports" / "self_operating_company_os"
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+OUT_ROOT = _default_out_root()
 DATA_ROOT = ROOT / "data" / "self_operating_company_os"
 
 CANONICAL_COMMERCIAL_PATH = [
@@ -524,7 +546,7 @@ def main() -> int:
     summary = {
         "ok": verification["ok"] and not tripwire,
         "mode": args.mode,
-        "daily_report": str(report.relative_to(ROOT)),
+        "daily_report": _display_path(report),
         "targets": len(cards),
         "actions": len(actions),
         "approvals": len(approvals),
