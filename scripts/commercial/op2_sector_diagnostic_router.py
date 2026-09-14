@@ -169,12 +169,12 @@ def build_routes() -> dict[str, Any]:
                     "roi_promised": False,
                 },
                 "commercial_pattern": {
-                    "offer_ladder": blueprint.offer_ladder,
-                    "procurement_paths": blueprint.procurement_paths,
-                    "compliance_constraints": blueprint.compliance_constraints,
-                    "distribution_channels": blueprint.distribution_channels,
-                    "acceptance_criteria": blueprint.acceptance_criteria,
-                    "proof_requirements": blueprint.proof_requirements,
+                    "offer_ladder": list(blueprint.dealix_offers.offer_ladder),
+                    "procurement_paths": list(blueprint.procurement.procurement_paths),
+                    "compliance_constraints": list(blueprint.signals.compliance_constraints),
+                    "distribution_channels": list(blueprint.next_best_actions.distribution_channels),
+                    "acceptance_criteria": list(blueprint.delivery_proof.acceptance_criteria),
+                    "proof_requirements": list(blueprint.delivery_proof.proof_requirements),
                 },
                 "crm_handoff": {
                     "architecture": holding_receipt["architecture"],
