@@ -201,6 +201,12 @@ SECTOR_SURFACES: list[SectorSurface] = [
     SectorSurface(surface_id="customer_service", canonical_sector="retail_commerce_ecommerce", ar_name="خدمة العملاء", en_name="Customer Service", primary_families=["A08", "A09", "A40", "A12"]),
     SectorSurface(surface_id="marketing", canonical_sector="telecom_media_marketing", ar_name="التسويق", en_name="Marketing", primary_families=["A07", "A39", "A38", "A43"]),
     SectorSurface(surface_id="technology_saas", canonical_sector="technology_saas_si", ar_name="التقنية وSaaS", en_name="Technology/SaaS", primary_families=["A05", "A13", "A24", "A38"]),
+    SectorSurface(surface_id="government_b2g", canonical_sector="government_b2g", ar_name="الجهات الحكومية", en_name="Government/B2G", primary_families=["A36", "A44", "A30", "A11"]),
+    SectorSurface(surface_id="energy_utilities_oil_gas", canonical_sector="energy_utilities_oil_gas", ar_name="الطاقة والمرافق", en_name="Energy & Utilities", primary_families=["A46", "A47", "A10", "A32"]),
+    SectorSurface(surface_id="mining_metals", canonical_sector="mining_metals", ar_name="التعدين والمعادن", en_name="Mining & Metals", primary_families=["A10", "A46", "A47", "A32"]),
+    SectorSurface(surface_id="agriculture_food_water", canonical_sector="agriculture_food_water", ar_name="الزراعة والغذاء والمياه", en_name="Agriculture, Food & Water", primary_families=["A10", "A26", "A27", "A32"]),
+    SectorSurface(surface_id="creative_sports_gaming", canonical_sector="creative_sports_gaming", ar_name="الإبداع والرياضة والترفيه", en_name="Creative, Sports & Gaming", primary_families=["A07", "A08", "A38", "A05"]),
+    SectorSurface(surface_id="associations_nonprofits", canonical_sector="associations_nonprofits", ar_name="الجمعيات وغير الربحية", en_name="Nonprofits & Associations", primary_families=["A05", "A11", "A40", "A49"]),
     SectorSurface(surface_id="sme", canonical_sector="*", ar_name="المنشآت الصغيرة والمتوسطة", en_name="SMEs", primary_families=["A01", "A05", "A11", "A12", "A38"], company_size_hint="sme"),
     SectorSurface(surface_id="enterprise_operations", canonical_sector="*", ar_name="عمليات المؤسسات الكبرى", en_name="Enterprise Operations", primary_families=["A50", "A11", "A18", "A43"], company_size_hint="enterprise"),
 ]

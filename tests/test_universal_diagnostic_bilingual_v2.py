@@ -128,6 +128,32 @@ def test_size_only_surfaces_use_their_size_hint() -> None:
         assert fams
 
 
+def test_every_canonical_sector_has_a_dedicated_surface() -> None:
+    from dealix.commercial.universal_diagnostic_factory import SECTOR_SURFACES
+
+    factory = UniversalDiagnosticFactory()
+    covered = factory.surface_coverage()
+    missing = [sector for sector in CANONICAL_SECTORS if sector not in covered]
+    assert not missing, missing
+    by_sector: dict[str, list] = {}
+    for surface in SECTOR_SURFACES:
+        by_sector.setdefault(surface.canonical_sector, []).append(surface)
+    for sector in sorted(CANONICAL_SECTORS):
+        composed = False
+        for surface in by_sector[sector]:
+            _, families = factory.compose_for_surface(
+                surface.surface_id,
+                buyer_role="coo",
+                depth=DiagnosticDepth.D2_FUNCTIONAL,
+            )
+            assert families, surface.surface_id
+            if {family.family_id for family in families} & set(
+                surface.primary_families
+            ):
+                composed = True
+        assert composed, sector
+
+
 def _family_has_arabic(family_id: str) -> bool:
     name = FAMILY_AR.get(family_id, "")
     return bool(name) and bool(ARABIC_RE.search(name))
