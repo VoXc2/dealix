@@ -100,6 +100,8 @@ const nextConfig = {
       { source: "/products/client-delivery-os", destination: "/products", permanent: true },
       { source: "/enterprise-readiness", destination: "/services", permanent: true },
       { source: "/offers", destination: "/pricing", permanent: true },
+      { source: "/delivery-os", destination: "/services", permanent: true },
+      { source: "/pipeline", destination: "/dealix-os", permanent: true },
       { source: "/ar/pricing", destination: "/pricing", permanent: true },
       { source: "/ar/offers", destination: "/pricing", permanent: true },
       { source: "/ar/p1", destination: "/pricing", permanent: true },

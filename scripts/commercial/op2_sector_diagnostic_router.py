@@ -2,13 +2,18 @@
 """OP2 evidence-bound sector diagnostic router.
 
 The OP2 market wave and sector-economy ranking are research artifacts. This
-router makes them *actionable* for the genuinely-free diagnostic funnel without
+router makes them actionable for the genuinely-free diagnostic funnel without
 touching the canonical diagnostic engine (``universal_diagnostic_factory``) or
 the canonical public API route. Given a sector surface and a qualified problem
 signal, it produces a bridge record that maps:
 
     SECTOR SURFACE -> diagnostic families -> free diagnostic entry
-    -> CRM handoff (five canonical agents) -> discovery-prep fields
+    -> Omega V3 Agentic Holding handoff -> discovery-prep fields
+
+Historical five executor names are preserved only as legacy compatibility
+aliases. They are not architecture authority. Current execution authority is:
+Dealix Holding -> Sector Companies -> Arm Pods -> Specialist Logical Agents ->
+ResourceGovernor-bounded runtime workers.
 
 It never claims a relationship, consent, offer, price, quote, or revenue, and
 it never fabricates ROI. All output is ``INTERNAL_RESEARCH_ONLY`` and
@@ -30,13 +35,21 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from dealix.agentic_holding.runtime import build_current_registry
 from dealix.commercial.sector_company_blueprint import build_all_blueprints
 
 WAVE_PATH = REPO_ROOT / "data" / "commercial" / "op2_market_intelligence_wave_v1.json"
 ECONOMY_PATH = REPO_ROOT / "data" / "commercial" / "op2_sector_economy_ranking_v1.json"
 OUT_PATH = REPO_ROOT / "data" / "commercial" / "op2_sector_diagnostic_routes_v1.json"
 
-CANONICAL_AGENTS = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
+# Backward-compatible aliases only. Omega V3 architecture is registry-derived.
+LEGACY_EXECUTOR_ALIASES = (
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content",
+)
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
 FREE_DEPTHS = ("D0_SNAPSHOT", "D1_RAPID", "D2_FUNCTIONAL")
 
@@ -102,6 +115,10 @@ def build_routes() -> dict[str, Any]:
     if not economy:
         warnings.append(f"sector economy ranking unreachable: {ECONOMY_PATH}")
 
+    holding_receipt = build_current_registry().receipt()
+    if holding_receipt.get("orphan_failures"):
+        warnings.extend(f"agentic holding: {item}" for item in holding_receipt["orphan_failures"])
+
     economy_by_sector = {cell["sector_id"]: cell for cell in economy.get("cells", []) or []}
     blueprints = {item.sector_id: item for item in build_all_blueprints()}
 
@@ -160,7 +177,17 @@ def build_routes() -> dict[str, Any]:
                     "proof_requirements": blueprint.proof_requirements,
                 },
                 "crm_handoff": {
-                    "canonical_agents": CANONICAL_AGENTS,
+                    "architecture": holding_receipt["architecture"],
+                    "registry_source": "dealix.agentic_holding.runtime.build_current_registry",
+                    "logical_agents": holding_receipt["logical_agents"],
+                    "sector_companies": holding_receipt["sector_companies"],
+                    "arm_pods": holding_receipt["arm_pods"],
+                    "fixed_five_authority": False,
+                    # Preserve the old field only so stored/schema consumers do not break.
+                    "canonical_agents": list(LEGACY_EXECUTOR_ALIASES),
+                    "canonical_agents_field_semantics": "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY",
+                    "legacy_executor_aliases": list(LEGACY_EXECUTOR_ALIASES),
+                    "routing_authority": "Company Operator -> Agentic Holding registry -> Session Factory",
                     "mirror_target": "revenue_ops_autopilot",
                     "hubspot_is_mirror_not_truth": True,
                 },
@@ -178,12 +205,25 @@ def build_routes() -> dict[str, Any]:
                 "counts_as_revenue": False,
             }
         )
-    routes.sort(key=lambda item: (item["market_evidence_status"] == "EVIDENCE_BACKED", item["research_rank_score"], item["sector_id"]), reverse=True)
+    routes.sort(
+        key=lambda item: (
+            item["market_evidence_status"] == "EVIDENCE_BACKED",
+            item["research_rank_score"],
+            item["sector_id"],
+        ),
+        reverse=True,
+    )
 
     return {
         "schema": "dealix.op2-sector-diagnostic-routes.v1",
         "generated_at": datetime.now(UTC).isoformat(),
         "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
+        "agentic_holding": {
+            **holding_receipt,
+            "registry_source": "dealix.agentic_holding.runtime.build_current_registry",
+            "fixed_five_authority": False,
+            "legacy_executor_aliases": list(LEGACY_EXECUTOR_ALIASES),
+        },
         "authority": {
             "relationship": False,
             "consent": False,
@@ -196,8 +236,12 @@ def build_routes() -> dict[str, Any]:
         },
         "warnings": warnings,
         "route_count": len(routes),
-        "evidence_backed_count": sum(1 for route in routes if route["market_evidence_status"] == "EVIDENCE_BACKED"),
-        "pattern_only_count": sum(1 for route in routes if route["market_evidence_status"] != "EVIDENCE_BACKED"),
+        "evidence_backed_count": sum(
+            1 for route in routes if route["market_evidence_status"] == "EVIDENCE_BACKED"
+        ),
+        "pattern_only_count": sum(
+            1 for route in routes if route["market_evidence_status"] != "EVIDENCE_BACKED"
+        ),
         "routes": routes,
         "counts_as_pipeline": False,
         "counts_as_revenue": False,

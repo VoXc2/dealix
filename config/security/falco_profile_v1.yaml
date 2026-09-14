@@ -1,0 +1,16 @@
+# Falco readiness profile — LAB ONLY, DISABLED BY DEFAULT.
+# This file is a readiness contract, not a deployment.
+# Falco must never run privileged in tests or default compose,
+# and must never become an always-on platform without a proven
+# runtime-detection gap (see DEALIX_CAPABILITY_BACKLOG_WAVE3_20260908.md).
+schema: dealix.falco_readiness_profile.v1
+enabled: false
+mode_allowed: lab-only
+privileged: false
+capabilities_added: []
+host_docker_socket: false
+host_network: false
+kernel_or_driver_or_ebpf_evidence: missing
+notes:
+  - Missing kernel/driver/eBPF evidence forces HOLD.
+  - Any consumer must validate enabled == false and privileged == false before use.

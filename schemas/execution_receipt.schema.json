@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.me/schemas/execution_receipt.schema.json",
+  "title": "Dealix Omega5 deterministic execution receipt",
+  "description": "Fail-closed inspectable receipt for one agent/customer/runtime execution. No raw prompts, tool args/results, PII, or secrets. Unknown sensitivity => omit field or HOLD.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "trace_id",
+    "result",
+    "effect_class",
+    "authority",
+    "produced_at",
+    "release_sha"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "receipt_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "trace_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "case_id": { "type": "string", "maxLength": 128 },
+    "job_id": { "type": "string", "maxLength": 128 },
+    "owner": { "type": "string", "maxLength": 128 },
+    "logical_agent": { "type": "string", "maxLength": 128 },
+    "effect_class": {
+      "type": "string",
+      "enum": ["none", "read", "draft", "internal_execute", "repo_execute", "material"]
+    },
+    "authority": { "type": "string", "maxLength": 64 },
+    "model_provider_class": { "type": "string", "maxLength": 64 },
+    "tool_name": { "type": "string", "maxLength": 128 },
+    "action_name": { "type": "string", "maxLength": 128 },
+    "verifier": { "type": "string", "maxLength": 128 },
+    "result": { "type": "string", "enum": ["ok", "blocked", "error", "hold", "unknown"] },
+    "latency_ms": { "type": "number", "minimum": 0 },
+    "cost_known_state": { "type": "string", "enum": ["known", "estimated", "unknown"] },
+    "estimated_cost_usd": { "type": "number", "minimum": 0 },
+    "evidence_refs": {
+      "type": "array",
+      "maxItems": 64,
+      "items": { "type": "string", "maxLength": 512 }
+    },
+    "release_sha": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "produced_at": { "type": "string", "format": "date-time" },
+    "notes": { "type": "string", "maxLength": 1024 }
+  }
+}

@@ -104,6 +104,11 @@ def get_adapter(adapter_type: str = "noop") -> BaseObservabilityAdapter:
                 LangfuseAdapter,
             )
             return LangfuseAdapter()
+        if adapter_type == "openobserve":
+            from auto_client_acquisition.observability_adapters.openobserve_adapter import (
+                OpenObserveAdapter,
+            )
+            return OpenObserveAdapter()
     except Exception as exc:
         logger.warning("Failed to initialize %s adapter: %s — falling back to noop", adapter_type, exc)
     return NoopAdapter()

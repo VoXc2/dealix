@@ -16,6 +16,10 @@ ActionMode = Literal[
 
 
 class AgentTrace(BaseModel):
+    """Agent execution trace. Redacted on insert; never carries raw
+    prompts, tool args/results, PII, or secrets. Unknown sensitivity
+    => omit the field or record HOLD."""
+
     model_config = ConfigDict(extra="forbid")
 
     trace_id: str
@@ -31,6 +35,20 @@ class AgentTrace(BaseModel):
     approval_status: str = "pending"
     degraded: bool = False
     error_type: str | None = None
+    # ── Omega5 execution-contract extensions (optional, backward compat) ──
+    case_id: str = ""
+    job_id: str = ""
+    owner: str = ""
+    effect_class: str = "none"
+    authority: str = ""
+    model_provider_class: str = ""
+    tool_name: str = ""
+    action_name: str = ""
+    verifier: str = ""
+    result: str = "unknown"
+    cost_known_state: str = "unknown"
+    evidence_refs: list[str] = Field(default_factory=list)
+    release_sha: str = ""
     redacted_payload: dict[str, Any] = Field(default_factory=dict)
     safety_summary: str = "no_pii_no_secrets_no_full_transcripts"
     timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))

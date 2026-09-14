@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-"""Verify the OP2 sector diagnostic routes stay free, truthful, and canonical.
+"""Verify OP2 sector diagnostic routes stay free, truthful and Omega V3 compatible.
 
-Checks that every route:
-  * uses the canonical diagnostic entry (/book + execution-diagnostic API);
-  * offers only free depths D0-D2 and requires no card;
-  * promises no ROI and carries no fabricated benchmark;
-  * hands off to the five canonical agents;
-  * stays INTERNAL_RESEARCH_ONLY with all authority flags false.
+The historical five executor names may remain only as backward-compatible aliases.
+They are never architecture authority. Fresh artifacts should expose the current
+Agentic Holding registry receipt and `fixed_five_authority=false`.
 
 Prints: DEALIX_OP2_DIAGNOSTIC_ROUTER_VERDICT=PASS|FAIL
 """
@@ -21,7 +18,9 @@ ROUTES_PATH = REPO_ROOT / "data" / "commercial" / "op2_sector_diagnostic_routes_
 VERDICT_PASS = "DEALIX_OP2_DIAGNOSTIC_ROUTER_VERDICT=PASS"
 VERDICT_FAIL = "DEALIX_OP2_DIAGNOSTIC_ROUTER_VERDICT=FAIL"
 
-CANONICAL_AGENTS = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
+LEGACY_EXECUTOR_ALIASES = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
+LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+CURRENT_ARCHITECTURE = "agentic_holding_sector_company_mesh"
 FREE_DEPTHS = {"D0_SNAPSHOT", "D1_RAPID", "D2_FUNCTIONAL"}
 BANNED_SUBSTRINGS = ("18% leakage", "guaranteed", "best in market", "fixed price", "roi guaranteed")
 
@@ -47,6 +46,17 @@ def main() -> int:
     if payload.get("counts_as_pipeline") is not False or payload.get("counts_as_revenue") is not False:
         errors.append("counts_as_pipeline/counts_as_revenue must be false")
 
+    holding = payload.get("agentic_holding")
+    if holding is not None:
+        if holding.get("architecture") != CURRENT_ARCHITECTURE:
+            errors.append("agentic_holding architecture drift")
+        if holding.get("fixed_five_authority") is not False:
+            errors.append("fixed-five must never be Agentic Holding authority")
+        if holding.get("orphan_failures"):
+            errors.append("agentic_holding has orphan failures")
+        if holding.get("legacy_executor_aliases") != LEGACY_EXECUTOR_ALIASES:
+            errors.append("legacy executor alias compatibility drift")
+
     routes = payload.get("routes") or []
     if not routes:
         errors.append("no routes produced")
@@ -63,9 +73,23 @@ def main() -> int:
             errors.append(f"{sector}: diagnostic must not require a card")
         if entry.get("roi_promised") is not False:
             errors.append(f"{sector}: must not promise ROI")
+
         handoff = route.get("crm_handoff") or {}
-        if handoff.get("canonical_agents") != CANONICAL_AGENTS:
-            errors.append(f"{sector}: must hand off to the five canonical agents")
+        # Old stored artifacts are tolerated until exact-head regeneration on V,
+        # but the compatibility field may never drift into another authority set.
+        if handoff.get("canonical_agents") != LEGACY_EXECUTOR_ALIASES:
+            errors.append(f"{sector}: legacy executor alias field drift")
+        if handoff.get("fixed_five_authority") is True:
+            errors.append(f"{sector}: fixed-five architecture authority is forbidden")
+        semantics = handoff.get("canonical_agents_field_semantics")
+        if semantics is not None and semantics != LEGACY_ALIAS_SEMANTICS:
+            errors.append(f"{sector}: legacy alias semantics drift")
+        architecture = handoff.get("architecture")
+        if architecture is not None and architecture != CURRENT_ARCHITECTURE:
+            errors.append(f"{sector}: Agentic Holding architecture drift")
+        if handoff.get("legacy_executor_aliases") is not None and handoff.get("legacy_executor_aliases") != LEGACY_EXECUTOR_ALIASES:
+            errors.append(f"{sector}: legacy executor aliases mismatch")
+
         if route.get("truth_class") != "PATTERN_RESEARCH_ROUTING":
             errors.append(f"{sector}: truth_class must be PATTERN_RESEARCH_ROUTING")
         if route.get("allowed_use") != ["INTERNAL_RESEARCH_ONLY"]:

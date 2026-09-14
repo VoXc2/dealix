@@ -1,0 +1,18 @@
+# Optional OTLP collector config — referenced ONLY by the disabled-by-default
+# observability compose profile. No exporters enabled: OTLP HTTP receiver
+# listens locally and logs spans; add exporters only with explicit authority.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+exporters:
+  logging:
+    loglevel: info
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging]

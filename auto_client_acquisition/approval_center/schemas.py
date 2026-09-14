@@ -133,3 +133,16 @@ class ApprovalRequest(BaseModel):
     proof_target — without it, the action contributes no compounding value
     and should be blocked or downgraded to draft_only.
     """
+
+    provenance: dict[str, Any] | None = None
+    """Frozen customer-ops provenance attachment (backward-compatible).
+
+    Built by ``auto_client_acquisition.customer_ops.provenance`` from the
+    frozen KnowledgeSnapshot (snapshot_id, chunk_ids, source refs,
+    as_of, current_only) plus independently-evidenced relationship refs.
+    Sanitized: IDs/refs only — never raw prompts, tool args/results,
+    secrets, message bodies, or PII. Immutable after creation: excluded
+    from the ``edit()`` allow-list so it stays evidence-bound. ``None``
+    means the approval predates provenance capture (treat as missing
+    evidence: ASK/HOLD, never fabricate proof).
+    """

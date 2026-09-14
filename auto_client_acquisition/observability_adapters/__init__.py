@@ -15,6 +15,9 @@ from auto_client_acquisition.observability_adapters.base import (
     ObservabilityEvent,
 )
 from auto_client_acquisition.observability_adapters.langfuse_adapter import LangfuseAdapter
+from auto_client_acquisition.observability_adapters.openobserve_adapter import (
+    OpenObserveAdapter,
+)
 from auto_client_acquisition.observability_adapters.otel_adapter import OtelAdapter
 from auto_client_acquisition.observability_adapters.redaction import RedactionFilter
 
@@ -23,6 +26,7 @@ __all__ = [
     "LangfuseAdapter",
     "NoopAdapter",
     "ObservabilityEvent",
+    "OpenObserveAdapter",
     "OtelAdapter",
     "RedactionFilter",
 ]

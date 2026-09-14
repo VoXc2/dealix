@@ -11,7 +11,10 @@ from typing import Any
 
 from auto_client_acquisition.customer_data_plane.pii_redactor import redact_dict
 from auto_client_acquisition.observability_v10.schemas import TraceRecordV10
-from auto_client_acquisition.observability_v10.trace_schema import validate_trace
+from auto_client_acquisition.observability_v10.trace_schema import (
+    coerce_denied_payload_keys,
+    validate_trace,
+)
 
 _TRACE_BUFFER: list[TraceRecordV10] = []
 _TRACE_LOCK = threading.Lock()
@@ -25,11 +28,15 @@ def record_v10_trace(record: dict[str, Any] | TraceRecordV10) -> TraceRecordV10:
     Returns the stored record so callers can chain.
     """
     if isinstance(record, TraceRecordV10):
-        redacted_payload = redact_dict(dict(record.redacted_payload or {}))
+        redacted_payload = redact_dict(
+            coerce_denied_payload_keys(dict(record.redacted_payload or {}))
+        )
         stored = record.model_copy(update={"redacted_payload": redacted_payload})
     else:
         validated = validate_trace(record)
-        redacted_payload = redact_dict(dict(validated.redacted_payload or {}))
+        redacted_payload = redact_dict(
+            coerce_denied_payload_keys(dict(validated.redacted_payload or {}))
+        )
         stored = validated.model_copy(update={"redacted_payload": redacted_payload})
     with _TRACE_LOCK:
         _TRACE_BUFFER.append(stored)

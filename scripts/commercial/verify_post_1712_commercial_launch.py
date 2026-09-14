@@ -4,6 +4,9 @@
 This gate is read-only with respect to external systems. It composes existing
 commercial truth verifiers and distinguishes source readiness from deployed
 production readiness. A merged commit is never treated as proof of deployment.
+
+Omega V3 note: the historical five executor names are compatibility aliases,
+not architecture authority. Current execution authority is registry-derived.
 """
 from __future__ import annotations
 
@@ -19,7 +22,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 REPORT = ROOT / "reports/commercial/post_1712_launch_gate.json"
-CANONICAL_AGENTS = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
+LEGACY_EXECUTOR_ALIASES = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
+LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+CURRENT_ARCHITECTURE = "agentic_holding_sector_company_mesh"
 RETIRED_PUBLIC_SURFACES = {
     "/trust.html": "/trust-center.html",
     "/security.html": "/trust-center.html",
@@ -61,10 +66,28 @@ def load_routes(errors: list[str]) -> dict[str, Any]:
 
 def validate_routes(payload: dict[str, Any], errors: list[str]) -> None:
     routes = payload.get("routes") or []
-    if len(routes) != 20:
-        errors.append(f"expected 20 canonical sector routes, got {len(routes)}")
+    if not routes:
+        errors.append("no sector diagnostic routes")
     if payload.get("counts_as_pipeline") is not False or payload.get("counts_as_revenue") is not False:
         errors.append("research diagnostic routes must never count as pipeline/revenue")
+
+    holding = payload.get("agentic_holding")
+    if holding is not None:
+        if holding.get("architecture") != CURRENT_ARCHITECTURE:
+            errors.append("agentic_holding architecture drift")
+        if holding.get("fixed_five_authority") is not False:
+            errors.append("fixed-five architecture authority is forbidden")
+        if holding.get("orphan_failures"):
+            errors.append("agentic_holding has orphan failures")
+        expected_sector_routes = holding.get("sector_companies")
+        if not isinstance(expected_sector_routes, int) or expected_sector_routes < 1:
+            errors.append("agentic_holding sector-company count missing or invalid")
+        elif len(routes) != expected_sector_routes:
+            errors.append(
+                f"sector route count must match current Agentic Holding registry: "
+                f"expected {expected_sector_routes}, got {len(routes)}"
+            )
+
     for route in routes:
         sector = route.get("sector_id", "UNKNOWN")
         entry = route.get("diagnostic_entry") or {}
@@ -74,9 +97,18 @@ def validate_routes(payload: dict[str, Any], errors: list[str]) -> None:
             errors.append(f"{sector}: diagnostic must be card-free")
         if entry.get("roi_promised") is not False:
             errors.append(f"{sector}: diagnostic must not promise ROI")
+
         handoff = route.get("crm_handoff") or {}
-        if handoff.get("canonical_agents") != CANONICAL_AGENTS:
-            errors.append(f"{sector}: handoff must use exactly five canonical agents")
+        if handoff.get("canonical_agents") != LEGACY_EXECUTOR_ALIASES:
+            errors.append(f"{sector}: legacy executor alias compatibility drift")
+        if handoff.get("fixed_five_authority") is True:
+            errors.append(f"{sector}: fixed-five architecture authority is forbidden")
+        semantics = handoff.get("canonical_agents_field_semantics")
+        if semantics is not None and semantics != LEGACY_ALIAS_SEMANTICS:
+            errors.append(f"{sector}: legacy alias semantics drift")
+        architecture = handoff.get("architecture")
+        if architecture is not None and architecture != CURRENT_ARCHITECTURE:
+            errors.append(f"{sector}: Agentic Holding architecture drift")
 
 
 def fetch_status(url: str, timeout: float = 8.0) -> dict[str, Any]:
@@ -84,23 +116,10 @@ def fetch_status(url: str, timeout: float = 8.0) -> dict[str, Any]:
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             body = response.read(16384).decode("utf-8", errors="replace")
-            return {
-                "url": url,
-                "final_url": response.geturl(),
-                "ok": 200 <= response.status < 400,
-                "status": response.status,
-                "body_sample": body[:12000],
-            }
+            return {"url": url, "final_url": response.geturl(), "ok": 200 <= response.status < 400, "status": response.status, "body_sample": body[:12000]}
     except urllib.error.HTTPError as exc:
         body = exc.read(4096).decode("utf-8", errors="replace")
-        return {
-            "url": url,
-            "final_url": exc.geturl(),
-            "ok": False,
-            "status": exc.code,
-            "body_sample": body[:4000],
-            "error": str(exc),
-        }
+        return {"url": url, "final_url": exc.geturl(), "ok": False, "status": exc.code, "body_sample": body[:4000], "error": str(exc)}
     except (urllib.error.URLError, TimeoutError, ValueError) as exc:
         return {"url": url, "final_url": url, "ok": False, "error": str(exc)}
 
@@ -189,6 +208,7 @@ def main() -> int:
         status = "SOURCE_READY_DEPLOYMENT_UNVERIFIED"
         warnings.append("source readiness does not prove deployed production identity")
 
+    holding = routes.get("agentic_holding") if routes else None
     report = {
         "schema": "dealix.post-1712-commercial-launch-gate.v1",
         "generated_at": datetime.now(UTC).isoformat(),
@@ -196,7 +216,11 @@ def main() -> int:
         "errors": errors,
         "warnings": warnings,
         "sector_routes": len(routes.get("routes") or []) if routes else 0,
-        "canonical_agents": CANONICAL_AGENTS,
+        # Backward-compatible field only; not architecture authority.
+        "canonical_agents": LEGACY_EXECUTOR_ALIASES,
+        "canonical_agents_field_semantics": LEGACY_ALIAS_SEMANTICS,
+        "fixed_five_authority": False,
+        "agentic_holding": holding,
         "subchecks": subchecks,
         "production_checks": production_checks,
         "retired_404_count": sum(1 for item in production_checks if item.get("surface") and item.get("status") == 404),

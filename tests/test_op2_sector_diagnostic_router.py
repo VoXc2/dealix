@@ -36,9 +36,44 @@ def test_routes_are_free_and_canonical() -> None:
         assert set(entry["free_depths"]) <= set(router.FREE_DEPTHS)
 
 
-def test_routes_handoff_to_five_canonical_agents() -> None:
-    for route in _payload()["routes"]:
-        assert route["crm_handoff"]["canonical_agents"] == router.CANONICAL_AGENTS
+def test_rebuilt_routes_use_agentic_holding_and_fixed_five_is_legacy_only() -> None:
+    rebuilt = router.build_routes()
+    holding = rebuilt["agentic_holding"]
+    assert holding["architecture"] == "agentic_holding_sector_company_mesh"
+    assert holding["fixed_five_authority"] is False
+    assert holding["logical_agents"] > holding["sector_companies"]
+    assert holding["arm_pods"] > 0
+    assert holding["orphan_failures"] == []
+    assert holding["legacy_executor_aliases"] == list(router.LEGACY_EXECUTOR_ALIASES)
+    assert rebuilt["route_count"] == holding["sector_companies"]
+
+    for route in rebuilt["routes"]:
+        handoff = route["crm_handoff"]
+        assert handoff["architecture"] == holding["architecture"]
+        assert handoff["registry_source"] == "dealix.agentic_holding.runtime.build_current_registry"
+        assert handoff["fixed_five_authority"] is False
+        assert handoff["legacy_executor_aliases"] == list(router.LEGACY_EXECUTOR_ALIASES)
+        assert handoff["canonical_agents"] == handoff["legacy_executor_aliases"]
+        assert handoff["canonical_agents_field_semantics"] == (
+            "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+        )
+        assert handoff["routing_authority"] == (
+            "Company Operator -> Agentic Holding registry -> Session Factory"
+        )
+
+
+def test_verifiers_treat_fixed_five_and_fixed_sector_count_as_non_authority() -> None:
+    for relative in (
+        "scripts/commercial/verify_op2_sector_diagnostic_router.py",
+        "scripts/commercial/verify_post_1712_commercial_launch.py",
+    ):
+        text = (ROOT / relative).read_text(encoding="utf-8").lower()
+        assert "legacy_executor_aliases" in text
+        assert "fixed_five_authority" in text
+        assert "legacy_executor_aliases_only_not_architecture_authority" in text
+        assert "exactly five canonical agents" not in text
+        assert "five canonical agents" not in text
+        assert "expected 20 canonical sector routes" not in text
 
 
 def test_routes_are_research_only() -> None:
@@ -56,13 +91,14 @@ def test_router_is_deterministic() -> None:
     assert [r["sector_id"] for r in rebuilt["routes"]] == [r["sector_id"] for r in stored["routes"]]
 
 
-def test_all_twenty_canonical_sectors_are_routed() -> None:
+def test_current_sector_registry_is_routed_without_fixed_count_authority() -> None:
     from dealix.commercial.economic_cell import Sector
 
     payload = _payload()
-    assert payload["route_count"] == len(list(Sector)) == 20
-    assert {route["sector_id"] for route in payload["routes"]} == {sector.value for sector in Sector}
-    assert payload["evidence_backed_count"] == 20
+    expected_sectors = list(Sector)
+    assert payload["route_count"] == len(expected_sectors)
+    assert {route["sector_id"] for route in payload["routes"]} == {sector.value for sector in expected_sectors}
+    assert payload["evidence_backed_count"] == len(expected_sectors)
     assert payload["pattern_only_count"] == 0
     for route in payload["routes"]:
         assert route["market_evidence_status"] == "EVIDENCE_BACKED"
@@ -80,9 +116,15 @@ def test_former_generic_sectors_have_specific_commercial_intelligence() -> None:
     from dealix.commercial.sector_company_factory import SECTOR_INTEL
 
     sectors = [
-        Sector.MINING_METALS, Sector.RETAIL_COMMERCE_ECOMMERCE, Sector.TOURISM_HOSPITALITY,
-        Sector.TELECOM_MEDIA_MARKETING, Sector.EDUCATION_TRAINING, Sector.AGRICULTURE_FOOD_WATER,
-        Sector.MOBILITY_AUTOMOTIVE, Sector.EXPORT_IMPORT_RHQ, Sector.CREATIVE_SPORTS_GAMING,
+        Sector.MINING_METALS,
+        Sector.RETAIL_COMMERCE_ECOMMERCE,
+        Sector.TOURISM_HOSPITALITY,
+        Sector.TELECOM_MEDIA_MARKETING,
+        Sector.EDUCATION_TRAINING,
+        Sector.AGRICULTURE_FOOD_WATER,
+        Sector.MOBILITY_AUTOMOTIVE,
+        Sector.EXPORT_IMPORT_RHQ,
+        Sector.CREATIVE_SPORTS_GAMING,
         Sector.ASSOCIATIONS_NONPROFITS,
     ]
     for sector in sectors:
