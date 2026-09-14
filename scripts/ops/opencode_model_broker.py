@@ -35,7 +35,7 @@ OPS_DIR = Path(__file__).resolve().parent
 if str(OPS_DIR) not in sys.path:
     sys.path.insert(0, str(OPS_DIR))
 
-from model_cost_policy import explicit_free_models, is_explicit_free_model
+from model_cost_policy import explicit_free_models, is_deepseek_model, is_explicit_free_model
 
 STATE_DIR = Path(os.environ.get("DEALIX_OPENCODE_STATE_DIR", "/opt/dealix/control/opencode/state"))
 READONLY_DIR = Path(os.environ.get("DEALIX_OPENCODE_READONLY_DIR", "/opt/dealix/control/opencode/readonly"))
@@ -48,14 +48,13 @@ PROBE_MARKER = "FREE_SELECTOR_OK"
 REFRESH_MARKER = "Models cache refreshed"
 
 PREFERRED_FREE = (
-    "opencode/deepseek-v4-flash-free",
-    "opencode/north-mini-code-free",
-    "opencode/mimo-v2.5-free",
     "opencode/nemotron-3-ultra-free",
     "opencode/nemotron-3.5-lightning-free",
+    "opencode/mimo-v2.5-free",
     "opencode/ling-3.0-flash-fin-free",
     "opencode/muse-spark-1.3-contributor-free",
     "opencode/muse-spark-1.2-contributor-free",
+    "opencode/north-mini-code-free",
 )
 
 _OPENCODE_BIN_CANDIDATES = (
@@ -151,7 +150,7 @@ def refresh(state_dir: Path = STATE_DIR) -> dict[str, Any]:
     if not models:
         rc, output = run_opencode(["models"], timeout=60)
         models = parse_catalog(output)
-    free_models = explicit_free_models(models)
+    free_models = [model for model in explicit_free_models(models) if not is_deepseek_model(model)]
     payload = {
         "schema": "dealix.opencode.model-availability.v2",
         "refreshed_at": datetime.now(UTC).isoformat(),
@@ -163,6 +162,7 @@ def refresh(state_dir: Path = STATE_DIR) -> dict[str, Any]:
         "free_models": free_models,
         "blocked_non_free_count": len(models) - len(free_models),
         "auto_select_policy": "explicit_free_only",
+        "deepseek_auto_blocked": True,
         "credentials_stored": False,
     }
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -190,9 +190,13 @@ def load_availability(state_dir: Path = STATE_DIR) -> dict[str, Any]:
 def candidate_order(availability: dict[str, Any], current: str | None) -> list[str]:
     models = list(availability.get("models") or [])
     declared_free = list(availability.get("free_models") or [])
-    free = explicit_free_models([*declared_free, *models])
+    free = [
+        model
+        for model in explicit_free_models([*declared_free, *models])
+        if not is_deepseek_model(model)
+    ]
     ordered: list[str] = []
-    if current and is_explicit_free_model(current):
+    if current and is_explicit_free_model(current) and not is_deepseek_model(current):
         ordered.append(current)
     for model in PREFERRED_FREE:
         if model in free and model not in ordered:
@@ -204,8 +208,8 @@ def candidate_order(availability: dict[str, Any], current: str | None) -> list[s
 
 
 def _remove_unsafe_selection(selected_path: Path, current: str | None) -> bool:
-    """Delete legacy/non-free selection state before any autonomous consumer can read it."""
-    if not current or is_explicit_free_model(current):
+    """Delete legacy/non-free/DeepSeek state before autonomous consumers can read it."""
+    if not current or (is_explicit_free_model(current) and not is_deepseek_model(current)):
         return False
     try:
         selected_path.unlink(missing_ok=True)

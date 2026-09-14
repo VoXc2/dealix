@@ -349,7 +349,7 @@ def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> 
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
     monkeypatch.setenv("DEALIX_OPENCODE_GO_USE_BALANCE", "disabled")
     monkeypatch.setenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", "test_verified_disabled")
-    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode-go/deepseek-v4.1-flash"])
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode-go/glm-5.3"])
     monkeypatch.setattr(factory, "discover_ollama_models", lambda: ["qwen3:4b"])
     monkeypatch.setattr(factory, "discover_router_models", lambda: ["dealix-local"])
     def _capture(argv, cwd, timeout=600, env=None, stdin=None):
@@ -358,7 +358,7 @@ def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> 
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
     assert factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)["ok"] is True
-    assert captured["argv"][3:5] == ["-m", "opencode-go/deepseek-v4.1-flash"]
+    assert captured["argv"][3:5] == ["-m", "opencode-go/glm-5.3"]
 
 
 def _opencode_job(**overrides):

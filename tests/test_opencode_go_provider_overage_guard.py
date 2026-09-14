@@ -14,7 +14,7 @@ import go_resource_broker as broker
 
 
 CATALOG = [
-    "opencode-go/deepseek-v4.1-flash",
+    "opencode-go/glm-5.3",
     "opencode/nemotron-3-ultra-free",
 ]
 
@@ -43,7 +43,7 @@ def test_disabled_use_balance_with_evidence_allows_included_go(monkeypatch) -> N
     assert authority["state"] == broker.GO_COST_VERIFIED_DISABLED
     assert authority["automatic_go_allowed"] is True
     assert broker.pick_model("R4_INCLUDED_HIGH", CATALOG, [], []) == (
-        "opencode-go/deepseek-v4.1-flash"
+        "opencode-go/glm-5.3"
     )
 
 
