@@ -57,7 +57,11 @@ def test_r3_does_not_use_unclassified_router_model_as_included_fallback() -> Non
     assert broker.pick_model("R3_INCLUDED_LIGHT", [], [], ["router/unknown-cost"]) == policy.UNKNOWN_INCLUDED_LIGHT
 
 
-def test_r4_uses_included_deepseek_only_with_verified_use_balance_disabled() -> None:
+def test_r4_uses_included_deepseek_only_with_verified_use_balance_disabled(monkeypatch) -> None:
+    # Included-Go routing requires live provider cost authority (balance-off
+    # verified); the explicit provider_state argument alone cannot mint it.
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_USE_BALANCE", "disabled")
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", "test_verified_disabled")
     catalog = [
         "opencode/paid-a",
         "opencode/deepseek-v4-flash-free",

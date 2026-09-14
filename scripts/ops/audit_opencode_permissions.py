@@ -196,7 +196,10 @@ def load_config_file(path: Path) -> dict[str, Any] | None:
     if not path.is_file():
         return None
     text = path.read_text(encoding="utf-8")
-    text = re.sub(r"//.*", "", text)
+    # Strip full-line // comments only. Inline // sequences appear inside
+    # string values (notably http(s):// URLs); stripping them corrupts the
+    # config and makes the real project file unauditable.
+    text = re.sub(r"(?m)^\s*//.*$", "", text)
     try:
         return json.loads(text)
     except json.JSONDecodeError:

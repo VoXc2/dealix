@@ -113,13 +113,29 @@ def test_lease_contention_then_expiry_requires_reclaim(tmp_path: Path) -> None:
     assert fourth is True
 
 
-def test_resource_governor_is_bounded() -> None:
+def test_resource_governor_derives_capacity_from_live_resources(monkeypatch) -> None:
+    monkeypatch.delenv("DEALIX_DEEP_WIP_CEILING", raising=False)
+    # Starved host throttles to one deep worker.
     assert factory.compute_max_concurrent_deep({"mem_available_mb": 1000, "cpu_count": 4, "load1": 0}) == 1
-    assert factory.compute_max_concurrent_deep({"mem_available_mb": 8000, "cpu_count": 4, "load1": 0}) == 3
-    assert factory.compute_max_concurrent_deep({"mem_available_mb": 8000, "cpu_count": 4, "load1": 100}) == 1
-    for mem in (500, 3000, 8000):
-        value = factory.compute_max_concurrent_deep({"mem_available_mb": mem, "cpu_count": 8, "load1": 0})
-        assert 1 <= value <= factory.DEEP_WIP_MAX
+    # Current-host-shaped capacity (~4 CPU / ~9GiB) still computes 3.
+    assert factory.compute_max_concurrent_deep({"mem_available_mb": 8875, "cpu_count": 4, "load1": 3.45}) == 3
+    # Roomy hosts safely exceed the superseded legacy global cap of 3.
+    roomy = {"mem_available_mb": 12288, "cpu_count": 8, "load1": 0.1}
+    assert factory.compute_max_concurrent_deep(roomy) > 3
+    # Extreme load throttles back to one regardless of headroom.
+    assert factory.compute_max_concurrent_deep({"mem_available_mb": 12288, "cpu_count": 8, "load1": 100}) == 1
+
+
+def test_operational_ceiling_bounds_but_never_unbounds(monkeypatch) -> None:
+    roomy = {"mem_available_mb": 65536, "cpu_count": 32, "load1": 0.1}
+    monkeypatch.setenv("DEALIX_DEEP_WIP_CEILING", "2")
+    assert factory.compute_max_concurrent_deep(roomy) == 2
+    assert factory.operational_ceiling() == 2
+    monkeypatch.setenv("DEALIX_DEEP_WIP_CEILING", "10000")
+    assert factory.operational_ceiling() == factory.DEEP_WIP_CEILING_HARD_MAX
+    assert factory.compute_max_concurrent_deep(roomy) <= factory.DEEP_WIP_CEILING_HARD_MAX
+    monkeypatch.setenv("DEALIX_DEEP_WIP_CEILING", "not-a-number")
+    assert factory.operational_ceiling() == factory.DEEP_WIP_CEILING_DEFAULT
 
 
 def test_submit_l5_waits_and_never_runs(tmp_path: Path) -> None:
@@ -279,12 +295,16 @@ def test_execute_opencode_places_auto_after_run(tmp_path: Path, monkeypatch) -> 
     captured: dict[str, object] = {}
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    # Canonical free evidence: the broker resolves an explicit-free catalog model.
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/nemotron-3-ultra-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
     def _capture(argv, cwd, timeout=600, env=None, stdin=None):
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
-    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path)
+    result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
     assert argv[:3] == [str(binary), "run", "--auto"]
@@ -302,7 +322,8 @@ def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) 
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
     monkeypatch.setenv("DEALIX_OPENCODE_SELECTED_MODEL_FILE", str(selected))
-    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: [])
+    # Current catalog membership is required even for selection-file models.
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/example-free"])
     monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
     monkeypatch.setattr(factory, "discover_router_models", lambda: [])
     def _capture(argv, cwd, timeout=600, env=None, stdin=None):
@@ -310,7 +331,7 @@ def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) 
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
-    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path)
+    result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
     assert argv[0:3] == [str(binary), "run", "--auto"]
@@ -336,7 +357,7 @@ def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> 
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
-    assert factory.execute_opencode(job, tmp_path, db_dir=tmp_path)["ok"] is True
+    assert factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)["ok"] is True
     assert captured["argv"][3:5] == ["-m", "opencode-go/deepseek-v4.1-flash"]
 
 
@@ -361,7 +382,7 @@ def test_opencode_fails_closed_without_permission_policy(tmp_path: Path, monkeyp
         raise AssertionError("run_argv must not be called without the hardened policy")
 
     monkeypatch.setattr(factory, "run_argv", _boom)
-    result = factory.execute_opencode(_opencode_job(), tmp_path)
+    result = factory.execute_opencode_cli(_opencode_job(), tmp_path)
     assert result["ok"] is False
     assert result["returncode"] == 78
     assert "policy" in result["stderr"]
@@ -379,7 +400,7 @@ def test_opencode_fails_closed_when_control_db_unavailable(tmp_path: Path, monke
     monkeypatch.setattr(factory, "run_argv", _boom)
     blocker = tmp_path / "blocker"
     blocker.write_text("not-a-dir", encoding="utf-8")
-    result = factory.execute_opencode(_opencode_job(), tmp_path, db_dir=blocker / "opencode")
+    result = factory.execute_opencode_cli(_opencode_job(), tmp_path, db_dir=blocker / "opencode")
     assert result["ok"] is False
     assert result["returncode"] == 73
     assert "control-db-unavailable" in result["stderr"]
@@ -390,6 +411,10 @@ def test_opencode_isolates_control_path_and_stdin(tmp_path: Path, monkeypatch) -
     policy.write_text('{"bash":{"*":"allow"}}', encoding="utf-8")
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: "/usr/bin/true")
+    # Canonical free evidence so the launch does not depend on host state.
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/nemotron-3-ultra-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
     captured: dict[str, object] = {}
 
     def _capture(argv, cwd, timeout=600, env=None, stdin=None):
@@ -398,7 +423,7 @@ def test_opencode_isolates_control_path_and_stdin(tmp_path: Path, monkeypatch) -
 
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = _opencode_job()
-    assert factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")["ok"] is True
+    assert factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path / "oc")["ok"] is True
     argv = captured["argv"]
     env = captured["env"]
     assert argv[:3] == ["/usr/bin/true", "run", "--auto"]
@@ -584,3 +609,447 @@ def test_execute_local_ai_caps_requested_bounds(tmp_path: Path, monkeypatch) -> 
     assert factory.execute_local_ai(job, tmp_path)["ok"] is True
     assert captured["timeout"] == 120
     assert captured["body"]["options"]["num_predict"] == 256
+
+
+def _stub_opencode_env(tmp_path: Path, monkeypatch, *, selected_text=None, catalog=None) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    policy = tmp_path / "permissions.json"
+    policy.write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(binary))
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    selected = tmp_path / "selected-model"
+    if selected_text is not None:
+        selected.write_text(selected_text, encoding="utf-8")
+    monkeypatch.setenv("DEALIX_OPENCODE_SELECTED_MODEL_FILE", str(selected))
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: list(catalog) if catalog is not None else [])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+
+
+def _never_launch(monkeypatch) -> list:
+    launched: list = []
+
+    def _boom(argv, cwd, timeout=600, env=None, stdin=None):
+        launched.append(argv)
+        raise AssertionError("executor launched without model authority")
+
+    monkeypatch.setattr(factory, "run_argv", _boom)
+    return launched
+
+
+def test_process_queue_caller_limit_cannot_exceed_governor(tmp_path: Path, monkeypatch) -> None:
+    available = int(factory.governor_state(tmp_path)["deep_wip_available"])
+    assert available >= 1
+    for index in range(available + 2):
+        factory.submit_job(tmp_path, _deterministic_job(modifying=True, business_goal=f"cap {index}"))
+    calls: list[str] = []
+
+    def _stub(root, job, **kwargs):
+        calls.append(job["JOB_ID"])
+        return {"ok": True, "status": "SUCCEEDED", "job": job}
+
+    monkeypatch.setattr(factory, "run_job", _stub)
+    factory.process_queue(tmp_path, limit=10**6)
+    assert len(calls) == available
+
+
+def test_process_queue_caller_limit_only_reduces(tmp_path: Path, monkeypatch) -> None:
+    available = int(factory.governor_state(tmp_path)["deep_wip_available"])
+    assert available >= 1
+    for index in range(available + 2):
+        factory.submit_job(tmp_path, _deterministic_job(modifying=True, business_goal=f"reduce {index}"))
+    calls: list[str] = []
+
+    def _stub(root, job, **kwargs):
+        calls.append(job["JOB_ID"])
+        return {"ok": True, "status": "SUCCEEDED", "job": job}
+
+    monkeypatch.setattr(factory, "run_job", _stub)
+    factory.process_queue(tmp_path, limit=1)
+    assert len(calls) == min(1, available)
+
+
+def test_execute_opencode_rejects_stale_nonfree_selected_model(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(tmp_path, monkeypatch, selected_text="opencode/paid-evil\n")
+    launched = _never_launch(monkeypatch)
+    result = factory.execute_opencode(_opencode_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert launched == []
+
+
+def test_execute_opencode_holds_when_model_authority_unavailable(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(tmp_path, monkeypatch, selected_text=None)
+    launched = _never_launch(monkeypatch)
+    result = factory.execute_opencode(_opencode_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "model-authority-unavailable" in result["stderr"]
+    assert launched == []
+
+
+def test_execute_opencode_rejects_caller_paid_model(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(tmp_path, monkeypatch, selected_text="opencode/legit-free\n")
+    launched = _never_launch(monkeypatch)
+    job = _opencode_job(executor={"prompt": "inspect", "model": "opencode/paid-evil"})
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "model-authority-unproven" in result["stderr"]
+    assert launched == []
+
+
+def _init_git_repo(path: Path) -> str:
+    path.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["git", "init", "-q", str(path)], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.email", "t@example.com"], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.name", "tester"], check=True)
+    (path / "a.txt").write_text("a", encoding="utf-8")
+    subprocess.run(["git", "-C", str(path), "add", "."], check=True)
+    subprocess.run(["git", "-C", str(path), "commit", "-qm", "init"], check=True)
+    return subprocess.run(
+        ["git", "-C", str(path), "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+    ).stdout.strip()
+
+
+def test_create_worktree_requires_live_base_for_modifying(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    _init_git_repo(repo)
+    job = factory.make_job(
+        owner_agent="dealix-engineer",
+        business_goal="live base required",
+        job_class="ENGINEERING",
+        modifying=True,
+    )
+    job["REPO"] = str(repo)
+    job["BASE_SHA"] = None
+    missing = factory.create_worktree(job, repo_root=repo, worktree_root=tmp_path / "wt")
+    assert missing["ok"] is False
+    assert missing["reason"] == "live-base-required-no-frozen-fallback"
+
+    job["BASE_SHA"] = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+    bogus = factory.create_worktree(job, repo_root=repo, worktree_root=tmp_path / "wt")
+    assert bogus["ok"] is False
+    assert bogus["reason"] == "live-base-unresolvable"
+
+
+def test_make_job_withholds_frozen_base_for_modifying(monkeypatch) -> None:
+    # Simulate failed live git resolution: strict lookup yields nothing.
+    monkeypatch.setattr(factory, "resolve_live_base_sha", lambda repo_root=None: None)
+    monkeypatch.delenv("DEALIX_AGENTIC_BASE_SHA", raising=False)
+    modifying = factory.make_job(
+        owner_agent="dealix-engineer", business_goal="x", job_class="ENGINEERING", modifying=True
+    )
+    assert modifying["MODIFYING"] is True
+    assert not modifying["BASE_SHA"]
+    readonly = factory.make_job(
+        owner_agent="dealix-pm", business_goal="x", job_class="DETERMINISTIC", modifying=False
+    )
+    assert readonly["BASE_SHA"] == factory.FROZEN_RELEASE_SHA
+    explicit = factory.make_job(
+        owner_agent="dealix-engineer",
+        business_goal="x",
+        job_class="ENGINEERING",
+        modifying=True,
+        base_sha="abc123",
+    )
+    assert explicit["BASE_SHA"] == "abc123"
+
+
+def test_make_job_to_worktree_chain_fails_closed_without_live_base(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(factory, "resolve_live_base_sha", lambda repo_root=None: None)
+    monkeypatch.delenv("DEALIX_AGENTIC_BASE_SHA", raising=False)
+    repo = tmp_path / "repo"
+    _init_git_repo(repo)
+    job = factory.make_job(
+        owner_agent="dealix-engineer", business_goal="chain", job_class="ENGINEERING", modifying=True
+    )
+    job["REPO"] = str(repo)
+    created = factory.create_worktree(job, repo_root=repo, worktree_root=tmp_path / "wt")
+    assert created["ok"] is False
+    assert created["reason"] == "live-base-required-no-frozen-fallback"
+
+
+def _boom_urlopen(*_args, **_kwargs):
+    raise AssertionError("no daemon HTTP before model HOLD")
+
+
+def test_execute_opencode_rejects_fabricated_free_model(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(tmp_path, monkeypatch, selected_text=None, catalog=["opencode/real-free"])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _boom_urlopen)
+    launched = _never_launch(monkeypatch)
+    job = _opencode_job(executor={"prompt": "inspect", "model": "opencode/fake-free"})
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "model-authority-unproven" in result["stderr"]
+    assert launched == []
+
+
+def test_execute_opencode_rejects_stale_free_selection(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(
+        tmp_path, monkeypatch, selected_text="opencode/old-free\n", catalog=["opencode/real-free"]
+    )
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _boom_urlopen)
+    launched = _never_launch(monkeypatch)
+    result = factory.execute_opencode(_opencode_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "model-authority-unavailable" in result["stderr"]
+    assert launched == []
+
+
+def test_canonical_agent_ids_are_registry_bound() -> None:
+    ids = factory.canonical_agent_ids()
+    assert ids is not None and len(ids) > 0
+    assert "dealix.group.engineering" in ids
+    assert "dealix.group.this-agent-does-not-exist" not in ids
+
+
+def test_validate_rejects_orphan_hierarchical_owner() -> None:
+    job = _deterministic_job(owner_agent="dealix.group.this-agent-does-not-exist")
+    errors = factory.validate_job(job)
+    assert any("OWNER_AGENT" in error for error in errors)
+
+
+class _FakeDaemonResponse:
+    def __init__(self, status: int, text: str) -> None:
+        self.status = status
+        self._text = text
+
+    def read(self) -> bytes:
+        return self._text.encode("utf-8")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args) -> bool:
+        return False
+
+
+class _FakeDaemonHTTP:
+    def __init__(self, routes) -> None:
+        self.routes = list(routes)
+        self.calls: list = []
+        self.bodies: list = []
+
+    def __call__(self, request, timeout=None):
+        method = request.get_method()
+        url = request.full_url
+        raw = getattr(request, "data", None)
+        self.calls.append((method, url))
+        self.bodies.append(raw.decode("utf-8") if raw else None)
+        for (route_method, needle), (status, payload) in self.routes:
+            if route_method == method and needle in url:
+                text = payload if isinstance(payload, str) else json.dumps(payload)
+                return _FakeDaemonResponse(status, text)
+        raise AssertionError(f"unexpected daemon call: {method} {url}")
+
+
+def _live_success_messages(marker: str = "FREE_API_CANARY_OK") -> dict:
+    # Real live payload shape: role/finish nested under info.
+    return {
+        "messages": [
+            {
+                "info": {"role": "user", "finish": "stop"},
+                "parts": [{"type": "text", "text": "Reply with exactly FREE_API_CANARY_OK"}],
+            },
+            {
+                "info": {"role": "assistant", "finish": "stop"},
+                "parts": [{"type": "text", "text": marker}],
+            },
+        ]
+    }
+
+
+def test_daemon_parser_matches_live_info_nested_shape() -> None:
+    done, clean, text, error = factory._daemon_terminal_state(_live_success_messages())
+    assert done is True
+    assert clean is True
+    assert "FREE_API_CANARY_OK" in text
+    assert error == ""
+
+
+def test_daemon_parser_reports_info_nested_error_shape() -> None:
+    payload = {
+        "messages": [
+            {
+                "info": {"role": "assistant", "finish": "error", "error": "model overloaded"},
+                "parts": [{"type": "text", "text": "partial"}],
+            }
+        ]
+    }
+    done, clean, text, error = factory._daemon_terminal_state(payload)
+    assert done is True
+    assert clean is False
+    assert "overloaded" in error
+
+
+def test_daemon_parser_reports_part_error_shape() -> None:
+    payload = {
+        "messages": [
+            {
+                "role": "assistant",
+                "finish": "error",
+                "parts": [{"type": "text", "text": "x", "error": "part failed"}],
+            }
+        ]
+    }
+    done, clean, _text, error = factory._daemon_terminal_state(payload)
+    assert done is True
+    assert clean is False
+    assert "part failed" in error
+
+
+def _daemon_job(**overrides):
+    kwargs = {
+        "owner_agent": "dealix-engineer",
+        "business_goal": "daemon canary",
+        "job_class": "REVIEW",
+        "authority_level": "L2",
+        "modifying": False,
+        "executor": {"prompt": "Reply with exactly FREE_API_CANARY_OK", "model": "opencode/muse-spark-1.3-contributor-free"},
+    }
+    kwargs.update(overrides)
+    return factory.make_job(**kwargs)
+
+
+def _daemon_success_routes(marker: str = "FREE_API_CANARY_OK"):
+    return [
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("GET", "/message"), (200, _live_success_messages(marker))),
+        (("POST", "/session?"), (200, {"id": "sess-1"})),
+    ]
+
+
+def test_daemon_executes_bounded_session_with_pinned_model(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/muse-spark-1.3-contributor-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+    fake = _FakeDaemonHTTP(_daemon_success_routes())
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+
+    def _boom(argv, cwd, timeout=600, env=None, stdin=None):
+        raise AssertionError("direct CLI must not run when the daemon path succeeds")
+
+    monkeypatch.setattr(factory, "run_argv", _boom)
+    job = _daemon_job()
+    result = factory.execute_opencode_daemon(job, tmp_path, model="opencode/muse-spark-1.3-contributor-free")
+    assert result["ok"] is True
+    assert result["via"] == "daemon"
+    assert result["session_id"] == "sess-1"
+    assert "FREE_API_CANARY_OK" in (result.get("stdout_full") or "")
+    create_bodies = [
+        json.loads(body)
+        for (method, url), body in zip(fake.calls, fake.bodies)
+        if method == "POST" and "/session?" in url
+    ]
+    assert create_bodies and create_bodies[0]["model"] == {
+        "providerID": "opencode",
+        "id": "muse-spark-1.3-contributor-free",
+    }
+    prompt_bodies = [
+        json.loads(body)
+        for (method, url), body in zip(fake.calls, fake.bodies)
+        if method == "POST" and "prompt_async" in url
+    ]
+    assert prompt_bodies and prompt_bodies[0]["model"] == {
+        "providerID": "opencode",
+        "modelID": "muse-spark-1.3-contributor-free",
+    }
+    assert prompt_bodies[0]["parts"] == [{"type": "text", "text": "Reply with exactly FREE_API_CANARY_OK"}]
+
+
+def test_daemon_result_stdout_is_bounded_and_redacted(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _FakeDaemonHTTP(_daemon_success_routes("api_key=sk-abcdef1234567890")))
+    job = _daemon_job()
+    result = factory.execute_opencode_daemon(job, tmp_path, model="opencode/muse-spark-1.3-contributor-free")
+    assert result["ok"] is True
+    assert "sk-abcdef1234567890" not in (result.get("stdout") or "")
+    assert "[REDACTED]" in (result.get("stdout") or "")
+
+
+def test_orchestrator_fails_closed_when_daemon_down_without_opt_in(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(
+        tmp_path, monkeypatch, selected_text=None, catalog=["opencode/muse-spark-1.3-contributor-free"]
+    )
+    monkeypatch.delenv("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK", raising=False)
+
+    import urllib.error
+
+    def _down(*_args, **_kwargs):
+        raise urllib.error.URLError("refused")
+
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _down)
+
+    def _boom(argv, cwd, timeout=600, env=None, stdin=None):
+        raise AssertionError("CLI fallback requires explicit opt-in")
+
+    monkeypatch.setattr(factory, "run_argv", _boom)
+    result = factory.execute_opencode(_daemon_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 75
+    assert result.get("daemon_unavailable") is True
+
+
+def test_orchestrator_cli_fallback_requires_explicit_opt_in(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(
+        tmp_path, monkeypatch, selected_text=None, catalog=["opencode/muse-spark-1.3-contributor-free"]
+    )
+    monkeypatch.setenv("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK", "1")
+
+    import urllib.error
+
+    def _down(*_args, **_kwargs):
+        raise urllib.error.URLError("refused")
+
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _down)
+    captured: dict[str, object] = {}
+
+    def _capture(argv, cwd, timeout=600, env=None, stdin=None):
+        captured["argv"] = argv
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    result = factory.execute_opencode(_daemon_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert captured["argv"][:3] == [str(tmp_path / "opencode"), "run", "--auto"]
+
+
+def test_daemon_rejects_non_loopback_url(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("DEALIX_OPENCODE_DAEMON_URL", "http://example.com:4098")
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _boom_urlopen)
+    result = factory.execute_opencode_daemon(_daemon_job(), tmp_path, model="opencode/x-free")
+    assert result["ok"] is False
+    assert result.get("daemon_unavailable") is True
+
+
+def test_daemon_rejects_version_mismatch(tmp_path: Path, monkeypatch) -> None:
+    fake = _FakeDaemonHTTP([(("GET", "/global/health"), (200, {"healthy": True, "version": "2.0.0"}))])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    result = factory.execute_opencode_daemon(_daemon_job(), tmp_path, model="opencode/x-free")
+    assert result["ok"] is False
+    assert result.get("daemon_unavailable") is True
+
+
+def test_daemon_timeout_aborts_session(tmp_path: Path, monkeypatch) -> None:
+    routes = [
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("GET", "/message"), (200, {"messages": []})),
+        (("POST", "/session?"), (200, {"id": "sess-9"})),
+        (("POST", "/abort"), (200, {})),
+    ]
+    fake = _FakeDaemonHTTP(routes)
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    job = _daemon_job()
+    result = factory.execute_opencode_daemon(
+        job, tmp_path, model="opencode/muse-spark-1.3-contributor-free", timeout_s=0.15, poll_interval=0.01
+    )
+    assert result["ok"] is False
+    assert result["returncode"] == 124
+    assert result["session_id"] == "sess-9"
+    assert any("abort" in url for _method, url in fake.calls)
