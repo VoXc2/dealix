@@ -9,6 +9,12 @@ UNKNOWN_INCLUDED_STRONG = "included:strong:UNKNOWN"
 PAID_PENDING_APPROVAL = "PAID_PENDING_APPROVAL"
 
 
+def is_deepseek_model(model: str | None) -> bool:
+    """Return True for any DeepSeek model identifier, regardless of namespace/tier."""
+    value = (model or "").strip().lower()
+    return bool(value) and "deepseek" in value
+
+
 def is_explicit_free_model(model: str | None) -> bool:
     """Return True only when the model ID explicitly declares a free tier."""
     value = (model or "").strip().lower()
@@ -22,7 +28,9 @@ def is_included_opencode_go_model(model: str | None) -> bool:
 
 
 def is_auto_selectable_model(model: str | None) -> bool:
-    """Allow automatic selection only for explicit free or included-plan IDs."""
+    """Allow unattended selection only for non-DeepSeek free or included-plan IDs."""
+    if is_deepseek_model(model):
+        return False
     return is_explicit_free_model(model) or is_included_opencode_go_model(model)
 
 

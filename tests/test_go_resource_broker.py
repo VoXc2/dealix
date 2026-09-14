@@ -80,18 +80,35 @@ def test_pick_model_prefers_free_and_verified_included_routes(monkeypatch) -> No
         "opencode/deepseek-v4-pro",
         "opencode-go/deepseek-v4.1-flash",
         "opencode-go/deepseek-v4-pro",
+        "opencode-go/glm-5.3",
+        "opencode/nemotron-3-ultra-free",
     ]
     verified = broker.GO_COST_VERIFIED_DISABLED
     assert broker.pick_model("R3_INCLUDED_LIGHT", catalog, [], [], verified) == "opencode/some-free"
-    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], verified) == "opencode-go/deepseek-v4.1-flash"
-    assert broker.pick_model("R5_STRONG_REASONING", catalog, [], [], verified) == "opencode-go/deepseek-v4-pro"
+    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], verified) == "opencode-go/glm-5.3"
+    assert broker.pick_model("R5_STRONG_REASONING", catalog, [], [], verified) == "opencode-go/glm-5.3"
     assert broker.pick_model("R2_LOCAL_OLLAMA", catalog, ["qwen3:4b"], [], verified) == "qwen3:4b"
     assert broker.pick_model("R0_NO_MODEL", catalog, [], [], verified) == "none"
 
 
+def test_pick_model_never_selects_deepseek_unattended(monkeypatch) -> None:
+    """Canonical NO_DEEPSEEK law: DeepSeek IDs are never auto-selected."""
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_USE_BALANCE", "disabled")
+    monkeypatch.setenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", "test_verified_disabled")
+    catalog = [
+        "opencode/deepseek-v4-flash-free",
+        "opencode-go/deepseek-v4.1-flash",
+        "opencode-go/deepseek-v4-pro",
+    ]
+    verified = broker.GO_COST_VERIFIED_DISABLED
+    assert broker.pick_model("R3_INCLUDED_LIGHT", catalog, [], [], verified) == broker.UNKNOWN_INCLUDED_LIGHT
+    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], verified) == broker.UNKNOWN_INCLUDED_HIGH
+    assert broker.pick_model("R5_STRONG_REASONING", catalog, [], [], verified) == broker.UNKNOWN_INCLUDED_STRONG
+
+
 def test_pick_model_does_not_assume_go_cost_authority() -> None:
     catalog = [
-        "opencode-go/deepseek-v4.1-flash",
+        "opencode-go/glm-5.3",
         "opencode/nemotron-3-ultra-free",
     ]
     assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], broker.GO_COST_UNKNOWN) == (
@@ -104,7 +121,7 @@ def test_pick_model_caller_state_cannot_mint_verified_go(monkeypatch) -> None:
     monkeypatch.delenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", raising=False)
     assert broker.provider_cost_authority()["state"] == broker.GO_COST_UNKNOWN
     catalog = [
-        "opencode-go/deepseek-v4.1-flash",
+        "opencode-go/glm-5.3",
         "opencode/nemotron-3-ultra-free",
     ]
     assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], broker.GO_COST_VERIFIED_DISABLED) == (

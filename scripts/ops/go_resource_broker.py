@@ -30,6 +30,7 @@ from model_cost_policy import (
     explicit_free_models,
     first_available,
     included_opencode_go_models,
+    is_deepseek_model,
 )
 
 STATE_PATH = Path('/opt/dealix/company-os/founder-os/model_economics/GO_BROKER_STATE.json')
@@ -166,14 +167,20 @@ def discover_ollama_models() -> list[str]:
 
 def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[str],
                provider_state: str | None = None) -> str:
-    free = explicit_free_models(catalog)
+    # Canonical unattended policy is NO_DEEPSEEK even when a model is marked
+    # free or appears in the included OpenCode Go namespace.
+    free = [model for model in explicit_free_models(catalog) if not is_deepseek_model(model)]
     live = str(provider_cost_authority()['state'])
     state = provider_state or live
     if state == GO_COST_VERIFIED_DISABLED and live != GO_COST_VERIFIED_DISABLED:
         # Caller/state-path input may only reduce capacity: it can never mint
         # provider cost authority to unlock included-Go routing.
         state = live
-    included = included_opencode_go_models(catalog) if state == GO_COST_VERIFIED_DISABLED else []
+    included = (
+        [model for model in included_opencode_go_models(catalog) if not is_deepseek_model(model)]
+        if state == GO_COST_VERIFIED_DISABLED
+        else []
+    )
     safe = [*included, *[model for model in free if model not in included]]
     if route in {'R0_NO_MODEL', 'R1_DETERMINISTIC'}:
         return 'none'
@@ -183,15 +190,15 @@ def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[s
         return free[0] if free else (included[0] if included else UNKNOWN_INCLUDED_LIGHT)
     if route == 'R4_INCLUDED_HIGH':
         preferred = (
-            'opencode-go/deepseek-v4.1-flash', 'opencode-go/deepseek-v4-flash',
-            'opencode/deepseek-v4-flash-free', 'opencode/north-mini-code-free',
-            'opencode/nemotron-3-ultra-free',
+            'opencode-go/glm-5.3', 'opencode-go/gpt-5.6-luna',
+            'opencode/nemotron-3-ultra-free', 'opencode/nemotron-3.5-lightning-free',
+            'opencode/mimo-v2.5-free', 'opencode/ling-3.0-flash-fin-free',
         )
         return first_available(preferred, safe) or UNKNOWN_INCLUDED_HIGH
     if route == 'R5_STRONG_REASONING':
         preferred = (
-            'opencode-go/deepseek-v4-pro', 'opencode-go/glm-5.3',
-            'opencode/nemotron-3-ultra-free',
+            'opencode-go/glm-5.3', 'opencode-go/gpt-5.6-luna',
+            'opencode/nemotron-3-ultra-free', 'opencode/nemotron-3.5-lightning-free',
         )
         return first_available(preferred, safe) or UNKNOWN_INCLUDED_STRONG
     return PAID_PENDING_APPROVAL

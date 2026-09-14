@@ -36,9 +36,19 @@ def test_candidate_order_prefers_safe_current_then_preferred_free_only() -> None
     }
     order = broker.candidate_order(availability, current="opencode/current-free")
     assert order[0] == "opencode/current-free"
-    assert order[1] == "opencode/deepseek-v4-flash-free"
+    assert "opencode/deepseek-v4-flash-free" not in order
     assert "opencode/paid-x" not in order
     assert "opencode-go/deepseek-v4.1-flash" not in order
+
+
+def test_candidate_order_rejects_deepseek_current() -> None:
+    availability = {
+        "models": ["opencode/a-free", "opencode/deepseek-v4-flash-free"],
+        "free_models": ["opencode/a-free", "opencode/deepseek-v4-flash-free"],
+    }
+    assert broker.candidate_order(availability, current="opencode/deepseek-v4-flash-free") == [
+        "opencode/a-free"
+    ]
 
 
 def test_candidate_order_rejects_stale_non_free_current() -> None:
