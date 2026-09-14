@@ -5,7 +5,9 @@ export default createMiddleware(routing);
 
 export const config = {
   matcher: [
-    "/((?!api|_next|_vercel|.*\\..*).*)",
+    // Operational endpoints must never be locale-redirected (uptime monitors
+    // treat non-200 as down): api, healthz. Dotted static assets excluded below.
+    "/((?!api|healthz|_next|_vercel|.*\\..*).*)",
     "/",
   ],
 };
