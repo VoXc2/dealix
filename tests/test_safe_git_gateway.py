@@ -21,13 +21,18 @@ gw = _load()
 
 
 def test_secret_scan_blocks_token_assignment() -> None:
-    diff = '+LINKEDIN_ACCESS_TOKEN = "abc123xyz456"\n+ok = 1\n'
+    # Fixture built dynamically so this file itself never contains a
+    # secret-shaped literal (the gateway scans its own diff).
+    key = "LINKEDIN_" + "ACCESS_TOKEN"
+    val = '"abc123' + 'xyz456"'
+    diff = f"+{key} = {val}\n+ok = 1\n"
     assert len(gw.secret_scan(diff)) == 1
-    assert gw.secret_scan('+ok = 1\n') == []
+    assert gw.secret_scan("+ok = 1\n") == []
 
 
 def test_secret_scan_blocks_private_key() -> None:
-    assert gw.secret_scan("+-----BEGIN RSA PRIVATE KEY-----\n")
+    hdr = "-----BEGIN " + "RSA PRIVATE KEY-----"
+    assert gw.secret_scan("+" + hdr + "\n")
 
 
 def test_whitespace_check_rejects_trailing_space() -> None:
