@@ -11,7 +11,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dealix — Strategy, Systems, Intelligence & Products",
+    default: "Dealix — AI Business Operating System | Strategy, Systems & Proof",
     template: "%s | Dealix"
   },
   description:
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     locale: "ar_SA",
     url: siteUrl,
     siteName: "Dealix",
-    title: "Dealix — Strategy, Systems, Intelligence & Products",
+    title: "Dealix — AI Business Operating System | Strategy, Systems & Proof",
     description:
       "Saudi B2B strategy and systems company. From business signal to governed execution and measurable proof.",
     images: [
@@ -42,13 +42,13 @@ export const metadata: Metadata = {
         url: `${siteUrl}/dealix-og.svg`,
         width: 1200,
         height: 630,
-        alt: "Dealix — Strategy, Systems, Intelligence & Products",
+        alt: "Dealix — AI Business Operating System",
       }
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dealix — Strategy, Systems, Intelligence & Products",
+    title: "Dealix — AI Business Operating System | Strategy, Systems & Proof",
     description:
       "Saudi B2B strategy and systems company. Dealix OS is the flagship AI Business Operating System.",
     images: [`${siteUrl}/dealix-og.svg`],
