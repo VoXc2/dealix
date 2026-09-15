@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 
 import pytest
@@ -20,37 +21,51 @@ def _load():
 fabric_mod = _load()
 
 
-def test_fabric_covers_all_twenty_sectors_with_five_agents() -> None:
+def test_fabric_uses_agentic_holding_not_fixed_five_authority() -> None:
     fabric = fabric_mod.build_fabric()
+    authority = fabric["agent_authority"]
     assert fabric["sector_count"] == 20
-    assert fabric["permanent_agents"] == fabric_mod.PERMANENT_AGENTS
+    assert authority["architecture"] == "agentic_holding_sector_company_mesh"
+    assert authority["logical_agents"] > len(fabric_mod.LEGACY_EXECUTOR_ALIASES)
+    assert authority["legacy_executor_aliases"] == fabric_mod.LEGACY_EXECUTOR_ALIASES
+    assert authority["fixed_five_runtime_authority"] is False
+    assert authority["runtime_capacity_authority"] == "ResourceGovernor + Session Factory"
+    assert fabric["deep_wip_semantics"] == "ECONOMIC_FOCUS_ONLY"
     assert len(fabric["deep_wip_sectors"]) == 3
     assert len({cell["sector_id"] for cell in fabric["cells"]}) == 20
     for cell in fabric["cells"]:
-        assert [row["agent"] for row in cell["agents"]] == fabric_mod.PERMANENT_AGENTS
+        assert cell["agent_authority"]["fixed_five_runtime_authority"] is False
+        assert len(cell["agents"]) == 22
+        assert all(row["layer"] == "sector" for row in cell["agents"])
+        assert all(row["sector"] == cell["sector_id"] for row in cell["agents"])
         assert not any(cell["authority"].values())
+        assert cell["counts_as_relationship"] is False
+        assert cell["counts_as_consent"] is False
         assert cell["counts_as_pipeline"] is False
         assert cell["counts_as_revenue"] is False
 
 
-def test_top3_are_research_ranked_not_pipeline() -> None:
+def test_top3_are_economic_focus_not_runtime_capacity() -> None:
     fabric = fabric_mod.build_fabric()
     assert fabric["deep_wip_sectors"] == [
         "retail_commerce_ecommerce",
         "logistics_supply_chain",
         "tourism_hospitality",
     ]
-    assert fabric["opencode_promotion"] == "DENIED_UNTIL_EXECUTION_PLANE_GREEN"
+    assert fabric["deep_wip_semantics"] == "ECONOMIC_FOCUS_ONLY"
+    assert fabric["agent_authority"]["runtime_capacity_authority"] == "ResourceGovernor + Session Factory"
+    assert fabric["opencode_promotion"] == "GOVERNED_BY_CANONICAL_MODEL_BROKER_AND_SESSION_FACTORY"
     assert not any(fabric["material_authority"].values())
 
 
 def test_patrol_writes_internal_receipt_only(tmp_path: Path) -> None:
     result = fabric_mod.patrol_sector("retail_commerce_ecommerce", tmp_path)
     assert result["ok"] is True
-    receipt = (tmp_path / "receipts/retail_commerce_ecommerce.json").read_text(encoding="utf-8")
-    assert "INTERNAL_PATROL_READY" in receipt
-    assert '"counts_as_pipeline": false' in receipt
-    assert '"counts_as_revenue": false' in receipt
+    receipt = json.loads((tmp_path / "receipts/retail_commerce_ecommerce.json").read_text(encoding="utf-8"))
+    assert receipt["verdict"] == "INTERNAL_PATROL_READY"
+    assert receipt["counts_as_pipeline"] is False
+    assert receipt["counts_as_revenue"] is False
+    assert all(row["agent_id"].startswith("dealix.retail_commerce_ecommerce.") for row in receipt["agents"])
 
 
 def test_canonical_factory_resolution_uses_repo_scheduler(monkeypatch) -> None:
@@ -80,9 +95,14 @@ def test_factory_resolution_fails_closed_when_unavailable(tmp_path: Path, monkey
         fabric_mod.resolve_factory_script()
 
 
-def test_submit_due_jobs_uses_canonical_factory(tmp_path: Path, monkeypatch) -> None:
+def test_submit_due_jobs_persists_logical_agent_identity(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.delenv(fabric_mod.FACTORY_SCRIPT_ENV, raising=False)
     fabric = fabric_mod.build_fabric()
     result = fabric_mod.submit_due_jobs(fabric, tmp_path / "fabric", tmp_path / "factory", None)
     assert result["submitted_count"] > 0
-    assert list((tmp_path / "factory" / "jobs").glob("*.json"))
+    jobs = [json.loads(path.read_text(encoding="utf-8")) for path in (tmp_path / "factory" / "jobs").glob("*.json")]
+    assert jobs
+    assert all(job.get("LOGICAL_AGENT_ID") for job in jobs)
+    assert all(job.get("LOGICAL_AGENT_LAYER") == "sector" for job in jobs)
+    assert all(job.get("LOGICAL_AGENT_SECTOR") for job in jobs)
+    assert all(job.get("OWNER_AGENT") in fabric_mod.LEGACY_EXECUTOR_ALIASES for job in jobs)

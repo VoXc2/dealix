@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Dealix 20-sector Hermes fabric.
+"""Dealix 20-sector Hermes fabric under canonical Agentic Holding authority.
 
-One scheduler, five permanent agents, twenty temporary sector cells. The fabric
-creates deterministic patrol packets for every canonical sector and may submit
-bounded internal jobs to the already-running Hermes Session Factory. It never
-creates external-send, publish, payment, tender, DNS, deploy, or merge authority.
+One canonical scheduler serves the Agentic Holding sector-company mesh. Historical
+five agent names are compatibility executor aliases only; logical agents are
+resolved from ``build_current_registry`` and runtime capacity remains governed by
+ResourceGovernor + Session Factory. This fabric never creates external-send,
+publish, payment, tender, DNS, deploy, or merge authority.
 """
 from __future__ import annotations
 
@@ -18,6 +19,14 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from dealix.agentic_holding.runtime import AgentLayer, WorkItem, build_current_registry
+from dealix.agentic_holding.session_adapter import (
+    LEGACY_EXECUTOR_OWNERS,
+    SessionWorkRequest,
+    legacy_executor_owner,
+    render_session_job,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ROUTES = REPO_ROOT / "data/commercial/op2_sector_diagnostic_routes_v1.json"
 DEFAULT_STATE = Path("/opt/dealix/control/state/sector_hermes_fabric")
@@ -29,20 +38,55 @@ DEFAULT_FACTORY_STATE = Path("/opt/dealix/control/state/session_factory")
 # through an explicit override, otherwise we fail closed rather than guess.
 CANONICAL_FACTORY = REPO_ROOT / "scripts/ops/session_factory.py"
 FACTORY_SCRIPT_ENV = "DEALIX_SESSION_FACTORY_SCRIPT"
-PERMANENT_AGENTS = ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"]
+LEGACY_EXECUTOR_ALIASES = list(LEGACY_EXECUTOR_OWNERS)
 DEEP_WIP_MAX = 3
 PATROL_TTL = timedelta(hours=6)
 LOCAL_AI_TTL = timedelta(hours=12)
 ACTIVE_FACTORY_STATES = {"READY", "CLAIMED", "RUNNING", "VERIFYING", "RECOVERABLE", "WAITING_L5"}
 MATERIAL_AUTHORITY = {"external_send": False, "publish": False, "payment": False, "tender": False, "merge": False, "deploy": False, "dns": False, "db": False, "secret": False}
-AGENT_ROLES = {
-    "dealix-pm": "economic ordering, authority guard, Deep-WIP selection",
-    "dealix-sales": "qualify problem, free diagnostic, discovery and quote draft inputs",
-    "dealix-delivery": "baseline, acceptance criteria, delivery and proof gaps",
-    "dealix-engineer": "automation feasibility and internal implementation planning",
-    "dealix-content": "evidence-safe sector content drafts and distribution hypotheses",
-}
+AGENTIC_HOLDING_AUTHORITY = "dealix.agentic_holding.runtime.build_current_registry"
+RUNTIME_CAPACITY_AUTHORITY = "ResourceGovernor + Session Factory"
+DEEP_WIP_SEMANTICS = "ECONOMIC_FOCUS_ONLY"
 
+
+
+
+def _current_registry():
+    registry = build_current_registry()
+    failures = registry.validate()
+    if failures:
+        raise RuntimeError(f"Agentic Holding registry invalid: {failures}")
+    return registry
+
+
+def _sector_agents(registry, sector_id: str):
+    agents = [
+        agent
+        for agent in registry.agents.values()
+        if agent.layer == AgentLayer.SECTOR and agent.sector == sector_id
+    ]
+    if not agents:
+        raise ValueError(f"canonical Agentic Holding sector unavailable: {sector_id}")
+    return sorted(agents, key=lambda agent: agent.agent_id)
+
+
+def _sector_agent(registry, sector_id: str, role: str):
+    agent_id = f"dealix.{sector_id}.{role}"
+    agent = registry.agents.get(agent_id)
+    if agent is None or agent.layer != AgentLayer.SECTOR or agent.sector != sector_id:
+        raise ValueError(f"canonical logical agent unavailable: {agent_id}")
+    return agent
+
+
+def _agent_receipt(agent) -> dict[str, Any]:
+    return {
+        "agent_id": agent.agent_id,
+        "parent_id": agent.parent_id,
+        "layer": agent.layer.value,
+        "role": agent.role,
+        "sector": agent.sector,
+        "legacy_executor_alias": legacy_executor_owner(agent),
+    }
 
 def now_iso() -> str:
     return datetime.now(UTC).isoformat()
@@ -57,22 +101,35 @@ def route_hash(route: dict[str, Any]) -> str:
     return hashlib.sha256(raw).hexdigest()[:16]
 
 
-def build_packet(route: dict[str, Any], rank: int) -> dict[str, Any]:
+def build_packet(route: dict[str, Any], rank: int, *, registry=None) -> dict[str, Any]:
+    registry = registry or _current_registry()
+    sector_id = route["sector_id"]
+    logical_agents = [_agent_receipt(agent) for agent in _sector_agents(registry, sector_id)]
     top3 = rank <= DEEP_WIP_MAX
     return {
-        "schema": "dealix.sector-hermes-cell.v1",
+        "schema": "dealix.sector-hermes-cell.v2",
         "generated_at": now_iso(),
-        "sector_id": route["sector_id"],
+        "sector_id": sector_id,
         "research_rank": rank,
         "deep_wip_selected": top3,
+        "deep_wip_semantics": DEEP_WIP_SEMANTICS,
         "market_evidence_scope": route.get("market_evidence_scope", "PUBLIC_MARKET_SIGNAL_ONLY_NOT_BUYER_DEMAND"),
         "buyer_demand_status": route.get("buyer_demand_status", "UNKNOWN_NOT_EVIDENCE_BACKED"),
         "buyer": route["buyer"],
         "problem": route["problem"],
         "diagnostic": route["diagnostic_entry"],
         "commercial_pattern": route["commercial_pattern"],
-        "agents": [{"agent": agent, "duty": AGENT_ROLES[agent]} for agent in PERMANENT_AGENTS],
+        "agents": logical_agents,
+        "agent_authority": {
+            "logical_agent_authority": AGENTIC_HOLDING_AUTHORITY,
+            "sector_logical_agent_count": len(logical_agents),
+            "legacy_executor_aliases": list(LEGACY_EXECUTOR_ALIASES),
+            "fixed_five_runtime_authority": False,
+            "runtime_capacity_authority": RUNTIME_CAPACITY_AUTHORITY,
+        },
         "authority": dict(MATERIAL_AUTHORITY),
+        "counts_as_relationship": False,
+        "counts_as_consent": False,
         "counts_as_pipeline": False,
         "counts_as_revenue": False,
         "next_internal_actions": [
@@ -89,16 +146,28 @@ def build_packet(route: dict[str, Any], rank: int) -> dict[str, Any]:
 def build_fabric() -> dict[str, Any]:
     payload = load_json(ROUTES)
     routes = payload["routes"]
-    packets = [build_packet(route, index) for index, route in enumerate(routes, start=1)]
+    registry = _current_registry()
+    packets = [
+        build_packet(route, index, registry=registry)
+        for index, route in enumerate(routes, start=1)
+    ]
+    registry_receipt = registry.receipt()
     return {
-        "schema": "dealix.sector-hermes-fabric.v1",
+        "schema": "dealix.sector-hermes-fabric.v2",
         "generated_at": now_iso(),
         "sector_count": len(packets),
-        "permanent_agents": list(PERMANENT_AGENTS),
+        "agent_authority": {
+            **registry_receipt,
+            "logical_agent_authority": AGENTIC_HOLDING_AUTHORITY,
+            "legacy_executor_aliases": list(LEGACY_EXECUTOR_ALIASES),
+            "fixed_five_runtime_authority": False,
+            "runtime_capacity_authority": RUNTIME_CAPACITY_AUTHORITY,
+        },
         "deep_wip_max": DEEP_WIP_MAX,
+        "deep_wip_semantics": DEEP_WIP_SEMANTICS,
         "deep_wip_sectors": [packet["sector_id"] for packet in packets[:DEEP_WIP_MAX]],
         "scheduler_model": "ONE_HERMES_CRON_PLUS_EXISTING_SESSION_FACTORY",
-        "opencode_promotion": "DENIED_UNTIL_EXECUTION_PLANE_GREEN",
+        "opencode_promotion": "GOVERNED_BY_CANONICAL_MODEL_BROKER_AND_SESSION_FACTORY",
         "material_authority": dict(MATERIAL_AUTHORITY),
         "cells": packets,
     }
@@ -214,6 +283,7 @@ def submit_due_jobs(fabric: dict[str, Any], state_dir: Path, factory_state: Path
     factory = _load_factory_module(resolved_factory)
     jobs = _factory_jobs(factory_state)
     submitted: list[dict[str, Any]] = []
+    registry = _current_registry()
     script = Path(__file__).resolve()
     python_bin = os.environ.get("DEALIX_PYTHON", "/opt/dealix/workspace/dealix/.venv/bin/python")
     for cell in fabric["cells"]:
@@ -221,19 +291,26 @@ def submit_due_jobs(fabric: dict[str, Any], state_dir: Path, factory_state: Path
         if _sector_job_recent(jobs, sector_id, "patrol", PATROL_TTL):
             continue
         receipt = state_dir / "receipts" / f"{sector_id}.json"
-        job = factory.make_job(
-            owner_agent="dealix-pm",
+        agent = _sector_agent(registry, sector_id, "sector-market-intelligence")
+        priority = max(40.0, 90.0 - float(cell["research_rank"]))
+        item = WorkItem(
+            work_id=f"sector:{sector_id}:patrol",
+            agent_id=agent.agent_id,
+            expected_economic_value=priority,
+            risk=5.0,
+        )
+        request = SessionWorkRequest(
+            work_item=item,
             business_goal=f"SECTOR_PATROL::{sector_id} refresh internal commercial readiness packet",
             job_class="MONITORING",
             authority_level="L3",
-            economic_reason="Maintain all 20 sectors without creating fake pipeline or duplicate schedulers",
-            priority=max(40.0, 90.0 - float(cell["research_rank"])),
-            modifying=False,
+            economic_reason="Maintain all sectors without creating fake pipeline or duplicate schedulers",
             executor={"argv": [python_bin, str(script), "--state-dir", str(state_dir), "--patrol-sector", sector_id, "--json"]},
             acceptance={"criteria": "sector patrol receipt written", "checks": [{"kind": "file_contains", "path": str(receipt), "text": "INTERNAL_PATROL_READY"}]},
-            context_refs=[f"sector:{sector_id}:patrol", f"route_hash:{cell['route_hash']}"],
+            context_refs=(f"sector:{sector_id}:patrol", f"route_hash:{cell['route_hash']}"),
             next_action="continue internal patrol; external effects remain gated",
         )
+        job = render_session_job(request, agent=agent, session_factory=factory)
         result = factory.submit_job(factory_state, job)
         if result.get("ok"):
             submitted.append({"sector_id": sector_id, "kind": "patrol", "job_id": job["JOB_ID"]})
@@ -248,20 +325,29 @@ def submit_due_jobs(fabric: dict[str, Any], state_dir: Path, factory_state: Path
             "Output: 3 diagnostic questions, 3 automation hypotheses, 3 proof requirements, and 1 safe next internal action. "
             "Do not claim buyer demand, relationship, consent, ROI, revenue, or permission to send/publish."
         )
-        job = factory.make_job(
-            owner_agent="dealix-sales",
+        agent = _sector_agent(registry, sector_id, "sector-diagnostic")
+        priority = max(70.0, 100.0 - float(cell["research_rank"]))
+        item = WorkItem(
+            work_id=f"sector:{sector_id}:local_ai",
+            agent_id=agent.agent_id,
+            expected_economic_value=priority,
+            risk=10.0,
+            requires_model=True,
+            model_cost_authority="explicit_free",
+        )
+        request = SessionWorkRequest(
+            work_item=item,
             business_goal=f"SECTOR_LOCAL_AI::{sector_id} bounded diagnostic and commercial reasoning",
             job_class="LOCAL_AI",
             authority_level="L2",
-            economic_reason="Use cheap local intelligence on only the Top-3 research sectors",
-            priority=max(70.0, 100.0 - float(cell["research_rank"])),
-            modifying=False,
+            economic_reason="Use governed low-cost intelligence on only the Top-3 research sectors",
             data_sensitivity="INTERNAL",
             executor={"prompt": prompt, "timeout_seconds": 60, "num_predict": 160},
             acceptance={"criteria": "bounded local sector analysis returned"},
-            context_refs=[f"sector:{sector_id}:local_ai", f"route_hash:{cell['route_hash']}"],
+            context_refs=(f"sector:{sector_id}:local_ai", f"route_hash:{cell['route_hash']}"),
             next_action="attach analysis to free-diagnostic preparation; do not send externally",
         )
+        job = render_session_job(request, agent=agent, session_factory=factory)
         result = factory.submit_job(factory_state, job)
         if result.get("ok"):
             submitted.append({"sector_id": sector_id, "kind": "local_ai", "job_id": job["JOB_ID"]})
