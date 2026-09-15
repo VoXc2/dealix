@@ -364,9 +364,13 @@ def test_founder_comprehensive_plan_endpoint(monkeypatch):
     assert body.get("max_ops_backlog", {}).get("total", 0) >= 50
 
 
-def test_founder_cockpit_run_unified_quick(monkeypatch):
+def test_founder_cockpit_run_unified_quick(monkeypatch, tmp_path):
     from api.main import app
+    from dealix.commercial_ops import evidence_append, evidence_csv
 
+    isolated_tracker = tmp_path / "evidence_events_tracker.csv"
+    monkeypatch.setattr(evidence_append, "EVIDENCE_TRACKER_CSV", isolated_tracker)
+    monkeypatch.setattr(evidence_csv, "EVIDENCE_TRACKER_CSV", isolated_tracker)
     monkeypatch.setenv("DEALIX_ADMIN_API_KEY", "test-unified-day")
     cli = TestClient(app)
     headers = {"X-Admin-API-Key": "test-unified-day"}
