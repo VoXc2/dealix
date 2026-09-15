@@ -67,3 +67,12 @@ def test_unknown_command_fails_closed() -> None:
         assert exc.code == 2
     else:
         raise AssertionError("expected SystemExit")
+
+
+def test_shell_gateways_do_not_bypass_canonical_gh_guard() -> None:
+    ready = (OPS / "dealix-pr-ready-safe.sh").read_text(encoding="utf-8")
+    merge = (OPS / "dealix-pr-merge-safe.sh").read_text(encoding="utf-8")
+    assert "/usr/bin/gh.distrib" not in ready
+    assert "/usr/bin/gh.distrib" not in merge
+    assert "exec gh pr ready" in ready
+    assert "exec gh pr merge" in merge

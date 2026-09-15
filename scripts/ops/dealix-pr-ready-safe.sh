@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # dealix-pr-ready-safe — bounded gateway for marking PR ready
-# Verifies gates before calling gh pr ready via real binary (bypasses opencode deny on raw gh pr ready)
+# Verifies gates before calling gh pr ready through the canonical gh L5 guard
 set -Eeuo pipefail
 PR="${1:?usage: dealix-pr-ready-safe <PR_NUMBER>}"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
@@ -39,5 +39,5 @@ if git diff origin/main...HEAD | grep -qE "ghp_[A-Za-z0-9]{36}|sk_(live|test)_[A
   echo "BLOCKED: possible high-entropy secret"
   exit 3
 fi
-echo "GATES PASS — marking ready via gh.distrib"
-exec /usr/bin/gh.distrib pr ready "$PR"
+echo "GATES PASS — marking ready through the canonical gh guard"
+exec gh pr ready "$PR"
