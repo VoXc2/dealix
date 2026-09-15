@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Dealix P2 — AI Sales Ops Assistant | تشغيل المبيعات الشهري",
-  description: "طبقة تشغيل شهرية تنتج أولويات المتابعة، مسودات الرسائل، تحضير الاجتماعات، وScorecard أسبوعي. 8,000–30,000 ريال/شهر.",
+  title: "Dealix P2 — AI Sales Ops Assistant | تشغيل المبيعات المحكوم",
+  description: "طبقة تشغيل شهرية تنتج أولويات المتابعة، مسودات الرسائل، تحضير الاجتماعات، وScorecard أسبوعي. عرض مخصص بعد Qualified Discovery.",
 };
 
 const weeklyOutputs = [
@@ -11,25 +11,25 @@ const weeklyOutputs = [
   { title: "Objection Intelligence", desc: "توثيق الاعتراضات الجديدة وتحديث قاعدة الردود." },
   { title: "Offer Test Queue", desc: "اقتراحات اختبار عروض جديدة أو تعديل الرسائل بناءً على البيانات." },
   { title: "Weekly Scorecard", desc: "قياس أسبوعي: leads، متابعات، ردود، عروض، إغلاق." },
-  { title: "Monthly Executive Summary", desc: "ملخص شهري للمؤسس: ماذا نجح، ماذا فشل، القرار القادم." },
+  { title: "Executive Summary", desc: "ملخص بالتواتر المتفق عليه: ماذا نجح، ماذا فشل، والقرار القادم." },
 ];
 
 const tiers = [
   {
     name: "Light",
-    price: "8,000 – 12,000",
+    price: "عرض مخصص",
     team: "فريق صغير 1–3 أشخاص",
     highlight: false,
   },
   {
     name: "Growth",
-    price: "15,000 – 25,000",
+    price: "عرض مخصص",
     team: "pipeline نشط + متابعات أسبوعية",
     highlight: true,
   },
   {
     name: "High Touch",
-    price: "30,000+",
+    price: "عرض مخصص",
     team: "تشغيل عميق + تدريب + governance",
     highlight: false,
   },
@@ -48,7 +48,7 @@ export default function P2Page() {
           نظام متابعة أسبوعي يشتغل بدلاً عنك.
         </h1>
         <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-300">
-          بعد P1، تتحول Dealix إلى مساعد Sales Ops شهري. كل أسبوع تحصل على: أولويات المتابعة، مسودات الرسائل، تحضير الاجتماعات، ملخص الاعتراضات، وScorecard قابل للقياس.
+          بعد التشخيص المجاني وQualified Discovery، يمكن أن تتحول Dealix إلى طبقة Sales Ops محكومة. كل أسبوع تحصل على: أولويات المتابعة، مسودات الرسائل، تحضير الاجتماعات، ملخص الاعتراضات، وScorecard قابل للقياس.
         </p>
         <p className="mt-3 text-slate-400">
           القاعدة: AI يكتب → أنت تراجع → أنت ترسل. لا auto-send. لا spam. لا التزامات خارج نطاق العمل.
@@ -89,7 +89,7 @@ export default function P2Page() {
           <h2 className="text-3xl font-black">كيف يشتغل</h2>
           <ol className="mt-8 space-y-6">
             {[
-              ["تشخيص P1 أولاً", "نفهم بياناتك ونثبت القيمة قبل الالتزام الشهري."],
+              ["التشخيص المجاني أولاً", "نفهم المشكلة والأدلة قبل أي التزام أو عرض مدفوع."],
               ["كل أسبوع: مراجعة وأولويات", "Dealix يحلل الحركة في pipeline ويرتب من تتابع أولاً."],
               ["مسودات جاهزة للمراجعة", "رسائل متابعة وتحضير اجتماعات — أنت تراجع، أنت ترسل."],
               ["Scorecard أسبوعي", "قياس واضح: leads، ردود، عروض، إغلاق."],
@@ -110,7 +110,7 @@ export default function P2Page() {
 
         {/* Pricing */}
         <section className="mt-16">
-          <h2 className="text-3xl font-black">الأسعار الشهرية</h2>
+          <h2 className="text-3xl font-black">طريقة التعاقد</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {tiers.map((t) => (
               <article
@@ -128,7 +128,7 @@ export default function P2Page() {
                 )}
                 <h3 className="text-2xl font-black text-slate-100">{t.name}</h3>
                 <p className="mt-2 text-2xl font-black text-emerald-300">
-                  {t.price} <span className="text-base text-slate-400">ريال/شهر</span>
+                  {t.price} <span className="text-base text-slate-400">بعد Qualified Discovery</span>
                 </p>
                 <p className="mt-3 text-sm leading-6 text-slate-400">{t.team}</p>
               </article>
@@ -167,8 +167,8 @@ export default function P2Page() {
 
         {/* CTA */}
         <section className="mt-16 text-center">
-          <h2 className="text-3xl font-black">جاهز للتشغيل الشهري؟</h2>
-          <p className="mt-3 text-slate-400">نبدأ بـ P1، وبعد Proof Pack نتحول لـ P2.</p>
+          <h2 className="text-3xl font-black">جاهز للتشغيل المحكوم؟</h2>
+          <p className="mt-3 text-slate-400">نبدأ بالتشخيص المجاني، وبعد Qualified Discovery نحدد إن كان P2 مناسبًا ونبني نطاقه ومدته وعرضه للعميل.</p>
           <a
             href="mailto:hello@dealix.me?subject=أريد%20عرض%20P2"
             className="mt-6 inline-block rounded-2xl bg-emerald-400 px-10 py-4 text-xl font-black text-[#06111f] hover:bg-emerald-300"

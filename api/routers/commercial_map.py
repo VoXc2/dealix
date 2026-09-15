@@ -229,7 +229,7 @@ _WIRING: dict[str, dict[str, Any]] = {
         "checkout_url": None,  # custom — scoped + founder-issued per contract
         "checkout_endpoint": None,
         "roi_endpoint": "POST /api/v1/commercial/roi/estimate",
-        "delivery_module": "bespoke — paid discovery sprint → architecture → build",
+        "delivery_module": "bespoke — qualified discovery → approved customer-specific scope → architecture → build",
         "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
         "msa_doc": "docs/transformation/enterprise_package/MSA_TEMPLATE_AR_EN.md",
         "dpa_doc": "docs/transformation/enterprise_package/DPA_TEMPLATE_AR_EN.md",
@@ -239,93 +239,23 @@ _WIRING: dict[str, dict[str, Any]] = {
 }
 
 
-_OFFER_NOTES = {
-    "free_mini_diagnostic": (
-        "Free 24h diagnostic — opens the funnel. Confirmation email auto-sent. "
-        "Founder reviews every intake within 24h."
-    ),
-    "revenue_command_pilot_30d": (
-        "First paid motion. 30 days. One approved operating scope with baseline "
-        "and Proof Pack. Quote-only after discovery; no checkout or payment link."
-    ),
-    "data_to_revenue_pack_1500": (
-        "CSV upload → DQ score + cleaned + ranked. Live demo on /data-pack.html "
-        "via POST /api/v1/data-os/import-preview/upload. 14-day delivery."
-    ),
-    "growth_ops_monthly_2999": (
-        "Retainer engine. Weekly brief + monthly value report + adoption score + "
-        "retainer readiness gate. Renewal auto-charge after 3 confirmed cycles."
-    ),
-    "support_os_addon_1500": (
-        "Add-on to Growth. Ticket classification + suggested replies (draft_only). "
-        "SLA breach alerts. Sits inside the customer workspace."
-    ),
-    "executive_command_center_7500": (
-        "Founder/CEO surface. Daily founder brief (WhatsApp draft_only) + monthly "
-        "board pack. Includes Trust Pack PDF + Evidence Control Plane export."
-    ),
-    "agency_partner_os": (
-        "Channel offer. 5K SAR / closed deal + 30% commission first year. "
-        "Partner Covenant enforced: no unsafe automation, no guaranteed claims."
-    ),
-    # ── Enterprise Transformation OS ──
-    "ai_command_center_os": (
-        "Enterprise. Real-time executive command layer. Setup 35K–120K + "
-        "8K–35K/mo (estimates). Founder-issued invoice. Starts with free diagnostic."
-    ),
-    "whatsapp_revenue_os": (
-        "Enterprise. WhatsApp → measurable pipeline. Setup 12K–45K + 3K–15K/mo "
-        "(estimates). All external messages are approval-gated drafts — no automation."
-    ),
-    "brand_intelligence_os": (
-        "Enterprise. Brand as a reusable operating system. Setup 15K–60K + "
-        "4K–18K/mo (estimates)."
-    ),
-    "ai_agent_workforce_os": (
-        "Enterprise. Role-scoped AI agents with approval gates + audit. Setup "
-        "40K–180K + 12K–60K/mo (estimates). No autonomous external execution."
-    ),
-    "client_experience_os": (
-        "Enterprise. Unified customer journey first-contact → retention. Setup "
-        "20K–80K + 6K–25K/mo (estimates)."
-    ),
-    "operations_automation_os": (
-        "Enterprise. Map-first operations automation with governance. Setup "
-        "25K–120K + 7K–35K/mo (estimates)."
-    ),
-    "executive_reporting_os": (
-        "Enterprise. Automated weekly/monthly executive reporting tied to decisions. "
-        "Setup 18K–75K + 5K–20K/mo (estimates)."
-    ),
-    "trust_governance_os": (
-        "Enterprise. Practical AI + data governance, PDPL-aligned. Setup 30K–150K + "
-        "10K–50K/mo (estimates)."
-    ),
-    "growth_engine_os": (
-        "Enterprise. Repeatable growth machine on approved drafts ONLY. Setup "
-        "25K–100K + 8K–30K/mo (estimates). No cold WhatsApp, no LinkedIn automation, "
-        "no blast, no scraping."
-    ),
-    "custom_enterprise_system": (
-        "Enterprise bespoke. Paid discovery → architecture → build → SLA. Scope "
-        "100K–500K+ (estimate) set per contract. MSA + DPA required."
-    ),
-}
+_OFFER_NOTES: dict[str, str] = {}
 
 
 def _offer_to_dict(offering, wiring: dict[str, Any], notes: str) -> dict[str, Any]:
     safe_wiring = dict(wiring)
-    if offering.commercial_status != "public_approved":
-        safe_wiring["checkout_url"] = None
-        safe_wiring["checkout_endpoint"] = None
+    # Compatibility adapter is never public commercial authority.
+    safe_wiring["checkout_url"] = None
+    safe_wiring["checkout_endpoint"] = None
     return {
         "service_id": offering.id,
         "name_ar": offering.name_ar,
         "name_en": offering.name_en,
-        "price_sar": offering.price_sar if offering.commercial_status == "public_approved" else None,
+        "price_sar": None,
         "commercial_status": offering.commercial_status,
-        "price_unit": offering.price_unit,
-        "duration_days": offering.duration_days,
+        "price_unit": "customer_specific_after_qualified_discovery",
+        "duration_days": None,
+        "duration_model": "customer_specific_after_qualified_discovery",
         "customer_journey_stage": str(offering.customer_journey_stage),
         "kpi_commitment_ar": offering.kpi_commitment_ar,
         "kpi_commitment_en": offering.kpi_commitment_en,
@@ -344,7 +274,11 @@ def _build_payload() -> dict[str, Any]:
     offers: list[dict[str, Any]] = []
     for offering in OFFERINGS:
         wiring = _WIRING.get(offering.id, {})
-        notes = _OFFER_NOTES.get(offering.id, "")
+        notes = (
+            "Legacy compatibility projection only. Free diagnostic precedes qualified discovery; "
+            "scope, duration, acceptance criteria and price are customer-specific. "
+            "No public checkout authority."
+        )
         offers.append(_offer_to_dict(offering, wiring, notes))
 
     return {
@@ -401,7 +335,7 @@ async def commercial_map_markdown() -> str:
             price = f"{int(offer['price_sar']):,} SAR one-time"
         lines.append(f"- **Service ID:** `{offer['service_id']}`")
         lines.append(f"- **Price:** {price}")
-        lines.append(f"- **Duration:** {offer['duration_days']} days")
+        lines.append("- **Duration:** customer-specific after qualified discovery")
         lines.append(f"- **Customer journey stage:** {offer['customer_journey_stage']}")
         lines.append("")
         if offer["notes"]:

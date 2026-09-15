@@ -8,7 +8,7 @@ const INTERNAL_PAGE_PREFIXES = [
   "/command-center", "/war-room", "/pipeline", "/kpi-finance", "/deals",
   "/proof-vault", "/launch", "/approvals", "/founder", "/control-plane",
   "/dashboard", "/data-room", "/delivery-workspace", "/growth-command-center",
-  "/lead-engine", "/persuasion-room", "/product-network", "/quotes", "/revenue",
+  "/lead-engine", "/hubspot-os", "/automated-sales", "/persuasion-room", "/product-network", "/quotes", "/revenue",
   "/revenue-machine", "/sales-agent", "/sales-agent-lab", "/sales-assets",
   "/sales-machine", "/settings", "/client-portal",
   "/daily-draft", "/sandbox", "/app", "/cmd-v2", "/dx3", "/iv4",
@@ -17,7 +17,7 @@ const INTERNAL_PAGE_PREFIXES = [
 
 const PUBLIC_EXCEPTIONS = ["/client-portal/demo"] as const;
 const INTERNAL_API_PREFIXES = [
-  "/api/crm", "/api/command-center", "/api/company-os",
+  "/api/crm", "/api/command-center", "/api/company-os", "/api/hubspot-os",
   "/api/sales-machine", "/api/sales-agent", "/api/analytics",
 ] as const;const TENANT_OPERATIONAL_SEGMENTS = new Set([
   "dashboard", "hr", "inventory", "projects", "settings",

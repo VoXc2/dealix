@@ -9,21 +9,21 @@ const cards = [
     text: "تشخيص سريع يوضح أين تضيع الفرص، من أول 20 فرصة تستحق المتابعة، وما الرسائل المناسبة لكل شريحة.",
     href: "/ar/p1",
     accent: "border-cyan-400/40 text-cyan-100",
-    price: "3,500–15,000 ريال · 5–7 أيام",
+    price: "عرض مخصص بعد Qualified Discovery · مدة مخصصة بعد Qualified Discovery",
   },
   {
     title: "P2 — AI Sales Ops Assistant",
     text: "طبقة تشغيل أسبوعية تنتج أولويات المتابعة، مسودات الرسائل، تحضير الاجتماعات، وملخص الاعتراضات.",
     href: "/ar/p2",
     accent: "border-emerald-400/40 text-emerald-100",
-    price: "8,000–30,000 ريال/شهر",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
   {
     title: "P3 — Executive Command Center",
     text: "غرفة قيادة للمؤسس تعرض الإيراد، الفرص، المخاطر، القرارات، وProof Packs في مكان واحد.",
     href: "/ar/p3",
     accent: "border-violet-400/40 text-violet-100",
-    price: "20,000–60,000 ريال إعداد",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
 ];
 
@@ -56,16 +56,16 @@ export default function ArabicDemoPage() {
           <h2 className="text-2xl font-black text-emerald-100">سيناريو البيع الآن</h2>
           <ol className="mt-5 space-y-3 text-slate-200">
             <li>1. افتح هذه الصفحة في أول دقيقة من المكالمة.</li>
-            <li>2. اشرح أن البداية ليست SaaS كبير، بل Proof Pack خلال 5 إلى 7 أيام.</li>
+            <li>2. اشرح أن البداية ليست عقدًا أو باقة؛ بل Free Execution Diagnostic يثبت المشكلة والأدلة.</li>
             <li>3. اعرض P1 فقط: Revenue Intelligence Sprint.</li>
-            <li>4. بعد إثبات القيمة، اعرض P2 كتشغيل شهري.</li>
+            <li>4. بعد Qualified Discovery، اعرض P2 فقط إذا كان مناسبًا وبشروط خاصة بالعميل.</li>
             <li>5. اعرض P3 فقط إذا كان صاحب القرار يريد لوحة قيادة تنفيذية.</li>
           </ol>
         </section>
 
         <div className="mt-10 flex flex-wrap gap-4">
           <a className="rounded-2xl bg-cyan-300 px-6 py-3 font-bold text-slate-950" href="/ar/pricing">
-            الأسعار الكاملة
+            طريقة التعاقد
           </a>
           <a className="rounded-2xl border border-white/20 px-6 py-3 font-bold text-white" href="/ar/p1">
             ابدأ P1
