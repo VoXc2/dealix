@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import pathlib
 import pwd
@@ -1653,7 +1654,8 @@ def verify_modifying_cli_worktree(job: dict[str, Any], cwd: Path) -> dict[str, A
 
 
 def execute_opencode_cli(
-    job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, model: str | None = None
+    job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, model: str | None = None,
+    timeout_s: int | None = None,
 ) -> dict[str, Any]:
     """Bounded direct ``opencode run --auto`` recovery pinned to ``--dir``.
 
@@ -1719,10 +1721,16 @@ def execute_opencode_cli(
             return hold
     argv += ["-m", str(model), "--dir", str(Path(cwd).resolve())]
     argv.append(str(prompt))
+    if timeout_s is None:
+        try:
+            timeout_s = int(job.get("TIME_BUDGET") or 600)
+        except (TypeError, ValueError):
+            timeout_s = 600
+    timeout_s = max(1, int(timeout_s))
     return run_argv(
         argv,
         cwd,
-        timeout=int(job.get("TIME_BUDGET") or 600),
+        timeout=timeout_s,
         env=env,
         stdin=subprocess.DEVNULL,
     )
@@ -1744,6 +1752,25 @@ def execute_opencode(
     if hold is not None:
         return hold
     executor = job.get("EXECUTOR") if isinstance(job.get("EXECUTOR"), dict) else {}
+    try:
+        total_budget_s = int(job.get("TIME_BUDGET") or 600)
+    except (TypeError, ValueError):
+        total_budget_s = 600
+    total_budget_s = max(30, min(total_budget_s, 1800))
+
+    # The daemon and CLI are two transports for one job, not two independent
+    # execution budgets. Reserve recovery room for the CLI instead of letting a
+    # healthy-but-stuck daemon consume the entire job budget before fallback.
+    daemon_budget_s = min(total_budget_s, 180, max(30, int(total_budget_s * 0.30)))
+    raw_daemon_timeout = executor.get("daemon_timeout_s")
+    if raw_daemon_timeout is not None:
+        try:
+            parsed_daemon_timeout = int(float(raw_daemon_timeout))
+        except (TypeError, ValueError):
+            parsed_daemon_timeout = 0
+        if parsed_daemon_timeout > 0:
+            daemon_budget_s = max(1, min(parsed_daemon_timeout, total_budget_s))
+
     raw_idle_timeout = executor.get("idle_timeout_s")
     idle_timeout_s: float | None = None
     if raw_idle_timeout is not None:
@@ -1753,7 +1780,11 @@ def execute_opencode(
             parsed_idle_timeout = 0.0
         if parsed_idle_timeout > 0:
             idle_timeout_s = parsed_idle_timeout
-    daemon = execute_opencode_daemon(job, cwd, model=model, idle_timeout_s=idle_timeout_s)
+
+    orchestrator_started = now_epoch()
+    daemon = execute_opencode_daemon(
+        job, cwd, model=model, timeout_s=daemon_budget_s, idle_timeout_s=idle_timeout_s
+    )
     # OpenCode 1.18.x can leave a healthy loopback daemon session running
     # without a terminal assistant message until the bounded deadline. The
     # daemon executor aborts that session before returning 124, so a same-model
@@ -1779,11 +1810,31 @@ def execute_opencode(
         flag = str(os.environ.get("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK") or "").strip().lower()
         allow_cli_fallback = flag in ("1", "true", "yes", "on") or daemon_timed_out_after_abort
     if allow_cli_fallback:
-        cli = execute_opencode_cli(job, cwd, db_dir=db_dir, model=model)
+        try:
+            daemon_reported_s = float(daemon.get("duration_s") or 0.0)
+        except (TypeError, ValueError):
+            daemon_reported_s = 0.0
+        consumed_s = max(now_epoch() - orchestrator_started, daemon_reported_s)
+        remaining_budget_s = max(0, total_budget_s - int(math.ceil(consumed_s)))
+        if remaining_budget_s < 5:
+            guarded = dict(daemon)
+            guarded["fallback_denied"] = "total-budget-exhausted"
+            guarded["total_budget_s"] = total_budget_s
+            guarded["daemon_budget_s"] = daemon_budget_s
+            guarded["remaining_budget_s"] = remaining_budget_s
+            return guarded
+        cli = execute_opencode_cli(
+            job, cwd, db_dir=db_dir, model=model, timeout_s=remaining_budget_s
+        )
+        cli["total_budget_s"] = total_budget_s
+        cli["daemon_budget_s"] = daemon_budget_s
+        cli["remaining_budget_s"] = remaining_budget_s
         if daemon_timed_out_after_abort:
             cli["fallback_reason"] = "daemon-timeout-after-abort"
             cli["daemon_session_id"] = daemon.get("session_id")
         return cli
+    daemon["total_budget_s"] = total_budget_s
+    daemon["daemon_budget_s"] = daemon_budget_s
     return daemon
 
 

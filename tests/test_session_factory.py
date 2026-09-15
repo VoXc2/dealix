@@ -1127,6 +1127,71 @@ def test_orchestrator_recovers_from_aborted_daemon_timeout_with_cli(tmp_path: Pa
     assert captured["argv"][:3] == [str(tmp_path / "opencode"), "run", "--auto"]
 
 
+def test_orchestrator_shares_total_budget_between_daemon_and_cli(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 600
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    captured: dict[str, object] = {}
+
+    def _daemon(*_args, **kwargs):
+        captured["daemon_timeout_s"] = kwargs.get("timeout_s")
+        return {
+            "ok": False, "returncode": 124, "stdout": "",
+            "stderr": "daemon-deadline-exceeded: session aborted",
+            "duration_s": 180, "via": "daemon", "session_id": "sess-budget",
+        }
+
+    def _cli(*_args, **kwargs):
+        captured["cli_timeout_s"] = kwargs.get("timeout_s")
+        return {"ok": True, "returncode": 0, "stdout": "RECOVERED", "stderr": "", "duration_s": 1}
+
+    monkeypatch.setattr(factory, "execute_opencode_daemon", _daemon)
+    monkeypatch.setattr(factory, "execute_opencode_cli", _cli)
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert captured["daemon_timeout_s"] == 180
+    assert captured["cli_timeout_s"] == 420
+    assert result["total_budget_s"] == 600
+    assert result["daemon_budget_s"] == 180
+    assert result["remaining_budget_s"] == 420
+
+
+def test_orchestrator_never_falls_back_after_total_budget_is_consumed(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 600
+    job["EXECUTOR"]["daemon_timeout_s"] = 600
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    monkeypatch.setattr(factory, "execute_opencode_daemon", lambda *_a, **_k: {
+        "ok": False, "returncode": 124, "stdout": "",
+        "stderr": "daemon-deadline-exceeded: session aborted",
+        "duration_s": 600, "via": "daemon", "session_id": "sess-exhausted",
+    })
+    monkeypatch.setattr(factory, "execute_opencode_cli", lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("CLI must not exceed total budget")))
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["fallback_denied"] == "total-budget-exhausted"
+    assert result["total_budget_s"] == 600
+    assert result["daemon_budget_s"] == 600
+    assert result["remaining_budget_s"] == 0
+
+
+def test_orchestrator_clamps_explicit_daemon_timeout_to_total_budget(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 120
+    job["EXECUTOR"]["daemon_timeout_s"] = 999
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    captured: dict[str, object] = {}
+
+    def _daemon(*_args, **kwargs):
+        captured.update(kwargs)
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "via": "daemon"}
+
+    monkeypatch.setattr(factory, "execute_opencode_daemon", _daemon)
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert captured["timeout_s"] == 120
+
+
 def test_orchestrator_cli_fallback_requires_explicit_opt_in(tmp_path: Path, monkeypatch) -> None:
     _stub_opencode_env(
         tmp_path, monkeypatch, selected_text=None, catalog=["opencode/muse-spark-1.3-contributor-free"]
