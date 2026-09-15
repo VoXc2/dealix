@@ -91,6 +91,7 @@ def test_founder_operational_contract_is_covered() -> None:
         "/command-center", "/war-room", "/pipeline", "/kpi-finance", "/deals",
         "/proof-vault", "/approvals", "/founder", "/hubspot-os", "/automated-sales",
         "/client-success", "/retention", "/self-evolving",
+        "/growth", "/commercial-intelligence", "/evidence", "/go-to-market", "/control-room",
     }
     prefixes = set(_array("INTERNAL_PAGE_PREFIXES"))
     assert required <= prefixes
@@ -120,3 +121,18 @@ def test_public_surfaces_do_not_link_to_internal_proof_vault() -> None:
     ]
     for path in public_files:
         assert 'href="/proof-vault"' not in path.read_text(encoding="utf-8"), path
+
+
+def test_proven_operational_routes_are_internal_in_all_locales() -> None:
+    for path in (
+        "/growth", "/commercial-intelligence", "/evidence", "/go-to-market",
+        "/ar/control-room", "/en/control-room", "/ar/growth",
+        "/en/commercial-intelligence",
+    ):
+        assert _guarded(path), path
+
+
+def test_customer_demo_does_not_link_to_internal_gtm_surface() -> None:
+    source = (WEB / "app/ar/demo/page.tsx").read_text(encoding="utf-8")
+    assert 'href="/go-to-market"' not in source
+    assert 'href="/book"' in source

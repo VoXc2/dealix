@@ -73,8 +73,8 @@ export default function ArabicDemoPage() {
           <a className="rounded-2xl border border-white/20 px-6 py-3 font-bold text-white" href="/revenue-os">
             افتح Revenue OS
           </a>
-          <a className="rounded-2xl border border-white/20 px-6 py-3 font-bold text-white" href="/go-to-market">
-            افتح Go-To-Market
+          <a className="rounded-2xl border border-white/20 px-6 py-3 font-bold text-white" href="/book">
+            ابدأ التشخيص المجاني
           </a>
           <a className="rounded-2xl border border-white/20 px-6 py-3 font-bold text-white" href="/ar/zatca-readiness">
             فحص جاهزية ZATCA

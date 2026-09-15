@@ -8,7 +8,7 @@ const INTERNAL_PAGE_PREFIXES = [
   "/command-center", "/war-room", "/pipeline", "/kpi-finance", "/deals",
   "/proof-vault", "/launch", "/approvals", "/founder", "/control-plane",
   "/dashboard", "/data-room", "/delivery-workspace", "/client-success", "/retention",
-  "/growth-command-center",
+  "/growth", "/growth-command-center", "/commercial-intelligence", "/evidence", "/go-to-market", "/control-room",
   "/lead-engine", "/hubspot-os", "/automated-sales", "/persuasion-room", "/product-network", "/quotes", "/revenue",
   "/revenue-machine", "/sales-agent", "/sales-agent-lab", "/sales-assets",
   "/sales-machine", "/settings", "/client-portal",
