@@ -721,7 +721,7 @@ LAYERS: list[tuple[str, str, str]] = [
         """
         ## Revenue Ladder
 
-        Education → Paid Diagnostic → Sprint → Pilot → Retainer → Managed Platform → Enterprise → Academy → Partners → Ventures.
+        Education → Free Diagnostic → Qualified Discovery → Customer-Specific Paid Delivery → Expansion/Retainer → Managed Platform → Enterprise → Academy → Partners → Ventures.
 
         ## Pricing Philosophy
 

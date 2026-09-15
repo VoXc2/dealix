@@ -80,7 +80,7 @@ def _apply_weekly(data: dict[str, Any]) -> list[str]:
     week_iso = (wd.get("week_iso") or _today()).strip()
     one = (wd.get("one_decision_ar") or "").strip()
     if not one:
-        one = "إغلاق أول Diagnostic مدفوع: payment_received + proof_pack_delivered هذا الأسبوع"
+        one = "إغلاق أول تدخل مدفوع مخصص بعد Diagnostic مجاني وQualified Discovery: payment_received + proof_pack_delivered هذا الأسبوع"
     why = (wd.get("why_this_phase_ar") or "").strip()
     if not why:
         why = "Phase 1 — لا توسع منتج قبل أول إيراد موثّق بـ source_ref"

@@ -96,7 +96,7 @@ def build_value_plan_snapshot(*, motion_top_n: int = 5) -> dict[str, Any]:
         "schema_version": "1.0",
         "generated_at": datetime.now(UTC).isoformat(),
         "date": day,
-        "policy_ar": "لا توسعة منتج قبل أول Diagnostic مدفوع + Proof Pack — Motion A أولاً.",
+        "policy_ar": "لا توسعة منتج قبل أول إغلاق تجاري موثّق بعد Diagnostic مجاني وQualified Discovery + Proof Pack — Motion A أولاً.",
         "north_star": north_star,
         "evidence": evidence,
         "evidence_all_rows": evidence_all,
@@ -183,7 +183,7 @@ def _build_warnings(
     if strongest_ops and strongest_ops.get("verdict") == "FAIL_WIRING":
         out.append("أقوى خطة: مسارات ناقصة — py -3 scripts/founder_strongest_plan_status.py")
     if first_paid["verdict"] == "PIPELINE_OPEN":
-        out.append("بوابة القيمة مفتوحة: أغلق Diagnostic واحد (دفع + Proof) لشركة حقيقية.")
+        out.append("بوابة القيمة مفتوحة: نفّذ Diagnostic مجاني + Qualified Discovery ثم أغلق تدخلاً مدفوعًا مخصصًا مع Proof لشركة حقيقية.")
     if int(evidence.get("today_total") or 0) < 1:
         out.append("سجّل حدث أدلة واحد اليوم (مساءً: founder_evening.ps1).")
     if not evening.get("logged_today"):
@@ -224,7 +224,7 @@ def render_value_plan_markdown(snapshot: dict[str, Any]) -> str:
         "",
         "## North Star",
         f"- Proof packs هذا الأسبوع: **{(snapshot.get('north_star') or {}).get('proof_packs_week', 0)}**",
-        f"- First paid verdict: `{fp.get('verdict')}`",
+        f"- First commercial-close verdict: `{fp.get('verdict')}`",
         "",
         "## Evidence",
         f"- اليوم: **{ev.get('today_total', 0)}** · الأسبوع: **{ev.get('week_total', 0)}**",

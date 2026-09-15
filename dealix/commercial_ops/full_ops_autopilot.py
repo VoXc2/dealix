@@ -253,7 +253,7 @@ def _lightweight_value_plan_hint(*, top_n: int = 15) -> dict[str, Any]:
     paid = analyze_first_paid_diagnostic()
     warnings: list[str] = []
     if paid.get("verdict") == "PIPELINE_OPEN":
-        warnings.append("بوابة 0–1: أغلق أول Diagnostic مدفوع + Proof Pack")
+        warnings.append("بوابة 0–1: Diagnostic مجاني → Qualified Discovery → أول تدخل مدفوع مخصص + Proof Pack")
     return {
         "lightweight": True,
         "motion_top_n": top_n,

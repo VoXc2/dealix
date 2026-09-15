@@ -1,4 +1,4 @@
-﻿import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 
@@ -8,7 +8,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/company", "/services", "/dealix-os", "/book", "/safety", "/cases", "/pricing"],
-        disallow: ["/control-plane", "/agents", "/approvals", "/sandbox", "/self-evolving", "/_next/", "/api/", "/healthz"],
+        disallow: ["/control-plane", "/agents", "/approvals", "/sandbox", "/self-evolving", "/api/", "/healthz"],
+      },
+      {
+        userAgent: "OAI-SearchBot",
+        allow: ["/", "/company", "/services", "/dealix-os", "/book", "/safety", "/cases", "/pricing"],
+        disallow: ["/control-plane", "/agents", "/approvals", "/sandbox", "/self-evolving", "/api/", "/healthz"],
       },
       { userAgent: "GPTBot", disallow: ["/"] },
       { userAgent: "CCBot", disallow: ["/"] },

@@ -1,4 +1,4 @@
-"""Motion A (agency wedge) — daily P0 pipeline plan toward first paid Diagnostic."""
+"""Motion A (agency wedge) — governed path from free diagnostic to first verified commercial close."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ STATUS_NEXT_AR: dict[str, str] = {
     "sent_manual": "متابعة خلال 48س — سجّل reply_received أو demo_booked",
     "replied": "احجز Discovery 10 دقائق — سجّل demo_booked",
     "meeting_booked": "أكمل Discovery السبعة — سجّل scope_requested",
-    "scope_requested": "أرسل فاتورة Diagnostic — سجّل invoice_sent ثم payment_received",
+    "scope_requested": "جهّز عرض وفاتورة للتدخل المخصص بعد Qualified Discovery — سجّل invoice_sent ثم payment_received",
 }
 
 
@@ -90,7 +90,7 @@ def render_motion_a_markdown(plan: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "## بوابة أول Diagnostic",
+            "## بوابة أول إغلاق تجاري موثّق",
             f"- verdict: `{fp.get('verdict')}`",
             f"- payment_received (real): {fp.get('payment_received_real', 0)}",
             f"- proof_pack_delivered (real): {fp.get('proof_pack_delivered_real', 0)}",

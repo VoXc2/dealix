@@ -79,7 +79,7 @@
     "dealix-live-demo.html": "/proof.html",
     "simulator.html": "/proof.html",
     "ltv-calculator.html": "/proof.html",
-    "customer-portal.html": "/proof-vault",
+    "customer-portal.html": "/cases",
     "founder-command-bus.html": "/",
     "compare.html": "/proof.html",
     "investor.html": "/",
@@ -92,7 +92,7 @@
     "sector-report-b2b-services.html": "/proof.html",
     "sector-report-realestate-sample.html": "/proof.html",
     "workflow.html": "/pricing",
-    "ai-team.html": "/agents"
+    "ai-team.html": "/dealix-os"
   },
   "rules": {
     "canonical_commercial_truth": "Free Execution Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> Outcome Sprint/Pilot -> Proof Review -> Dealix Runtime or Stop/Expand/Redesign",

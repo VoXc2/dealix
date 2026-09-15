@@ -157,7 +157,7 @@ $PYTHON_BIN "$ROOT/scripts/founder_motion_a_pipeline.py" --top-n "$TOP_N" || tru
 $PYTHON_BIN "$ROOT/scripts/founder_all_motions_pipeline.py" --top-n 5 || true
 echo ""
 
-echo "== 12/14 First paid Diagnostic tracker =="
+echo "== 12/14 First verified commercial close tracker =="
 $PYTHON_BIN "$ROOT/scripts/verify_first_paid_diagnostic_tracker.py" || true
 echo ""
 

@@ -13,6 +13,11 @@ ACTIVE_SURFACES = (
     ROOT / "dealix/commercial_ops/daily_pack.py",
     ROOT / "dealix/commercial_ops/value_map_status.py",
     ROOT / "docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md",
+    ROOT / "dealix/commercial_ops/motion_a_pipeline.py",
+    ROOT / "dealix/commercial_ops/value_plan.py",
+    ROOT / "dealix/commercial_ops/expansion_status.py",
+    ROOT / "dealix/commercial_ops/weekly_scorecard_commercial.py",
+    ROOT / "dealix/commercial_ops/full_ops_autopilot.py",
 )
 
 RETIRED_FIXED_PRICE_TOKENS = (
@@ -36,6 +41,13 @@ def test_active_commercial_surfaces_use_quote_only_customer_specific_pilot() -> 
     for token in RETIRED_FIXED_PRICE_TOKENS:
         assert token not in combined, f"retired launch token returned in active surface: {token}"
 
+
+
+def test_active_operator_copy_does_not_charge_for_diagnostics() -> None:
+    combined = "\n".join(path.read_text(encoding="utf-8") for path in ACTIVE_SURFACES)
+    forbidden = ("Diagnostic مدفوع", "فاتورة Diagnostic", "First paid Diagnostic")
+    for token in forbidden:
+        assert token not in combined, f"retired diagnostic-pricing copy returned: {token}"
 
 def test_first_paid_tracker_returns_current_launch_path_not_price_ladder() -> None:
     text = (ROOT / "dealix/commercial_ops/first_paid_tracker.py").read_text(

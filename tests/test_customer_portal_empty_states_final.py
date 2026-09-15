@@ -15,8 +15,8 @@ HTML = Path("landing/customer-portal.html").read_text(encoding="utf-8")
 
 def test_retired_surface_is_noindex_and_redirected() -> None:
     assert 'name="robots" content="noindex,nofollow"' in HTML
-    assert 'url=/proof.html' in HTML
-    assert 'href="https://dealix.me/proof.html"' in HTML
+    assert 'url=/cases' in HTML
+    assert 'href="https://dealix.me/cases"' in HTML
 
 
 def test_retired_surface_explains_synthetic_evidence_boundary() -> None:

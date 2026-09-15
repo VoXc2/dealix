@@ -18,7 +18,7 @@ echo "== 2/3 Paid launch roadmap =="
 $PYTHON_BIN "$ROOT/scripts/verify_paid_launch_readiness.py"
 
 echo ""
-echo "== 3/3 First paid Diagnostic pipeline =="
+echo "== 3/3 First verified commercial close pipeline =="
 $PYTHON_BIN "$ROOT/scripts/verify_first_paid_diagnostic_tracker.py"
 
 echo ""

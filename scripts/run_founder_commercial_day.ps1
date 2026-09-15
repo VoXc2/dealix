@@ -125,7 +125,7 @@ Write-Host "`n== 11/14 Motion A pipeline (P0 close path) =="
 Invoke-DealixPy scripts/founder_motion_a_pipeline.py --top-n $TopN
 Invoke-DealixPy scripts/founder_all_motions_pipeline.py --top-n 5
 
-Write-Host "`n== 12/14 First paid Diagnostic tracker =="
+Write-Host "`n== 12/14 First verified commercial close tracker =="
 Invoke-DealixPy scripts/verify_first_paid_diagnostic_tracker.py
 
 Write-Host "`n== 13/14 Content approval queue (dry-run) =="

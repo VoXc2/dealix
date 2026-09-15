@@ -6,14 +6,14 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
-const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "sami.assiri11@gmail.com";
+const companyContactEmail = process.env.NEXT_PUBLIC_COMPANY_CONTACT_EMAIL?.trim();
 
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Dealix",
   url: siteUrl,
-  email: founderEmail,
+  ...(companyContactEmail ? { email: companyContactEmail } : {}),
   areaServed: { "@type": "Country", name: "Saudi Arabia" },
   description:
     "Dealix is a Saudi B2B strategy, systems, intelligence, and product company that turns business signals into governed execution and measurable proof.",

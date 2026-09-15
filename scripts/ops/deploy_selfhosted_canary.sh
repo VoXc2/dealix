@@ -6,7 +6,10 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -
 DEFAULT_REPO="$(cd -- "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd -P)"
 REPO="${DEALIX_REPO:-$DEFAULT_REPO}"
 COMPOSE_FILE="$REPO/deploy/selfhost/compose.yml"
+# shellcheck source=selfhost_canary_project_name.sh
+source "$REPO/scripts/ops/selfhost_canary_project_name.sh"
 EXPECTED_SHA="${DEALIX_EXPECTED_SHA:-}"
+RUN_ID="${DEALIX_CANARY_RUN_ID:-}"
 USE_LOCAL_DB="${DEALIX_SELFHOST_LOCAL_DB:-0}"
 API_PORT="${DEALIX_SELFHOST_API_PORT:-18000}"
 WEB_PORT="${DEALIX_SELFHOST_WEB_PORT:-13000}"
@@ -32,6 +35,10 @@ if [[ -z "$EXPECTED_SHA" ]]; then
   echo "HOLD: DEALIX_EXPECTED_SHA is required" >&2
   exit 64
 fi
+if [[ -z "$RUN_ID" ]]; then
+  echo "HOLD: DEALIX_CANARY_RUN_ID is required; use run_selfhosted_private_release_canary.sh" >&2
+  exit 64
+fi
 
 cd "$REPO"
 CURRENT_SHA="$(git rev-parse HEAD)"
@@ -42,7 +49,8 @@ fi
 
 export DEALIX_GIT_SHA="$CURRENT_SHA"
 export DEALIX_IMAGE_TAG="${CURRENT_SHA:0:12}"
-export COMPOSE_PROJECT_NAME="dealix-selfhost-${CURRENT_SHA:0:12}"
+COMPOSE_PROJECT_NAME="$(dealix_canary_project_name "$CURRENT_SHA" "$RUN_ID")"
+export COMPOSE_PROJECT_NAME
 export DEALIX_APP_ENV="${DEALIX_APP_ENV:-development}"
 export DEALIX_ORCHESTRATOR_BACKEND="${DEALIX_ORCHESTRATOR_BACKEND:-postgres}"
 if [[ "$USE_LOCAL_DB" == "1" ]]; then
@@ -144,6 +152,7 @@ fi
 echo "SELFHOST_CANARY=PASS"
 echo "GIT_SHA=$CURRENT_SHA"
 echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
+echo "DEALIX_CANARY_RUN_ID=$RUN_ID"
 echo "WEB=http://127.0.0.1:${WEB_PORT}"
 echo "API=http://127.0.0.1:${API_PORT}"
 echo "PUBLIC_CUTOVER=NOT_EXECUTED"

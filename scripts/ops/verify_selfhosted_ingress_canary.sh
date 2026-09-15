@@ -5,11 +5,18 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -
 DEFAULT_REPO="$(cd -- "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd -P)"
 REPO="${DEALIX_REPO:-$DEFAULT_REPO}"
 COMPOSE_FILE="$REPO/deploy/selfhost/compose.yml"
+# shellcheck source=selfhost_canary_project_name.sh
+source "$REPO/scripts/ops/selfhost_canary_project_name.sh"
 EXPECTED_SHA="${DEALIX_EXPECTED_SHA:-}"
+RUN_ID="${DEALIX_CANARY_RUN_ID:-}"
 INGRESS_PORT="${DEALIX_SELFHOST_INGRESS_PORT:-18081}"
 
 if [[ -z "$EXPECTED_SHA" ]]; then
   echo "HOLD: DEALIX_EXPECTED_SHA is required" >&2
+  exit 64
+fi
+if [[ -z "$RUN_ID" ]]; then
+  echo "HOLD: DEALIX_CANARY_RUN_ID is required; use run_selfhosted_private_release_canary.sh" >&2
   exit 64
 fi
 cd "$REPO"
@@ -19,7 +26,8 @@ if [[ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
 fi
 
 export DEALIX_GIT_SHA="$EXPECTED_SHA"
-export COMPOSE_PROJECT_NAME="dealix-selfhost-${EXPECTED_SHA:0:12}"
+COMPOSE_PROJECT_NAME="$(dealix_canary_project_name "$EXPECTED_SHA" "$RUN_ID")"
+export COMPOSE_PROJECT_NAME
 docker compose -f "$COMPOSE_FILE" --profile ingress-canary up -d ingress
 
 probe_host() {
@@ -60,5 +68,6 @@ fi
 
 echo "SELFHOST_INGRESS_CANARY=PASS"
 echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
+echo "DEALIX_CANARY_RUN_ID=$RUN_ID"
 echo "INGRESS=http://127.0.0.1:$INGRESS_PORT"
 echo "PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER"

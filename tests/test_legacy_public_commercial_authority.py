@@ -3,7 +3,7 @@ from pathlib import Path
 
 def test_legacy_static_commercial_pages_are_retired() -> None:
     expectations = {
-        "ai-team.html": ("/agents", "https://dealix.me/agents"),
+        "ai-team.html": ("/dealix-os", "https://dealix.me/dealix-os"),
         "workflow.html": ("/pricing", "https://dealix.me/pricing"),
         "services.html": ("/services", "https://dealix.me/services"),
         "customer-portal.html": ("/cases", "https://dealix.me/cases"),
@@ -19,7 +19,7 @@ def test_legacy_static_commercial_pages_are_retired() -> None:
 def test_next_redirects_retire_legacy_commercial_urls_at_http_level() -> None:
     text = Path("apps/web/next.config.js").read_text(encoding="utf-8")
     required = {
-        '/ai-team.html': '/agents',
+        '/ai-team.html': '/dealix-os',
         '/workflow.html': '/pricing',
         '/services.html': '/services',
         '/pricing.html': '/pricing',

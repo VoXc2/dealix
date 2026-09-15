@@ -57,8 +57,7 @@ Only after exact private acceptance and the complete database receipt chain:
 ```bash
 python scripts/ops/verify_selfhosted_production_plane.py
 SHA=$(git rev-parse HEAD)
-DEALIX_EXPECTED_SHA="$SHA" DEALIX_SELFHOST_API_PORT=18001 DEALIX_SELFHOST_WEB_PORT=13001 DEALIX_SELFHOST_LOCAL_DB=1 bash scripts/ops/deploy_selfhosted_canary.sh
-DEALIX_EXPECTED_SHA="$SHA" DEALIX_SELFHOST_API_PORT=18001 DEALIX_SELFHOST_WEB_PORT=13001 DEALIX_SELFHOST_INGRESS_PORT=18081 bash scripts/ops/verify_selfhosted_ingress_canary.sh
+DEALIX_EXPECTED_SHA="$SHA" bash scripts/ops/run_selfhosted_private_release_canary.sh
 ```
 
 ## Single-plane public cutover controller

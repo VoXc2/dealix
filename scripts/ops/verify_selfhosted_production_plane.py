@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[2]
 COMPOSE = ROOT / "deploy/selfhost/compose.yml"
 RUNNER = ROOT / "scripts/ops/deploy_selfhosted_canary.sh"
 INGRESS_RUNNER = ROOT / "scripts/ops/verify_selfhosted_ingress_canary.sh"
+PRIVATE_WRAPPER = ROOT / "scripts/ops/run_selfhosted_private_release_canary.sh"
 WEB_HEALTH = ROOT / "apps/web/app/healthz/route.ts"
 DOCKERIGNORE = ROOT / ".dockerignore"
 
@@ -14,6 +15,7 @@ def main() -> int:
     compose = COMPOSE.read_text(encoding="utf-8")
     runner = RUNNER.read_text(encoding="utf-8")
     ingress_runner = INGRESS_RUNNER.read_text(encoding="utf-8")
+    private_wrapper = PRIVATE_WRAPPER.read_text(encoding="utf-8")
     web_health = WEB_HEALTH.read_text(encoding="utf-8") if WEB_HEALTH.exists() else ""
     dockerignore = DOCKERIGNORE.read_text(encoding="utf-8") if DOCKERIGNORE.exists() else ""
 
@@ -55,7 +57,9 @@ def main() -> int:
         "CANARY_POSTGRES_PASSWORD_CONTRACT=PASS",
         "BASH_SOURCE[0]",
         'REPO="${DEALIX_REPO:-$DEFAULT_REPO}"',
-        'COMPOSE_PROJECT_NAME="dealix-selfhost-${CURRENT_SHA:0:12}"',
+        "DEALIX_CANARY_RUN_ID",
+        "selfhost_canary_project_name.sh",
+        "dealix_canary_project_name",
         "exact-head mismatch",
         "DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1",
         "bootstrap_fresh_database.py --confirm-empty-bootstrap",
@@ -72,10 +76,23 @@ def main() -> int:
         "DEALIX_EXPECTED_SHA",
         "BASH_SOURCE[0]",
         'REPO="${DEALIX_REPO:-$DEFAULT_REPO}"',
-        'COMPOSE_PROJECT_NAME="dealix-selfhost-${EXPECTED_SHA:0:12}"',
+        "DEALIX_CANARY_RUN_ID",
+        "selfhost_canary_project_name.sh",
+        "dealix_canary_project_name",
         "SELFHOST_INGRESS_CANARY=PASS",
         "DEALIX_SELFHOST_INGRESS_PORT",
         "PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER",
+    ]
+    required_private_wrapper = [
+        "DEALIX_CANARY_RUN_ID",
+        "CANARY_PLAN_ONLY=PASS",
+        "PRIVATE_RELEASE_CANARY=PASS",
+        "DEALIX_SELFHOST_API_PORT",
+        "DEALIX_SELFHOST_WEB_PORT",
+        "DEALIX_SELFHOST_DB_PORT",
+        "DEALIX_SELFHOST_INGRESS_PORT",
+        "down -v --remove-orphans",
+        "PUBLIC_CUTOVER=NOT_EXECUTED",
     ]
     required_web_health = [
         'service: "dealix-web"',
@@ -98,6 +115,7 @@ def main() -> int:
     missing = [x for x in required_compose if x not in compose]
     missing += [x for x in required_runner if x not in runner]
     missing += [f"ingress:{x}" for x in required_ingress_runner if x not in ingress_runner]
+    missing += [f"wrapper:{x}" for x in required_private_wrapper if x not in private_wrapper]
     missing += [f"web_health:{x}" for x in required_web_health if x not in web_health]
     missing += [f"dockerignore:{x}" for x in required_dockerignore if x not in dockerignore]
     forbidden = [
@@ -121,7 +139,7 @@ def main() -> int:
         'name: dealix-selfhost',
         'name: dealix-postgres-canary',
     ]
-    all_selfhost_source = compose + runner + ingress_runner
+    all_selfhost_source = compose + runner + ingress_runner + private_wrapper
     present_forbidden = [x for x in forbidden if x in all_selfhost_source]
 
     if missing or present_forbidden:

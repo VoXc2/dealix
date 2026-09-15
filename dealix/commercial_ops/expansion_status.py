@@ -81,5 +81,5 @@ def _next_actions_ar(
             f"موجة ABM 1: {abm.get('active_rows', 0)}/{abm.get('min_required', 30)} — enrich_targeting_warm.py"
         )
     if not out:
-        out.append("التوسعة التقنية جاهزة — ركّز على لمسات warm + أول Diagnostic مدفوع.")
+        out.append("التوسعة التقنية جاهزة — ركّز على warm/opt-in interactions ثم أول إغلاق تجاري موثّق بعد Diagnostic مجاني.")
     return out

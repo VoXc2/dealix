@@ -4,17 +4,19 @@
 Composes the day's revenue command from the distribution_os stores: pending
 drafts to approve, due follow-ups, proposal drafts, proof packs, payment
 handoffs awaiting approval, the renewal/upsell queue, and the metrics
-snapshot. Read-only; writes reports/distribution/DISTRIBUTION_DAY.md.
+snapshot. Read-only; writes to the untracked runtime reports plane by default.
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_RUNTIME_REPORTS_ROOT = Path("/opt/dealix/control/reports")
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -30,7 +32,16 @@ from auto_client_acquisition.distribution_os import (
 from auto_client_acquisition.distribution_os.draft_factory import DraftStatus
 from auto_client_acquisition.distribution_os.prospect import ProspectStatus
 
-_REPORT = ROOT / "reports" / "distribution" / "DISTRIBUTION_DAY.md"
+
+def _default_report() -> Path:
+    runtime_root = os.environ.get("DEALIX_RUNTIME_REPORTS_ROOT")
+    base = Path(runtime_root).expanduser() if runtime_root else DEFAULT_RUNTIME_REPORTS_ROOT
+    if runtime_root:
+        resolved_root = ROOT.resolve()
+        resolved_base = base.resolve()
+        if resolved_base == resolved_root or resolved_root in resolved_base.parents:
+            raise ValueError("DEALIX_RUNTIME_REPORTS_ROOT must stay outside the canonical repository")
+    return base / "distribution" / "DISTRIBUTION_DAY.md"
 
 
 def _section(title: str, rows: list[str]) -> list[str]:
@@ -106,15 +117,21 @@ def _render() -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--print", action="store_true", dest="to_stdout")
+    parser.add_argument("--out", type=Path, help="explicit report path; default is the untracked runtime reports plane")
     args = parser.parse_args()
 
     content = _render()
     if args.to_stdout:
         print(content)
         return 0
-    _REPORT.parent.mkdir(parents=True, exist_ok=True)
-    _REPORT.write_text(content, encoding="utf-8")
-    print(f"Wrote {_REPORT.relative_to(ROOT)}")
+    report = args.out.expanduser() if args.out else _default_report()
+    report.parent.mkdir(parents=True, exist_ok=True)
+    report.write_text(content, encoding="utf-8")
+    try:
+        shown = report.relative_to(ROOT)
+    except ValueError:
+        shown = report
+    print(f"Wrote {shown}")
     return 0
 
 

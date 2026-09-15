@@ -22,7 +22,7 @@ Invoke-DealixPy scripts/verify_paid_launch_readiness.py
 if ($LASTEXITCODE -ne 0) { exit 1 }
 
 Write-Host ""
-Write-Host "== 3/3 First paid Diagnostic pipeline =="
+Write-Host "== 3/3 First verified commercial close pipeline =="
 Invoke-DealixPy scripts/verify_first_paid_diagnostic_tracker.py
 
 Write-Host ""

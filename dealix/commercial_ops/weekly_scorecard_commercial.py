@@ -108,7 +108,7 @@ def render_weekly_scorecard_markdown(blob: dict[str, Any]) -> str:
             "## Motion A",
             f"- وكالات في pool: {ma.get('agencies_in_pool', 0)}",
             "",
-            "## First paid Diagnostic",
+            "## First verified commercial close",
             f"- verdict: `{blob.get('first_paid_verdict')}`",
             "",
             "> أكمل الأعمدة اليدوية في COMMERCIAL_WEEKLY_SCORECARD_AR.md عند الحاجة.",

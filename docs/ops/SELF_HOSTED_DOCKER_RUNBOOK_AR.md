@@ -25,22 +25,18 @@ python scripts/ops/verify_selfhosted_production_plane.py
 ```bash
 SHA=$(git rev-parse HEAD)
 DEALIX_EXPECTED_SHA="$SHA" \
-DEALIX_SELFHOST_API_PORT=18001 \
-DEALIX_SELFHOST_WEB_PORT=13001 \
-DEALIX_SELFHOST_LOCAL_DB=1 \
-bash scripts/ops/deploy_selfhosted_canary.sh
+bash scripts/ops/run_selfhosted_private_release_canary.sh
 ```
 
-استخدم منافذ loopback مختلفة إذا كان هناك canary آخر؛ لا توقف canary سليمًا فقط لتحرير منفذ.
+يولّد الـwrapper المنافذ تلقائيًا. ويمكن تمرير overrides عند الحاجة عبر `DEALIX_SELFHOST_API_PORT` و`DEALIX_SELFHOST_WEB_PORT` و`DEALIX_SELFHOST_DB_PORT` و`DEALIX_SELFHOST_INGRESS_PORT`، بشرط بقائها على loopback وعدم مشاركتها مع تشغيل آخر.
+
+الـwrapper يولّد `DEALIX_CANARY_RUN_ID` ومنافذ loopback معزولة لكل تشغيل؛ لا تشغّل low-level canary runners مباشرة بلا Run ID مشترك.
 
 ## Canary للـingress بدون نشر عام
 
 ```bash
-DEALIX_EXPECTED_SHA="$SHA" \
-DEALIX_SELFHOST_API_PORT=18001 \
-DEALIX_SELFHOST_WEB_PORT=13001 \
-DEALIX_SELFHOST_INGRESS_PORT=18081 \
-bash scripts/ops/verify_selfhosted_ingress_canary.sh
+# يشغله الـwrapper السابق داخل نفس namespace وRun ID.
+# لا تشغّل verify_selfhosted_ingress_canary.sh منفردًا إلا عند تمرير DEALIX_CANARY_RUN_ID نفسه.
 ```
 
 القبول يتطلب `SELFHOST_INGRESS_CANARY=PASS` و`PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER`.

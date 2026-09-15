@@ -83,10 +83,12 @@ def test_retired_customer_portal_is_fail_closed_not_fake_live_product() -> None:
     compact = html.replace(" ", "").lower()
     assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
     assert "noindex,nofollow" in compact
-    assert "url=/proof.html" in html
-    assert 'rel="canonical" href="https://dealix.me/proof.html"' in html
+    assert "url=/cases" in html
+    assert 'rel="canonical" href="https://dealix.me/cases"' in html
     assert "synthetic" in html
-    assert "ليست دليل عميل أو KPI حقيقيًا" in html
+    assert "ليست دليل عميل" in html
+    assert "KPI حقيقي" in html
+    assert "Customer Proof" in html
     assert "src-pill" not in html
 
 
@@ -129,7 +131,7 @@ def test_no_forbidden_claims_in_active_customer_pages() -> None:
 
 def test_retired_customer_portal_links_to_current_proof_authority() -> None:
     html = RETIRED_CUSTOMER_PORTAL.read_text(encoding="utf-8")
-    assert "/proof.html" in html
+    assert "/cases" in html
     assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
 
 

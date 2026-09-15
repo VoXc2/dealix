@@ -12,8 +12,11 @@ def test_legacy_public_operator_routes_are_redirected_to_current_authority() -> 
     assert '{ source: "/pipeline", destination: "/dealix-os", permanent: true }' in config
 
 
-def test_redirects_cover_known_stale_public_copy_sources() -> None:
+def test_redirected_legacy_sources_do_not_restore_stale_commercial_authority() -> None:
     delivery = DELIVERY_PAGE.read_text(encoding="utf-8")
     pipeline = PIPELINE_PAGE.read_text(encoding="utf-8")
-    assert "30 days" in delivery
+    lowered = delivery.casefold()
+    assert "30 days" not in lowered
+    assert "30-day" not in lowered
+    assert "30 day" not in lowered
     assert "Pipeline — Dealix" in pipeline
