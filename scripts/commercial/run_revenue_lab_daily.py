@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -17,6 +18,34 @@ from auto_client_acquisition.proof_ledger.file_backend import FileProofLedger
 from auto_client_acquisition.proof_ledger.schemas import ProofEvent
 from dealix.revenue_lab import CompanySignal, OutcomeEvent, run_revenue_lab
 from dealix.revenue_lab.artifacts import write_bundle
+
+
+DEFAULT_RUNTIME_REPORTS_ROOT = Path("/opt/dealix/control/reports")
+
+
+def _default_output_dir(*, now: datetime | None = None) -> Path:
+    """Return the autonomous Revenue Lab output path outside canonical Git.
+
+    VPS/company runs use the established Dealix control reports plane by
+    default. DEALIX_RUNTIME_REPORTS_ROOT may override that plane, but the
+    override fails closed if it resolves inside the canonical repository.
+    Explicit --output-dir remains caller-owned and is handled separately.
+    """
+    raw = os.getenv("DEALIX_RUNTIME_REPORTS_ROOT", "").strip()
+    root = Path(raw).expanduser() if raw else DEFAULT_RUNTIME_REPORTS_ROOT
+    resolved = root.resolve(strict=False)
+    repo = ROOT.resolve()
+    if resolved == repo or repo in resolved.parents:
+        raise RuntimeError(
+            f"DEALIX_RUNTIME_REPORTS_ROOT must remain outside canonical repository: {resolved}"
+        )
+    stamp = (now or datetime.now(UTC)).strftime("%Y-%m-%d")
+    return resolved / "revenue_lab" / stamp
+
+
+def resolve_output_dir(explicit: Path | None) -> Path:
+    """Honor an explicit caller path; otherwise use the safe runtime plane."""
+    return explicit if explicit is not None else _default_output_dir()
 
 
 def _load(path: Path) -> tuple[list[CompanySignal], list[OutcomeEvent]]:
@@ -54,9 +83,7 @@ def main() -> int:
 
     signals, outcomes = _load(input_path)
     bundle = run_revenue_lab(signals, outcomes=outcomes)
-    output_dir = args.output_dir or (
-        ROOT / "reports" / "revenue_lab" / datetime.now(UTC).strftime("%Y-%m-%d")
-    )
+    output_dir = resolve_output_dir(args.output_dir)
     paths = write_bundle(output_dir, bundle)
 
     if args.proof_ledger_dir:

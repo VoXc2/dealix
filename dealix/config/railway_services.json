@@ -26,6 +26,9 @@
         "/api/**",
         "/app/**",
         "/db/**",
+        "/dealix/**",
+        "/alembic/**",
+        "/alembic.ini",
         "/config/**",
         "/templates/**",
         "/prompts/**"

@@ -16,6 +16,9 @@ Safe workflow:
 Never run `railway config apply`, `railway config migrate --apply`, redeploy,
 or provider mutations from unattended source acceptance.
 
-`checkSuites` is intentionally false for both production services. Dealix has no
-push GitHub Actions workflow authority; exact-head VPS/source acceptance is the
-release evidence. A failing third-party GitHub app check must not skip Railway builds.
+`checkSuites` remains true for both production services. A normal GitHub push must
+not become production merely because hosted checks are noisy or unavailable. The
+trusted release path is separate: accept an exact source SHA on the VPS, then use an
+explicit action-bound production deployment for that exact SHA. Third-party failures
+(such as a stale Vercel Hobby check) are not Dealix acceptance evidence, but they are
+also not bypassed globally by weakening the production source trigger.

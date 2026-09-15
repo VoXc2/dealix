@@ -1,0 +1,26 @@
+{
+  "schema": "dealix.production-release-authority.v1",
+  "production_green": false,
+  "release_mode": "manual_exact_sha",
+  "canonical_acceptance_plane": "vps_exact_head",
+  "github_actions_release_authority": false,
+  "third_party_commit_status_release_authority": false,
+  "railway_github_autodeploy_target": "disabled_before_manual_release",
+  "required_evidence": [
+    "accepted_source_sha",
+    "web_provider_deployment_sha_matches_accepted",
+    "api_provider_deployment_sha_matches_accepted",
+    "public_web_health_and_routes",
+    "public_api_health_and_version",
+    "tls_and_domain_routing",
+    "rollback_receipt",
+    "database_backup_restore_receipt"
+  ],
+  "prohibited_inference": [
+    "http_200_alone",
+    "github_status_success_alone",
+    "railway_build_success_without_exact_sha",
+    "source_green_without_provider_parity"
+  ],
+  "provider_mutation_authority": "exact_action_bound_l5"
+}

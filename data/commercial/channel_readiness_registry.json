@@ -242,7 +242,7 @@
       "automation_allowed": ["inbound_reception", "intent_classification", "qualification", "calendar_handoff", "warm_transfer_context", "requested_callback_prep", "call_summary"],
       "automation_blocked": ["cold_autodialing", "recording_without_lawful_notice_or_consent", "binding_commercial_commitment", "live_outbound_without_action_bound_authority"],
       "activation_evidence_required": ["provider_and_number", "bilingual_ar_en_acceptance", "DTMF", "human_transfer", "recording_policy", "retention_policy", "cost_and_latency_benchmark"],
-      "phone_dependency": true
+      "phone_dependency": false
     },
     "rcs": {
       "priority": "D",

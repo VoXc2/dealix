@@ -10,45 +10,64 @@ SCRIPT = ROOT / "scripts" / "railway_predeploy.sh"
 
 
 def _bash_executable() -> str:
-    if os.name == "nt":
-        candidates = [
-            Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Git" / "bin" / "bash.exe",
-            Path(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Git" / "bin" / "bash.exe",
-        ]
-        for candidate in candidates:
-            if candidate.is_file():
-                return str(candidate)
     bash = shutil.which("bash")
     assert bash, "bash is required for the Railway predeploy contract test"
     return bash
 
 
-def _run(env: dict[str, str]) -> subprocess.CompletedProcess[str]:
+def _run(value: str | None, extra: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    env = os.environ.copy()
+    if value is None:
+        env.pop("RUN_RAILWAY_PRE_DEPLOY_MIGRATE", None)
+    else:
+        env["RUN_RAILWAY_PRE_DEPLOY_MIGRATE"] = value
+    env.update(extra or {})
     return subprocess.run(
-        [_bash_executable(), str(SCRIPT)], cwd=ROOT, env=env, text=True,
-        encoding="utf-8", errors="replace", capture_output=True, check=False,
+        [_bash_executable(), str(SCRIPT)],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        check=False,
     )
 
 
-def test_migrations_disabled_is_safe_skip() -> None:
-    env = os.environ.copy()
-    env["RUN_RAILWAY_PRE_DEPLOY_MIGRATE"] = "0"
-    result = _run(env)
-    assert result.returncode == 0
-    assert "SKIP migrations" in result.stdout
+def test_non_authoritative_flags_are_safe_skip() -> None:
+    for value in (None, "", "0", "yes", "true", "2"):
+        result = _run(value)
+        assert result.returncode == 0
+        combined = result.stdout + result.stderr
+        assert "SKIP migrations" in combined
+        assert "MIGRATION_EXECUTION=NOT_EXECUTED" in combined
 
 
-def test_persistent_flags_cannot_authorize_production_ddl() -> None:
-    env = os.environ.copy()
-    env.update({
-        "RUN_RAILWAY_PRE_DEPLOY_MIGRATE": "1",
+def test_legacy_migration_intent_holds_without_bricking_deploy() -> None:
+    result = _run("1", {
         "DEALIX_DB_MIGRATION_AUTHORIZED": "1",
         "DATABASE_URL": "postgresql://invalid/never-used",
     })
-    result = _run(env)
-    assert result.returncode == 75
+    assert result.returncode == 0
     combined = result.stdout + result.stderr
+    assert "HOLD migrations" in combined
+    assert "MIGRATION_EXECUTION=NOT_EXECUTED" in combined
     assert "persistent Railway variables are not action-bound L5 authority" in combined
     assert "ACTION_HASH" in combined
     assert "checking Alembic" not in combined
     assert "alembic upgrade head" not in combined
+
+
+def test_normal_predeploy_contains_no_database_mutation_command() -> None:
+    source = SCRIPT.read_text(encoding="utf-8").lower()
+    assert "database_url" not in source
+    for forbidden in (
+        "alembic upgrade",
+        "alembic downgrade",
+        "psql ",
+        "drop database",
+        "create table",
+        "alter table",
+        "sqlalchemy",
+    ):
+        assert forbidden not in source
