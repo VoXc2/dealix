@@ -307,7 +307,7 @@ def test_execute_opencode_places_auto_after_run(tmp_path: Path, monkeypatch) -> 
     result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
-    assert argv[:3] == [str(binary), "run", "--auto"]
+    assert argv[:5] == [str(binary), "run", "--auto", "--format", "json"]
 
 
 def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) -> None:
@@ -334,8 +334,8 @@ def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) 
     result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
-    assert argv[0:3] == [str(binary), "run", "--auto"]
-    assert argv[3:5] == ["-m", "opencode/example-free"]
+    assert argv[0:5] == [str(binary), "run", "--auto", "--format", "json"]
+    assert argv[5:7] == ["-m", "opencode/example-free"]
 
 
 def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> None:
@@ -358,7 +358,7 @@ def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> 
     monkeypatch.setattr(factory, "run_argv", _capture)
     job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
     assert factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)["ok"] is True
-    assert captured["argv"][3:5] == ["-m", "opencode-go/glm-5.3"]
+    assert captured["argv"][5:7] == ["-m", "opencode-go/glm-5.3"]
 
 
 def _opencode_job(**overrides):
@@ -426,7 +426,7 @@ def test_opencode_isolates_control_path_and_stdin(tmp_path: Path, monkeypatch) -
     assert factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path / "oc")["ok"] is True
     argv = captured["argv"]
     env = captured["env"]
-    assert argv[:3] == ["/usr/bin/true", "run", "--auto"]
+    assert argv[:5] == ["/usr/bin/true", "run", "--auto", "--format", "json"]
     assert env["OPENCODE_PERMISSION"] == '{"bash":{"*":"allow"}}'
     assert env["OPENCODE_DB"] == str(tmp_path / "oc" / f"{job['JOB_ID']}.db")
     assert env["OPENCODE_DISABLE_AUTOUPDATE"] == "1"
@@ -1016,7 +1016,7 @@ def test_orchestrator_cli_fallback_requires_explicit_opt_in(tmp_path: Path, monk
     monkeypatch.setattr(factory, "run_argv", _capture)
     result = factory.execute_opencode(_daemon_job(), tmp_path, db_dir=tmp_path / "oc")
     assert result["ok"] is True
-    assert captured["argv"][:3] == [str(tmp_path / "opencode"), "run", "--auto"]
+    assert captured["argv"][:5] == [str(tmp_path / "opencode"), "run", "--auto", "--format", "json"]
 
 
 def test_daemon_rejects_non_loopback_url(tmp_path: Path, monkeypatch) -> None:

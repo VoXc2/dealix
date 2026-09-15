@@ -98,6 +98,7 @@ def test_select_picks_first_healthy_free_model(tmp_path: Path, monkeypatch) -> N
     calls: list[str] = []
 
     def fake_run(args, timeout=60):
+        assert args[:5] == ["run", "--pure", "--auto", "--format", "json"]
         model = args[args.index("-m") + 1]
         calls.append(model)
         return (0, "FREE_SELECTOR_OK") if model == "opencode/b-free" else (1, "nope")
@@ -107,6 +108,31 @@ def test_select_picks_first_healthy_free_model(tmp_path: Path, monkeypatch) -> N
     assert result["selected"] == "opencode/b-free"
     assert calls == ["opencode/a-free", "opencode/b-free"]
     assert (tmp_path / "selected-free-model").read_text().strip() == "opencode/b-free"
+
+
+def test_run_opencode_is_noninteractive(tmp_path: Path, monkeypatch) -> None:
+    binary = tmp_path / "opencode"
+    binary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    binary.chmod(0o700)
+    captured: dict[str, object] = {}
+
+    class Completed:
+        returncode = 0
+        stdout = "ok"
+
+    def fake_run(cmd, **kwargs):
+        captured["cmd"] = cmd
+        captured.update(kwargs)
+        return Completed()
+
+    monkeypatch.setattr(broker, "resolve_opencode_bin", lambda: str(binary))
+    monkeypatch.setattr(broker, "build_opencode_command", lambda _binary, args: [str(binary), *args])
+    monkeypatch.setattr(broker.subprocess, "run", fake_run)
+    rc, output = broker.run_opencode(["models"], timeout=7)
+    assert rc == 0
+    assert output == "ok"
+    assert captured["stdin"] is broker.subprocess.DEVNULL
+    assert captured["timeout"] == 7
 
 
 def test_select_never_probes_non_free_known_model(tmp_path: Path, monkeypatch) -> None:

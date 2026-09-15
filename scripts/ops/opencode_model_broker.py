@@ -129,6 +129,7 @@ def run_opencode(args: list[str], timeout: int = 60) -> tuple[int, str]:
             timeout=timeout,
             check=False,
             cwd=str(READONLY_DIR) if READONLY_DIR.is_dir() else None,
+            stdin=subprocess.DEVNULL,
         )
         return result.returncode, result.stdout
     except (OSError, subprocess.TimeoutExpired):
@@ -232,7 +233,10 @@ def select(state_dir: Path = STATE_DIR, dry_run: bool = False) -> dict[str, Any]
             "auto_select_policy": "explicit_free_only",
         }
     for model in candidates:
-        rc, output = run_opencode(["run", "-m", model, PROBE_PROMPT], timeout=45)
+        rc, output = run_opencode(
+            ["run", "--pure", "--auto", "--format", "json", "-m", model, PROBE_PROMPT],
+            timeout=45,
+        )
         if rc == 0 and PROBE_MARKER in output:
             write_state(selected_path, model + "\n")
             return {

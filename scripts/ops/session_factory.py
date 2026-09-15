@@ -1465,7 +1465,10 @@ def execute_opencode_cli(
         }
 
     prompt = job.get("EXECUTOR", {}).get("prompt") or job.get("BUSINESS_GOAL", "")
-    argv = [binary, "run", "--auto"]
+    # Raw JSON events are the stable non-interactive CLI contract. The default
+    # formatted renderer is intended for terminal output and has previously
+    # stalled under captured/non-TTY execution on this host.
+    argv = [binary, "run", "--auto", "--format", "json"]
     env = dict(os.environ)
     env["OPENCODE_PERMISSION"] = policy.read_text(encoding="utf-8").strip()
     env["OPENCODE_DB"] = str(db_path)
