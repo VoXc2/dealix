@@ -24,7 +24,7 @@ def test_parse_catalog_keeps_model_ids_only() -> None:
     assert broker.parse_catalog(text) == ["opencode/deepseek-v4-flash", "ollama/qwen3:4b"]
 
 
-def test_candidate_order_prefers_safe_current_then_preferred_free_only() -> None:
+def test_candidate_order_prefers_current_and_non_deepseek_free_then_deepseek_free() -> None:
     availability = {
         "models": [
             "opencode/zzz-free",
@@ -36,18 +36,19 @@ def test_candidate_order_prefers_safe_current_then_preferred_free_only() -> None
     }
     order = broker.candidate_order(availability, current="opencode/current-free")
     assert order[0] == "opencode/current-free"
-    assert "opencode/deepseek-v4-flash-free" not in order
+    assert order.index("opencode/deepseek-v4-flash-free") > order.index("opencode/zzz-free")
     assert "opencode/paid-x" not in order
     assert "opencode-go/deepseek-v4.1-flash" not in order
 
 
-def test_candidate_order_rejects_deepseek_current() -> None:
+def test_candidate_order_accepts_explicit_free_deepseek_current() -> None:
     availability = {
         "models": ["opencode/a-free", "opencode/deepseek-v4-flash-free"],
         "free_models": ["opencode/a-free", "opencode/deepseek-v4-flash-free"],
     }
     assert broker.candidate_order(availability, current="opencode/deepseek-v4-flash-free") == [
-        "opencode/a-free"
+        "opencode/deepseek-v4-flash-free",
+        "opencode/a-free",
     ]
 
 

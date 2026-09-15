@@ -57,7 +57,7 @@ def test_agent_audit_is_registry_driven_and_rejects_fixed_five_authority() -> No
 
 def test_root_governance_preserves_current_model_and_commercial_law() -> None:
     text = _text("AGENTS.md").lower()
-    assert "no_deepseek" in text or "no deepseek" in text
+    assert "provider-neutral" in text and "no silent paid spill" in text
     assert "free" in text and "diagnostic" in text
     assert "qualified discovery" in text
     assert "customer-specific" in text

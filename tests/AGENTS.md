@@ -8,7 +8,7 @@ When a test conflicts with current canonical policy:
 - replace fixed-five logical-agent assertions with Agentic Holding registry / legacy-alias compatibility checks;
 - replace global runtime `DeepWIP=3` assertions with ResourceGovernor scale/throttle tests. A local business/portfolio focus cap may be tested only when explicitly scoped and must not be described as runtime capacity authority;
 - derive sector/arm coverage from canonical registries instead of fixed architecture counts;
-- reject DeepSeek from unattended automatic model routing and require trusted current cost/privacy evidence for included remote capacity;
+- allow provider-neutral unattended routing only through the canonical broker: local/free first, included remote capacity only with trusted current cost/privacy/data evidence, and no silent paid spill;
 - reject fixed public price/duration and fixed-five public product framing;
 - keep research/relationship/consent/payment/revenue/proof distinctions explicit;
 - distinguish source PASS, runtime PASS, deployment identity and customer/economic proof.

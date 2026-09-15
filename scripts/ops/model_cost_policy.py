@@ -28,9 +28,12 @@ def is_included_opencode_go_model(model: str | None) -> bool:
 
 
 def is_auto_selectable_model(model: str | None) -> bool:
-    """Allow unattended selection only for non-DeepSeek free or included-plan IDs."""
-    if is_deepseek_model(model):
-        return False
+    """Return whether the identifier can be considered by canonical broker policy.
+
+    Provider family alone does not grant or deny authority. Explicit-free IDs
+    are eligible directly; included OpenCode Go IDs still require live cost
+    authority at the broker before execution. Arbitrary paid IDs remain out.
+    """
     return is_explicit_free_model(model) or is_included_opencode_go_model(model)
 
 

@@ -91,8 +91,7 @@ def test_pick_model_prefers_free_and_verified_included_routes(monkeypatch) -> No
     assert broker.pick_model("R0_NO_MODEL", catalog, [], [], verified) == "none"
 
 
-def test_pick_model_never_selects_deepseek_unattended(monkeypatch) -> None:
-    """Canonical NO_DEEPSEEK law: DeepSeek IDs are never auto-selected."""
+def test_pick_model_allows_deepseek_only_when_free_or_verified_included(monkeypatch) -> None:
     monkeypatch.setenv("DEALIX_OPENCODE_GO_USE_BALANCE", "disabled")
     monkeypatch.setenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", "test_verified_disabled")
     catalog = [
@@ -101,10 +100,9 @@ def test_pick_model_never_selects_deepseek_unattended(monkeypatch) -> None:
         "opencode-go/deepseek-v4-pro",
     ]
     verified = broker.GO_COST_VERIFIED_DISABLED
-    assert broker.pick_model("R3_INCLUDED_LIGHT", catalog, [], [], verified) == broker.UNKNOWN_INCLUDED_LIGHT
-    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], verified) == broker.UNKNOWN_INCLUDED_HIGH
-    assert broker.pick_model("R5_STRONG_REASONING", catalog, [], [], verified) == broker.UNKNOWN_INCLUDED_STRONG
-
+    assert broker.pick_model("R3_INCLUDED_LIGHT", catalog, [], [], verified) == "opencode/deepseek-v4-flash-free"
+    assert broker.pick_model("R4_INCLUDED_HIGH", catalog, [], [], verified) == "opencode-go/deepseek-v4.1-flash"
+    assert broker.pick_model("R5_STRONG_REASONING", catalog, [], [], verified) == "opencode-go/deepseek-v4-pro"
 
 def test_pick_model_does_not_assume_go_cost_authority() -> None:
     catalog = [

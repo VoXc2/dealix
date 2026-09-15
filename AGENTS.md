@@ -20,7 +20,7 @@ Current precedence for autonomous work:
 - `dealix.agentic_holding.runtime.build_current_registry()` / the Agentic Holding registry is logical roster authority; do not infer fleet size from editor-agent files.
 - Safe, bounded L0-L4 (L0–L4) read/research/edit/test/verify work may run autonomously in exact-head isolated worktrees through the canonical Session Factory / ResourceGovernor path.
 - Builder and Verifier remain independent; modifying jobs require exact live source authority and current data/model policy.
-- Unattended automatic model execution follows the current canonical NO_DEEPSEEK model/cost/data authority; legacy model defaults do not mint authority.
+- Unattended automatic model execution follows the canonical provider-neutral model/cost/data authority: deterministic/local first, then eligible verified-free, then trusted included capacity; no provider family or legacy default mints authority and no silent paid spill is allowed.
 - Current commercial law is `Free Execution Diagnostic -> Qualified Discovery -> Customer-Specific Quote`; no public fixed price or fixed duration authority.
 - L5 material effects remain action-bound: protected-main merge, production deploy/restart/cutover, external send/publish, spend/payment/refund, binding quote/contract/tender, DNS, production DB/schema/data, secrets/provider/billing/root/destructive mutations.
 

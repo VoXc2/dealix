@@ -32,7 +32,7 @@ routing, or the company architecture.
   tender submission, DNS/DB/secrets/provider/billing mutation, and destructive
   operations.
 - Automatic model execution follows the canonical Dealix model/cost/data broker.
-  Founder unattended law is **NO_DEEPSEEK** and no silent paid spill.
+  Founder unattended law is **provider-neutral free/local-first** with no silent paid spill; DeepSeek may only be selected by the canonical broker when explicit-free or trusted included authority is proven.
 
 ## Commercial truth loaded into agents
 

@@ -29,8 +29,8 @@ def test_cost_policy_requires_explicit_free_suffix_or_included_go_namespace() ->
     assert policy.is_auto_selectable_model("opencode/paid-x") is False
     assert policy.is_deepseek_model("opencode-go/deepseek-v4.1-flash") is True
     assert policy.is_deepseek_model("opencode/nemotron-3-ultra-free") is False
-    assert policy.is_auto_selectable_model("opencode/deepseek-v4-flash-free") is False
-    assert policy.is_auto_selectable_model("opencode-go/deepseek-v4-pro") is False
+    assert policy.is_auto_selectable_model("opencode/deepseek-v4-flash-free") is True
+    assert policy.is_auto_selectable_model("opencode-go/deepseek-v4-pro") is True
 
 
 def test_free_selector_never_contains_unproven_or_included_subscription_models() -> None:
@@ -43,11 +43,11 @@ def test_free_selector_never_contains_unproven_or_included_subscription_models()
         "free_models": ["opencode/nemotron-3-ultra-free"],
     }
     assert free_broker.candidate_order(availability, "opencode/paid-x") == [
-        "opencode/nemotron-3-ultra-free"
+        "opencode/nemotron-3-ultra-free",
     ]
 
 
-def test_free_selector_never_contains_deepseek_models() -> None:
+def test_free_selector_allows_explicit_free_deepseek_after_other_free_models() -> None:
     availability = {
         "models": [
             "opencode/deepseek-v4-flash-free",
@@ -56,7 +56,8 @@ def test_free_selector_never_contains_deepseek_models() -> None:
         "free_models": ["opencode/deepseek-v4-flash-free"],
     }
     assert free_broker.candidate_order(availability, "opencode/paid-x") == [
-        "opencode/nemotron-3-ultra-free"
+        "opencode/nemotron-3-ultra-free",
+        "opencode/deepseek-v4-flash-free",
     ]
 
 
@@ -74,10 +75,9 @@ def test_r3_does_not_use_unclassified_router_model_as_included_fallback() -> Non
     assert broker.pick_model("R3_INCLUDED_LIGHT", [], [], ["router/unknown-cost"]) == policy.UNKNOWN_INCLUDED_LIGHT
 
 
-def test_r4_uses_included_non_deepseek_only_with_verified_use_balance_disabled(monkeypatch) -> None:
+def test_r4_uses_provider_neutral_free_and_included_only_with_verified_use_balance_disabled(monkeypatch) -> None:
     # Included-Go routing requires live provider cost authority (balance-off
     # verified); the explicit provider_state argument alone cannot mint it.
-    # Canonical unattended law is NO_DEEPSEEK in all cases.
     monkeypatch.setenv("DEALIX_OPENCODE_GO_USE_BALANCE", "disabled")
     monkeypatch.setenv("DEALIX_OPENCODE_GO_COST_AUTHORITY_REF", "test_verified_disabled")
     catalog = [
@@ -95,7 +95,7 @@ def test_r4_uses_included_non_deepseek_only_with_verified_use_balance_disabled(m
     ) == "opencode/nemotron-3-ultra-free"
     assert broker.pick_model(
         "R4_INCLUDED_HIGH", ["opencode/deepseek-v4-flash-free"], [], []
-    ) == policy.UNKNOWN_INCLUDED_HIGH
+    ) == "opencode/deepseek-v4-flash-free"
 
 
 def test_r6_remains_explicit_paid_pending_approval() -> None:

@@ -23,10 +23,10 @@ def test_arm_registry_does_not_reassert_legacy_runtime_architecture() -> None:
         assert marker not in text
 
 
-def test_model_router_is_no_deepseek_fail_closed() -> None:
+def test_model_router_is_provider_neutral_fail_closed() -> None:
     arm = next(arm for arm in ALL_ARMS if arm.arm_id == "arm_39_model_router")
     purpose = arm.purpose.lower()
-    assert "non-deepseek" in purpose
+    assert "provider-neutral" in purpose
     assert "hold" in purpose
     assert "no silent paid spill" in purpose
 

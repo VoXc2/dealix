@@ -216,15 +216,19 @@ def _governance_authority_status() -> dict[str, Any]:
         and "qualified discovery" in root
         and "customer-specific" in root
     )
-    no_deepseek_ok = "no_deepseek" in root or "no deepseek" in root
+    provider_neutral_model_ok = (
+        "provider-neutral" in root
+        and "no silent paid spill" in root
+        and "legacy default mints authority" in root
+    )
 
     return {
-        "ok": not legacy_hits and not missing_markers and not old_test_rule and current_commercial_ok and no_deepseek_ok,
+        "ok": not legacy_hits and not missing_markers and not old_test_rule and current_commercial_ok and provider_neutral_model_ok,
         "fixed_five_authority_hits": legacy_hits,
         "missing_current_authority_markers": missing_markers,
         "obsolete_explicit-test-only_rule_present": old_test_rule,
         "current_commercial_law_present": current_commercial_ok,
-        "no_deepseek_present": no_deepseek_ok,
+        "provider_neutral_model_authority_present": provider_neutral_model_ok,
     }
 
 

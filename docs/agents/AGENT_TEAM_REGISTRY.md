@@ -31,7 +31,7 @@ Important consequences:
 - Builder != Verifier;
 - orphan logical agents or namespaces fail closed;
 - no agent can mint model/cost/data/privacy authority;
-- founder unattended model law is **NO_DEEPSEEK**; no silent paid spill;
+- founder unattended model law is **provider-neutral free/local-first**; DeepSeek is eligible only through the canonical broker when explicit-free or trusted included capacity is proven; no silent paid spill;
 - safe internal/source work may execute autonomously at L0-L4 in bounded
   exact-head isolated worktrees; material external effects are L5 and require
   exact action-bound authority.
@@ -194,7 +194,7 @@ model, or self-authored receipts cannot mint model/cost/data/privacy authority o
 downgrade sensitivity.
 
 Automatic routing target:
-`deterministic/no-model -> adequate local/private non-DeepSeek -> suitable data-eligible VERIFIED-FREE non-DeepSeek -> trusted included non-DeepSeek -> HOLD`.
+`deterministic/no-model -> adequate local/private -> suitable data-eligible VERIFIED-FREE -> trusted included capacity with cost/privacy/data authority -> HOLD`. Provider family alone never grants authority; arbitrary paid capacity remains approval-gated.
 
 ---
 

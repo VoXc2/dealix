@@ -23,7 +23,7 @@ def test_scoped_instructions_reject_superseded_global_authority() -> None:
     combined = "\n".join(path.read_text(encoding="utf-8").lower() for path in SCOPES)
     assert "omega v3" in combined
     assert "resourcegovernor" in combined
-    assert "no_deepseek" in combined
+    assert "provider-neutral" in combined or "provider neutral" in combined
     assert "fixed-five" in combined or "fixed five" in combined
     assert "compatibility" in combined
     assert "exact action-bound l5" in combined

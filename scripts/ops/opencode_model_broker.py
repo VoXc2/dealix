@@ -151,7 +151,7 @@ def refresh(state_dir: Path = STATE_DIR) -> dict[str, Any]:
     if not models:
         rc, output = run_opencode(["models"], timeout=60)
         models = parse_catalog(output)
-    free_models = [model for model in explicit_free_models(models) if not is_deepseek_model(model)]
+    free_models = explicit_free_models(models)
     payload = {
         "schema": "dealix.opencode.model-availability.v2",
         "refreshed_at": datetime.now(UTC).isoformat(),
@@ -163,7 +163,7 @@ def refresh(state_dir: Path = STATE_DIR) -> dict[str, Any]:
         "free_models": free_models,
         "blocked_non_free_count": len(models) - len(free_models),
         "auto_select_policy": "explicit_free_only",
-        "deepseek_auto_blocked": True,
+        "deepseek_policy": "provider_neutral_free_only",
         "credentials_stored": False,
     }
     state_dir.mkdir(parents=True, exist_ok=True)
@@ -191,26 +191,27 @@ def load_availability(state_dir: Path = STATE_DIR) -> dict[str, Any]:
 def candidate_order(availability: dict[str, Any], current: str | None) -> list[str]:
     models = list(availability.get("models") or [])
     declared_free = list(availability.get("free_models") or [])
-    free = [
-        model
-        for model in explicit_free_models([*declared_free, *models])
-        if not is_deepseek_model(model)
-    ]
+    free = explicit_free_models([*declared_free, *models])
+    non_deepseek_free = [model for model in free if not is_deepseek_model(model)]
+    deepseek_free = [model for model in free if is_deepseek_model(model)]
     ordered: list[str] = []
-    if current and is_explicit_free_model(current) and not is_deepseek_model(current):
+    if current and is_explicit_free_model(current):
         ordered.append(current)
     for model in PREFERRED_FREE:
-        if model in free and model not in ordered:
+        if model in non_deepseek_free and model not in ordered:
             ordered.append(model)
-    for model in free:
+    for model in non_deepseek_free:
+        if model not in ordered:
+            ordered.append(model)
+    for model in deepseek_free:
         if model not in ordered:
             ordered.append(model)
     return ordered
 
 
 def _remove_unsafe_selection(selected_path: Path, current: str | None) -> bool:
-    """Delete legacy/non-free/DeepSeek state before autonomous consumers can read it."""
-    if not current or (is_explicit_free_model(current) and not is_deepseek_model(current)):
+    """Delete legacy/non-free state before autonomous consumers can read it."""
+    if not current or is_explicit_free_model(current):
         return False
     try:
         selected_path.unlink(missing_ok=True)

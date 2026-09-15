@@ -167,9 +167,10 @@ def discover_ollama_models() -> list[str]:
 
 def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[str],
                provider_state: str | None = None) -> str:
-    # Canonical unattended policy is NO_DEEPSEEK even when a model is marked
-    # free or appears in the included OpenCode Go namespace.
-    free = [model for model in explicit_free_models(catalog) if not is_deepseek_model(model)]
+    # Canonical broker is provider-neutral. Provider family alone does not
+    # mint authority: explicit-free models are safe candidates, while included
+    # OpenCode Go models require verified balance-off cost authority.
+    free = explicit_free_models(catalog)
     live = str(provider_cost_authority()['state'])
     state = provider_state or live
     if state == GO_COST_VERIFIED_DISABLED and live != GO_COST_VERIFIED_DISABLED:
@@ -177,7 +178,7 @@ def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[s
         # provider cost authority to unlock included-Go routing.
         state = live
     included = (
-        [model for model in included_opencode_go_models(catalog) if not is_deepseek_model(model)]
+        included_opencode_go_models(catalog)
         if state == GO_COST_VERIFIED_DISABLED
         else []
     )
@@ -193,12 +194,16 @@ def pick_model(route: str, catalog: list[str], ollama: list[str], router: list[s
             'opencode-go/glm-5.3', 'opencode-go/gpt-5.6-luna',
             'opencode/nemotron-3-ultra-free', 'opencode/nemotron-3.5-lightning-free',
             'opencode/mimo-v2.5-free', 'opencode/ling-3.0-flash-fin-free',
+            'opencode-go/deepseek-v4.1-flash', 'opencode-go/deepseek-v4-pro',
+            'opencode/deepseek-v4-flash-free',
         )
         return first_available(preferred, safe) or UNKNOWN_INCLUDED_HIGH
     if route == 'R5_STRONG_REASONING':
         preferred = (
             'opencode-go/glm-5.3', 'opencode-go/gpt-5.6-luna',
+            'opencode-go/deepseek-v4-pro', 'opencode-go/deepseek-v4.1-flash',
             'opencode/nemotron-3-ultra-free', 'opencode/nemotron-3.5-lightning-free',
+            'opencode/deepseek-v4-flash-free',
         )
         return first_available(preferred, safe) or UNKNOWN_INCLUDED_STRONG
     return PAID_PENDING_APPROVAL
