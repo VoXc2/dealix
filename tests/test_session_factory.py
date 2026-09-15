@@ -5,6 +5,7 @@ import argparse
 import importlib.util
 import json
 import subprocess
+import urllib.parse
 from pathlib import Path
 
 import pytest
@@ -1532,58 +1533,67 @@ def test_opencode_private_sensitivity_never_uses_remote_model(
     assert "data-sensitivity-remote-denied" in result["stderr"]
 
 
-def _session_status_routes(status_value: str):
-    return [
-        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
-        (("POST", "prompt_async"), (204, "")),
-        (("GET", "/message"), (200, {"messages": []})),
-        (("POST", "/session?"), (200, {"id": "sess-status"})),
-        (("GET", "/session/sess-status/status"), (200, {"status": status_value})),
-        (("POST", "/abort"), (200, {})),
-    ]
-
-
 def test_daemon_session_status_helper_parses_busy(tmp_path: Path, monkeypatch) -> None:
+    """Test _daemon_session_status parses busy state from main branch API."""
     fake = _FakeDaemonHTTP([
         (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
         (("POST", "prompt_async"), (204, "")),
         (("POST", "/session?"), (200, {"id": "sess-helper"})),
-        (("GET", "/session/sess-helper/status?directory="), (200, {"status": "busy"})),
+        (("GET", "/session/status?directory="), (200, {"sess-helper": {"type": "busy"}})),
     ])
     monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
     job = _daemon_job()
     base = factory.daemon_base_url()
-    status_text, raw = factory._daemon_session_status(base, "sess-helper", str(tmp_path), timeout=5)
+    dir_query = urllib.parse.quote(str(tmp_path), safe="")
+    status_text = factory._daemon_session_status(base, "sess-helper", dir_query)
     assert status_text == "busy"
-    assert "busy" in raw
 
 
 def test_daemon_session_status_helper_parses_idle(tmp_path: Path, monkeypatch) -> None:
+    """Test _daemon_session_status parses idle state from main branch API."""
     fake = _FakeDaemonHTTP([
         (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
         (("POST", "prompt_async"), (204, "")),
         (("POST", "/session?"), (200, {"id": "sess-helper"})),
-        (("GET", "/session/sess-helper/status?directory="), (200, {"status": "idle"})),
+        (("GET", "/session/status?directory="), (200, {"sess-helper": {"type": "idle"}})),
     ])
     monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
     job = _daemon_job()
     base = factory.daemon_base_url()
-    status_text, raw = factory._daemon_session_status(base, "sess-helper", str(tmp_path), timeout=5)
+    dir_query = urllib.parse.quote(str(tmp_path), safe="")
+    status_text = factory._daemon_session_status(base, "sess-helper", dir_query)
     assert status_text == "idle"
-    assert "idle" in raw
+
+
+def test_daemon_session_status_helper_parses_running(tmp_path: Path, monkeypatch) -> None:
+    """Test _daemon_session_status parses running state (newly supported)."""
+    fake = _FakeDaemonHTTP([
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("POST", "/session?"), (200, {"id": "sess-helper"})),
+        (("GET", "/session/status?directory="), (200, {"sess-helper": {"type": "running"}})),
+    ])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    job = _daemon_job()
+    base = factory.daemon_base_url()
+    dir_query = urllib.parse.quote(str(tmp_path), safe="")
+    status_text = factory._daemon_session_status(base, "sess-helper", dir_query)
+    assert status_text == "running"
 
 
 def test_daemon_session_status_helper_returns_none_on_failure(tmp_path: Path, monkeypatch) -> None:
+    """Test _daemon_session_status returns None on HTTP failure."""
     fake = _FakeDaemonHTTP([
         (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
         (("POST", "prompt_async"), (204, "")),
         (("POST", "/session?"), (200, {"id": "sess-helper"})),
-        (("GET", "/session/sess-helper/status?directory="), (500, "internal error")),
+        (("GET", "/session/status?directory="), (500, "internal error")),
     ])
     monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
     job = _daemon_job()
     base = factory.daemon_base_url()
-    status_text, raw = factory._daemon_session_status(base, "sess-helper", str(tmp_path), timeout=5)
+    dir_query = urllib.parse.quote(str(tmp_path), safe="")
+    status_text = factory._daemon_session_status(base, "sess-helper", dir_query)
     assert status_text is None
 
 
@@ -1612,10 +1622,10 @@ def test_daemon_busy_status_prevents_false_idle_abort_then_succeeds(tmp_path: Pa
                         return _FakeDaemonResponse(200, '{"messages": []}')
                     # Then return terminal success
                     return _FakeDaemonResponse(200, json.dumps(_live_success_messages("BUSY_STATUS_OK")))
-                if method == "GET" and "/status" in url:
+                if method == "GET" and "/session/status" in url:
                     status_calls += 1
                     # Session reports busy during the silent interval
-                    return _FakeDaemonResponse(200, '{"status": "busy"}')
+                    return _FakeDaemonResponse(200, '{"sess-busy": {"type": "busy"}}')
                 if method == "POST" and "/session?" in url:
                     return _FakeDaemonResponse(200, '{"id": "sess-busy"}')
                 if method == "POST" and "prompt_async" in url:
@@ -1668,10 +1678,10 @@ def test_daemon_idle_status_still_aborts_on_idle_timeout(tmp_path: Path, monkeyp
                 if method == "GET" and "/message" in url:
                     message_calls += 1
                     return _FakeDaemonResponse(200, '{"messages": []}')
-                if method == "GET" and "/status" in url:
+                if method == "GET" and "/session/status" in url:
                     status_calls += 1
                     # Session reports idle - should not extend liveness
-                    return _FakeDaemonResponse(200, '{"status": "idle"}')
+                    return _FakeDaemonResponse(200, '{"sess-idle-status": {"type": "idle"}}')
                 if method == "POST" and "/session?" in url:
                     return _FakeDaemonResponse(200, '{"id": "sess-idle-status"}')
                 if method == "POST" and "prompt_async" in url:
@@ -1725,7 +1735,7 @@ def test_daemon_status_failure_does_not_extend_liveness(tmp_path: Path, monkeypa
                 if method == "GET" and "/message" in url:
                     message_calls += 1
                     return _FakeDaemonResponse(200, '{"messages": []}')
-                if method == "GET" and "/status" in url:
+                if method == "GET" and "/session/status" in url:
                     status_calls += 1
                     # Status check fails (e.g., network error)
                     raise ConnectionError("status endpoint unavailable")
@@ -1773,9 +1783,9 @@ def test_daemon_hard_deadline_still_aborts_despite_busy_status(tmp_path: Path, m
             call_log.append((method, url))
             if method == "GET" and "/message" in url:
                 return _FakeDaemonResponse(200, '{"messages": []}')
-            if method == "GET" and "/status" in url:
+            if method == "GET" and "/session/status" in url:
                 # Always reports busy
-                return _FakeDaemonResponse(200, '{"status": "busy"}')
+                return _FakeDaemonResponse(200, '{"sess-deadline": {"type": "busy"}}')
             if method == "POST" and "/session?" in url:
                 return _FakeDaemonResponse(200, '{"id": "sess-deadline"}')
             if method == "POST" and "prompt_async" in url:

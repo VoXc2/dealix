@@ -1317,33 +1317,6 @@ def _daemon_session_id(body: str) -> str | None:
     return None
 
 
-def _daemon_session_status(
-    base: str, session_id: str, directory: str, timeout: int = 10
-) -> tuple[str | None, str]:
-    """Read /session/status for the given session through the loopback daemon.
-
-    Returns (status_text, raw_body) where status_text is one of "busy", "idle",
-    "error", "unknown", or None on failure. Never raises.
-    """
-    dir_query = urllib.parse.quote(directory, safe="")
-    status, body = _daemon_request(
-        base, "GET", f"/session/{session_id}/status?directory={dir_query}", timeout=timeout
-    )
-    if status != 200 or not body:
-        return None, body
-    try:
-        payload = json.loads(body)
-    except (json.JSONDecodeError, ValueError, TypeError):
-        return None, body
-    if not isinstance(payload, dict):
-        return None, body
-    # OpenCode session status shape: {"status": "busy"|"idle"|"error"|...}
-    status_text = payload.get("status")
-    if isinstance(status_text, str):
-        return status_text.lower(), body
-    return None, body
-
-
 def _daemon_abort(base: str, session_id: str, dir_query: str) -> None:
     """Best-effort session abort; never raises."""
     try:
@@ -1413,7 +1386,7 @@ def _daemon_terminal_state(payload: Any) -> tuple[bool, bool, str, str]:
 def _daemon_session_status(base: str, session_id: str, dir_query: str) -> str | None:
     """Best-effort auxiliary liveness from OpenCode session status.
 
-    Unknown/unavailable status never grants liveness. Only a current busy state may extend
+    Unknown/unavailable status never grants liveness. Only a current busy/running state may extend
     the idle window, while retry/idle/unknown fail closed and the hard deadline remains authoritative.
     """
     status, body = _daemon_request(
@@ -1429,7 +1402,7 @@ def _daemon_session_status(base: str, session_id: str, dir_query: str) -> str | 
     if not isinstance(item, dict):
         return "idle" if isinstance(payload, dict) else None
     state = str(item.get("type") or "").strip().lower()
-    return state if state in {"busy", "retry", "idle"} else None
+    return state if state in {"busy", "running", "retry", "idle"} else None
 
 
 def execute_opencode_daemon(
@@ -1604,7 +1577,7 @@ def execute_opencode_daemon(
                 "model": model,
             }
         # Check session status for liveness: treat explicit busy/running as observable progress
-        session_status, _ = _daemon_session_status(base, session_id, directory, timeout=5)
+        session_status = _daemon_session_status(base, session_id, dir_query)
         if session_status in ("busy", "running"):
             last_progress_at = now_epoch()
         if now_epoch() - last_progress_at >= idle_timeout_s:
