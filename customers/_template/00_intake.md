@@ -1,6 +1,6 @@
 # 00 — Intake & Authority Context / الاستقبال وسياق الصلاحية
 
-> Canonical 30-Day Revenue Command Pilot workspace file 00. `dealix-sales`
+> Canonical customer-specific governed delivery workspace file 00. `dealix-sales`
 > prepares this from a real interaction / verified relationship and current
 > evidence. It remains internal until the matching customer-facing action is
 > authorized. Research or public contact data never creates consent.
