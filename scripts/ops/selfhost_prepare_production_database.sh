@@ -30,10 +30,12 @@ for key in POSTGRES_USER POSTGRES_DB POSTGRES_PASSWORD DEALIX_DATABASE_URL; do
   [[ -n "$value" ]] || hold "missing $key"
   case "$value" in *CHANGE_ME*|*change-me*|*REPLACE*) hold "placeholder $key" ;; esac
 done
-python3 - "$DEALIX_DATABASE_URL" "$POSTGRES_USER" "$POSTGRES_DB" <<'PY'
-import sys
+python3 - <<'PY'
+import os
 from urllib.parse import unquote, urlparse
-url, expected_user, expected_db = sys.argv[1:]
+url = os.environ["DEALIX_DATABASE_URL"]
+expected_user = os.environ["POSTGRES_USER"]
+expected_db = os.environ["POSTGRES_DB"]
 u = urlparse(url.replace("postgresql+asyncpg://", "postgresql://", 1))
 if u.scheme != "postgresql":
     raise SystemExit("production DB URL must be PostgreSQL")
@@ -60,6 +62,8 @@ fi
 
 [[ "${DEALIX_PREPARE_PRODUCTION_DB:-}" == YES ]] || hold "DEALIX_PREPARE_PRODUCTION_DB=YES required"
 [[ "$CONFIRM_SHA" == "$EXPECTED_SHA" ]] || hold "CONFIRM_SHA must equal exact release SHA"
+PREPARE_ACTION_ID="dealix-production-db-prepare-v1:${EXPECTED_SHA}"
+[[ "${DEALIX_L5_APPROVAL_ACTION:-}" == "$PREPARE_ACTION_ID" ]] || hold "exact action-bound approval required: DEALIX_L5_APPROVAL_ACTION=$PREPARE_ACTION_ID"
 "${COMPOSE[@]}" build --pull api
 "${COMPOSE[@]}" --profile production-db up -d postgres
 for _ in $(seq 1 30); do

@@ -86,7 +86,7 @@ def test_single_canonical_graph_contains_safe_public_cutover_profile() -> None:
 
 def test_public_cutover_controller_is_explicitly_action_gated() -> None:
     source = (ROOT / "scripts/ops/selfhost_public_cutover.sh").read_text(encoding="utf-8")
-    for needle in ("DEALIX_EXPECTED_SHA", "CONFIRM_SHA", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "0.0.0.0:80", "0.0.0.0:443"):
+    for needle in ("DEALIX_EXPECTED_SHA", "CONFIRM_SHA", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "DEALIX_L5_APPROVAL_ACTION", "dealix-production-stage-v1:", "dealix-public-cutover-v1:", "0.0.0.0:80", "0.0.0.0:443"):
         assert needle in source
     assert "DNS_MUTATION=NOT_EXECUTED" in source
     assert "PRODUCTION_GREEN=NOT_PROVEN" in source
@@ -141,7 +141,7 @@ def test_backup_and_quiescence_are_receipt_bound() -> None:
 
 def test_production_database_preparation_is_separate_l5_gate() -> None:
     source = (ROOT / "scripts/ops/selfhost_prepare_production_database.sh").read_text(encoding="utf-8")
-    for needle in ("--preflight", "--execute", "DEALIX_PREPARE_PRODUCTION_DB", "DEALIX_BOOTSTRAP_PRODUCTION_DB", "CONFIRM_SHA"):
+    for needle in ("--preflight", "--execute", "DEALIX_PREPARE_PRODUCTION_DB", "DEALIX_BOOTSTRAP_PRODUCTION_DB", "CONFIRM_SHA", "DEALIX_L5_APPROVAL_ACTION", "dealix-production-db-prepare-v1:"):
         assert needle in source
     assert "PRODUCTION_DB_MUTATION=NOT_EXECUTED" in source
     assert "RAILWAY_DATA_MIGRATION=NOT_EXECUTED" in source
@@ -163,3 +163,23 @@ def test_public_cutover_requires_complete_receipt_chain_before_public_bind() -> 
     public_bind_at = source.index('DEALIX_PUBLIC_HTTP_BIND="0.0.0.0:80"')
     assert verify_at < public_bind_at
     assert "production cutover DB must be canonical self-host postgres" in source
+
+
+def test_database_credentials_never_travel_in_process_argv() -> None:
+    prepare = (ROOT / "scripts/ops/selfhost_prepare_production_database.sh").read_text(encoding="utf-8")
+    cutover = (ROOT / "scripts/ops/selfhost_public_cutover.sh").read_text(encoding="utf-8")
+    for source in (prepare, cutover):
+        assert 'python3 - "$DEALIX_DATABASE_URL"' not in source
+        assert 'os.environ["DEALIX_DATABASE_URL"]' in source
+        assert 'os.environ["POSTGRES_USER"]' in source
+        assert 'os.environ["POSTGRES_DB"]' in source
+
+
+def test_material_selfhost_actions_are_exact_action_bound() -> None:
+    prepare = (ROOT / "scripts/ops/selfhost_prepare_production_database.sh").read_text(encoding="utf-8")
+    cutover = (ROOT / "scripts/ops/selfhost_public_cutover.sh").read_text(encoding="utf-8")
+    assert 'PREPARE_ACTION_ID="dealix-production-db-prepare-v1:${EXPECTED_SHA}"' in prepare
+    assert '${DEALIX_L5_APPROVAL_ACTION:-}' in prepare
+    assert 'ACTION_ID="dealix-production-stage-v1:${EXPECTED_SHA}"' in cutover
+    assert 'ACTION_ID="dealix-public-cutover-v1:${EXPECTED_SHA}"' in cutover
+    assert '${DEALIX_L5_APPROVAL_ACTION:-}' in cutover
