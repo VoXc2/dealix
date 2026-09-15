@@ -2,10 +2,25 @@
 set -Eeuo pipefail
 umask 077
 
-REPO="${DEALIX_REPO:-/opt/dealix/workspace/dealix}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
+DEFAULT_REPO="$(cd -- "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd -P)"
+REPO="${DEALIX_REPO:-$DEFAULT_REPO}"
 COMPOSE_FILE="$REPO/deploy/selfhost/compose.yml"
 EXPECTED_SHA="${DEALIX_EXPECTED_SHA:-}"
 USE_LOCAL_DB="${DEALIX_SELFHOST_LOCAL_DB:-0}"
+API_PORT="${DEALIX_SELFHOST_API_PORT:-18000}"
+WEB_PORT="${DEALIX_SELFHOST_WEB_PORT:-13000}"
+
+if ! [[ "$API_PORT" =~ ^[0-9]+$ ]] || (( API_PORT < 1024 || API_PORT > 65535 )); then
+  echo "HOLD: invalid DEALIX_SELFHOST_API_PORT=$API_PORT" >&2
+  exit 64
+fi
+if ! [[ "$WEB_PORT" =~ ^[0-9]+$ ]] || (( WEB_PORT < 1024 || WEB_PORT > 65535 )); then
+  echo "HOLD: invalid DEALIX_SELFHOST_WEB_PORT=$WEB_PORT" >&2
+  exit 64
+fi
+export DEALIX_SELFHOST_API_PORT="$API_PORT"
+export DEALIX_SELFHOST_WEB_PORT="$WEB_PORT"
 
 if [[ -z "$EXPECTED_SHA" ]]; then
   echo "HOLD: DEALIX_EXPECTED_SHA is required" >&2
@@ -95,9 +110,9 @@ PY
   return 67
 }
 
-wait_liveness http://127.0.0.1:18000/healthz
-verify_release http://127.0.0.1:18000/version dealix-api
-verify_release http://127.0.0.1:13000/healthz dealix-web
+wait_liveness "http://127.0.0.1:${API_PORT}/healthz"
+verify_release "http://127.0.0.1:${API_PORT}/version" dealix-api
+verify_release "http://127.0.0.1:${WEB_PORT}/healthz" dealix-web
 
 END_SHA="$(git rev-parse HEAD)"
 if [[ "$END_SHA" != "$EXPECTED_SHA" ]]; then
@@ -108,8 +123,8 @@ fi
 echo "SELFHOST_CANARY=PASS"
 echo "GIT_SHA=$CURRENT_SHA"
 echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
-echo "WEB=http://127.0.0.1:13000"
-echo "API=http://127.0.0.1:18000"
+echo "WEB=http://127.0.0.1:${WEB_PORT}"
+echo "API=http://127.0.0.1:${API_PORT}"
 echo "PUBLIC_CUTOVER=NOT_EXECUTED"
 if [[ "$USE_LOCAL_DB" == "1" ]]; then
   echo "LOCAL_POSTGRES=CANARY_ONLY"

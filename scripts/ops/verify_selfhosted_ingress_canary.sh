@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REPO="${DEALIX_REPO:-/opt/dealix/workspace/dealix}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)"
+DEFAULT_REPO="$(cd -- "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd -P)"
+REPO="${DEALIX_REPO:-$DEFAULT_REPO}"
 COMPOSE_FILE="$REPO/deploy/selfhost/compose.yml"
 EXPECTED_SHA="${DEALIX_EXPECTED_SHA:-}"
+INGRESS_PORT="${DEALIX_SELFHOST_INGRESS_PORT:-18081}"
 
 if [[ -z "$EXPECTED_SHA" ]]; then
   echo "HOLD: DEALIX_EXPECTED_SHA is required" >&2
@@ -24,7 +27,7 @@ probe_host() {
   local path="$2"
   local body=""
   for _ in $(seq 1 30); do
-    if body="$(curl -fsS --max-time 3 -H "Host: $host" "http://127.0.0.1:18081$path" 2>/dev/null)"; then
+    if body="$(curl -fsS --max-time 3 -H "Host: $host" "http://127.0.0.1:$INGRESS_PORT$path" 2>/dev/null)"; then
       printf '%s' "$body"
       return 0
     fi
@@ -50,12 +53,12 @@ assert web.get("service") == "dealix-web"
 assert web.get("git_sha") == expected
 PY
 
-if ss -ltn | grep -Eq '(^|[[:space:]])0\.0\.0\.0:18081([[:space:]]|$)'; then
+if ss -ltn | grep -Eq "(^|[[:space:]])0\\.0\\.0\\.0:${INGRESS_PORT}([[:space:]]|$)"; then
   echo "FAIL: ingress canary exposed publicly" >&2
   exit 67
 fi
 
 echo "SELFHOST_INGRESS_CANARY=PASS"
 echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME"
-echo "INGRESS=http://127.0.0.1:18081"
+echo "INGRESS=http://127.0.0.1:$INGRESS_PORT"
 echo "PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER"

@@ -1,5 +1,3 @@
-name: dealix-selfhost
-
 services:
   api:
     build:
@@ -12,10 +10,10 @@ services:
       APP_ENV: ${DEALIX_APP_ENV:-development}
       ENVIRONMENT: ${DEALIX_APP_ENV:-development}
       GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
-      APP_URL: http://127.0.0.1:18000
-      BASE_URL: http://127.0.0.1:18000
-      DEALIX_API_BASE: http://127.0.0.1:18000
-      CORS_ORIGINS: http://127.0.0.1:13000
+      APP_URL: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
+      BASE_URL: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
+      DEALIX_API_BASE: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
+      CORS_ORIGINS: http://127.0.0.1:${DEALIX_SELFHOST_WEB_PORT:-13000}
       DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
       DEALIX_ORCHESTRATOR_BACKEND: ${DEALIX_ORCHESTRATOR_BACKEND:-postgres}
       DEALIX_ORCHESTRATOR_DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
@@ -31,7 +29,7 @@ services:
       PRODUCTION_MUTATION: "0"
       RUN_RAILWAY_PRE_DEPLOY_MIGRATE: "0"
     ports:
-      - "127.0.0.1:18000:8000"
+      - "127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}:8000"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8000/healthz"]
@@ -52,7 +50,7 @@ services:
       HOSTNAME: 0.0.0.0
       GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
     ports:
-      - "127.0.0.1:13000:3000"
+      - "127.0.0.1:${DEALIX_SELFHOST_WEB_PORT:-13000}:3000"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
@@ -83,7 +81,7 @@ services:
     image: caddy:2.11.4-alpine
     profiles: ["ingress-canary"]
     ports:
-      - "127.0.0.1:18081:80"
+      - "127.0.0.1:${DEALIX_SELFHOST_INGRESS_PORT:-18081}:80"
     volumes:
       - ./Caddyfile.canary:/etc/caddy/Caddyfile:ro
     depends_on:
@@ -95,9 +93,7 @@ services:
     networks: [dealix]
 
 networks:
-  dealix:
-    name: dealix-selfhost
+  dealix: {}
 
 volumes:
-  dealix-postgres-canary:
-    name: dealix-postgres-canary
+  dealix-postgres-canary: {}
