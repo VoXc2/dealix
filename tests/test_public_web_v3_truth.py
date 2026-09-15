@@ -117,6 +117,6 @@ def test_mobile_public_navigation_remains_reachable_and_accessible() -> None:
     assert ".dx-mobile-menu-panel" in home_css
     assert "min-height: 48px" in global_css
     assert "min-height: 48px" in home_css
-    for route in ("/services", "/sectors", "/products", "/dealix-os", "/proof-vault"):
+    for route in ("/services", "/sectors", "/products", "/dealix-os", "/cases"):
         assert route in nav
         assert route in home
