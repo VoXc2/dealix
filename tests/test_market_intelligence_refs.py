@@ -47,3 +47,55 @@ def test_build_market_intel_digest_block() -> None:
     block = build_market_intel_digest_block()
     assert "pillar_of_week" in block
     assert block.get("master_index")
+
+
+def test_official_source_watch_block_is_read_only_evidence() -> None:
+    from datetime import UTC, datetime
+
+    from dealix.commercial_ops.market_intelligence_refs import (
+        build_official_source_watch_digest_block,
+    )
+
+    block = build_official_source_watch_digest_block(
+        datetime(2026, 9, 15, 3, 10, tzinfo=UTC)
+    )
+    assert block["status"] == "PASS_READ_ONLY_EVIDENCE"
+    assert block["signal_count"] >= 1
+    assert block["fresh_count"] >= 1
+    assert block["authority"] == {
+        "relationship": False,
+        "consent": False,
+        "buyer_intent": False,
+        "pipeline": False,
+        "revenue": False,
+        "external_send": False,
+    }
+    assert all(signal["relationship_state"] == "RESEARCH_ONLY" for signal in block["signals"])
+    assert all(signal["consent_state"] == "NOT_PROVEN" for signal in block["signals"])
+    assert all(signal["counts_as_pipeline"] is False for signal in block["signals"])
+    assert all(signal["allows_external_send"] is False for signal in block["signals"])
+    assert all(signal["economic_governor_hint"]["creates_opportunity"] is False for signal in block["signals"])
+    assert all(signal["radar_projection"]["counts_as_pipeline"] is False for signal in block["signals"])
+    assert all(signal["radar_projection"]["counts_as_relationship"] is False for signal in block["signals"])
+
+
+def test_official_source_watch_missing_receipts_holds(tmp_path: Path) -> None:
+    from dealix.commercial_ops.market_intelligence_refs import (
+        build_official_source_watch_digest_block,
+    )
+
+    block = build_official_source_watch_digest_block(receipts_path=tmp_path / "missing.json")
+    assert block["status"] == "HOLD_MISSING_CANONICAL_RECEIPTS"
+    assert block["signal_count"] == 0
+    assert block["authority"]["pipeline"] is False
+    assert block["authority"]["external_send"] is False
+
+
+def test_market_digest_exposes_official_source_watch() -> None:
+    from dealix.commercial_ops.market_intelligence_refs import build_market_intel_digest_block
+
+    block = build_market_intel_digest_block()
+    watch = block["official_source_watch"]
+    assert watch["source_path"] == "data/commercial/market_signal_receipts_v1.json"
+    assert watch["authority"]["relationship"] is False
+    assert watch["authority"]["consent"] is False

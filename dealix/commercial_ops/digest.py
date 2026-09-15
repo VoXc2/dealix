@@ -113,10 +113,17 @@ def build_commercial_digest(
         today_focus.append(
             "جمعة: نفّذ MARKET_INTELLIGENCE_WEEKLY_REVIEW_CHECKLIST_AR (20 دقيقة)"
         )
+    official_watch = market_intel.get("official_source_watch") or {}
+    if official_watch.get("fresh_count", 0) > 0:
+        today_focus.append(
+            "مصادر رسمية: "
+            f"{official_watch['fresh_count']} إشارات أدلة حديثة للبحث الداخلي فقط — "
+            "لا علاقة/موافقة/فرصة تجارية تلقائية"
+        )
 
     return {
         "generated_at": datetime.now(UTC).isoformat(),
-        "schema_version": "1.5",
+        "schema_version": "1.6",
         "market_intelligence": market_intel,
         "value_plan": value_plan,
         "doctrine": build_soaen_daily(),
@@ -280,6 +287,19 @@ def render_digest_markdown(digest: dict[str, Any]) -> str:
             lines.append(f"- **جمعة:** راجع `{mi['friday_checklist']}`")
         if not mi.get("status_ok"):
             lines.append("- ⚠️ بعض مسارات استخبارات السوق ناقصة — راجع `market_intelligence_status`")
+        watch = mi.get("official_source_watch") or {}
+        if watch:
+            lines.append(
+                "- **مصادر رسمية (بحث فقط):** "
+                f"حديث={watch.get('fresh_count', 0)} · HOLD={watch.get('hold_count', 0)} · "
+                f"غير معتمد/متجاوز={watch.get('skipped_count', 0)}"
+            )
+            lines.append("- Research ≠ Relationship · Public source ≠ Consent · Signal ≠ Pipeline")
+            for signal in (watch.get("signals") or [])[:5]:
+                lines.append(
+                    f"  - `{signal.get('source_authority')}` · `{signal.get('canonical_ref')}` · "
+                    f"{signal.get('freshness')} · {signal.get('internal_action')}"
+                )
 
     lines.extend(
         [
