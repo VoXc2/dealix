@@ -40,8 +40,22 @@ def build_motion_a_pipeline_plan(*, top_n: int = 10) -> dict[str, Any]:
     from dealix.commercial_ops.motion_pipelines import build_motion_pipeline_plan
 
     plan = build_motion_pipeline_plan(motion="A", top_n=top_n)
+    targets = list(plan.get("targets") or [])
+    total_eligible = int(plan.get("pool_size") or 0)
+    if total_eligible < len(targets):
+        raise ValueError("motion A pool_size cannot be smaller than displayed targets")
+    plan["target_count"] = total_eligible
+    plan["targeting_state"] = (
+        "REAL_TARGETS_PRESENT"
+        if total_eligible
+        else "TRUTHFUL_EMPTY_NO_ELIGIBLE_TARGETS"
+    )
     paid = plan["first_paid"]
     focus_ar = list(plan.get("focus_ar") or [])
+    if not targets:
+        focus_ar.append(
+            "لا توجد أهداف علاقة مؤهلة حاليًا — لا تُنشئ targets أو consent أو outreach اصطناعيًا."
+        )
     if paid["verdict"] == "PIPELINE_OPEN":
         focus_ar.append("الأولوية: 3 لمسات P0 + 1 Discovery + سطر evidence اليوم")
     plan["focus_ar"] = focus_ar

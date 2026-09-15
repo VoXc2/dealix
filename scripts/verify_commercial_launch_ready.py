@@ -149,48 +149,19 @@ def check_paths() -> None:
 
 
 def check_targeting_rows() -> None:
-    from dealix.commercial_ops.targeting_csv import load_targets
+    from dealix.commercial_ops.targeting_csv import is_placeholder_target, load_targets
 
     rows = load_targets()
-    n = len(rows)
-    min_rows = 250 if STRICT else 80
-    if n >= min_rows:
-        ok(f"agency_accounts_seed rows={n}")
-    elif n >= 200:
-        ok(f"agency_accounts_seed rows={n}")
-        if STRICT:
-            warn(
-                f"strategic targeting below {min_rows} rows ({n}) — "
-                "run scripts/expand_agency_targets_seed.py --wave4"
-            )
-    elif n >= 150:
-        ok(f"agency_accounts_seed rows={n}")
-        if STRICT:
-            warn(
-                f"strategic targeting below {min_rows} rows ({n}) — "
-                "run scripts/expand_agency_targets_seed.py --wave3"
-            )
-    elif n >= 120:
-        ok(f"agency_accounts_seed rows={n}")
-        if STRICT:
-            warn(
-                f"strategic targeting below {min_rows} rows ({n}) — "
-                "run scripts/expand_agency_targets_seed.py --wave2"
-            )
-    elif n >= 80:
-        ok(f"agency_accounts_seed rows={n}")
-        if not STRICT:
-            ok("soft launch targeting OK (>= 80)")
-        else:
-            warn(
-                f"strategic targeting below {min_rows} rows ({n}) — "
-                "run scripts/expand_agency_targets_seed.py --wave2"
-            )
-    elif n >= 20:
-        ok(f"agency_accounts_seed rows={n}")
-        warn(f"strategic targeting below 80 rows ({n}) — run expand_agency_targets_seed.py")
+    real = [row for row in rows if not is_placeholder_target(row)]
+    seed = len(rows)
+    eligible = len(real)
+    if eligible:
+        ok(f"targeting real_eligible={eligible} seed_inventory={seed}")
     else:
-        fail(f"agency_accounts_seed has only {n} rows (need >= {min_rows} in strict)")
+        ok(f"targeting truthful_empty real_eligible=0 seed_inventory={seed}")
+        warn(
+            "no eligible relationship targets; research/seed inventory is not pipeline, consent, or send authority"
+        )
 
 
 def check_doctrine() -> None:
@@ -241,16 +212,28 @@ def check_social_queue() -> None:
 
 def check_war_room_build() -> None:
     from dealix.commercial_ops.outreach_drafts import attach_outreach_drafts
-    from dealix.commercial_ops.targeting_csv import build_war_room_today, load_targets
+    from dealix.commercial_ops.targeting_csv import (
+        build_war_room_today,
+        is_placeholder_target,
+        load_targets,
+    )
     from dealix.commercial_ops.targeting_rotation import select_daily_p0_targets
 
-    pool = select_daily_p0_targets(load_targets(), top_n=10)
+    source_rows = load_targets()
+    real_rows = [row for row in source_rows if not is_placeholder_target(row)]
+    pool = select_daily_p0_targets(source_rows, top_n=10)
     pack = attach_outreach_drafts(build_war_room_today(pool, top_n=10))
     items = (pack.get("targets") or {}).get("items") or []
+    if not real_rows:
+        if items:
+            fail("war room promoted targets despite truthful empty eligible set")
+        else:
+            ok("war room truthful empty; no synthetic targets or outreach drafts")
+        return
     if items and items[0].get("outreach_draft_ar"):
-        ok("build_war_room_today + outreach_drafts")
+        ok("build_war_room_today + outreach_drafts for real eligible targets")
     else:
-        fail("war room missing targets or outreach_draft_ar")
+        fail("eligible real targets exist but war room/draft generation is incomplete")
 
 
 def check_phase2_api_smoke() -> None:

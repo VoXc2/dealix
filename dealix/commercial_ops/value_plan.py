@@ -105,6 +105,8 @@ def build_value_plan_snapshot(*, motion_top_n: int = 5) -> dict[str, Any]:
         "motion_a": {
             "focus_ar": motion.get("focus_ar"),
             "targets": (motion.get("targets") or [])[:motion_top_n],
+            "target_count": int(motion.get("target_count") or 0),
+            "targeting_state": motion.get("targeting_state") or "UNKNOWN",
             "verdict": (motion.get("first_paid") or {}).get("verdict"),
         },
         "weekly_scorecard": {
@@ -122,6 +124,8 @@ def build_value_plan_snapshot(*, motion_top_n: int = 5) -> dict[str, Any]:
             "social_posts_target": 140,
             "social_cycle_weeks": 28,
             "min_rows_wave4": 250,
+            "target_readiness_basis": "REAL_ELIGIBLE_TARGETS_ONLY",
+            "legacy_seed_thresholds_authoritative": False,
         },
         "expansion_status": expansion,
         "pack_status": _pack_status_for_day(day),
@@ -184,11 +188,13 @@ def _build_warnings(
         out.append("سجّل حدث أدلة واحد اليوم (مساءً: founder_evening.ps1).")
     if not evening.get("logged_today"):
         out.append(evening.get("reminder_ar") or "")
-    if len(targets) < 80:
-        out.append(f"استهداف: {len(targets)} صف — Soft ≥80 · wave2 ≥150.")
-    elif len(targets) < 150:
+    if not targets:
         out.append(
-            f"استهداف: {len(targets)} صف — للموجة 2: py -3 scripts/expand_agency_targets_seed.py --wave2"
+            "لا توجد أهداف علاقة مؤهلة حاليًا؛ research/seed rows ليست pipeline ولا consent ولا outreach authority."
+        )
+    elif len(targets) < 3:
+        out.append(
+            f"استهداف حقيقي مؤهل: {len(targets)} فقط — حسّن evidence/relationship qualification ولا تُنشئ صفوفًا اصطناعية."
         )
     soc = (expansion or {}).get("social") or {}
     if soc and not soc.get("queue_ready_28w"):

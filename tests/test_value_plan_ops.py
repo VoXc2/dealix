@@ -60,7 +60,14 @@ def test_build_value_plan_snapshot_shape():
 
     snap = build_value_plan_snapshot(motion_top_n=3)
     assert snap["schema_version"] == "1.0"
-    assert snap["motion_a"]["targets"]
+    assert isinstance(snap["motion_a"]["targets"], list)
+    assert snap["motion_a"]["target_count"] >= len(snap["motion_a"]["targets"])
+    assert snap["motion_a"]["targeting_state"] in {
+        "REAL_TARGETS_PRESENT",
+        "TRUTHFUL_EMPTY_NO_ELIGIBLE_TARGETS",
+    }
+    if not snap["motion_a"]["targets"]:
+        assert snap["motion_a"]["targeting_state"] == "TRUTHFUL_EMPTY_NO_ELIGIBLE_TARGETS"
     assert "warnings_ar" in snap
     assert snap["ops_ui"]["founder"] == "/ar/ops/founder"
 
@@ -70,7 +77,36 @@ def test_motion_a_pipeline_plan_shape():
 
     plan = build_motion_a_pipeline_plan(top_n=3)
     assert plan["motion"] == "A"
-    assert plan.get("targets")
+    assert isinstance(plan.get("targets"), list)
+    assert plan["target_count"] >= len(plan["targets"])
+    assert plan["targeting_state"] in {
+        "REAL_TARGETS_PRESENT",
+        "TRUTHFUL_EMPTY_NO_ELIGIBLE_TARGETS",
+    }
+    if not plan["targets"]:
+        assert plan["targeting_state"] == "TRUTHFUL_EMPTY_NO_ELIGIBLE_TARGETS"
+
+
+def test_motion_a_target_count_is_total_pool_not_display_slice(monkeypatch):
+    import dealix.commercial_ops.motion_pipelines as motion_pipelines
+    from dealix.commercial_ops.motion_a_pipeline import build_motion_a_pipeline_plan
+
+    def fake_plan(*, motion: str, top_n: int):
+        assert motion == "A"
+        assert top_n == 2
+        return {
+            "motion": "A",
+            "pool_size": 5,
+            "targets": [{"company": "A"}, {"company": "B"}],
+            "first_paid": {"verdict": "IN_PROGRESS", "dod_doc": "dod"},
+            "focus_ar": [],
+        }
+
+    monkeypatch.setattr(motion_pipelines, "build_motion_pipeline_plan", fake_plan)
+    plan = build_motion_a_pipeline_plan(top_n=2)
+    assert len(plan["targets"]) == 2
+    assert plan["target_count"] == 5
+    assert plan["targeting_state"] == "REAL_TARGETS_PRESENT"
 
 
 def test_evening_reminder_ar():
