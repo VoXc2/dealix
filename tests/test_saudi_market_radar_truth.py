@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from dealix.commercial.saudi_market_radar import SaudiMarketRadar
 
 
@@ -52,3 +54,11 @@ def test_dynamic_market_counts_are_not_persisted_as_durable_truth() -> None:
 
     assert "1,865" not in text
     assert "888%" not in text
+
+
+def test_public_radar_surfaces_jadeer_as_readiness_not_buyer_intent() -> None:
+    page = (Path(__file__).resolve().parents[1] / "apps/web/app/saudi-opportunity-radar/page.tsx").read_text(encoding="utf-8")
+    assert 'id: "monshaat-jadeer"' in page
+    assert "Free supplier-readiness diagnostic" in page
+    assert "لا يثبت علاقة أو موافقة" in page
+    assert "https://www.monshaat.gov.sa/en/node/12778" in page

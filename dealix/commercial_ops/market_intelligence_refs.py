@@ -24,6 +24,7 @@ OFFICIAL_HOST_AUTHORITIES = {
     "cst.gov.sa": "CST",
     "mc.gov.sa": "MOC",
     "moh.gov.sa": "MOH",
+    "monshaat.gov.sa": "MONSHAAT",
     "nca.gov.sa": "NCA",
     "sama.gov.sa": "SAMA",
     "stats.gov.sa": "GASTAT",
@@ -79,6 +80,8 @@ def _registry_id_for_signal(authority: str, signal_id: str) -> str:
         return "zatca_wave25"
     if authority == "NCA" and "cyber" in key:
         return "nca_ai_cybersecurity"
+    if authority == "MONSHAAT" and "jadeer" in key:
+        return "monshaat_jadeer"
     return "UNKNOWN"
 
 

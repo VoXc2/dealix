@@ -76,6 +76,17 @@ const signals = [
     source: "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
   },
   {
+    authority: "Monsha’at",
+    id: "monshaat-jadeer",
+    title: "Jadeer · تأهيل الموردين وربط المنشآت الصغيرة والمتوسطة بالفرص الشرائية",
+    observed: "15 سبتمبر 2026",
+    deadline: "خدمة حالية — متطلبات الأهلية والفرصة الشرائية تُتحقق قبل أي استخدام خاص بعميل",
+    who: "المنشآت الصغيرة والمتوسطة في جميع القطاعات التي تحتاج رفع جاهزية التأهيل وإثبات القدرات أمام شركاء القطاعين العام والخاص.",
+    diagnostic: "Free supplier-readiness diagnostic: متطلبات Jadeer، وثائق التأهيل، capability/evidence matrix، gaps، owners وخطة remediation قبل أي tender أو proposal.",
+    boundary: "Jadeer يثبت وجود مسار تأهيل رسمي وفرص شرائية محتملة؛ لا يثبت علاقة أو موافقة أو أهلية شركة بعينها أو فوزًا بمناقصة أو إيرادًا لـDealix.",
+    source: "https://www.monshaat.gov.sa/en/node/12778",
+  },
+  {
     authority: "SAMA",
     id: "sama-open-banking",
     title: "Open Banking · انتقال السوق إلى مرحلة الترخيص",

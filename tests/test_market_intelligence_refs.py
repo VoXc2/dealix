@@ -99,3 +99,23 @@ def test_market_digest_exposes_official_source_watch() -> None:
     assert watch["source_path"] == "data/commercial/market_signal_receipts_v1.json"
     assert watch["authority"]["relationship"] is False
     assert watch["authority"]["consent"] is False
+
+
+def test_monshaat_jadeer_receipt_reaches_official_watch_without_opportunity_promotion() -> None:
+    from datetime import UTC, datetime
+
+    from dealix.commercial_ops.market_intelligence_refs import (
+        build_official_source_watch_digest_block,
+    )
+
+    block = build_official_source_watch_digest_block(datetime(2026, 9, 15, 5, 0, tzinfo=UTC))
+    jadeer = [signal for signal in block["signals"] if signal["source_authority"] == "MONSHAAT"]
+    assert len(jadeer) == 1
+    signal = jadeer[0]
+    assert signal["canonical_ref"] == "sig-2026-monshaat-jadeer-supplier-readiness"
+    assert signal["relationship_state"] == "RESEARCH_ONLY"
+    assert signal["consent_state"] == "NOT_PROVEN"
+    assert signal["counts_as_pipeline"] is False
+    assert signal["allows_external_send"] is False
+    assert signal["economic_governor_hint"]["creates_opportunity"] is False
+    assert signal["radar_projection"]["counts_as_revenue"] is False

@@ -1,6 +1,6 @@
 {
   "schema": "dealix.market-signal-set.v1",
-  "generated_at": "2026-09-11T16:40:00+03:00",
+  "generated_at": "2026-09-15T04:27:46+00:00",
   "scope": "dealix_company",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
@@ -1000,6 +1000,68 @@
         "founder_minutes": 2
       },
       "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-monshaat-jadeer-supplier-readiness",
+      "source_id": "MONSHAAT_OFFICIAL",
+      "source_ref": "https://www.monshaat.gov.sa/en/node/12778",
+      "observed_at": "2026-09-15T04:27:46+00:00",
+      "ingested_at": "2026-09-15T04:27:46+00:00",
+      "provenance_ref": "Monsha'at Jadeer Service (official current service page)",
+      "fresh_until": "2026-11-14T04:27:46+00:00",
+      "signal_family": "PROCUREMENT_OR_SUPPLIER_READINESS",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "SME_SUPPLIER",
+      "evidence_refs": [
+        "https://www.monshaat.gov.sa/en/node/12778",
+        "https://www.monshaat.gov.sa/en/node/463326"
+      ],
+      "facts": [
+        "Monsha'at describes Jadeer as a free electronic prequalification service for SMEs to demonstrate capabilities to public- and private-sector partners and facilitate access to procurement opportunities.",
+        "On 26 April 2026, Monsha'at announced New Murabba Development Company onboarding to Jadeer to streamline supplier qualification and help eligible SMEs access major-project supply-chain opportunities."
+      ],
+      "inferences": [
+        "Jadeer creates a legitimate supplier-readiness diagnostic lane for Saudi SMEs that want to improve qualification evidence and procurement readiness.",
+        "A public procurement pathway does not prove a specific buyer relationship, consent, tender fit, award probability, or revenue."
+      ],
+      "unknowns": [
+        "No company-specific eligibility, buyer intent, tender fit, or procurement award is proven by the public Jadeer pages."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Verify the SME's current Jadeer eligibility requirements and named procurement opportunity before any customer-specific proposal."
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 4,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5). Values are internal prioritization only and are NOT purchase probability, demand evidence, relationship, consent, tender fit, award probability, or customer facts.",
       "authority": {
         "relationship": false,
         "consent": false,
