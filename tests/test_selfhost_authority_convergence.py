@@ -43,3 +43,11 @@ def test_current_runbooks_require_exact_sha_and_l5_cutover() -> None:
     assert "PRODUCTION_GREEN=NOT_PROVEN" in plane
     assert "DEALIX_SELFHOST_API_PORT" in runbook
     assert "DEALIX_SELFHOST_WEB_PORT" in runbook
+
+
+def test_pg18_canary_volume_uses_version_aware_parent_mount() -> None:
+    text = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
+    assert "pgvector/pgvector:pg18" in text
+    assert "dealix-postgres-canary:/var/lib/postgresql" in text
+    assert "dealix-postgres-canary:/var/lib/postgresql/data" not in text
+    assert 'profiles: ["local-db"]' in text
