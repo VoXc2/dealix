@@ -1089,6 +1089,65 @@ def test_orchestrator_cli_fallback_requires_explicit_opt_in(tmp_path: Path, monk
     assert captured["argv"][:5] == [str(tmp_path / "opencode"), "run", "--auto", "--format", "json"]
 
 
+
+def test_live_base_guard_rejects_drift_and_allows_exact(monkeypatch) -> None:
+    job = _opencode_job(modifying=True)
+    job["BASE_SHA"] = "aaa"
+    monkeypatch.setattr(factory, "resolve_live_base_sha", lambda repo_root=None: "bbb")
+    drift = factory.verify_live_base_matches(job)
+    assert drift["ok"] is False
+    assert drift["reason"] == "live-base-guard: BASE_SHA drift"
+    job["BASE_SHA"] = "bbb"
+    assert factory.verify_live_base_matches(job)["ok"] is True
+    readonly = _opencode_job(modifying=False)
+    readonly["BASE_SHA"] = "stale-is-allowed-for-readonly"
+    assert factory.verify_live_base_matches(readonly)["ok"] is True
+
+
+def test_worktree_base_guard_rejects_stale_reused_worktree(tmp_path: Path, monkeypatch) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    subprocess.run(["git", "init", "-q", str(repo)], check=True)
+    subprocess.run(["git", "-C", str(repo), "config", "user.email", "test@example.invalid"], check=True)
+    subprocess.run(["git", "-C", str(repo), "config", "user.name", "Dealix Test"], check=True)
+    (repo / "x.txt").write_text("x", encoding="utf-8")
+    subprocess.run(["git", "-C", str(repo), "add", "x.txt"], check=True)
+    subprocess.run(["git", "-C", str(repo), "commit", "-qm", "base"], check=True)
+    head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+    job = _opencode_job(modifying=True)
+    job["BASE_SHA"] = head
+    job["WORKTREE"] = str(repo)
+    monkeypatch.setattr(factory, "resolve_live_base_sha", lambda repo_root=None: "new-live-main")
+    result = factory.verify_worktree_base_matches(job)
+    assert result["ok"] is False
+    assert result["reason"] == "live-base-guard: worktree base drift"
+    monkeypatch.setattr(factory, "resolve_live_base_sha", lambda repo_root=None: head)
+    assert factory.verify_worktree_base_matches(job)["ok"] is True
+
+
+def test_modifying_opencode_cli_is_forbidden(tmp_path: Path, monkeypatch) -> None:
+    job = _opencode_job(modifying=True)
+    monkeypatch.setattr(factory, "run_argv", lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("CLI must not launch")))
+    result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 78
+    assert result["fallback_denied"] == "modifying-worktree-isolation"
+
+
+def test_modifying_daemon_timeout_never_falls_back_to_cli(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job(modifying=True)
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    monkeypatch.setattr(factory, "execute_opencode_daemon", lambda *_a, **_k: {
+        "ok": False, "returncode": 124, "stdout": "",
+        "stderr": "daemon-deadline-exceeded: session aborted",
+        "duration_s": 180, "via": "daemon", "session_id": "sess-timeout",
+    })
+    monkeypatch.setattr(factory, "execute_opencode_cli", lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("modifying CLI fallback must never run")))
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 124
+    assert result["fallback_denied"] == "modifying-worktree-isolation"
+
 def test_daemon_rejects_non_loopback_url(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setenv("DEALIX_OPENCODE_DAEMON_URL", "http://example.com:4098")
     monkeypatch.setattr(factory.urllib.request, "urlopen", _boom_urlopen)

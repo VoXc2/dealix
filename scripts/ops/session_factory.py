@@ -105,6 +105,56 @@ def resolve_default_base_sha(repo_root: pathlib.Path | str | None = None) -> str
     # make_job, which resolves a strict live base for repo-writing work.
     return FROZEN_RELEASE_SHA
 
+
+def verify_live_base_matches(job: dict[str, Any], repo_root: pathlib.Path | str | None = None) -> dict[str, Any]:
+    """Fail-closed guard: modifying jobs must have BASE_SHA equal to freshly resolved live base.
+
+    Returns {"ok": True} if the check passes, or {"ok": False, "reason": ..., "live_base": ..., "recorded_base": ...} if it fails.
+    Read-only (non-modifying) jobs always pass this check to preserve frozen-release compatibility.
+    """
+    if not job.get("MODIFYING"):
+        return {"ok": True}
+    recorded = job.get("BASE_SHA")
+    if not recorded:
+        return {"ok": False, "reason": "live-base-guard: no recorded BASE_SHA on modifying job"}
+    live = resolve_live_base_sha(repo_root)
+    if not live:
+        return {"ok": False, "reason": "live-base-guard: live base unresolvable", "recorded_base": recorded}
+    if recorded != live:
+        return {"ok": False, "reason": "live-base-guard: BASE_SHA drift", "recorded_base": recorded, "live_base": live}
+    return {"ok": True}
+
+
+def verify_worktree_base_matches(job: dict[str, Any], repo_root: pathlib.Path | str | None = None) -> dict[str, Any]:
+    """Fail-closed guard for reused worktrees: the worktree's base must match current live base.
+
+    Returns {"ok": True} if check passes, or {"ok": False, "reason": ..., "worktree_base": ..., "live_base": ...} if it fails.
+    Only applies to modifying jobs with an existing WORKTREE.
+    """
+    if not job.get("MODIFYING"):
+        return {"ok": True}
+    worktree = job.get("WORKTREE")
+    if not worktree:
+        return {"ok": True}
+    repo = repo_root or Path(job.get("REPO") or REPO_ROOT)
+    git = shutil.which("git")
+    if not git:
+        return {"ok": False, "reason": "live-base-guard: git-not-found"}
+    # Get the base commit the worktree was created from
+    result = subprocess.run(
+        [git, "-C", str(worktree), "rev-parse", "HEAD"],
+        capture_output=True, text=True, timeout=10, check=False
+    )
+    if result.returncode != 0 or not result.stdout.strip():
+        return {"ok": False, "reason": "live-base-guard: worktree-head-unresolvable", "stderr": redact(result.stderr)}
+    worktree_base = result.stdout.strip()
+    live = resolve_live_base_sha(repo_root)
+    if not live:
+        return {"ok": False, "reason": "live-base-guard: live base unresolvable", "worktree_base": worktree_base}
+    if worktree_base != live:
+        return {"ok": False, "reason": "live-base-guard: worktree base drift", "worktree_base": worktree_base, "live_base": live}
+    return {"ok": True}
+
 # Autonomous OpenCode runs get their own control database. Sharing the single
 # interactive ``opencode.db`` lets session creation block on that file's write
 # lock (a run then sits at ``init`` for the whole budget with zero output).
@@ -1513,12 +1563,21 @@ def execute_opencode_daemon(
 def execute_opencode_cli(
     job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, model: str | None = None
 ) -> dict[str, Any]:
-    """Bounded direct ``opencode run --auto`` launch with isolated state.
+    """Bounded direct ``opencode run --auto`` launch for read-only recovery.
 
-    This path uses the same verified model authority and autonomous permission
-    policy as the daemon executor. It is retained as a recovery transport for
-    an unavailable daemon (explicit opt-in) or an aborted idle daemon session.
+    Direct OpenCode CLI has been observed resolving a git worktree back to the
+    canonical workspace on this host. Therefore modifying jobs are daemon-only
+    and fail closed here; read-only jobs may still use this recovery transport.
     """
+    if job.get("MODIFYING"):
+        return {
+            "ok": False,
+            "returncode": 78,
+            "stdout": "",
+            "stderr": "modifying-cli-fallback-forbidden: worktree isolation is not proven for direct OpenCode CLI",
+            "duration_s": 0,
+            "fallback_denied": "modifying-worktree-isolation",
+        }
     sensitivity_hold = _model_data_sensitivity_hold(job, remote=True)
     if sensitivity_hold:
         return sensitivity_hold
@@ -1603,6 +1662,14 @@ def execute_opencode(
     )
     if not daemon.get("daemon_unavailable") and not daemon_timed_out_after_abort:
         return daemon
+    if job.get("MODIFYING"):
+        guarded = dict(daemon)
+        guarded["fallback_denied"] = "modifying-worktree-isolation"
+        guarded["stderr"] = (
+            f"{guarded.get('stderr') or 'daemon-unavailable'}; "
+            "direct CLI fallback forbidden for modifying jobs"
+        )
+        return guarded
     if allow_cli_fallback is None:
         flag = str(os.environ.get("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK") or "").strip().lower()
         allow_cli_fallback = flag in ("1", "true", "yes", "on") or daemon_timed_out_after_abort
@@ -1790,6 +1857,15 @@ def run_job(
         save_job(root, job)
         return {"ok": False, "status": "READY", "reason": lease.get("reason"), "job": job}
 
+    # Fail-closed live base guard: modifying jobs must match current live base at claim time
+    base_check = verify_live_base_matches(job, repo_root)
+    if not base_check.get("ok"):
+        transition(job, "FAILED", reason=base_check.get("reason", "live-base-guard-failed"))
+        release_lease(root, job["JOB_ID"])
+        save_job(root, job)
+        append_ledger(root, {"event": "job_failed", "JOB_ID": job["JOB_ID"], "reason": base_check.get("reason")})
+        return {"ok": False, "status": "FAILED", "reason": base_check.get("reason"), "job": job}
+
     if job.get("MODIFYING") and not job.get("WORKTREE"):
         created = create_worktree(job, repo_root=repo_root, worktree_root=worktree_root)
         if not created.get("ok"):
@@ -1800,6 +1876,20 @@ def run_job(
             return {"ok": False, "status": "FAILED", "reason": created.get("reason"), "job": job}
         job["WORKTREE"] = created["path"]
         heartbeat_lease(root, job["JOB_ID"], ttl_seconds=int(job.get("TIME_BUDGET") or 600) + 300)
+
+    # Re-check both live authority and isolated worktree immediately before
+    # launching any modifying executor. This catches main advancing after
+    # submit/claim and stale/reused worktrees without running agent code.
+    pre_run_base = verify_live_base_matches(job, repo_root)
+    pre_run_worktree = verify_worktree_base_matches(job, repo_root)
+    if not pre_run_base.get("ok") or not pre_run_worktree.get("ok"):
+        guard = pre_run_base if not pre_run_base.get("ok") else pre_run_worktree
+        transition(job, "FAILED", reason=guard.get("reason", "live-base-guard-failed"))
+        release_lease(root, job["JOB_ID"])
+        cleanup = cleanup_worktree(job, repo_root=repo_root)
+        save_job(root, job)
+        append_ledger(root, {"event": "job_failed", "JOB_ID": job["JOB_ID"], "reason": guard.get("reason"), "cleanup": cleanup})
+        return {"ok": False, "status": "FAILED", "reason": guard.get("reason"), "job": job}
 
     transition(job, "RUNNING", reason="executor launched")
     save_job(root, job)
