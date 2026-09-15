@@ -200,10 +200,14 @@ def test_verify_backup_fail_closed_without_bucket(monkeypatch) -> None:
     assert "BACKUP_S3_BUCKET" in str(findings.get("error", ""))
 
 
-def test_server_backup_verifies_archive_integrity() -> None:
-    source = (ROOT / "scripts" / "server_backup.sh").read_text(encoding="utf-8")
+def test_canonical_postgres_backup_verifies_integrity_without_password_env() -> None:
+    source = (ROOT / "scripts" / "ops" / "backup_postgres_snapshot.sh").read_text(encoding="utf-8")
     assert "sha256sum" in source
-    assert "tar -tzf" in source
+    assert "pg_restore --list" in source
+    assert "DEALIX_DATABASE_URL_FILE" in source
+    assert "/run/dealix-secrets/password" in source
+    assert "cat /run/dealix-secrets/password" in source
+    assert "-e PGPASSWORD" not in source
 
 
 def test_rollback_drill_record_and_dry_run(tmp_path) -> None:

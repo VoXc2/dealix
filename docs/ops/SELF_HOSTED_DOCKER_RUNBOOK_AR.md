@@ -1,185 +1,80 @@
-# Dealix — Self-hosted Docker Runbook
+# Dealix — Canonical Self-Hosted Runbook
 
-## هل أقدر أشغل Dealix على نفس السيرفر؟
+> CURRENT_ONLY. المسار الوحيد المسموح للنشر الذاتي هو `deploy/selfhost/compose.yml`.
+> `docker-compose.prod.yml` و`scripts/server_{deploy,healthcheck,backup}.sh` مداخل تاريخية متوقفة وتفشل مغلقًا.
 
-نعم، تقدر تشغله على VPS أو dedicated server باستخدام Docker Compose. الريبو الآن يحتوي stack إنتاجي يشغل:
+## قانون السلطة
 
-- API
-- frontend
-- apps/web اختياري
-- Postgres
-- PgBouncer
-- Redis
-- Caddy reverse proxy مع TLS
+- GitHub = source/review/proof.
+- VPS = build/runtime plane.
+- `deploy/selfhost/compose.yml` = Compose authority الوحيد.
+- أي canary يبقى على loopback ولا يفتح 80/443.
+- HTTP 200 لا يثبت Production Green؛ يجب تطابق SHA للـWeb والـAPI.
+- DNS/DB/secrets/public ingress/provider decommission = L5 action-bound فقط.
 
-## متى يكون مناسب؟
-
-مناسب إذا تريد:
-
-- تحكم كامل بالسيرفر.
-- تكلفة ثابتة أقل من منصات managed.
-- تطوير ونشر من أي مكان باستخدام SSH/GitHub keys.
-- تشغيل قاعدة البيانات والواجهة والـ API على نفس الجهاز كبداية.
-
-غير مناسب إذا:
-
-- لا تريد إدارة backups/security updates.
-- لا تريد تحمل مسؤولية scaling/monitoring.
-- تحتاج high availability من اليوم الأول.
-
-## أقل مواصفات مقترحة
-
-### بداية حقيقية
-
-- 4 vCPU
-- 8 GB RAM
-- 80 GB SSD
-- Ubuntu 22.04/24.04
-
-### ضغط أعلى
-
-- 8 vCPU
-- 16 GB RAM
-- 160 GB SSD
-- backups خارج السيرفر
-
-### مهم
-
-إذا زاد الضغط، افصل قاعدة البيانات إلى managed Postgres أو سيرفر مستقل. API والواجهات أسهل في التوسعة من قاعدة البيانات.
-
-## الملفات المضافة
-
-- `docker-compose.prod.yml`
-- `.env.prod.example`
-- `ops/caddy/Caddyfile`
-- `scripts/server_bootstrap_ubuntu.sh`
-- `scripts/server_deploy.sh`
-- `scripts/server_backup.sh`
-- `scripts/server_healthcheck.sh`
-
-## أول إعداد للسيرفر
-
-على Ubuntu server جديد:
+## فحص المصدر
 
 ```bash
-sudo bash scripts/server_bootstrap_ubuntu.sh
+python scripts/ops/verify_selfhosted_production_plane.py
 ```
 
-بعدها:
+يجب أن ينتهي بـ `SELFHOST_VERIFY=PASS`.
+
+## Canary خاص ومعزول
 
 ```bash
-sudo -iu dealix
-cd /srv/dealix
-git clone git@github.com:Dealix-sa/dealix.git .
-cp .env.prod.example .env.prod
-nano .env.prod
+SHA=$(git rev-parse HEAD)
+DEALIX_EXPECTED_SHA="$SHA" \
+DEALIX_SELFHOST_API_PORT=18001 \
+DEALIX_SELFHOST_WEB_PORT=13001 \
+DEALIX_SELFHOST_LOCAL_DB=1 \
+bash scripts/ops/deploy_selfhosted_canary.sh
 ```
 
-عبئ القيم الحقيقية، خصوصًا:
+استخدم منافذ loopback مختلفة إذا كان هناك canary آخر؛ لا توقف canary سليمًا فقط لتحرير منفذ.
 
-```text
-APP_SECRET_KEY
-JWT_SECRET_KEY
-API_KEYS
-ADMIN_API_KEYS
-POSTGRES_PASSWORD
-REDIS_PASSWORD
-DEALIX_DOMAIN
-DEALIX_API_DOMAIN
-NEXT_PUBLIC_API_URL
-NEXT_PUBLIC_SITE_URL
-```
-
-## النشر
+## Canary للـingress بدون نشر عام
 
 ```bash
-bash scripts/server_deploy.sh
+DEALIX_EXPECTED_SHA="$SHA" \
+DEALIX_SELFHOST_API_PORT=18001 \
+DEALIX_SELFHOST_WEB_PORT=13001 \
+DEALIX_SELFHOST_INGRESS_PORT=18081 \
+bash scripts/ops/verify_selfhosted_ingress_canary.sh
 ```
 
-## فحص الصحة
+القبول يتطلب `SELFHOST_INGRESS_CANARY=PASS` و`PUBLIC_PORTS_80_443=NOT_OPENED_BY_THIS_RUNNER`.
 
-```bash
-bash scripts/server_healthcheck.sh
-```
+## قاعدة البيانات قبل الخروج من Railway
 
-فحص خارجي:
+الترتيب الإلزامي:
 
-```bash
-curl -fsS https://api.dealix.me/healthz
-curl -fsS https://api.dealix.me/ready
-curl -fsS https://dealix.me/healthz
-```
+1. snapshot من قاعدة Railway بدون طباعة URI/credentials.
+2. SHA-256 checksum.
+3. `pg_restore --list` بنجاح.
+4. restore drill مع نفس extensions المطلوبة، حاليًا `pg_trgm` و`vector`.
+5. schema/capability checks فقط؛ لا تُحوّل مجرد وجود backup إلى DB cutover authority.
+6. DB production restore هو L5 مستقل وله rollback.
 
-## النسخ الاحتياطي
+لا تستخدم PostgreSQL image لا تحتوي pgvector لاختبار dump يحتاج extension `vector`.
 
-```bash
-bash scripts/server_backup.sh
-```
+## ترتيب القطع العام
 
-يفضل وضع cron:
+`SOURCE SHA -> BUILD -> CANARY Web/API SHA -> HEALTH -> CRITICAL ROUTES -> INGRESS -> TLS -> BACKUP/RESTORE -> PUBLIC CUTOVER -> RUNNING SHA PARITY -> SOAK -> PROVIDER DECOMMISSION`
 
-```cron
-0 2 * * * cd /srv/dealix && bash scripts/server_backup.sh >> /srv/dealix/logs/backup.log 2>&1
-```
+كل انتقال مادي مستقل ويحتاج السلطة المناسبة. لا تلغِ Railway لمجرد نجاح canary.
 
-## التطوير من أي مكان
+## Rollback
 
-### طريقة آمنة
+قبل أي public cutover يجب أن تبقى Railway قابلة للاستعادة كمسار last-good، وأن تكون خطوات إعادة DNS/origin موثقة ومحدودة. بعد cutover لا يُسمح بإلغاء Railway حتى تمر فترة soak ويثبت أن Web/API/DB self-hosted مستقرة وقابلة للنسخ والاستعادة.
 
-1. استخدم GitHub SSH key على جهازك.
-2. اشتغل محليًا على branch.
-3. push إلى GitHub.
-4. SSH للسيرفر.
-5. pull ثم deploy.
+## ممنوع
 
-```bash
-git pull --ff-only
-bash scripts/server_deploy.sh
-```
+- تشغيل `docker-compose.prod.yml` القديم.
+- استخدام `.env.prod` كسلطة أسرار مفترضة.
+- فتح Docker socket أو Ollama/OpenCode للعامة.
+- نسخ secrets إلى GitHub أو logs.
+- تشغيل public 80/443 من canary.
+- اعتبار quote/invoice أو HTTP 200 دليل revenue/production parity.
 
-### لا تعمل
-
-- لا تفتح Docker socket للإنترنت.
-- لا ترفع `.env.prod` إلى GitHub.
-- لا تشغل editor كـ root داخل السيرفر إلا للضرورة.
-
-## تحمل الضغط
-
-الـ stack يستخدم PgBouncer لتقليل ضغط اتصالات Postgres، وRedis مع memory policy، وCaddy كـ reverse proxy. لكن الضغط الحقيقي يعتمد على:
-
-- عدد الطلبات.
-- endpoints التي تستخدم LLM أو enrichment.
-- حجم قاعدة البيانات.
-- عدد العمال workers.
-- سرعة مزودي API الخارجيين.
-
-## التوسعة
-
-### المرحلة 1
-
-كل شيء على نفس السيرفر.
-
-### المرحلة 2
-
-افصل Postgres إلى managed database.
-
-### المرحلة 3
-
-شغل أكثر من API container خلف Caddy أو load balancer.
-
-### المرحلة 4
-
-انقل jobs/queues إلى workers منفصلين.
-
-## أوامر مفيدة
-
-```bash
-docker compose --env-file .env.prod -f docker-compose.prod.yml ps
-docker compose --env-file .env.prod -f docker-compose.prod.yml logs -f api
-docker compose --env-file .env.prod -f docker-compose.prod.yml restart api
-docker stats
-```
-
-## قرار المؤسس
-
-ابدأ بسيرفر واحد قوي، لكن لا تعتمد عليه وحده بدون backups. إذا بدأ عندك عملاء مدفوعين وtraffic ثابت، افصل قاعدة البيانات وأضف monitoring خارجي.
+المرجع التفصيلي: `docs/ops/SELFHOSTED_PRODUCTION_PLANE.md`.

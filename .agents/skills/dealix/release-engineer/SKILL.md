@@ -28,6 +28,7 @@ Do not push directly to `main`.
 Do not use admin merge.
 Do not hide failures.
 Do not expand scope while fixing release blockers.
+Do not revive `docker-compose.prod.yml`; it is retired non-authoritative history. `deploy/selfhost/compose.yml` is the single self-host deployment authority.
 
 A required acceptance command is fail-closed. Never convert a non-zero test,
 typecheck, build, security, truth, or verifier exit code into PASS with `|| true`,
@@ -45,7 +46,9 @@ Makefile
 .github/workflows/
 Dockerfile
 Dockerfile.worker
-docker-compose.prod.yml
+deploy/selfhost/compose.yml
+scripts/ops/verify_selfhosted_production_plane.py
+docs/ops/SELFHOSTED_PRODUCTION_PLANE.md
 railway.toml
 railway.web.toml
 railway.company-brain.toml
@@ -108,7 +111,7 @@ scripts/ops/fail_closed_gate.sh RAILWAY_SURFACE_TRUTH python scripts/verify_rail
 npm --prefix apps/web ci
 scripts/ops/fail_closed_gate.sh WEB_ACCEPTANCE npm --prefix apps/web run verify
 
-docker compose -f docker-compose.prod.yml config
+python scripts/ops/verify_selfhosted_production_plane.py
 ```
 
 If a tool is unavailable, report `SKIPPED_ENVIRONMENT` or `BLOCKED_ENVIRONMENT`

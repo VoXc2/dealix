@@ -1,40 +1,64 @@
 # Dealix Self-Hosted Production Plane
 
-Goal: remove Railway as a required runtime dependency while preserving source truth, release identity, rollback, and database safety.
+Goal: remove Railway as a required runtime dependency without weakening exact release identity, data safety, rollback, or L5 governance.
 
-## Architecture
+## Canonical authority
 
-- GitHub: source/review/proof plane only.
-- Dealix VPS: build + runtime execution plane.
-- Docker Compose: Web/API orchestration.
-- Existing reverse proxy or a separately admitted Caddy/Traefik layer: public TLS/routing.
-- Runtime secrets: `/opt/dealix/control/secrets/*.env`, never committed.
-- PostgreSQL: migrate only after a separate backup/restore rehearsal and explicit DB-cutover authority.
+- GitHub is source/review/proof only.
+- Dealix VPS is the build/runtime plane.
+- `deploy/selfhost/compose.yml` is the single Compose authority.
+- `docker-compose.prod.yml` and legacy `scripts/server_*` entrypoints are retired and intentionally fail closed.
+- Runtime secrets stay outside Git in the governed host secret plane.
+- Public ingress, DNS, production DB restore, secrets, and provider cancellation require exact action-bound L5 authority.
 
-## Phases
+## Private acceptance
 
-1. Build exact-main Web/API images on the VPS.
-2. Start private canaries on `127.0.0.1:13000` and `127.0.0.1:18000`.
-3. Verify Web/API health and immutable Git SHA.
-4. Keep Railway serving traffic during canary validation.
-5. Reconcile the existing public reverse proxy and add self-host routes without deleting Railway routes first.
-6. Run public smoke tests and release-parity checks.
-7. Only after public parity is proven, remove Railway from the critical path.
-8. Migrate PostgreSQL separately: backup -> restore rehearsal -> schema check -> controlled cutover -> rollback proof.
+1. Resolve and freeze the exact candidate SHA.
+2. Run `python scripts/ops/verify_selfhosted_production_plane.py`.
+3. Build Web/API from that exact checkout.
+4. Start loopback canaries using free `DEALIX_SELFHOST_API_PORT` and `DEALIX_SELFHOST_WEB_PORT` values.
+5. Verify API `/version` and Web `/healthz` report the exact same full SHA.
+6. If needed, bootstrap only the isolated canary Postgres profile; never mutate production DB here.
+7. Run ingress canary on `DEALIX_SELFHOST_INGRESS_PORT` and verify host-based API/Web routing.
+8. Assert this path did not bind public 80/443.
 
-## Non-goals
+## Database exit gate
 
-- No blanket Railway staged-change acceptance.
-- No DNS mutation from this repository runner.
-- No secret copying into GitHub.
-- No database mutation during Web/API canary startup.
-- No claim of `PRODUCTION_GREEN` based only on HTTP 200.
+Railway PostgreSQL is a separate migration lane from Web/API cutover. Minimum proof before DB cutover:
+
+- current provider backup captured without logging credentials using `scripts/ops/backup_postgres_snapshot.sh` or equivalent governed evidence;
+- checksum verifies;
+- `pg_restore --list` succeeds;
+- isolated restore succeeds on a PostgreSQL image that supplies every required extension (including pgvector when the dump contains `vector`);
+- structural checks succeed;
+- the target production database and backup/restore schedule are defined;
+- rollback/RPO are explicit.
+
+A backup is evidence, not permission to restore into production.
+
+## Public cutover gate
+
+Only after exact private acceptance and an action-bound approval packet:
+
+1. Prepare the self-host production runtime from the exact accepted SHA.
+2. Keep Railway healthy as last-good while the new origin is staged.
+3. Admit public ingress/TLS under its bounded production action.
+4. Change Cloudflare/DNS origin under a separate exact mutation if required.
+5. Verify public Web/API full SHA parity, health, critical routes, TLS, and observability.
+6. Abort immediately to the Railway last-good path if any acceptance gate fails.
+7. Soak before provider decommission.
 
 ## Commands
 
 ```bash
 python scripts/ops/verify_selfhosted_production_plane.py
-DEALIX_EXPECTED_SHA=$(git rev-parse HEAD) bash scripts/ops/deploy_selfhosted_canary.sh
+SHA=$(git rev-parse HEAD)
+DEALIX_EXPECTED_SHA="$SHA" DEALIX_SELFHOST_API_PORT=18001 DEALIX_SELFHOST_WEB_PORT=13001 DEALIX_SELFHOST_LOCAL_DB=1 bash scripts/ops/deploy_selfhosted_canary.sh
+DEALIX_EXPECTED_SHA="$SHA" DEALIX_SELFHOST_API_PORT=18001 DEALIX_SELFHOST_WEB_PORT=13001 DEALIX_SELFHOST_INGRESS_PORT=18081 bash scripts/ops/verify_selfhosted_ingress_canary.sh
 ```
 
-The canary runner intentionally leaves public cutover and local PostgreSQL disabled.
+## Definition of done
+
+`SOURCE SHA = BUILT SHA = RUNNING WEB SHA = RUNNING API SHA`, plus health, critical routes, TLS, backup/restore, rollback, and public release receipt.
+
+Until every term is proven, report `PRODUCTION_GREEN=NOT_PROVEN`.
