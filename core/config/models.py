@@ -1,6 +1,10 @@
-"""
-Model routing configuration — maps tasks to the best LLM provider.
-توجيه النماذج — يربط كل مهمة بأفضل مزود نموذج.
+"""Legacy model-routing compatibility metadata.
+
+Omega V3 model/provider/cost/data authority belongs to the canonical Dealix
+broker and Session Factory.  This module keeps historical enums/model metadata
+for imports, telemetry and migrations, but *automatic* task routing now resolves
+to ``Provider.HOLD``.  Legacy callers must migrate to the governed execution
+fabric instead of selecting a provider or model here.
 """
 
 from __future__ import annotations
@@ -10,8 +14,9 @@ from enum import StrEnum
 
 
 class Provider(StrEnum):
-    """Supported LLM providers | المزودون المدعومون."""
+    """Compatibility provider identifiers; not automatic authority."""
 
+    HOLD = "hold"
     ANTHROPIC = "anthropic"
     DEEPSEEK = "deepseek"
     GLM = "glm"
@@ -21,32 +26,21 @@ class Provider(StrEnum):
 
 
 class Task(StrEnum):
-    """Task categories — route each to the best provider | أنواع المهام."""
-
-    # Reasoning / writing → Claude
     REASONING = "reasoning"
     SUMMARY = "summary"
     PROPOSAL = "proposal"
     PAGE_COPY = "page_copy"
     ORCHESTRATION = "orchestration"
-
-    # Research / multimodal → Gemini
     RESEARCH = "research"
     MULTIMODAL = "multimodal"
     SOURCE_ANALYSIS = "source_analysis"
-
-    # Fast classification → Groq
     CLASSIFICATION = "classification"
     TAGGING = "tagging"
     FAST_VARIANTS = "fast_variants"
     TRIAGE = "triage"
-
-    # Code → DeepSeek
     CODE = "code"
     IMPLEMENTATION = "implementation"
     DEBUG = "debug"
-
-    # Arabic / bulk → GLM
     ARABIC_TASKS = "arabic_tasks"
     CHINESE_TASKS = "chinese_tasks"
     BULK_TASKS = "bulk_tasks"
@@ -54,8 +48,6 @@ class Task(StrEnum):
 
 @dataclass(frozen=True)
 class ModelConfig:
-    """Immutable model configuration | إعدادات نموذج ثابتة."""
-
     provider: Provider
     model_id: str
     max_tokens: int = 4096
@@ -63,67 +55,37 @@ class ModelConfig:
     timeout: int = 60
 
 
-# ═══════════════════════════════════════════════════════════════
-# TASK → PROVIDER ROUTING TABLE
-# جدول توجيه المهام إلى المزودين
-# ═══════════════════════════════════════════════════════════════
+HOLD_MODEL_ID = "HOLD_CANONICAL_BROKER_REQUIRED"
+HOLD_CONFIG = ModelConfig(
+    provider=Provider.HOLD,
+    model_id=HOLD_MODEL_ID,
+    max_tokens=0,
+    temperature=0.0,
+    timeout=1,
+)
 
-TASK_ROUTING: dict[Task, Provider] = {
-    # Claude — reasoning, writing, orchestration
-    Task.REASONING: Provider.ANTHROPIC,
-    Task.SUMMARY: Provider.ANTHROPIC,
-    Task.PROPOSAL: Provider.ANTHROPIC,
-    Task.PAGE_COPY: Provider.ANTHROPIC,
-    Task.ORCHESTRATION: Provider.ANTHROPIC,
-    # Gemini — research, multimodal, sources
-    Task.RESEARCH: Provider.GEMINI,
-    Task.MULTIMODAL: Provider.GEMINI,
-    Task.SOURCE_ANALYSIS: Provider.GEMINI,
-    # Groq — fast, cheap
-    Task.CLASSIFICATION: Provider.GROQ,
-    Task.TAGGING: Provider.GROQ,
-    Task.FAST_VARIANTS: Provider.GROQ,
-    Task.TRIAGE: Provider.GROQ,
-    # DeepSeek — code
-    Task.CODE: Provider.DEEPSEEK,
-    Task.IMPLEMENTATION: Provider.DEEPSEEK,
-    Task.DEBUG: Provider.DEEPSEEK,
-    # GLM — Arabic, Chinese, bulk
-    Task.ARABIC_TASKS: Provider.GLM,
-    Task.CHINESE_TASKS: Provider.GLM,
-    Task.BULK_TASKS: Provider.GLM,
-}
+# Automatic routing is deliberately disabled in this legacy layer.  A caller
+# that needs a model must enter through Company Operator -> Session Factory ->
+# canonical broker with trusted DATA_SENSITIVITY and resource admission.
+TASK_ROUTING: dict[Task, Provider] = {task: Provider.HOLD for task in Task}
 
-
-# Fallback chain — if primary provider fails, try these in order
-# سلسلة الاحتياط — إذا فشل المزود الرئيسي جرّب هؤلاء
-FALLBACK_CHAIN: dict[Provider, list[Provider]] = {
-    Provider.ANTHROPIC: [Provider.OPENAI, Provider.GLM],
-    Provider.DEEPSEEK: [Provider.ANTHROPIC, Provider.OPENAI],
-    Provider.GLM: [Provider.ANTHROPIC, Provider.GROQ],
-    Provider.GEMINI: [Provider.ANTHROPIC, Provider.OPENAI],
-    Provider.GROQ: [Provider.GLM, Provider.DEEPSEEK],
-    Provider.OPENAI: [Provider.ANTHROPIC, Provider.GLM],
-}
+# The HOLD provider has no fallback.  Historical provider rows below are kept
+# only for compatibility/introspection and are never reached automatically.
+FALLBACK_CHAIN: dict[Provider, list[Provider]] = {provider: [] for provider in Provider}
 
 
 def get_provider_for_task(task: Task) -> Provider:
-    """Get primary provider for a task | المزود الرئيسي للمهمة."""
-    return TASK_ROUTING.get(task, Provider.ANTHROPIC)
+    _ = task
+    return Provider.HOLD
 
 
 def get_fallbacks(provider: Provider) -> list[Provider]:
-    """Get fallback chain for a provider | سلسلة الاحتياط للمزود."""
-    return FALLBACK_CHAIN.get(provider, [Provider.ANTHROPIC])
+    _ = provider
+    return []
 
 
-# ═══════════════════════════════════════════════════════════════
-# SMART MODEL ROUTING — cost-aware exact model per task
-# توجيه ذكي يراعي التكلفة — نموذج محدد لكل مهمة
-# ═══════════════════════════════════════════════════════════════
-
-# Concrete model IDs per provider (cost-optimized picks)
 PROVIDER_MODELS: dict[Provider, ModelConfig] = {
+    Provider.HOLD: HOLD_CONFIG,
     Provider.ANTHROPIC: ModelConfig(
         provider=Provider.ANTHROPIC,
         model_id="claude-sonnet-4-5",
@@ -162,9 +124,9 @@ PROVIDER_MODELS: dict[Provider, ModelConfig] = {
     ),
 }
 
-
-# Cost hints (USD per 1M tokens) — input/output. Used by smart router.
+# Historical observability hints only; never automatic spending authority.
 COST_HINTS: dict[Provider, tuple[float, float]] = {
+    Provider.HOLD: (0.0, 0.0),
     Provider.ANTHROPIC: (3.00, 15.00),
     Provider.DEEPSEEK: (0.14, 0.28),
     Provider.GLM: (0.14, 0.28),
@@ -173,10 +135,8 @@ COST_HINTS: dict[Provider, tuple[float, float]] = {
     Provider.OPENAI: (0.15, 0.60),
 }
 
-
-# Feature flags for Arabic-heavy content and token size thresholds
-ARABIC_THRESHOLD = 0.30  # ratio of Arabic chars → prefer GLM
-SHORT_EXTRACTION_TOKENS = 2000  # below this for code/extraction → DeepSeek
+ARABIC_THRESHOLD = 0.30
+SHORT_EXTRACTION_TOKENS = 2000
 CRITICAL_TASKS = {
     Task.REASONING,
     Task.PROPOSAL,
@@ -198,49 +158,16 @@ def smart_route(
     est_tokens: int = 0,
     critical: bool = False,
 ) -> ModelConfig:
-    """
-    Cost-aware router | توجيه ذكي يراعي التكلفة.
+    """Fail closed: legacy smart routing no longer selects a model/provider."""
 
-    Rules:
-      1. CLASSIFICATION/TRIAGE/TAGGING → Groq (free)
-      2. Arabic content (>30%) for non-critical → GLM
-      3. Short extraction/code → DeepSeek
-      4. Research → Gemini Flash
-      5. Critical reasoning/proposals → Anthropic (+ caching)
-      6. Else → provider from TASK_ROUTING
-    """
-    # 1. Free tier for classification
-    if task in {Task.CLASSIFICATION, Task.TRIAGE, Task.TAGGING, Task.FAST_VARIANTS}:
-        return PROVIDER_MODELS[Provider.GROQ]
-
-    # 2. Critical reasoning always Anthropic
-    if critical or task in CRITICAL_TASKS:
-        return PROVIDER_MODELS[Provider.ANTHROPIC]
-
-    # 3. Arabic-heavy → GLM (keeps cost low while handling Arabic well)
-    if text_sample and _arabic_ratio(text_sample) >= ARABIC_THRESHOLD:
-        if task not in {Task.RESEARCH, Task.MULTIMODAL}:
-            return PROVIDER_MODELS[Provider.GLM]
-
-    # 4. Short code/extraction → DeepSeek
-    if task in {Task.CODE, Task.IMPLEMENTATION, Task.DEBUG}:
-        return PROVIDER_MODELS[Provider.DEEPSEEK]
-    if task == Task.SUMMARY and 0 < est_tokens <= SHORT_EXTRACTION_TOKENS:
-        return PROVIDER_MODELS[Provider.DEEPSEEK]
-
-    # 5. Research → Gemini Flash
-    if task in {Task.RESEARCH, Task.MULTIMODAL, Task.SOURCE_ANALYSIS}:
-        return PROVIDER_MODELS[Provider.GEMINI]
-
-    # 6. Default — use static routing table
-    provider = get_provider_for_task(task)
-    return PROVIDER_MODELS[provider]
+    _ = task, text_sample, est_tokens, critical
+    return HOLD_CONFIG
 
 
 def ordered_providers(
     task: Task, *, text_sample: str = "", critical: bool = False
 ) -> list[Provider]:
-    """Return primary + fallback chain after smart routing."""
-    primary = smart_route(task, text_sample=text_sample, critical=critical).provider
-    chain = [primary] + [p for p in get_fallbacks(primary) if p != primary]
-    return chain
+    """Return only the migration HOLD sentinel; no provider fallback chain."""
+
+    _ = task, text_sample, critical
+    return [Provider.HOLD]

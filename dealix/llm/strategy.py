@@ -1,10 +1,24 @@
-"""Dealix LLM Strategy - Fallback chains per task type."""
+"""Dealix LLM Strategy compatibility surface.
+
+Canonical unattended model/provider selection belongs to the Dealix model/cost/data
+broker. This legacy strategy may organize task classes, but it must not mint provider
+entitlement or silently default to DeepSeek/paid capacity.
+"""
 
 import os
 from enum import Enum
 from typing import Literal
 
 from pydantic import BaseModel, Field
+
+BROKER_REQUIRED_MODEL = "__dealix_canonical_broker_required__"
+
+
+def _explicit_non_deepseek_model(env_name: str) -> str:
+    value = (os.getenv(env_name) or "").strip()
+    if not value or "deepseek" in value.lower():
+        return BROKER_REQUIRED_MODEL
+    return value
 
 
 class ModelTier(str, Enum):
@@ -46,10 +60,10 @@ class LLMStrategyRouter:
     }
 
     _MODEL_IDS = {
-        ModelTier.PRIMARY: os.getenv("GEAR2_MODEL", "minimax/minimax-m2.5"),
-        ModelTier.ARCHITECT: os.getenv("GEAR3_MODEL", "minimax/minimax-m2.7"),
-        ModelTier.LIGHT: os.getenv("GEAR1_MODEL", "deepseek/deepseek-chat"),
-        ModelTier.FALLBACK: os.getenv("GEAR1_MODEL", "deepseek/deepseek-chat"),
+        ModelTier.PRIMARY: _explicit_non_deepseek_model("GEAR2_MODEL"),
+        ModelTier.ARCHITECT: _explicit_non_deepseek_model("GEAR3_MODEL"),
+        ModelTier.LIGHT: _explicit_non_deepseek_model("GEAR1_MODEL"),
+        ModelTier.FALLBACK: _explicit_non_deepseek_model("GEAR1_MODEL"),
     }
 
     _TIMEOUTS = {
@@ -59,14 +73,28 @@ class LLMStrategyRouter:
         ModelTier.FALLBACK: int(os.getenv("GEAR1_TIMEOUT", "90")),
     }
 
-    def resolve(self, task: TaskType, prefer_cheap: bool = False):
+    @staticmethod
+    def _require_explicit_model(model_id: str) -> str:
+        if model_id == BROKER_REQUIRED_MODEL or "deepseek" in model_id.lower():
+            raise RuntimeError(
+                "Legacy strategy model selection is fail-closed. Use the canonical Dealix "
+                "model/cost/data broker or an explicitly authorized non-DeepSeek model."
+            )
+        return model_id
+
+    def resolve(self, task: TaskType, prefer_cheap: bool = False) -> list[ModelConfig]:
         tiers = self._TASK_MAP.get(task, [ModelTier.PRIMARY, ModelTier.FALLBACK])
         if prefer_cheap:
-            order = {ModelTier.LIGHT: 0, ModelTier.FALLBACK: 1, ModelTier.PRIMARY: 2, ModelTier.ARCHITECT: 3}
-            tiers = sorted(tiers, key=lambda t: order[t])
+            order = {
+                ModelTier.LIGHT: 0,
+                ModelTier.FALLBACK: 1,
+                ModelTier.PRIMARY: 2,
+                ModelTier.ARCHITECT: 3,
+            }
+            tiers = sorted(tiers, key=lambda tier: order[tier])
         return [
             ModelConfig(
-                model_id=self._MODEL_IDS[tier],
+                model_id=self._require_explicit_model(self._MODEL_IDS[tier]),
                 timeout=self._TIMEOUTS[tier],
                 reasoning_preserved=(tier != ModelTier.FALLBACK),
             )

@@ -1,9 +1,9 @@
 """Safe application-facing entry point for routed LLM inference.
 
-Application code must call ``ModelRouter.run`` rather than a provider-client
-method. Keeping this adapter in one place also gives operators an explicit,
-machine-readable failure when no provider is configured; callers must not
-replace that failure with canned text presented as model output.
+Omega V3 model/provider/cost/data authority belongs to the canonical broker and
+Session Factory. This compatibility adapter must never turn configured-provider
+order into execution authority. Production ``ModelRouter`` therefore fails closed
+until callers migrate to the governed execution fabric.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from core.llm.base import Message
 
 
 class NoLLMProviderConfigured(RuntimeError):
-    """Raised when inference is requested without a configured provider."""
+    """Raised when inference has no policy-compliant configured provider."""
 
 
 async def complete_with_router(
@@ -28,27 +28,26 @@ async def complete_with_router(
     temperature: float = 0.4,
     timeout_seconds: float = 12.0,
 ) -> tuple[str, str]:
-    """Run one completion through the configured model router.
+    """Invoke the compatibility router without choosing a provider.
 
-    Prefer GLM for Arabic work when available. Otherwise select the first
-    configured provider explicitly, so an OpenAI-only deployment remains
-    usable even when OpenAI is absent from the task's default fallback chain.
+    Configured-provider order is observational only. DeepSeek and the migration
+    HOLD sentinel are explicitly excluded, and this adapter never passes a
+    preferred provider. The production router owns the final fail-closed guard;
+    custom test/migration routers may continue to implement the same ``run`` seam.
     """
 
-    # Resolve the factory at call time.  Besides avoiding a stale singleton
-    # reference, this preserves the long-standing patch seam used by command
-    # bus contract tests and by deployments that replace the router factory.
     router = llm_router.get_router()
     provider_probe = getattr(router, "available_providers", None)
     if callable(provider_probe):
-        providers = provider_probe()
-        if not providers:
-            raise NoLLMProviderConfigured("no_llm_provider_configured")
-        preferred = Provider.GLM if Provider.GLM in providers else providers[0]
-    else:
-        # Backward-compatible seam for legacy/custom routers that implement
-        # only ``run``. The production ModelRouter always exposes the probe.
-        preferred = None
+        configured = provider_probe()
+        policy_compliant = [
+            provider
+            for provider in configured
+            if provider not in {Provider.DEEPSEEK, Provider.HOLD}
+        ]
+        if not policy_compliant:
+            raise NoLLMProviderConfigured("no_policy_compliant_llm_provider_configured")
+
     response = await asyncio.wait_for(
         router.run(
             task=task,
@@ -56,7 +55,6 @@ async def complete_with_router(
             system=system_prompt,
             max_tokens=max_tokens,
             temperature=temperature,
-            preferred_provider=preferred,
         ),
         timeout=timeout_seconds,
     )

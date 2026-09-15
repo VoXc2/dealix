@@ -1,38 +1,44 @@
-"""
-Dealix LLM Engine - Three Gear System v3.0
-The brain that selects the right model for the right job.
+"""Legacy Dealix three-gear compatibility surface.
+
+Omega V3 owns model/provider/cost/data authority in the canonical broker and
+Session Factory.  This module intentionally preserves historical task/gear
+enums for callers that still import them, but it no longer mints model IDs or
+provider authority.  Model-requiring callers must migrate to the governed
+Company Operator -> Session Factory -> canonical broker execution path.
 """
 
-import os
 from enum import Enum
-from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
 
+class LegacyModelAuthorityHold(RuntimeError):
+    """Raised when legacy code attempts to select a model/provider directly."""
+
+
 class Gear(str, Enum):
-    """Three gear system for cost-optimized LLM routing."""
-    DAILY = "daily"           # Gear 1: DeepSeek - cheap and fast
-    POWER = "power"           # Gear 2: Minimax M2.5 - strong coding
-    ARCHITECT = "architect"   # Gear 3: Minimax M2.7 - deep reasoning
+    """Historical compatibility gears; not model authority."""
+
+    DAILY = "daily"
+    POWER = "power"
+    ARCHITECT = "architect"
 
 
 class GearConfig(BaseModel):
-    """Configuration for a single gear."""
+    """Compatibility schema only; live configs come from the canonical broker."""
+
     gear: Gear
     model_id: str
-    provider: Literal["openrouter"] = "openrouter"
+    provider: str = "canonical_broker_required"
     timeout: int = Field(default=120, ge=30, le=300)
     max_tokens: int = Field(default=4096, ge=256, le=32768)
     cost_per_1m_input: float = 0.0
     cost_per_1m_output: float = 0.0
     use_for: list[str] = []
-    risk_level: str = "low"  # low, medium, high
+    risk_level: str = "unknown"
 
 
 class TaskType(str, Enum):
-    """Dealix task classifications for smart gear selection."""
-    # Gear 1 tasks (cheap, fast)
     REFACTORING = "refactoring"
     TESTING = "testing"
     DOCUMENTATION = "documentation"
@@ -40,14 +46,12 @@ class TaskType(str, Enum):
     ENRICHMENT = "enrichment"
     CLASSIFICATION = "classification"
     FORMATTING = "formatting"
-    # Gear 2 tasks (strong, balanced)
     NEW_FEATURE = "new_feature"
     PIPELINE_LOGIC = "pipeline_logic"
     AGENT_CODE = "agent_code"
     BUG_FIX = "bug_fix"
     API_ENDPOINT = "api_endpoint"
     DATA_MODEL = "data_model"
-    # Gear 3 tasks (expensive, deep)
     SYSTEM_DESIGN = "system_design"
     POLICY_EVALUATION = "policy_evaluation"
     COMPLIANCE = "compliance"
@@ -55,7 +59,6 @@ class TaskType(str, Enum):
     ARCHITECTURE = "architecture"
 
 
-# Map tasks to recommended gears
 TASK_GEAR_MAP: dict[TaskType, Gear] = {
     TaskType.REFACTORING: Gear.DAILY,
     TaskType.TESTING: Gear.DAILY,
@@ -78,79 +81,45 @@ TASK_GEAR_MAP: dict[TaskType, Gear] = {
 }
 
 
+_HOLD_MODEL = "HOLD_CANONICAL_BROKER_REQUIRED"
+
+
 class DealixEngine:
-    """
-    The brain that selects the right model for the right job.
+    """Compatibility facade that fails closed instead of selecting a model."""
 
-    Three Gear System:
-    - Gear 1 (Daily): DeepSeek - $0.02/$0.10 per 1M tokens
-    - Gear 2 (Power): Minimax M2.5 - $0.15/$1.15 per 1M tokens
-    - Gear 3 (Architect): Minimax M2.7 - $0.279/$1.20 per 1M tokens
-
-    Cost savings: 80-90% vs using Architect mode for all tasks.
-    """
-
-    _GEARS: dict[Gear, GearConfig] = {
-        Gear.DAILY: GearConfig(
-            gear=Gear.DAILY,
-            model_id=os.getenv("GEAR1_MODEL", "deepseek/deepseek-chat"),
-            timeout=int(os.getenv("GEAR1_TIMEOUT", "90")),
-            max_tokens=int(os.getenv("GEAR1_MAX_TOKENS", "4096")),
-            cost_per_1m_input=0.02,
-            cost_per_1m_output=0.10,
-            use_for=["refactoring", "tests", "docs", "small fixes", "enrichment", "classification", "formatting"],
-            risk_level="low",
-        ),
-        Gear.POWER: GearConfig(
-            gear=Gear.POWER,
-            model_id=os.getenv("GEAR2_MODEL", "minimax/minimax-m2.5"),
-            timeout=int(os.getenv("GEAR2_TIMEOUT", "120")),
-            max_tokens=int(os.getenv("GEAR2_MAX_TOKENS", "8192")),
-            cost_per_1m_input=0.15,
-            cost_per_1m_output=1.15,
-            use_for=["new features", "pipeline logic", "agent code", "bug fixes", "API endpoints", "data models"],
-            risk_level="medium",
-        ),
-        Gear.ARCHITECT: GearConfig(
-            gear=Gear.ARCHITECT,
-            model_id=os.getenv("GEAR3_MODEL", "minimax/minimax-m2.7"),
-            timeout=int(os.getenv("GEAR3_TIMEOUT", "180")),
-            max_tokens=int(os.getenv("GEAR3_MAX_TOKENS", "16384")),
-            cost_per_1m_input=0.279,
-            cost_per_1m_output=1.20,
-            use_for=["system design", "policy", "compliance", "hard bugs", "architecture decisions"],
-            risk_level="high",
-        ),
-    }
+    @classmethod
+    def _hold(cls, *, context: str) -> None:
+        raise LegacyModelAuthorityHold(
+            f"legacy_model_authority_disabled:{context}; "
+            "use Company Operator -> Session Factory -> canonical broker"
+        )
 
     @classmethod
     def get(cls, gear: Gear | None = None) -> GearConfig:
-        """Get config for a specific gear, or the active gear from env."""
-        if gear is None:
-            active = int(os.getenv("ACTIVE_GEAR", "1"))
-            gear_map = {1: Gear.DAILY, 2: Gear.POWER, 3: Gear.ARCHITECT}
-            gear = gear_map.get(active, Gear.DAILY)
-        return cls._GEARS[gear]
+        cls._hold(context=f"gear={getattr(gear, 'value', gear) or 'active'}")
 
     @classmethod
     def get_for_task(cls, task: TaskType) -> GearConfig:
-        """Smart gear selection based on task type."""
-        gear = TASK_GEAR_MAP.get(task, Gear.DAILY)
-        return cls._GEARS[gear]
+        cls._hold(context=f"task={task.value}")
 
     @classmethod
-    def list_all(cls) -> dict:
-        """List all gears and their model IDs."""
-        return {g.value: cfg.model_id for g, cfg in cls._GEARS.items()}
+    def list_all(cls) -> dict[str, str]:
+        return {gear.value: _HOLD_MODEL for gear in Gear}
 
     @classmethod
     def estimate_cost(cls, gear: Gear, input_tokens: int, output_tokens: int) -> float:
-        """Estimate cost in USD for a request."""
-        cfg = cls._GEARS[gear]
-        cost = (input_tokens / 1_000_000 * cfg.cost_per_1m_input +
-                output_tokens / 1_000_000 * cfg.cost_per_1m_output)
-        return round(cost, 6)
+        _ = input_tokens, output_tokens
+        cls._hold(context=f"cost_estimate_gear={gear.value}")
 
 
-# Singleton instance
 engine = DealixEngine()
+
+__all__ = [
+    "LegacyModelAuthorityHold",
+    "Gear",
+    "GearConfig",
+    "TaskType",
+    "TASK_GEAR_MAP",
+    "DealixEngine",
+    "engine",
+]
