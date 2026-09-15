@@ -1,4 +1,4 @@
-const { withSentryConfig } = require("@sentry/nextjs");
+const { withSentryConfig } = require("@sentry/nextjs/config");
 
 const dealixApiBase = (
   process.env.NEXT_PUBLIC_DEALIX_API_BASE ||
