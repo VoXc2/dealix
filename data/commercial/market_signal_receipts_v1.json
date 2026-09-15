@@ -1,6 +1,6 @@
 {
   "schema": "dealix.market-signal-set.v1",
-  "generated_at": "2026-09-15T05:45:00+00:00",
+  "generated_at": "2026-09-15T10:10:00+00:00",
   "scope": "dealix_company",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
@@ -1248,6 +1248,67 @@
         "founder_minutes": 3
       },
       "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-nca-compliance-inspections-sep08",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/ar/news/2593/",
+      "observed_at": "2026-09-08T16:26:00+03:00",
+      "ingested_at": "2026-09-15T13:10:00+03:00",
+      "provenance_ref": "National Cybersecurity Authority official inspection announcement — 8 September 2026",
+      "fresh_until": "2026-12-08T23:59:59+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "REGULATED_OR_CRITICAL_INFRASTRUCTURE_OPERATOR",
+      "evidence_refs": [
+        "https://nca.gov.sa/ar/news/2593/"
+      ],
+      "facts": [
+        "The National Cybersecurity Authority announced on 8 September 2026 that it conducted inspection visits to verify implementation of cybersecurity regulatory requirements.",
+        "The inspections included national entities and entities with sensitive infrastructure in both the public and private sectors.",
+        "The inspections covered compliance with security alerts and regulatory requirements and verification of required NCA licences."
+      ],
+      "inferences": [
+        "The current inspection activity supports a bounded cybersecurity-governance and evidence-readiness diagnostic hypothesis for relevant Saudi organizations; it does not prove non-compliance, buyer intent, a relationship or consent."
+      ],
+      "unknowns": [
+        "The inspection population, compliance state, buyer identity, budget and procurement route for any specific organization remain unknown until company-specific evidence exists."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Use organization-specific public or first-party evidence before qualification; never infer non-compliance from sector membership or inspection activity alone"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 4,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, compliance evidence, or customer facts.",
       "authority": {
         "relationship": false,
         "consent": false,
