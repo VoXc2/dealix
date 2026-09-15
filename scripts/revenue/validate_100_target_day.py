@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Validate a 100-target day before any contact is made.
+Validate a legacy research batch. Validation never grants contact authority.
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ REQUIRED_COLUMNS = ["company", "sector", "city", "source_url", "verification_sta
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate 100-target day")
+    parser = argparse.ArgumentParser(description="Validate research-review batch")
     parser.add_argument("--input", default="data/outreach/ready_batch_2026-06-15.csv")
     parser.add_argument("--max-batch", type=int, default=100)
     args = parser.parse_args()
@@ -41,7 +41,7 @@ def main() -> int:
             issues.append(f"Row {idx}: invalid confidence")
         vstatus = row.get("verification_status", "").lower()
         if vstatus == "placeholder":
-            issues.append(f"Row {idx}: placeholder verification_status not allowed for contact")
+            issues.append(f"Row {idx}: placeholder verification_status not allowed in reviewed research")
         email = normalize_email(row.get("email", ""))
         if email:
             if email in seen_emails:
@@ -55,7 +55,8 @@ def main() -> int:
         print("DEALIX_100_TARGET_VALID=0")
         return 1
 
-    print(f"✅ {len(rows)} targets validated for contact.")
+    print(f"✅ {len(rows)} targets validated for research review.")
+    print("OUTBOUND_AUTHORITY=false")
     print("DEALIX_100_TARGET_VALID=1")
     return 0
 

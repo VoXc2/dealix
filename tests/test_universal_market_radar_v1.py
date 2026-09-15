@@ -121,6 +121,24 @@ def _rankable_signal(source_id: str = "COMPANY_OWNED_WEB") -> dict:
     }
 
 
+
+def test_runner_defaults_to_canonical_source_managed_receipts(tmp_path: Path) -> None:
+    output_path = tmp_path / "brief.json"
+    result = run("scripts/commercial/run_universal_market_radar_v1.py", "--out", str(output_path))
+    assert result.returncode == 0, result.stdout + result.stderr
+    brief = json.loads(output_path.read_text(encoding="utf-8"))
+    assert brief["input_signal_count"] > 0
+    assert brief["admitted_signal_count"] > 0
+    assert not any(brief["authority"].values())
+    assert all(not any(row["authority"].values()) for row in brief["ranked_research_signals"])
+
+
+def test_company_autopilot_defaults_to_canonical_receipts_with_explicit_override() -> None:
+    shell = (ROOT / "scripts/ops/dealix_company_autopilot_legacy.sh").read_text(encoding="utf-8")
+    assert '${DEALIX_MARKET_RADAR_SIGNALS_FILE:-${ROOT}/data/commercial/market_signal_receipts_v1.json}' in shell
+    assert "MARKET_RADAR_INPUT=CANONICAL_SOURCE_MANAGED_RECEIPTS" in shell
+    assert "MARKET_RADAR_INPUT=EXPLICIT_SOURCE_BOUND_OVERRIDE" in shell
+
 def test_read_only_runner_ranks_research_without_authority(tmp_path: Path) -> None:
     signals = {"signals": [_rankable_signal()]}
     input_path = tmp_path / "signals.json"
