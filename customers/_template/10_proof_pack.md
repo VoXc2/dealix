@@ -1,6 +1,6 @@
 # 10 — Final Proof Pack / حزمة الإثبات النهائية
 
-> Customer-facing 30-Day Revenue Command Pilot deliverable. `dealix-delivery`
+> Customer-facing governed delivery deliverable for the approved customer-specific scope. `dealix-delivery`
 > assembles it from actual engagement evidence. External delivery needs the
 > matching action authority; public reuse additionally needs recorded customer
 > publication permission.

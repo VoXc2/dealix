@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Synthetic acceptance for Universal Diagnostic Factory — 8 scenarios A-H."""
 
+import json
 import sys
 import tempfile
 from pathlib import Path
@@ -99,9 +100,8 @@ def main() -> int:
     assert value["truth_class"] == "ESTIMATED" and value["is_measured_fact"] is False
     assert f0.value_estimate(leakage)["truth_class"] == "UNKNOWN"
     print("Truth-safe estimates PASS")
-    assert all(f0.is_free(d) for d in (DiagnosticDepth.D0_SIGNAL_SCAN, DiagnosticDepth.D1_RAPID, DiagnosticDepth.D2_FUNCTIONAL))
-    assert not f0.is_free(DiagnosticDepth.D3_CROSS_FUNCTIONAL)
-    print("D0-D2 free PASS")
+    assert all(f0.is_free(depth) for depth in DiagnosticDepth)
+    print("ALL_DIAGNOSTIC_DEPTHS_FREE=PASS")
     # Test other invariants
     # Economic cell registry
     reg = EconomicCellRegistry(storage_path=Path(tempfile.mktemp(suffix=".jsonl")))
@@ -161,19 +161,16 @@ def main() -> int:
     c4 = reg2.list_by_state(LifecycleState.CANDIDATE_DEEP)[0]
     assert not reg2.claim_deep_wip_slot(c4.identity.cell_id)
     print("DeepWIP PASS")
-    # Five agents
-    import pathlib
-    agents = list(pathlib.Path(" .claude/agents".replace(" ", "")).glob("*.md"))
-    # Actually check workspace
-    agents = list(Path(" .claude/agents".replace(" ", "")).glob("*.md")) if False else list(Path("/opt/dealix/workspace/dealix/.claude/agents").glob("*.md"))
-    print(f"Agents {len(agents)}: {[a.name for a in agents]}")
-    assert len(agents) >= 5, f"expected at least 5 got {len(agents)}"
-    # Core 5 must exist, expanded staff (13) allowed per EXPANDED_STAFF_REGISTRY
-    assert {"dealix-pm.md","dealix-sales.md","dealix-delivery.md","dealix-engineer.md","dealix-content.md"}.issubset({a.name for a in agents})
-    print("Five agents PASS")
-    # OpenCode
-    import json
-    data = json.loads(Path("/opt/dealix/workspace/dealix/opencode.json").read_text())
+    # Agentic Holding is canonical logical authority. Legacy five names are compatibility only.
+    registry = json.loads((ROOT / "dealix/registers/company_agent_operating_registry.json").read_text(encoding="utf-8"))
+    logical_agents = registry.get("agents") or []
+    runtime_names = {str(agent.get("runtime_name")) for agent in logical_agents if isinstance(agent, dict)}
+    required_roles = {"company_brain", "governance", "revenue_intelligence", "customer_acquisition", "diagnostic_agent", "managed_ops"}
+    assert required_roles <= runtime_names, f"missing canonical logical agents: {sorted(required_roles - runtime_names)}"
+    assert len(logical_agents) >= len(required_roles)
+    print(f"AGENTIC_HOLDING_REGISTRY=PASS logical_agents={len(logical_agents)}")
+    # OpenCode must be read from this exact worktree, never a live canonical checkout.
+    data = json.loads((ROOT / "opencode.json").read_text(encoding="utf-8"))
     assert "permission" in data and "permissions" not in data
     assert "bash" in data["permission"] and "shell" not in data["permission"]
     print("OpenCode V1 PASS")

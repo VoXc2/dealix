@@ -13,11 +13,13 @@ def joined() -> str:
     return "\n".join(path.read_text(encoding="utf-8") for path in LIVE_SURFACES)
 
 
-def test_live_customer_workspace_has_canonical_pilot_path() -> None:
+def test_live_customer_workspace_has_customer_specific_delivery_path() -> None:
     text = joined()
     assert "Free Mini Diagnostic" in text
     assert "Qualified Discovery" in text
-    assert "30-Day Revenue Command Pilot" in text
+    assert "Customer-Specific Governed Delivery Scope" in text
+    assert "customer-specific after Qualified Discovery" in text
+    assert "30-Day Revenue Command Pilot" not in text
     assert "STOP / EXPAND / REDESIGN" in text
 
 

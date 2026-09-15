@@ -4,8 +4,8 @@
 Canonical split of responsibilities:
 - ``customers/<slug>/`` = commercial account truth from real interaction through
   diagnostic, discovery, named-customer quote, acceptance, and start evidence.
-- ``clients/<slug>/`` = post-handoff delivery evidence for the approved 30-Day
-  Revenue Command Pilot.
+- ``clients/<slug>/`` = post-handoff delivery evidence for the approved
+  customer-specific governed delivery scope.
 
 A real delivery workspace cannot be created from a scraped/research target or a
 mere quote/invoice. Synthetic tests are explicitly labelled and isolated.
@@ -140,7 +140,8 @@ def create_workspace(
         "delivery_owner": "dealix-delivery",
         "commercial_owner": "dealix-sales",
         "executive_owner": "dealix-pm",
-        "pilot": "30-Day Revenue Command Pilot",
+        "engagement": "Customer-Specific Governed Delivery",
+        "duration_authority": "customer_specific_after_qualified_discovery",
         "handoff": handoff,
         "truth_rules": [
             "quote_is_not_payment",
@@ -159,7 +160,8 @@ def create_workspace(
             [
                 f"# {client_name or client_slug}",
                 "",
-                "Governed Dealix 30-Day Revenue Command Pilot delivery workspace.",
+                "Governed Dealix customer-specific delivery workspace.",
+                "Duration authority: customer_specific_after_qualified_discovery.",
                 "",
                 "Commercial account truth remains in the linked customers/<slug>/ workspace.",
                 "Delivery evidence lives here and feeds the customer-facing Proof Pack.",

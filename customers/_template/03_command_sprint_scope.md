@@ -1,6 +1,6 @@
-# 03 — 30-Day Revenue Command Pilot Scope / نطاق بايلوت قيادة الإيراد 30 يومًا
+# 03 — Customer-Specific Governed Delivery Scope / نطاق التسليم المحكوم الخاص بالعميل
 
-> Compatibility filename retained; **Command Sprint / 7-day authority is retired**.
+> Compatibility filename retained; historical fixed-duration offer authority is retired.
 > `dealix-sales` prepares the scope after Qualified Discovery. `dealix-delivery`
 > owns delivery after customer acceptance and the documented start condition.
 > External sharing, commercial commitment, payment request, or contract action
@@ -43,16 +43,17 @@
 ## Deliverables / المخرجات
 | # | Deliverable | Owner | Due | Acceptance evidence |
 | --- | --- | --- | --- | --- |
-| 1 | Baseline + evidence map | `dealix-delivery` | Week 1 | |
-| 2 | Governed workflow + action queue | `dealix-delivery` | Week 1–2 | |
-| 3 | Weekly Proof + executive readout | `dealix-delivery` / `dealix-pm` | Weekly | |
-| 4 | Final Proof Pack + outcome review | `dealix-delivery` | Day 30 | |
+| 1 | Baseline + evidence map | `dealix-delivery` | Approved milestone 1 | |
+| 2 | Governed workflow + action queue | `dealix-delivery` | Approved schedule | |
+| 3 | Periodic Proof + executive readout | `dealix-delivery` / `dealix-pm` | Approved cadence | |
+| 4 | Final Proof Pack + outcome review | `dealix-delivery` | Approved completion milestone | |
 
 ## Timeline / الجدول الزمني
-- **Week 1:** validate baseline, data boundary, owner, approvals, instrumentation.
-- **Week 2:** execute the bounded workflow; capture action and failure receipts.
-- **Week 3:** improve only from verified evidence; keep scope bounded.
-- **Week 4 / Day 30:** final evidence reconciliation + `STOP / EXPAND / REDESIGN` review.
+- **Duration authority:** customer-specific after Qualified Discovery and the approved named-customer quote; never inferred from a default offer.
+- **Milestone 1:** validate baseline, data boundary, owner, approvals, instrumentation.
+- **Milestone 2:** execute the bounded workflow; capture action and failure receipts.
+- **Milestone 3:** improve only from verified evidence; keep scope bounded.
+- **Final milestone:** evidence reconciliation + `STOP / EXPAND / REDESIGN` review.
 
 ## Commercial terms / الشروط التجارية
 - Price/terms come only from the approved named-customer quote after discovery.
