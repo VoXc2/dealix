@@ -9,7 +9,7 @@ Use Omega V3 canonical source/config plus exact current runtime/acceptance evide
 - OpenCode modifying work: Company Operator -> Session Factory -> isolated exact-head worktree/session -> OpenCode -> tests -> independent verifier -> receipt.
 - Runtime modifying capacity is ResourceGovernor-derived. Historical `DEEP_WIP_MAX=3` may describe old portfolio focus or provenance but is not a global worker ceiling.
 - Historical five executor names are aliases only; canonical logical owners come from Agentic Holding registry.
-- Automatic model execution is NO_DEEPSEEK, data-aware, trusted-cost-evidence gated and fail-closed. Never allow caller args/env/stale selected-model files/provider defaults to become model authority.
+- Automatic model execution is provider-neutral local/free-first, data-aware, trusted-cost-evidence gated and fail-closed: deterministic/no-model -> adequate local/private -> eligible verified-free -> trusted-current included capacity -> HOLD. DeepSeek may be auto-selected only through the canonical broker when explicit-free or trusted included evidence passes cost/data/privacy gates; arbitrary paid spill remains forbidden/approval-gated. Never allow caller args/env/stale selected-model files/provider defaults to become model authority. Legacy direct-provider no-DeepSeek guards remain compatibility isolation for legacy/direct runtime, not global canonical model policy.
 - Source PASS != runtime PASS != deployed release identity.
 - Hosted pre-execution CI failure with no repository steps is not source-test failure.
 - `HTTP 200 != release identity`; exact SHA parity is required for Production Green.
