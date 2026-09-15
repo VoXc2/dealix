@@ -76,7 +76,7 @@ export default function ClientDeliveryOSPage() {
               مدة التسليم
             </p>
             <p className="mt-2 text-sm text-white/80">
-              30 يوم للتشغيل الكامل · مراجعة شهرية · توسعة عند تحقق الشروط
+              المدة تُحدد بعد Qualified Discovery · مراجعة بالتواتر المتفق عليه · توسعة عند تحقق الشروط
             </p>
           </div>
           <div className="rounded-2xl border border-amber-300/20 bg-amber-300/5 p-6">

@@ -57,8 +57,8 @@ export default function CompanyBrainOSPage() {
 
       <section className="card card-cyan" style={{ textAlign: "center" }}>
         <p className="eyebrow">Start with proof</p>
-        <h2>ابدأ بـ7 أيام على ألم واحد، ثم وسّع بعد الإثبات.</h2>
-        <p>أفضل مدخل تجاري: تشخيص، خريطة ألم، أول dashboard، queue مراجعة، وخطة 30 يوم.</p>
+        <h2>ابدأ بتشخيص تنفيذي مجاني على ألم واحد، ثم وسّع بعد الإثبات.</h2>
+        <p>أفضل مدخل تجاري: تشخيص مجاني، خريطة ألم، أول dashboard، queue مراجعة، ثم خطة تنفيذ بنطاق ومدة خاصين بالعميل.</p>
         <div className="actions" style={{ justifyContent: "center" }}>
           <Link href="/book">ابدأ الآن</Link>
         </div>

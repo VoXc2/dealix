@@ -24,6 +24,8 @@ def main() -> None:
         fail("public_fixed_pricing_reenabled")
     if data.get("public_checkout_authority") is not False:
         fail("public_checkout_authority_reenabled")
+    if data.get("public_fixed_duration") is not False:
+        fail("public_fixed_duration_reenabled")
     if data.get("environment_flags_may_create_public_price_authority") is not False:
         fail("env_flag_price_authority_reenabled")
     if data.get("customer_specific_quote_required") is not True:
@@ -63,6 +65,7 @@ def main() -> None:
 
     print("DEALIX_PUBLIC_PRICING_AUTHORITY=PASS")
     print("PUBLIC_FIXED_PRICING=BLOCKED")
+    print("PUBLIC_FIXED_DURATION=BLOCKED")
     print("CUSTOMER_SPECIFIC_QUOTE=REQUIRED")
     print("ENV_FLAGS=NON_AUTHORITY")
     print("INVOICE_NE_PAYMENT=PASS")

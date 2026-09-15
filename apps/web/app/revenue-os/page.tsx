@@ -1,7 +1,7 @@
 const packages = [
-  ["Launch", "SAR 2,500/mo", "One focused system shipped fast."],
-  ["Growth", "SAR 7,500/mo", "Revenue + marketing + operations connected."],
-  ["Enterprise", "SAR 15,000+/mo", "Full OS with governance, proof, portals, integrations, and reporting."]
+  ["Launch", "Customer-specific quote", "One focused system shipped fast."],
+  ["Growth", "Customer-specific quote", "Revenue + marketing + operations connected."],
+  ["Enterprise", "Customer-specific quote", "Full OS with governance, proof, portals, integrations, and reporting."]
 ];
 
 export default function RevenueOSPage() {
