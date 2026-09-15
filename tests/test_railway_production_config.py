@@ -4,15 +4,19 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import urllib.error
 from pathlib import Path
 
 from dealix.commercial_ops.railway_production import (
+    PRODUCTION_PROBE_ACCEPT,
+    PRODUCTION_PROBE_USER_AGENT,
     _has_canonical_predeploy,
     analyze_railway_production,
     classify_release_evidence,
     parse_railway_ui_drift_hint,
     parse_railway_ui_predeploy_drift,
     parse_railway_ui_restart_retries_drift,
+    probe_get,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -221,3 +225,51 @@ def test_railway_success_requires_exact_project_and_sha40() -> None:
     assert _bound_success(observed_project_id="proj-old")["release_evidence_valid"] is False
     assert _bound_success(live_sha="A" * 40)["release_evidence_valid"] is False
     assert _bound_success(live_sha="a" * 39)["release_evidence_valid"] is False
+
+
+def test_probe_get_sends_deterministic_json_headers(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def getcode(self) -> int:
+            return 200
+
+        def read(self, _max_bytes: int) -> bytes:
+            return b'{"status":"ok"}'
+
+    def fake_urlopen(req, timeout):
+        captured["headers"] = dict(req.header_items())
+        captured["timeout"] = timeout
+        return Response()
+
+    monkeypatch.setattr(
+        "dealix.commercial_ops.railway_production.urllib.request.urlopen",
+        fake_urlopen,
+    )
+    result = probe_get("https://api.example.test", "/healthz", timeout_sec=7.0)
+    headers = {str(k).lower(): v for k, v in dict(captured["headers"]).items()}
+    assert result["ok"] is True
+    assert result["status"] == 200
+    assert headers["user-agent"] == PRODUCTION_PROBE_USER_AGENT
+    assert headers["accept"] == PRODUCTION_PROBE_ACCEPT
+    assert captured["timeout"] == 7.0
+
+
+def test_probe_get_keeps_http_403_as_failure(monkeypatch) -> None:
+    def fake_urlopen(req, timeout):
+        raise urllib.error.HTTPError(req.full_url, 403, "Forbidden", None, None)
+
+    monkeypatch.setattr(
+        "dealix.commercial_ops.railway_production.urllib.request.urlopen",
+        fake_urlopen,
+    )
+    result = probe_get("https://api.example.test", "/healthz")
+    assert result["probed"] is True
+    assert result["status"] == 403
+    assert result["ok"] is False

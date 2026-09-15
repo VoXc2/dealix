@@ -18,6 +18,16 @@ DOCKERFILE = REPO_ROOT / "Dockerfile"
 PREDEPLOY_SH = REPO_ROOT / "scripts" / "railway_predeploy.sh"
 SETTINGS_DOC = REPO_ROOT / "docs" / "ops" / "RAILWAY_PRODUCTION_SETTINGS_AR.md"
 DEFAULT_API_BASE = "https://api.dealix.me"
+PRODUCTION_PROBE_USER_AGENT = "Dealix-Production-Trust/1.0"
+PRODUCTION_PROBE_ACCEPT = "application/json"
+
+
+def production_probe_headers() -> dict[str, str]:
+    """Deterministic public trust-probe headers; never a status-code bypass."""
+    return {
+        "User-Agent": PRODUCTION_PROBE_USER_AGENT,
+        "Accept": PRODUCTION_PROBE_ACCEPT,
+    }
 
 
 def _read(path: Path) -> str:
@@ -226,7 +236,11 @@ def probe_get(
         return {"probed": False, "reason": "no_api_base"}
     url = f"{base}{path}"
     try:
-        req = urllib.request.Request(url, method="GET")
+        req = urllib.request.Request(
+            url,
+            method="GET",
+            headers=production_probe_headers(),
+        )
         with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
             code = resp.getcode()
             body = resp.read(max_bytes).decode("utf-8", errors="replace")
