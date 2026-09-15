@@ -63,7 +63,7 @@ def test_enterprise_terms_are_customer_specific_after_discovery() -> None:
 
 def test_retired_value_engine_cannot_publish_synthetic_roi() -> None:
     source = (ROOT / "apps/web/app/value-engine/page.tsx").read_text(encoding="utf-8")
-    assert 'redirect("/cases")' in source
+    assert 'permanentRedirect("/cases")' in source
     assert "12000" not in source
     assert "15600" not in source
     assert "WorkflowROIReport" not in source
