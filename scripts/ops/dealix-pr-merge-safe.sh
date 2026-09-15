@@ -42,6 +42,6 @@ if [[ "$HEAD_NOW" != "$HEAD_SHA" ]]; then
   echo "BLOCKED: head moved $HEAD_SHA -> $HEAD_NOW, re-verify"
   exit 4
 fi
-echo "GATES PASS — merging $HEAD_SHA via gh.distrib (head-pinned, no admin bypass)"
-# Use gh.distrib to bypass opencode deny on gh pr merge (wrapper itself is allowlisted)
-exec /usr/bin/gh.distrib pr merge "$PR" --"$METHOD" --delete-branch=false
+echo "GATES PASS — merging $HEAD_SHA through the canonical gh guard (head-pinned, no admin bypass)"
+# Preserve the live fail-closed L5 guard; exact approval packet is mandatory.
+exec gh pr merge "$PR" --"$METHOD" --delete-branch=false
