@@ -73,6 +73,7 @@ def test_pages_that_read_tracked_commercial_ledgers_are_guarded() -> None:
         "@/lib/crm/crm",
         "@/lib/finance/deals",
         "business/_data",
+        "loadWorkspaces",
     )
     exposed: list[str] = []
     for page in (WEB / "app").rglob("page.tsx"):
@@ -88,7 +89,7 @@ def test_founder_operational_contract_is_covered() -> None:
     required = {
         "/crm", "/operator", "/review-queue", "/outreach-lab", "/followups",
         "/command-center", "/war-room", "/pipeline", "/kpi-finance", "/deals",
-        "/proof-vault", "/approvals", "/founder",
+        "/proof-vault", "/approvals", "/founder", "/client-success", "/retention",
     }
     prefixes = set(_array("INTERNAL_PAGE_PREFIXES"))
     assert required <= prefixes
