@@ -179,3 +179,17 @@ def test_explicit_history_mode_preserves_provenance_without_promoting_authority(
     assert out["answer_mode"] == "evidence_backed"
     assert out["commercial_truth_mode"] == "HISTORICAL_LOOKUP_ONLY"
     assert out["citations"][0]["commercial_authority_class"] == DEPRECATED_REPLACED
+
+
+def test_stale_revenue_and_sales_docs_are_explicitly_historical() -> None:
+    stale = (
+        "docs/ops/FIRST_REVENUE_ATTEMPT.md",
+        "docs/ops/manual_payment_log.md",
+        "docs/revenue/INVOICE_FLOW.md",
+        "docs/revenue/REVENUE_READINESS.md",
+        "docs/sales-kit/dealix_invoicing_guide.md",
+        "docs/sales-kit/dealix_saudi_business_setup.md",
+    )
+    for source in stale:
+        assert classify_source(source) == HISTORICAL_REFERENCE_NON_AUTHORITATIVE
+        assert should_exclude_from_current_retrieval(source)

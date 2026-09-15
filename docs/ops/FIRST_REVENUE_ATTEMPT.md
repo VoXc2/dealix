@@ -1,5 +1,9 @@
 # 💰 Dealix — First Revenue Attempt Playbook
 
+> [!IMPORTANT]
+> **HISTORICAL / NON-AUTHORITATIVE.** Current Dealix commercial authority is `config/company/commercial_truth_authority.json`: diagnostics are free; price, scope and duration are customer-specific after qualified discovery. This file does **not** prove Dealix current VAT-registration status. Verify current ZATCA/accounting evidence before issuing any tax invoice. For a resident person, the general mandatory VAT-registration threshold is taxable supplies above SAR 375,000; voluntary registration may apply above SAR 187,500. ZATCA Wave 25 uses SAR 187,500 as a separate e-invoicing integration-wave criterion for notified taxpayers based on VAT-taxable revenues in 2022–2025. Do not conflate the two thresholds.
+
+
 **Use this the exact moment a prospect verbally agrees to pay.**
 **Target close-to-paid cycle: under 15 minutes.**
 
@@ -146,7 +150,7 @@ For the customer's records AND for your accounting:
 3. Save as PDF (browser print → save as PDF)
 4. Email to customer + keep copy in `docs/revenue/invoices/2026/`
 
-**VAT note:** Dealix under 187,500 SAR annual revenue → not VAT-registered → no VAT line on invoice. See `REVENUE_READINESS.md` → ZATCA section.
+**VAT note:** Current Dealix VAT-registration status is **NOT_PROVEN by this document**. Before issuing an invoice, verify current accounting/ZATCA evidence and apply VAT only when the entity is actually registered and the supply requires it.
 
 ---
 

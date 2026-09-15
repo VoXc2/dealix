@@ -48,7 +48,13 @@
     "docs/ops/EXECUTE_NOW_AR.md",
     "docs/ops/FOUNDER_DELIVERY_LADDER_AR.md",
     "docs/ops/FIRST_CUSTOMER_WORKFLOW_AR.md",
-    "docs/90_DAY_BUSINESS_EXECUTION_PLAN.md"
+    "docs/90_DAY_BUSINESS_EXECUTION_PLAN.md",
+    "docs/ops/FIRST_REVENUE_ATTEMPT.md",
+    "docs/ops/manual_payment_log.md",
+    "docs/revenue/INVOICE_FLOW.md",
+    "docs/revenue/REVENUE_READINESS.md",
+    "docs/sales-kit/dealix_invoicing_guide.md",
+    "docs/sales-kit/dealix_saudi_business_setup.md"
   ],
   "legacy_content_markers": [
     "499 SAR", "499 ريال", "Pilot 499", "Sprint 499",

@@ -1,5 +1,9 @@
 # Dealix Manual Payment Log
 
+> [!IMPORTANT]
+> **HISTORICAL / NON-AUTHORITATIVE.** Current Dealix commercial authority is `config/company/commercial_truth_authority.json`: diagnostics are free; price, scope and duration are customer-specific after qualified discovery. This file does **not** prove Dealix current VAT-registration status. Verify current ZATCA/accounting evidence before issuing any tax invoice. For a resident person, the general mandatory VAT-registration threshold is taxable supplies above SAR 375,000; voluntary registration may apply above SAR 187,500. ZATCA Wave 25 uses SAR 187,500 as a separate e-invoicing integration-wave criterion for notified taxpayers based on VAT-taxable revenues in 2022–2025. Do not conflate the two thresholds.
+
+
 **Every manual payment request and confirmation is logged here** until Moyasar KYC activates and automation takes over.
 
 ---
@@ -13,7 +17,7 @@
 **Plan:** Pilot 1 SAR / Starter 999 / Growth 2,999 / Scale 7,999 / Custom
 **Amount (SAR):** ___
 **Currency:** SAR
-**VAT applied:** NO (pre-187,500 SAR threshold) / YES (specify)
+**VAT applied:** VERIFY CURRENT VAT REGISTRATION + SUPPLY TREATMENT / YES or NO with evidence reference
 **Due date:** YYYY-MM-DD (+7 days from issue)
 
 **Payment methods offered (in order):**
@@ -51,7 +55,7 @@
 1. **Invoice issued within 15 minutes of verbal yes.** Use `FIRST_REVENUE_ATTEMPT.md` script.
 2. **Never chase payment more than 2 times.** After reminder 2, escalate or disqualify.
 3. **Confirm payment via bank app / STC Pay app** — do not trust customer screenshot alone.
-4. **VAT:** pre-187,500 SAR annual revenue → no VAT. Document every invoice to prove threshold.
+4. **VAT:** never infer registration from this historical file or from gross revenue alone; verify current registration and taxable-supply treatment from authoritative accounting/ZATCA evidence.
 5. **Refund within 7 days (Pilot)** if requested — no argument. The case study is worth more than 1 SAR.
 
 ---

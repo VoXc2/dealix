@@ -1,5 +1,9 @@
 # 🇸🇦 Dealix — تأسيس Dealix رسمياً في السعودية
 
+> [!IMPORTANT]
+> **HISTORICAL / NON-AUTHORITATIVE.** Current Dealix commercial authority is `config/company/commercial_truth_authority.json`: diagnostics are free; price, scope and duration are customer-specific after qualified discovery. This file does **not** prove Dealix current VAT-registration status. Verify current ZATCA/accounting evidence before issuing any tax invoice. For a resident person, the general mandatory VAT-registration threshold is taxable supplies above SAR 375,000; voluntary registration may apply above SAR 187,500. ZATCA Wave 25 uses SAR 187,500 as a separate e-invoicing integration-wave criterion for notified taxpayers based on VAT-taxable revenues in 2022–2025. Do not conflate the two thresholds.
+
+
 **المدة المتوقعة:** 3-7 أيام عمل
 **التكلفة الأولى:** 3,000-8,000 ريال
 **التكلفة السنوية المستمرة:** 2,000-5,000 ريال
@@ -14,7 +18,7 @@
 
 ### بعد أول عميل مدفوع:
 - CR مطلوب لـ Moyasar للحسابات الشركات
-- VAT registration لازم (التسجيل يبدأ من 187,500 ريال / سنة)
+- حالة تسجيل VAT الحالية لا تُستنتج من هذا الملف. الحد العام الإلزامي للمقيم يرتبط بتجاوز التوريدات الخاضعة للضريبة 375,000 ريال؛ والتسجيل الاختياري قد يكون متاحًا فوق 187,500 ريال، مع التحقق من قواعد ZATCA الحالية والحالة الخاصة بالمنشأة.
 - بنك تجاري = مصداقية للعملاء
 - Enterprise customers يطلبون CR قبل التوقيع
 

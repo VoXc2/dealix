@@ -1,5 +1,9 @@
 # 💰 Dealix — Revenue Readiness Status
 
+> [!IMPORTANT]
+> **HISTORICAL / NON-AUTHORITATIVE.** Current Dealix commercial authority is `config/company/commercial_truth_authority.json`: diagnostics are free; price, scope and duration are customer-specific after qualified discovery. This file does **not** prove Dealix current VAT-registration status. Verify current ZATCA/accounting evidence before issuing any tax invoice. For a resident person, the general mandatory VAT-registration threshold is taxable supplies above SAR 375,000; voluntary registration may apply above SAR 187,500. ZATCA Wave 25 uses SAR 187,500 as a separate e-invoicing integration-wave criterion for notified taxpayers based on VAT-taxable revenues in 2022–2025. Do not conflate the two thresholds.
+
+
 **Last updated:** 2026-04-24
 **Status:** PARTIALLY READY — can collect via manual Moyasar invoices; full automation blocked by Railway deploy.
 
@@ -113,16 +117,16 @@ Keep tracker in Google Sheet:
 
 ## ZATCA / VAT Requirements
 
-**Current state:**
-- Freelance license allows issuing basic invoices
-- NOT subject to VAT until annual revenue exceeds 375,000 SAR
-- Voluntary VAT registration allowed above 187,500 SAR
+**Historical state note — not current authority:**
+- Current Dealix VAT-registration status is **NOT_PROVEN by this file**.
+- For a resident person, mandatory VAT registration generally applies when annual taxable supplies exceed SAR 375,000; voluntary registration may apply above SAR 187,500, subject to current ZATCA rules and entity-specific facts.
+- Verify current accounting/ZATCA evidence before issuing a tax invoice.
 
-**Operational approach:**
-1. Year 1 (< 187,500 SAR revenue): Simple invoices, no VAT
-2. Approaching threshold: Consult accountant
-3. Register for VAT + ZATCA e-invoicing when required
-4. **Do not claim legal compliance** — consult CPA for your specific case
+**Historical operational note — do not use as a current tax decision rule:**
+1. Verify the entity's current VAT-registration status and the supply's tax treatment from authoritative evidence.
+2. Consult a qualified accountant/tax adviser when registration or invoice treatment is uncertain.
+3. Use ZATCA-compliant invoicing controls when they are actually applicable to the registered entity and transaction.
+4. **Do not claim legal/tax compliance from this file.**
 
 **Tool recommendation:** Wafeq (29 SAR/month) — Saudi-native, ZATCA-ready when needed.
 
