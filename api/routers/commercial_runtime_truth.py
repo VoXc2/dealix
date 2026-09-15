@@ -44,9 +44,11 @@ def _canonical_commercial_map() -> dict[str, Any]:
         },
         "primary_offer": {
             "id": CANONICAL_PRIMARY_OFFER_ID,
-            "label_ar": "Revenue Command Pilot — 30 يومًا",
-            "label_en": "Revenue Command Pilot — 30 Days",
-            "duration_days": 30,
+            "label_ar": "Revenue Command Pilot",
+            "label_en": "Revenue Command Pilot",
+            "duration_days": None,
+            "duration_model": "customer_specific_after_qualified_discovery",
+            "legacy_id_semantics": "identifier_only_no_fixed_duration_authority",
             "price_model": "customer_specific_quote_only",
             "public_fixed_pricing": False,
             "public_checkout": False,
@@ -55,7 +57,7 @@ def _canonical_commercial_map() -> dict[str, Any]:
             "FREE_MINI_DIAGNOSTIC",
             "QUALIFIED_DISCOVERY",
             "CUSTOMER_SPECIFIC_QUOTE",
-            "REVENUE_COMMAND_PILOT_30D",
+            "CUSTOMER_SPECIFIC_INTERVENTION",
             "VERIFIED_PAYMENT",
             "DELIVERY",
             "CUSTOMER_VALIDATED_PROOF",
@@ -171,7 +173,7 @@ def _invoice_identity(
 ) -> tuple[str, str, str, str]:
     normalized_key = _require_non_blank(idempotency_key, field_name="idempotency_key")
     digest = hashlib.sha256(
-        f"{quote_fingerprint}\n{normalized_key}".encode("utf-8")
+        f"{quote_fingerprint}\n{normalized_key}".encode()
     ).hexdigest()
     return (
         normalized_key,
@@ -312,7 +314,7 @@ async def commercial_map_markdown_canonical() -> str:
             "Free Mini Diagnostic",
             "→ Qualified Discovery",
             "→ Customer-Specific Quote",
-            "→ Revenue Command Pilot — 30 Days",
+            "→ Customer-Specific Intervention (scope + duration + acceptance criteria)",
             "→ Verified Payment",
             "→ Delivery",
             "→ Customer-Validated Proof",
@@ -345,7 +347,7 @@ async def ops_lead_meeting_brief_canonical(
         "هل CRM موثوق للـ AI أم توجد فجوات مصدر؟",
         "هل توجد موافقة قبل أي إجراء خارجي؟",
         "ما المشكلة المحددة التي تستحق Mini Diagnostic الآن؟",
-        "ما baseline وطريقة الإثبات التي ستحدد نجاح Pilot لمدة 30 يومًا؟",
+        "ما baseline وطريقة الإثبات ومعايير القبول التي ستحدد نجاح التدخل المخصص؟",
     ]
     pain_blob = " ".join(
         filter(
@@ -370,7 +372,7 @@ async def ops_lead_meeting_brief_canonical(
             "FREE_MINI_DIAGNOSTIC",
             "QUALIFIED_DISCOVERY",
             "CUSTOMER_SPECIFIC_QUOTE",
-            "REVENUE_COMMAND_PILOT_30D",
+            "CUSTOMER_SPECIFIC_INTERVENTION",
         ],
         "outreach_draft_ar": lead.outreach_draft_snippet_ar,
         "objection_hints": objection_hints,
@@ -392,7 +394,7 @@ async def request_customer_specific_quote_authority(
 
     No price is calculated here and nothing is sent. The route only creates (or reuses)
     a pending/approved approval record whose object/action fingerprint commits to the
-    exact lead, amount, discovery reference, scope reference, and canonical 30-day offer.
+    exact lead, amount, discovery reference, scope reference, and canonical customer-specific intervention.
     """
     material = _quote_authority_material(
         lead_id=body.lead_id,
@@ -441,11 +443,11 @@ async def request_customer_specific_quote_authority(
                     action_mode="approval_required",
                     channel="finance_manual",
                     summary_ar=(
-                        "موافقة عرض عميل مخصص — Revenue Command Pilot لمدة 30 يومًا — "
+                        "موافقة عرض عميل مخصص — Revenue Command Pilot بنطاق ومدة خاصين بالعميل — "
                         f"المبلغ SAR {material['approved_amount_sar']}؛ لا إرسال ولا دفع تلقائي."
                     ),
                     summary_en=(
-                        "Customer-specific quote approval — 30-day Revenue Command Pilot — "
+                        "Customer-specific quote approval — customer-specific Revenue Command Pilot — "
                         f"amount SAR {material['approved_amount_sar']}; no automatic send or charge."
                     ),
                     risk_level="high",
@@ -570,7 +572,7 @@ async def invoice_create_draft_from_approved_quote(
         tier="customer_specific_quote",
         amount_sar=approved_amount,
         line_items_ar=[
-            "Revenue Command Pilot — 30 يومًا — نطاق عميل مخصص ومعتمد",
+            "Revenue Command Pilot — نطاق ومدة ومعايير قبول خاصة بالعميل ومعتمدة",
             "المبلغ مربوط ببصمة Approval Center للعرض؛ مسودة الفاتورة ليست دفعًا.",
         ],
         status="approval_required",

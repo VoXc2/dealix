@@ -49,7 +49,7 @@ export default function ArabicZatcaReadinessPage() {
         <section className="mt-10 rounded-3xl border border-emerald-300/20 bg-emerald-400/10 p-8">
           <h2 className="text-2xl font-black text-emerald-100">رسالة البيع</h2>
           <p className="mt-4 leading-8 text-slate-200">
-            إذا كانت الشركة عندها فواتير، مدفوعات، Leads، ومتابعات موزعة بين أكثر من أداة، Dealix يحولها إلى Proof Pack وخطة تشغيل واضحة خلال أسبوع.
+            إذا كانت الشركة عندها فواتير، مدفوعات، Leads، ومتابعات موزعة بين أكثر من أداة، Dealix يحولها إلى Proof Pack وخطة تشغيل واضحة بحسب النطاق والأدلة المتاحة.
           </p>
         </section>
 

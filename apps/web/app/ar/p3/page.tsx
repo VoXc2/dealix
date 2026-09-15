@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Dealix P3 — Executive Command Center | غرفة القيادة التنفيذية",
-  description: "غرفة قيادة للمؤسس: الإيراد، الفرص، المخاطر، القرارات، وProof Packs في مكان واحد. 20,000–60,000 ريال إعداد.",
+  description: "غرفة قيادة للمؤسس: الإيراد، الفرص، المخاطر، القرارات، وProof Packs في مكان واحد. عرض مخصص بعد Qualified Discovery.",
 };
 
 const modules = [
@@ -83,11 +83,11 @@ export default function P3Page() {
 
         {/* Pricing */}
         <section className="mt-16">
-          <h2 className="text-3xl font-black">الأسعار</h2>
+          <h2 className="text-3xl font-black">طريقة التعاقد</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {[
-              { label: "Setup", price: "20,000 – 60,000", unit: "ريال مرة واحدة", desc: "إعداد وتخصيص كامل حسب حجم الشركة." },
-              { label: "Monthly", price: "12,000 – 35,000", unit: "ريال/شهر", desc: "تشغيل وتحديث ومراجعة أسبوعية مستمرة." },
+              { label: "Setup", price: "عرض مخصص", unit: "بعد Qualified Discovery", desc: "إعداد وتخصيص كامل حسب حجم الشركة." },
+              { label: "Monthly", price: "عرض مخصص", unit: "بعد Qualified Discovery", desc: "تشغيل وتحديث ومراجعة أسبوعية مستمرة." },
               { label: "Enterprise", price: "Quote", unit: "حسب النطاق", desc: "تكاملات خاصة، أكثر من مسار، فريق موسع." },
             ].map((t) => (
               <article key={t.label} className="rounded-3xl border border-violet-400/30 bg-violet-400/5 p-8">
@@ -106,8 +106,8 @@ export default function P3Page() {
           <p className="mt-3 text-slate-400">لا نبيع P3 كخطوة أولى. التسلسل الطبيعي:</p>
           <ol className="mt-8 space-y-5">
             {[
-              ["P1 Revenue Intelligence Sprint", "5–7 أيام. نثبت القيمة. نسلّم Proof Pack.", "/ar/p1", "bg-cyan-400/20 text-cyan-300"],
-              ["P2 AI Sales Ops Assistant", "تشغيل شهري. متابعات، مسودات، scorecards.", "/ar/p2", "bg-emerald-400/20 text-emerald-300"],
+              ["P1 Revenue Intelligence Sprint", "مدة مخصصة بعد Qualified Discovery. نثبت القيمة. نسلّم Proof Pack.", "/ar/p1", "bg-cyan-400/20 text-cyan-300"],
+              ["P2 AI Sales Ops Assistant", "تشغيل محكوم بنطاق ومدة مخصصين. متابعات، مسودات، scorecards.", "/ar/p2", "bg-emerald-400/20 text-emerald-300"],
               ["P3 Executive Command Center", "غرفة القيادة الكاملة عندما تحتاج رؤية تنفيذية شاملة.", "/ar/p3", "bg-violet-400/20 text-violet-300"],
             ].map(([title, desc, href, cls], i) => (
               <li key={String(title)} className="flex items-start gap-5">

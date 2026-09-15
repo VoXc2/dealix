@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Dealix P1 — Revenue Intelligence Sprint | تشخيص الإيراد",
-  description: "خلال 5–7 أيام نكشف أين تضيع الإيرادات، ونرتب أول 20 فرصة، ونسلّم Proof Pack جاهز للتنفيذ. 3,500–15,000 ريال.",
+  description: "خلال مدة مخصصة بعد Qualified Discovery نكشف أين تضيع الإيرادات، ونرتب أول 20 فرصة، ونسلّم Proof Pack جاهز للتنفيذ. عرض مخصص بعد Qualified Discovery.",
 };
 
 const deliverables = [
@@ -11,31 +11,31 @@ const deliverables = [
   { num: "05", title: "Message Draft Pack", desc: "10–20 مسودة رسالة متابعة جاهزة للمراجعة والإرسال." },
   { num: "06", title: "Objection Intelligence", desc: "توثيق الاعتراضات المتكررة وأفضل ردود عليها." },
   { num: "07", title: "Offer Angle Map", desc: "العرض والرسالة الأنسب لكل شريحة عملاء." },
-  { num: "08", title: "30-Day Revenue Plan", desc: "خطة تنفيذية لأول 30 يوم بعد التشخيص." },
+  { num: "08", title: "Revenue Action Plan", desc: "خطة تنفيذية للمرحلة التالية مبنية على الأدلة والأولويات." },
   { num: "09", title: "Weekly Scorecard", desc: "نموذج قياس أسبوعي لمتابعة التقدم." },
   { num: "10", title: "Executive Proof Pack", desc: "تقرير تنفيذي بالنتائج والأدلة جاهز للعرض." },
 ];
 
 const tiers = [
   {
-    name: "Starter Diagnostic",
-    price: "3,500 – 7,500",
-    duration: "5 أيام",
-    desc: "مناسب لأول تشخيص مع عينة بيانات.",
+    name: "Free Execution Diagnostic",
+    price: "مجاني",
+    duration: "بدون بطاقة",
+    desc: "تشخيص أولي مجاني لتحديد المشكلة والأدلة المطلوبة.",
     highlight: false,
   },
   {
-    name: "Premium Proof Pack",
-    price: "8,000 – 15,000",
-    duration: "7 أيام",
-    desc: "بيانات أعمق، قنوات متعددة، تقرير تنفيذي كامل.",
+    name: "Customer-Specific Intervention",
+    price: "عرض مخصص",
+    duration: "مدة مخصصة بعد Qualified Discovery",
+    desc: "إذا ثبتت الحاجة، نبني نطاقاً ومعايير قبول وعرضاً خاصاً بالعميل.",
     highlight: true,
   },
 ];
 
 const objections = [
   { q: "عندنا CRM", a: "ممتاز. Dealix لا يستبدل CRM، يوضح ماذا تفعل بالفرص الموجودة داخله." },
-  { q: "السعر عالٍ", a: "إذا فرصة واحدة مغلقة تغطي التكلفة، فالسؤال ليس السعر — أين تضيع الفرص الآن؟" },
+  { q: "السعر عالٍ", a: "لا يوجد سعر عام. بعد Qualified Discovery نربط العرض بالنطاق والقيمة والتكلفة والمخاطر للعميل المحدد." },
   { q: "نخاف AI يرسل بدوننا", a: "Dealix لا يرسل. يكتب مسودات، والمؤسس يوافق ويرسل." },
   { q: "محتاجين نشوف نتيجة أولاً", a: "هذا بالضبط سبب وجود P1. لا نطلب عقداً شهرياً قبل Proof Pack." },
 ];
@@ -50,10 +50,10 @@ export default function P1Page() {
           P1 — Revenue Intelligence Sprint
         </p>
         <h1 className="max-w-5xl text-4xl font-black leading-tight md:text-6xl">
-          اكتشف أين تضيع إيراداتك خلال أسبوع واحد.
+          اكتشف أين تضيع إيراداتك بتشخيص تنفيذي مجاني.
         </h1>
         <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-300">
-          تشخيص مدفوع مدته 5–7 أيام. نأخذ عينة من بياناتك، نبني خريطة التسرب، نرتب الأولويات، ونسلّم Proof Pack جاهز للتنفيذ — لا نطلب عقداً شهرياً قبل أن تثق بالنتيجة.
+          Free Execution Diagnostic مجاني وبدون بطاقة. نأخذ عينة من بياناتك، نبني خريطة التسرب، نرتب الأولويات، ونسلّم Proof Pack جاهز للتنفيذ — لا نطلب عقداً شهرياً قبل أن تثق بالنتيجة.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
           <a
@@ -92,7 +92,7 @@ export default function P1Page() {
 
         {/* Deliverables */}
         <section className="mt-16">
-          <h2 className="text-3xl font-black">ما تحصل عليه خلال 5–7 أيام</h2>
+          <h2 className="text-3xl font-black">مخرجات التشخيص ومسار الإثبات</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {deliverables.map((d) => (
               <article
@@ -109,7 +109,7 @@ export default function P1Page() {
 
         {/* Pricing */}
         <section className="mt-16">
-          <h2 className="text-3xl font-black">الأسعار</h2>
+          <h2 className="text-3xl font-black">طريقة التعاقد</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {tiers.map((t) => (
               <article
@@ -163,7 +163,7 @@ export default function P1Page() {
         {/* CTA */}
         <section className="mt-16 text-center">
           <h2 className="text-3xl font-black">جاهز تبدأ؟</h2>
-          <p className="mt-3 text-slate-400">لا عقد شهري. لا التزام طويل. فقط نتيجة خلال أسبوع.</p>
+          <p className="mt-3 text-slate-400">التشخيص مجاني. أي نطاق أو مدة أو التزام لاحق يحدد مع العميل بعد Qualified Discovery.</p>
           <a
             href="mailto:hello@dealix.me?subject=أريد%20تشخيص%20P1"
             className="mt-6 inline-block rounded-2xl bg-cyan-400 px-10 py-4 text-xl font-black text-[#06111f] hover:bg-cyan-300"

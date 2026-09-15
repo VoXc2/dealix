@@ -6,7 +6,7 @@
     "FREE_MINI_DIAGNOSTIC",
     "QUALIFIED_DISCOVERY",
     "CUSTOMER_SPECIFIC_QUOTE",
-    "30_DAY_REVENUE_COMMAND_PILOT",
+    "CUSTOMER_SPECIFIC_INTERVENTION",
     "PAYMENT_VERIFIED",
     "DELIVERY_PROOF",
     "STOP_EXPAND_OR_REDESIGN"
@@ -41,6 +41,7 @@
     "If a current customer-specific quote reference is absent, price remains UNKNOWN_NOT_EVIDENCE_BACKED or CUSTOMER_SPECIFIC_QUOTE_REQUIRED.",
     "Historical 499 SAR, 7-day, fixed-tier, public checkout, refund and ROI semantics are not current authority.",
     "A quote does not authorize payment execution, external send, contract acceptance or revenue recognition.",
+    "Public commercial duration is never fixed before qualified discovery; legacy duration-bearing IDs are identifiers only, not authority.",
     "Payment truth requires verified payment evidence."
   ],
   "owner": "commercial_truth",
@@ -52,5 +53,6 @@
     "growth_agents",
     "payment_adapters",
     "public_surface_verifiers"
-  ]
+  ],
+  "public_fixed_duration": false
 }

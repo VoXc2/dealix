@@ -64,7 +64,7 @@ def test_legacy_autopilot_commercial_routes_are_quarantined() -> None:
         assert active_paths.count(path) == 1, path
 
 
-def test_public_services_exposes_quote_only_30_day_pilot() -> None:
+def test_public_services_exposes_quote_only_customer_specific_pilot() -> None:
     from api.main import app
 
     cli = TestClient(app)
@@ -73,7 +73,8 @@ def test_public_services_exposes_quote_only_30_day_pilot() -> None:
     data = r.json()
     assert data["entry_offer"]["id"] == "free_mini_diagnostic"
     assert data["primary_offer"]["id"] == "revenue_command_pilot_30d"
-    assert data["primary_offer"]["duration_days"] == 30
+    assert data["primary_offer"]["duration_days"] is None
+    assert data["primary_offer"]["duration_model"] == "customer_specific_after_qualified_discovery"
     assert data["primary_offer"]["price_model"] == "customer_specific_quote_only"
     assert data["primary_offer"]["public_fixed_pricing"] is False
     assert data["primary_offer"]["public_checkout"] is False
@@ -118,7 +119,7 @@ def test_meeting_brief_ignores_retired_lead_offer_and_routes_canonical() -> None
         "FREE_MINI_DIAGNOSTIC",
         "QUALIFIED_DISCOVERY",
         "CUSTOMER_SPECIFIC_QUOTE",
-        "REVENUE_COMMAND_PILOT_30D",
+        "CUSTOMER_SPECIFIC_INTERVENTION",
     ]
     text = json.dumps(data, ensure_ascii=False)
     assert "seven_day_governance_diagnostic" not in text

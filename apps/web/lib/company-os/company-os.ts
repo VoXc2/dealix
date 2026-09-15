@@ -165,9 +165,9 @@ export const ACQUISITION_FUNNEL: AcquisitionStep[] = [
 export const DELIVERY_PIPELINE: DeliveryStage[] = [
   {
     id: "intake",
-    title: "Day 0 — Intake",
-    titleAr: "اليوم 0 — الاستلام",
-    dayRange: "Day 0–1",
+    title: "Intake",
+    titleAr: "الاستلام",
+    dayRange: "Intake phase",
     deliverables: [
       "Signed contract and PO",
       "Stakeholder map (decision maker + blockers + influencers)",
@@ -180,14 +180,14 @@ export const DELIVERY_PIPELINE: DeliveryStage[] = [
       "قناة الحقيقة الوحيدة (مجموعة سلاك/واتساب)",
       "وثيقة نطاق البيانات السرية",
     ],
-    risk: "If stakeholder map is unclear, week 1 stalls.",
-    riskAr: "لو خريطة أصحاب المصلحة مو واضحة، الأسبوع الأول يتعثّر.",
+    risk: "If the stakeholder map is unclear, the initial scope stalls.",
+    riskAr: "لو خريطة أصحاب المصلحة غير واضحة، يتعثر النطاق الأولي.",
   },
   {
     id: "workflow_map",
-    title: "Day 2–4 — Workflow Map",
-    titleAr: "اليوم 2-4 — خريطة سير العمل",
-    dayRange: "Day 2–4",
+    title: "Workflow Map",
+    titleAr: "خريطة سير العمل",
+    dayRange: "Discovery and mapping phase",
     deliverables: [
       "End-to-end workflow map (as-is)",
       "Pain points tagged with revenue/cost/risk impact",
@@ -200,14 +200,14 @@ export const DELIVERY_PIPELINE: DeliveryStage[] = [
       "قائمة وحدات OS المختارة بنطاق واضح",
       "أفضل 3 مرشحين للأتمتة",
     ],
-    risk: "Trying to automate everything in week 1.",
-    riskAr: "محاولة أتمتة كل شيء في الأسبوع الأول.",
+    risk: "Trying to automate everything before the first bounded proof.",
+    riskAr: "محاولة أتمتة كل شيء قبل أول إثبات محدود.",
   },
   {
     id: "command_setup",
-    title: "Day 5–8 — Command Center Setup",
-    titleAr: "اليوم 5-8 — تجهيز غرفة القيادة",
-    dayRange: "Day 5–8",
+    title: "Command Center Setup",
+    titleAr: "تجهيز غرفة القيادة",
+    dayRange: "Command setup phase",
     deliverables: [
       "Command Center URL live with first 3 modules",
       "Owner assignment per metric",
@@ -225,9 +225,9 @@ export const DELIVERY_PIPELINE: DeliveryStage[] = [
   },
   {
     id: "automation_build",
-    title: "Day 9–14 — Automation Build",
-    titleAr: "اليوم 9-14 — بناء الأتمتة",
-    dayRange: "Day 9–14",
+    title: "Automation Build",
+    titleAr: "بناء الأتمتة",
+    dayRange: "Automation build phase",
     deliverables: [
       "Top 3 automations live and tested",
       "Fallback rules for human review on edge cases",
@@ -245,9 +245,9 @@ export const DELIVERY_PIPELINE: DeliveryStage[] = [
   },
   {
     id: "weekly_review",
-    title: "Day 15+ — Weekly Executive Review",
-    titleAr: "اليوم 15+ — مراجعة تنفيذية أسبوعية",
-    dayRange: "Day 15 → ongoing",
+    title: "Operating Review",
+    titleAr: "مراجعة تشغيلية",
+    dayRange: "Operating review cadence",
     deliverables: [
       "Weekly command report (5 metrics + 3 risks + 3 next moves)",
       "Client sign-off on each report",
@@ -265,9 +265,9 @@ export const DELIVERY_PIPELINE: DeliveryStage[] = [
   },
   {
     id: "expansion",
-    title: "Day 30+ — Expansion",
-    titleAr: "اليوم 30+ — التوسعة",
-    dayRange: "Day 30+",
+    title: "Expansion Review",
+    titleAr: "مراجعة التوسعة",
+    dayRange: "Evidence-based expansion phase",
     deliverables: [
       "Quarterly business review",
       "Expansion offer based on observed gap",

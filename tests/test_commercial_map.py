@@ -2,7 +2,7 @@
 
 The compatibility endpoint is intentionally no longer a public fixed-price
 service catalog. It exposes the canonical Free Mini Diagnostic -> qualified
-discovery -> customer-specific quote -> 30-day Revenue Command Pilot path and
+discovery -> customer-specific intervention path and
 must remain fail-closed on public checkout/pricing authority.
 """
 from __future__ import annotations
@@ -27,10 +27,11 @@ def test_endpoint_exposes_current_launch_authority() -> None:
     assert body["primary_offer"]["id"] == "revenue_command_pilot_30d"
 
 
-def test_primary_offer_is_quote_only_and_30_days() -> None:
+def test_primary_offer_is_quote_only_and_customer_specific_duration() -> None:
     body = _body()
     offer = body["primary_offer"]
-    assert offer["duration_days"] == 30
+    assert offer["duration_days"] is None
+    assert offer["duration_model"] == "customer_specific_after_qualified_discovery"
     assert offer["price_model"] == "customer_specific_quote_only"
     assert offer["public_fixed_pricing"] is False
     assert offer["public_checkout"] is False
@@ -49,7 +50,7 @@ def test_buying_path_preserves_truth_order() -> None:
         "FREE_MINI_DIAGNOSTIC",
         "QUALIFIED_DISCOVERY",
         "CUSTOMER_SPECIFIC_QUOTE",
-        "REVENUE_COMMAND_PILOT_30D",
+        "CUSTOMER_SPECIFIC_INTERVENTION",
         "VERIFIED_PAYMENT",
         "DELIVERY",
         "CUSTOMER_VALIDATED_PROOF",
@@ -83,7 +84,7 @@ def test_markdown_endpoint_matches_quote_only_authority() -> None:
     assert "Free Mini Diagnostic" in body
     assert "Qualified Discovery" in body
     assert "Customer-Specific Quote" in body
-    assert "Revenue Command Pilot — 30 Days" in body
+    assert "Customer-Specific Intervention" in body
     assert "Verified Payment" in body
     assert "Customer-Validated Proof" in body
     assert "Public fixed pricing: false" in body

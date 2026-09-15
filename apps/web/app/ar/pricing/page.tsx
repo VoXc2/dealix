@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Dealix — الأسعار | P1 · P2 · P3",
-  description: "أسعار Dealix الكاملة: P1 تشخيص الإيراد، P2 تشغيل المبيعات الشهري، P3 غرفة القيادة التنفيذية.",
+  title: "Dealix — طريقة التعاقد | P1 · P2 · P3",
+  description: "تبدأ Dealix بتشخيص تنفيذي مجاني، ثم Qualified Discovery، ثم عرض مخصص بالنطاق والمدة ومعايير القبول لكل عميل.",
 };
 
 const products = [
@@ -9,9 +9,9 @@ const products = [
     label: "P1",
     name: "Revenue Intelligence Sprint",
     nameAr: "تشخيص الإيراد",
-    price: "3,500 – 15,000",
-    unit: "ريال · مرة واحدة",
-    duration: "5–7 أيام",
+    price: "مجاني",
+    unit: "Free Execution Diagnostic · بدون بطاقة",
+    duration: "مدة مخصصة بعد Qualified Discovery",
     desc: "نكشف أين تضيع الإيرادات ونسلّم Proof Pack جاهز للتنفيذ.",
     cta: "ابدأ P1",
     href: "/ar/p1",
@@ -26,7 +26,7 @@ const products = [
       "Top 20 Follow-up List",
       "Message Draft Pack",
       "Objection Intelligence",
-      "30-Day Revenue Plan",
+      "Revenue Action Plan",
       "Executive Proof Pack",
     ],
   },
@@ -35,8 +35,8 @@ const products = [
     label: "P2",
     name: "AI Sales Ops Assistant",
     nameAr: "تشغيل المبيعات الشهري",
-    price: "8,000 – 30,000",
-    unit: "ريال/شهر",
+    price: "عرض مخصص",
+    unit: "بعد Qualified Discovery",
     duration: "تشغيل مستمر",
     desc: "طبقة تشغيل أسبوعية تنتج أولويات ومسودات وscorecard بدون auto-send.",
     cta: "اطلب عرض P2",
@@ -61,7 +61,7 @@ const products = [
     label: "P3",
     name: "Executive Command Center",
     nameAr: "غرفة القيادة التنفيذية",
-    price: "20,000 – 60,000",
+    price: "عرض مخصص",
     unit: "ريال إعداد + شهري",
     duration: "إعداد + تشغيل",
     desc: "غرفة قيادة للمؤسس: الإيراد، القرارات، المخاطر، وProof Packs في مكان واحد.",
@@ -91,13 +91,13 @@ export default function PricingPage() {
 
         {/* Hero */}
         <p className="mb-4 inline-flex rounded-full border border-white/20 px-4 py-2 text-sm text-slate-300">
-          الأسعار
+          طريقة التعاقد
         </p>
         <h1 className="max-w-4xl text-4xl font-black leading-tight md:text-6xl">
           ابدأ بإثبات القيمة. لا عقود طويلة.
         </h1>
         <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-          ثلاثة منتجات واضحة. تبدأ بـ P1 في أسبوع واحد، ثم تتحول لـ P2 إذا أثبتنا القيمة، ثم P3 عندما تحتاج رؤية تنفيذية كاملة.
+          نبدأ دائمًا بتشخيص تنفيذي مجاني. إذا ثبتت المشكلة، تحدد جلسة Qualified Discovery النطاق والمدة ومعايير القبول والعرض الخاص بالعميل.
         </p>
 
         {/* Products grid */}
@@ -139,7 +139,7 @@ export default function PricingPage() {
         {/* Journey */}
         <section className="mt-20 rounded-3xl border border-white/10 bg-white/[0.03] p-8 md:p-12">
           <h2 className="text-3xl font-black">التسلسل الصحيح</h2>
-          <p className="mt-3 text-slate-400">لا نبدأ بـ P3. دائماً نبدأ بـ P1.</p>
+          <p className="mt-3 text-slate-400">لا نبدأ بعقد أو سعر عام. دائماً نبدأ بالتشخيص المجاني ثم Qualified Discovery.</p>
           <div className="mt-8 flex flex-wrap items-center gap-4 text-lg font-black">
             <a href="/ar/p1" className="text-cyan-300 hover:underline">P1 تشخيص</a>
             <span className="text-slate-600">→</span>
@@ -148,7 +148,7 @@ export default function PricingPage() {
             <a href="/ar/p3" className="text-violet-300 hover:underline">P3 قيادة تنفيذية</a>
           </div>
           <p className="mt-5 leading-7 text-slate-400">
-            P1 يثبت القيمة خلال أسبوع. P2 يحول الإثبات إلى تشغيل شهري ودخل متكرر. P3 يأتي عندما يريد المؤسس رؤية تنفيذية كاملة لشركته.
+            التشخيص يثبت المشكلة مجانًا. بعدها فقط نختار التدخل المناسب ونحدد نطاقه ومدته وعرضه للعميل، ثم نوسع عند وجود Proof موثق.
           </p>
         </section>
 
@@ -174,8 +174,8 @@ export default function PricingPage() {
 
         {/* CTA */}
         <section className="mt-16 text-center">
-          <h2 className="text-3xl font-black">ابدأ الأسبوع القادم</h2>
-          <p className="mt-3 text-slate-400">P1 يبدأ خلال 24 ساعة من الاتفاق.</p>
+          <h2 className="text-3xl font-black">ابدأ بالتشخيص المجاني</h2>
+          <p className="mt-3 text-slate-400">التشخيص مجاني وبدون بطاقة. شروط أي تدخل لاحق تكون مخصصة بعد Qualified Discovery.</p>
           <a
             href="mailto:hello@dealix.me?subject=أريد%20البدء%20مع%20Dealix"
             className="mt-6 inline-block rounded-2xl bg-white px-10 py-4 text-xl font-black text-[#06111f] hover:bg-slate-100"
