@@ -45,6 +45,12 @@ def test_current_runbooks_require_exact_sha_and_l5_cutover() -> None:
     assert "DEALIX_SELFHOST_WEB_PORT" in runbook
 
 
+def test_canonical_compose_forwards_required_production_auth_env() -> None:
+    text = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
+    for key in ("APP_SECRET_KEY", "JWT_SECRET_KEY", "API_KEYS", "ADMIN_API_KEYS"):
+        assert f"{key}: ${{{key}:-}}" in text
+
+
 def test_pg18_canary_volume_uses_version_aware_parent_mount() -> None:
     text = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
     assert "pgvector/pgvector:pg18" in text
