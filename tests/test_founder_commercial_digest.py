@@ -71,7 +71,8 @@ def test_social_queue_has_posts():
     q = load_social_queue()
     posts = q.get("posts") or []
     assert len(posts) >= 10
-    post = get_post_for_date(date(2026, 5, 18), queue=q)
+    anchor = date.fromisoformat(str(q.get("anchor_date")))
+    post = get_post_for_date(anchor + timedelta(days=1), queue=q)
     assert post is not None
     assert post.get("title_ar")
 

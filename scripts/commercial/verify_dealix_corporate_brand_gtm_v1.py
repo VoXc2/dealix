@@ -12,6 +12,7 @@ LAUNCH = ROOT / "config/growth/dealix_market_launch_waves_v1.json"
 HOME = ROOT / "apps/web/components/landing/InteractiveHome.tsx"
 COMPANY = ROOT / "apps/web/app/company/page.tsx"
 SERVICES = ROOT / "apps/web/app/services/page.tsx"
+PUBLIC_CATALOG = ROOT / "apps/web/lib/public-catalog.ts"
 PRODUCT = ROOT / "apps/web/app/dealix-os/page.tsx"
 LAYOUT = ROOT / "apps/web/app/layout.tsx"
 CORPORATE_CSS = ROOT / "apps/web/app/corporate-pages.css"
@@ -42,6 +43,7 @@ def main() -> int:
     home = read(HOME)
     company = read(COMPANY)
     services = read(SERVICES)
+    public_catalog = read(PUBLIC_CATALOG)
     product = read(PRODUCT)
     layout = read(LAYOUT)
     corporate_css = read(CORPORATE_CSS)
@@ -80,24 +82,34 @@ def main() -> int:
         assert required in company, f"company page missing contract: {required}"
 
     for required in [
-        "STRATEGY & TRANSFORMATION",
-        "SYSTEMS & AUTOMATION",
-        "INTELLIGENCE & MARKET ACCESS",
-        "TRUST, GOVERNANCE & PROOF",
-        "Dealix OS",
-        "dx-corporate-page",
+        "capabilityCatalog",
+        "item.nameEn",
+        "item.nameAr",
+        "Free Execution Diagnostic",
+        "Customer-Specific Outcome Sprint",
+        "/book",
     ]:
-        assert required in services, f"services page missing portfolio layer: {required}"
+        assert required in services, f"services page missing current capability contract: {required}"
+
+    for required in [
+        "Strategy & Transformation",
+        "AI Governance & Reliability",
+        "Saudi Market Access & Partner Intelligence",
+        "Dealix OS & Productization",
+    ]:
+        assert required in public_catalog, f"public catalog missing current capability: {required}"
 
     for required in ["Company Brain", "Opportunity Graph", "Action + Approval", "Proof Ledger", "dx-corporate-page"]:
         assert required in product, f"Dealix OS page missing layer: {required}"
 
-    assert "Strategy, Systems, Intelligence & Products" in layout
+    assert "Dealix — AI Business Operating System" in layout
+    assert "Strategy, Systems & Proof" in layout
     assert "corporate-pages.css" in layout
     assert "Dealix OS" in layout
 
-    for token in ["#0f172a", "#164e63", "#22d3ee", "#d4af37", ".dx-corporate-page"]:
+    for token in ["#0f172a", "#164e63", "#22d3ee", ".dx-corporate-page"]:
         assert token in corporate_css.lower(), f"corporate CSS missing identity token: {token}"
+    assert "#d4af37" not in corporate_css.lower(), "public corporate CSS must remain navy/cyan without gold authority"
     assert "STRATEGY · SYSTEMS · INTELLIGENCE · PRODUCTS" in og
     assert "Dealix OS" in og
 

@@ -8,6 +8,7 @@ GTM = ROOT / "config/growth/dealix_gtm_social_engine_v1.json"
 LAUNCH = ROOT / "config/growth/dealix_market_launch_waves_v1.json"
 HOME = ROOT / "apps/web/components/landing/InteractiveHome.tsx"
 SERVICES = ROOT / "apps/web/app/services/page.tsx"
+PUBLIC_CATALOG = ROOT / "apps/web/lib/public-catalog.ts"
 COMPANY = ROOT / "apps/web/app/company/page.tsx"
 PRODUCT = ROOT / "apps/web/app/dealix-os/page.tsx"
 CONTENT_FACTORY = ROOT / "scripts/dealix_content_factory_daily.py"
@@ -29,6 +30,7 @@ def test_parent_brand_is_broader_than_flagship_product():
 def test_public_site_exposes_company_practices_and_product_separately():
     home = HOME.read_text(encoding="utf-8")
     services = SERVICES.read_text(encoding="utf-8")
+    public_catalog = PUBLIC_CATALOG.read_text(encoding="utf-8")
     company = COMPANY.read_text(encoding="utf-8")
     product = PRODUCT.read_text(encoding="utf-8")
 
@@ -37,7 +39,11 @@ def test_public_site_exposes_company_practices_and_product_separately():
     assert "Systems & Automation" in company
     assert "Intelligence & Market Access" in company
     assert "Products & Ventures" in company
-    assert "TRUST, GOVERNANCE & PROOF" in services
+    assert "capabilityCatalog" in services
+    assert "Strategy & Transformation" in public_catalog
+    assert "AI Governance & Reliability" in public_catalog
+    assert "Saudi Market Access & Partner Intelligence" in public_catalog
+    assert "Dealix OS & Productization" in public_catalog
     assert "AI Business Operating System" in product
 
 
