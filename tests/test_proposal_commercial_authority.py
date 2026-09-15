@@ -51,7 +51,7 @@ def test_canonical_diagnostic_is_free_non_committing_and_current_path() -> None:
     assert "free mini diagnostic" in payload
     assert "qualified discovery" in payload
     assert "customer-specific quote" in payload
-    assert "revenue command pilot — 30 days" in payload
+    assert "revenue command pilot — customer-specific duration" in payload
     assert "draft_not_sent" in payload
     assert "no public/fixed pilot price" in payload
 
@@ -78,7 +78,8 @@ def test_legacy_proposal_command_ignores_retired_tier_and_renders_diagnostic_onl
     assert "retired_tier_ignored:sprint" in payload
     assert "free mini diagnostic" in payload
     assert "customer-specific quote" in payload
-    assert "30 days" in payload
+    assert "customer-specific duration" in payload
+    assert "30 days" not in payload
     for marker in RETIRED_OUTPUT_MARKERS:
         assert marker not in payload
 
@@ -93,7 +94,7 @@ def test_legacy_list_sectors_cannot_emit_fixed_price_recommendations() -> None:
         assert marker not in payload
 
 
-def test_pilot_brief_is_non_binding_30_day_scope_draft() -> None:
+def test_pilot_brief_is_non_binding_customer_specific_scope_draft() -> None:
     proc = _run(
         "scripts/dealix_pilot_brief.py",
         "--company",
@@ -107,8 +108,9 @@ def test_pilot_brief_is_non_binding_30_day_scope_draft() -> None:
     assert proc.returncode == 0, proc.stderr
     payload = _combined(proc)
 
-    assert "revenue command pilot — 30 days" in payload
-    assert '"duration_days": 30' in payload
+    assert "revenue command pilot — customer-specific duration" in payload
+    assert '"duration_days": null' in payload
+    assert "customer_specific_after_qualified_discovery" in payload
     assert '"price_sar": null' in payload
     assert '"payment_terms": null' in payload
     assert '"refund_policy": null' in payload

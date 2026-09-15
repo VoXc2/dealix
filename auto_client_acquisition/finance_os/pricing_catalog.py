@@ -59,8 +59,8 @@ _CATALOG: tuple[PricingTier, ...] = (
     ),
     PricingTier(
         tier_id="revenue_command_pilot_30d",
-        name_ar="تجربة مركز قيادة الإيرادات — 30 يومًا",
-        name_en="Revenue Command Pilot — 30 days",
+        name_ar="تجربة مركز قيادة الإيرادات — مدة مخصصة للحالة",
+        name_en="Revenue Command Pilot — customer-specific duration",
         price_sar=None,
         pricing_basis="quote_only",
         description_ar="نطاق واحد بعد discovery: ICP واحد، مسار إيراد واحد، baseline وProof Pack أسبوعي.",

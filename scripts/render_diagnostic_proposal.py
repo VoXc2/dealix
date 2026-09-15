@@ -68,7 +68,8 @@ def main() -> int:
         "outcome_guarantee_authorized": False,
         "external_send_authorized_by_this_artifact": False,
         "next_paid_motion": "customer_specific_quote_after_qualified_discovery_and_applicable_gates",
-        "pilot_duration_days": 30,
+        "pilot_duration_days": None,
+        "pilot_duration_policy": "customer_specific_after_qualified_discovery",
         "output": str(out_path.relative_to(ROOT)),
     }
 

@@ -13,8 +13,8 @@ offers:
     note: Free entry diagnostic — no pain mapping required.
 
   - id: revenue_command_pilot_30d
-    label_ar: تجربة مركز قيادة الإيرادات (30 يومًا)
-    label_en: Revenue Command Pilot — 30 days
+    label_ar: تجربة مركز قيادة الإيرادات (مدة مخصصة للحالة)
+    label_en: Revenue Command Pilot — customer-specific duration
     type: quote_only_after_discovery
     setup_sar:
     monthly_sar: 0

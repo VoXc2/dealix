@@ -105,7 +105,8 @@ def canonical_offer_ok() -> bool:
     value = text("dealix/config/first_launch_offer_gate.yaml")
     required = (
         "id: revenue_command_pilot_30d",
-        "duration_days: 30",
+        "duration_days: null",
+        "duration_policy: customer_specific_after_qualified_discovery",
         "quote_only_after_discovery: true",
         "public_amount_sar: null",
         "fixed_price_allowed: false",
@@ -173,7 +174,7 @@ def build_checks():
     dangerous_automation_hits = scan_hits(DANGEROUS_AUTOMATION_PATTERNS)
 
     p0 = [
-        ("Canonical quote-only 30-Day Pilot authority", canonical_offer_ok(), "dealix/config/first_launch_offer_gate.yaml"),
+        ("Canonical customer-specific Pilot authority", canonical_offer_ok(), "dealix/config/first_launch_offer_gate.yaml"),
         ("Free Mini Diagnostic implementation exists", exists("scripts/dealix_diagnostic.py"), "scripts/dealix_diagnostic.py"),
         ("Commercial authority source map exists", exists("data/commercial/commercial_authority_source_map_v1.json"), "data/commercial/commercial_authority_source_map_v1.json"),
         ("Governed omnichannel truth/dispatch contract", governed_channel_ok(), "data/commercial/governed_channel_runtime_v1.json"),

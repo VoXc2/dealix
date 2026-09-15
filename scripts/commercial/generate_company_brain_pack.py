@@ -14,10 +14,10 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "reports" / "commercial"
 
 CANONICAL_ENTRY_OFFER = "Free Mini Diagnostic"
-CANONICAL_PAID_OFFER = "30-Day Revenue Command Pilot"
+CANONICAL_PAID_OFFER = "Revenue Command Pilot"
 CANONICAL_PAID_PATH = (
-    "Qualified Discovery -> Customer-Specific Quote -> 30-Day Revenue Command Pilot "
-    "-> Verified Payment -> Delivery -> Customer-Validated Proof -> Stop / Expand / Redesign"
+    "Qualified Discovery -> Customer-Specific Quote -> Customer-Specific Governed Delivery "
+    "-> Verified Payment / Start Condition -> Delivery -> Customer-Validated Proof -> Stop / Expand / Redesign"
 )
 
 CAPABILITIES = [
@@ -120,7 +120,7 @@ def build_markdown() -> str:
         "2. Identify one visible business pain and ask one diagnostic question.",
         f"3. Offer the {CANONICAL_ENTRY_OFFER}; do not invent a paid sprint or public price.",
         "4. If the problem is qualified, run discovery and prepare a customer-specific quote.",
-        f"5. Start the {CANONICAL_PAID_OFFER} only after accepted scope and verified payment/start evidence.",
+        f"5. Start {CANONICAL_PAID_OFFER} delivery only after accepted customer-specific scope/duration and verified payment/start evidence.",
         "6. Deliver against acceptance criteria and produce customer-validated proof.",
         "7. Decide Stop / Expand / Redesign from measured value; do not infer recurring authority.",
         "",

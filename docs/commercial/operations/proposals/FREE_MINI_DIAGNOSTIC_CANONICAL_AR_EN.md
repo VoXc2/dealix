@@ -63,13 +63,13 @@ Do not send secrets, credentials, unnecessary personal data, or production acces
 
 The next path is:
 
-`Qualified Discovery -> Customer-Specific Quote -> Revenue Command Pilot — 30 days -> Proof Pack -> Stop / Expand / Redesign`
+`Qualified Discovery -> Customer-Specific Quote -> Revenue Command Pilot — customer-specific duration -> Proof Pack -> Stop / Expand / Redesign`
 
 Any named price, discount, payment term, contract term, tender commitment, refund/remedy term, or other commercial commitment is prepared only through the applicable Dealix authority and approval gates.
 
 المسار التالي هو:
 
-`استكشاف مؤهل -> عرض خاص بالعميل -> Revenue Command Pilot لمدة 30 يومًا -> Proof Pack -> توقف / توسع / إعادة تصميم`
+`استكشاف مؤهل -> عرض خاص بالعميل -> Revenue Command Pilot بمدة مخصصة للحالة -> Proof Pack -> توقف / توسع / إعادة تصميم`
 
 أي سعر أو خصم أو شرط دفع أو عقد أو التزام مناقصة أو استرداد/تعويض أو التزام تجاري آخر لا يُنشأ إلا عبر سلطة Dealix وبوابات الموافقة المعتمدة.
 

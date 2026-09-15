@@ -13,7 +13,7 @@ from typing import Any
 COMMAND_SCHEMA = "dealix.commercial_autopilot.command.v1"
 CURRENT_PATH = (
     "Free Mini Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> "
-    "30-Day Revenue Command Pilot -> Verified Payment -> Delivery -> Proof"
+    "Customer-Specific Governed Delivery -> Verified Payment / Start Condition -> Delivery -> Proof"
 )
 
 TRUTH_STATEMENT = {

@@ -158,7 +158,7 @@ def _ops_client_pack() -> dict[str, Any]:
         "runbook_doc": "docs/commercial/ops_client_pack/dealix_ops_runbook_ar.md",
         "sales_kit_deck": "docs/commercial/ops_client_pack/dealix_ops_sales_kit_ar.pptx",
         "ui_demo_path": "/business-now#strategy",
-        "primary_offer_pitch_ar": "Free Mini Diagnostic → 30-Day Revenue Command Pilot",
+        "primary_offer_pitch_ar": "Free Mini Diagnostic → Revenue Command Pilot (مدة مخصصة بعد الاستكشاف المؤهل)",
         "price_authority": "customer_specific_quote_after_qualified_discovery",
         "public_fixed_price": False,
         "quote_requires_founder_approval": True,

@@ -68,14 +68,15 @@ class DiagnosticBundle(BaseModel):
 
 
 class PilotOffer(BaseModel):
-    """Bilingual 30-day pilot scope — quote-only after discovery."""
+    """Bilingual customer-specific pilot scope — quote-only after discovery."""
 
     model_config = ConfigDict(extra="forbid")
 
     company: str
     recommended_bundle: str
     amount_sar: None = None
-    duration_days: Literal[30] = 30
+    duration_days: None = None
+    duration_policy: Literal["customer_specific_after_qualified_discovery"] = "customer_specific_after_qualified_discovery"
     commercial_status: Literal["quote_only"] = "quote_only"
     description_ar: str
     description_en: str

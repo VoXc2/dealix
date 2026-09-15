@@ -14,7 +14,7 @@ Current path:
     Free Mini Diagnostic
     -> Qualified Discovery
     -> Customer-Specific Quote
-    -> Revenue Command Pilot — 30 days
+    -> Revenue Command Pilot — customer-specific duration
     -> Proof Pack
     -> Stop / Expand / Redesign
 """

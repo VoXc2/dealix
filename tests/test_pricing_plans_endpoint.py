@@ -39,7 +39,8 @@ async def test_canonical_public_commercial_map_is_quote_only(async_client):
     primary = body["primary_offer"]
     guardrails = body["guardrails"]
     assert primary["id"] == "revenue_command_pilot_30d"
-    assert primary["duration_days"] == 30
+    assert primary["duration_days"] is None
+    assert primary["duration_policy"] == "customer_specific_after_qualified_discovery"
     assert primary["price_model"] == "customer_specific_quote_only"
     assert primary["public_fixed_pricing"] is False
     assert primary["public_checkout"] is False

@@ -48,6 +48,7 @@ def _canonical_commercial_map() -> dict[str, Any]:
             "label_en": "Revenue Command Pilot",
             "duration_days": None,
             "duration_model": "customer_specific_after_qualified_discovery",
+            "duration_policy": "customer_specific_after_qualified_discovery",
             "legacy_id_semantics": "identifier_only_no_fixed_duration_authority",
             "price_model": "customer_specific_quote_only",
             "public_fixed_pricing": False,

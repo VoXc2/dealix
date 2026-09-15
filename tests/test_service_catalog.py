@@ -103,11 +103,12 @@ def test_no_positive_guarantee_language_in_customer_facing_catalog_fields():
             assert m is None, f"{relative_path}: forbidden positive claim '{m.group(0)}'"
 
 
-def test_first_paid_motion_is_30_day_quote_only_pilot():
+def test_first_paid_motion_is_customer_specific_quote_only_pilot():
     pilot = get_offering("revenue_command_pilot_30d")
     assert pilot is not None
-    assert pilot.name_en == "Revenue Command Pilot — 30 days"
-    assert pilot.duration_days == 30
+    assert pilot.name_en == "Revenue Command Pilot — customer-specific duration"
+    assert pilot.duration_days is None
+    assert pilot.duration_policy == "customer_specific_after_qualified_discovery"
     assert pilot.price_sar == 0
     assert pilot.price_unit == "custom"
     assert pilot.commercial_status == "quote_only"

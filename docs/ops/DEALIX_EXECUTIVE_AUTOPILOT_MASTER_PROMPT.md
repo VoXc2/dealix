@@ -20,7 +20,7 @@ Always read `dealix/config/first_launch_offer_gate.yaml` before commercial plann
 
 Until that file changes through an approved repository change:
 
-- Primary motion: **Revenue Command Pilot — 30 days**.
+- Primary motion: **Revenue Command Pilot — customer-specific duration after qualified discovery**.
 - Pilot is private and quote-only after qualified discovery.
 - No public fixed price.
 - Validate with the first five qualified, first-party conversations.

@@ -1615,24 +1615,62 @@ def execute_opencode_daemon(
     }
 
 
+def verify_modifying_cli_worktree(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
+    """Prove that direct CLI execution is pinned to an isolated exact-base worktree."""
+    if not job.get("MODIFYING"):
+        return {"ok": True}
+    raw_worktree = str(job.get("WORKTREE") or "").strip()
+    if not raw_worktree:
+        return {"ok": False, "reason": "modifying-worktree-isolation: WORKTREE missing"}
+    try:
+        worktree = Path(raw_worktree).resolve()
+        cwd_path = Path(cwd).resolve()
+        repo_path = Path(job.get("REPO") or REPO_ROOT).resolve()
+    except OSError as exc:
+        return {"ok": False, "reason": redact(f"modifying-worktree-isolation: path resolution failed: {exc}")}
+    if cwd_path != worktree:
+        return {"ok": False, "reason": "modifying-worktree-isolation: cwd does not match WORKTREE"}
+    if cwd_path == repo_path:
+        return {"ok": False, "reason": "modifying-worktree-isolation: canonical checkout forbidden"}
+    if not cwd_path.is_dir():
+        return {"ok": False, "reason": "modifying-worktree-isolation: worktree missing"}
+    live_guard = verify_live_base_matches(job, repo_path)
+    if not live_guard.get("ok"):
+        return {"ok": False, "reason": str(live_guard.get("reason") or "live-base guard failed")}
+    worktree_guard = verify_worktree_base_matches(job, repo_path)
+    if not worktree_guard.get("ok"):
+        return {"ok": False, "reason": str(worktree_guard.get("reason") or "worktree-base guard failed")}
+    git = shutil.which("git")
+    if not git:
+        return {"ok": False, "reason": "modifying-worktree-isolation: git-not-found"}
+    top = subprocess.run(
+        [git, "-C", str(cwd_path), "rev-parse", "--show-toplevel"],
+        capture_output=True, text=True, timeout=10, check=False,
+    )
+    if top.returncode != 0 or Path(top.stdout.strip()).resolve() != cwd_path:
+        return {"ok": False, "reason": "modifying-worktree-isolation: git top-level mismatch"}
+    return {"ok": True, "worktree": str(cwd_path)}
+
+
 def execute_opencode_cli(
     job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, model: str | None = None
 ) -> dict[str, Any]:
-    """Bounded direct ``opencode run --auto`` launch for read-only recovery.
+    """Bounded direct ``opencode run --auto`` recovery pinned to ``--dir``.
 
-    Direct OpenCode CLI has been observed resolving a git worktree back to the
-    canonical workspace on this host. Therefore modifying jobs are daemon-only
-    and fail closed here; read-only jobs may still use this recovery transport.
+    Read-only jobs may use direct CLI normally. Modifying jobs may use it only
+    after the exact live base and isolated git worktree are re-proven.
     """
     if job.get("MODIFYING"):
-        return {
-            "ok": False,
-            "returncode": 78,
-            "stdout": "",
-            "stderr": "modifying-cli-fallback-forbidden: worktree isolation is not proven for direct OpenCode CLI",
-            "duration_s": 0,
-            "fallback_denied": "modifying-worktree-isolation",
-        }
+        isolation = verify_modifying_cli_worktree(job, cwd)
+        if not isolation.get("ok"):
+            return {
+                "ok": False,
+                "returncode": 78,
+                "stdout": "",
+                "stderr": str(isolation.get("reason") or "modifying-worktree-isolation"),
+                "duration_s": 0,
+                "fallback_denied": "modifying-worktree-isolation",
+            }
     sensitivity_hold = _model_data_sensitivity_hold(job, remote=True)
     if sensitivity_hold:
         return sensitivity_hold
@@ -1679,7 +1717,7 @@ def execute_opencode_cli(
         model, hold = _resolve_opencode_model(job)
         if hold is not None:
             return hold
-    argv += ["-m", str(model)]
+    argv += ["-m", str(model), "--dir", str(Path(cwd).resolve())]
     argv.append(str(prompt))
     return run_argv(
         argv,
@@ -1728,13 +1766,15 @@ def execute_opencode(
     if not daemon.get("daemon_unavailable") and not daemon_timed_out_after_abort:
         return daemon
     if job.get("MODIFYING"):
-        guarded = dict(daemon)
-        guarded["fallback_denied"] = "modifying-worktree-isolation"
-        guarded["stderr"] = (
-            f"{guarded.get('stderr') or 'daemon-unavailable'}; "
-            "direct CLI fallback forbidden for modifying jobs"
-        )
-        return guarded
+        isolation = verify_modifying_cli_worktree(job, cwd)
+        if not isolation.get("ok"):
+            guarded = dict(daemon)
+            guarded["fallback_denied"] = "modifying-worktree-isolation"
+            guarded["stderr"] = (
+                f"{guarded.get('stderr') or 'daemon-unavailable'}; "
+                f"{isolation.get('reason') or 'isolated worktree not proven'}"
+            )
+            return guarded
     if allow_cli_fallback is None:
         flag = str(os.environ.get("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK") or "").strip().lower()
         allow_cli_fallback = flag in ("1", "true", "yes", "on") or daemon_timed_out_after_abort
