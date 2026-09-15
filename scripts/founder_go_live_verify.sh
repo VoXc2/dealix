@@ -6,9 +6,22 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 export APP_ENV=test
 
-PYTHON_BIN="$(command -v python3 2>/dev/null || true)"
-if [[ -z "${PYTHON_BIN}" ]] && command -v py >/dev/null 2>&1; then
-  PYTHON_BIN="py -3"
+PYTHON_BIN="${DEALIX_PYTHON_BIN:-}"
+if [[ -z "${PYTHON_BIN}" || ! -x "${PYTHON_BIN}" ]]; then
+  if [[ -x "${ROOT}/.venv/bin/python" ]]; then
+    PYTHON_BIN="${ROOT}/.venv/bin/python"
+  else
+    COMMON_GIT_DIR="$(git -C "${ROOT}" rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)"
+    COMMON_ROOT=""
+    if [[ -n "${COMMON_GIT_DIR}" ]]; then
+      COMMON_ROOT="$(dirname "${COMMON_GIT_DIR}")"
+    fi
+    if [[ -n "${COMMON_ROOT}" && -x "${COMMON_ROOT}/.venv/bin/python" ]]; then
+      PYTHON_BIN="${COMMON_ROOT}/.venv/bin/python"
+    else
+      PYTHON_BIN="$(command -v python3 2>/dev/null || true)"
+    fi
+  fi
 fi
 if [[ -z "${PYTHON_BIN}" ]]; then
   echo "FOUNDER_GO_LIVE: FAIL — python3 not found"
@@ -26,7 +39,7 @@ fi
 
 echo ""
 echo "== Founder go-live: golden chain =="
-if pytest tests/test_revenue_os_golden_chain_smoke.py -q --no-cov; then
+if "$PYTHON_BIN" -m pytest tests/test_revenue_os_golden_chain_smoke.py -q --no-cov; then
   echo "  golden_chain: PASS"
 else
   echo "  golden_chain: FAIL"
