@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 import urllib.error
 import urllib.request
 from datetime import UTC, datetime, timedelta
@@ -21,6 +22,11 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from dealix.commercial_ops.railway_production import production_probe_headers
+
 SERVICE_MATRIX = ROOT / "dealix/config/railway_services.json"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 RECEIPT_MAX_AGE = timedelta(minutes=30)
@@ -46,7 +52,7 @@ API_SPEC = {
 
 
 def _probe(url: str, *, method: str, timeout: float = 15.0) -> tuple[int, str]:
-    req = urllib.request.Request(url, method=method)
+    req = urllib.request.Request(url, method=method, headers=production_probe_headers())
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return resp.status, resp.headers.get("Server", "")
