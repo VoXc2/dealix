@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const links = [
   ["/company", "الشركة"], ["/services", "الخدمات"], ["/sectors", "القطاعات"],
-  ["/products", "المنتجات"], ["/dealix-os", "Dealix OS"], ["/proof-vault", "Proof"],
+  ["/products", "المنتجات"], ["/dealix-os", "Dealix OS"], ["/cases", "Proof"],
   ["/pricing", "Engagement Path"], ["/safety", "الحوكمة"], ["/legal", "Legal"],
 ] as const;
 
