@@ -475,3 +475,6 @@ SESSION_COMMIT_HISTORY.txt
 SESSION_COMPLETION_SUMMARY.md
 PR_DESCRIPTION_*.md
 
+
+# Founder Money runtime receipts (generated evidence; preserve locally, never commit)
+reports/founder_money_command/
