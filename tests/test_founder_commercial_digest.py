@@ -100,3 +100,13 @@ def test_scope_requested_outside_window_is_false():
     old = (date.today() - timedelta(days=30)).isoformat()
     rows = [{"event_date": old, "event_type": "scope_requested"}]
     assert scope_requested_within_days(14, rows) is False
+
+
+def test_war_room_excludes_placeholder_contacts_and_generic_targets():
+    targets = [
+        {"company": "هدف استراتيجي 9", "contact": "REPLACE:CEO", "status": "not_contacted", "priority": "high"},
+        {"company": "Named Seed", "contact": "REPLACE:مدير", "status": "not_contacted", "priority": "high"},
+        {"company": "VerifiedCo", "contact": "ops@example.com", "status": "not_contacted", "priority": "high"},
+    ]
+    payload = build_war_room_today(targets, top_n=5)
+    assert [row["company"] for row in payload["targets"]["items"]] == ["VerifiedCo"]

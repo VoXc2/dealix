@@ -13,7 +13,15 @@ from dealix.commercial_ops.paths import (
     GTM_ABM_WAVE1_YAML,
     REPO_ROOT,
 )
-from dealix.commercial_ops.targeting_csv import load_targets
+from dealix.commercial_ops.targeting_csv import is_placeholder_target, load_targets
+
+
+@lru_cache(maxsize=1)
+def load_gtm_abm_config() -> dict[str, Any]:
+    if not GTM_ABM_WAVE1_YAML.is_file():
+        return {}
+    data = yaml.safe_load(GTM_ABM_WAVE1_YAML.read_text(encoding="utf-8"))
+    return data if isinstance(data, dict) else {}
 
 FORBIDDEN_CHANNELS = frozenset({"cold_whatsapp", "linkedin_auto_send", "scraping"})
 WARM_SEGMENTS = frozenset(
@@ -26,27 +34,6 @@ WARM_SEGMENTS = frozenset(
         "consulting_firm",
     }
 )
-REPLACE_PREFIX = "REPLACE:"
-
-
-@lru_cache(maxsize=1)
-def load_gtm_abm_config() -> dict[str, Any]:
-    if not GTM_ABM_WAVE1_YAML.is_file():
-        return {}
-    data = yaml.safe_load(GTM_ABM_WAVE1_YAML.read_text(encoding="utf-8"))
-    return data if isinstance(data, dict) else {}
-
-
-def is_placeholder_target(row: dict[str, str]) -> bool:
-    company = (row.get("company") or "").strip()
-    if not company or company.startswith(REPLACE_PREFIX):
-        return True
-    notes = (row.get("notes") or "").lower()
-    if "مثال تدريبي" in notes or "training" in notes:
-        return True
-    return False
-
-
 def score_abm_wave1_row(row: dict[str, str]) -> dict[str, Any]:
     """Score 0–100 for wave-1 fit (warm ABM)."""
     if is_placeholder_target(row):

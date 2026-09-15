@@ -39,3 +39,11 @@ def test_write_value_map_artifacts_and_markdown() -> None:
     md = render_commercial_value_map_markdown(blob)
     assert "Commercial Value Map" in md
     assert "North Star" in md
+
+
+def test_seed_placeholders_do_not_count_as_active_targets() -> None:
+    st = build_value_map_status()
+    assert st["agency_seed_rows"] >= st["agency_active_rows"]
+    assert st["agency_placeholder_rows"] == st["agency_seed_rows"] - st["agency_active_rows"]
+    if st["agency_active_rows"] < 80:
+        assert st["agency_seed_strict_ok"] is False

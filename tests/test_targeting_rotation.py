@@ -72,3 +72,14 @@ def test_apply_rotation_touch_dates() -> None:
     assert a["next_action_date"] == "2026-05-17"
     assert a["status"] == "message_drafted"
     assert b.get("next_action_date", "") != "2026-05-17"
+
+
+def test_placeholder_seed_rows_never_enter_daily_rotation() -> None:
+    rows = [
+        _row("REPLACE:وكالة من شبكتك"),
+        {**_row("اسم يبدو حقيقيا"), "contact": "REPLACE:مدير مبيعات"},
+        _row("هدف استراتيجي 42"),
+        _row("VerifiedCo"),
+    ]
+    picked = select_daily_p0_targets(rows, top_n=10, on_date=date(2026, 5, 17))
+    assert [row["company"] for row in picked] == ["VerifiedCo"]

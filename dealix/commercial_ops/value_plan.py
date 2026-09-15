@@ -11,7 +11,7 @@ from dealix.commercial_ops.evidence_csv import count_evidence_events, load_evide
 from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnostic
 from dealix.commercial_ops.motion_a_pipeline import build_motion_a_pipeline_plan
 from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, WAR_ROOM_TODAY_JSON, display_path
-from dealix.commercial_ops.targeting_csv import load_targets
+from dealix.commercial_ops.targeting_csv import is_placeholder_target, load_targets
 from dealix.commercial_ops.weekly_scorecard_commercial import build_weekly_scorecard
 
 
@@ -57,6 +57,7 @@ def build_value_plan_snapshot(*, motion_top_n: int = 5) -> dict[str, Any]:
     motion = build_motion_a_pipeline_plan(top_n=motion_top_n)
     weekly = build_weekly_scorecard()
     targets = load_targets()
+    active_targets = [row for row in targets if not is_placeholder_target(row)]
     from dealix.commercial_ops.expansion_status import build_expansion_status
     from dealix.commercial_ops.founder_strongest_ops import build_strongest_ops_snapshot
     from dealix.commercial_ops.gtm_stack import build_gtm_stack_snapshot
@@ -113,6 +114,8 @@ def build_value_plan_snapshot(*, motion_top_n: int = 5) -> dict[str, Any]:
         },
         "targeting": {
             "agency_pool_rows": len(targets),
+            "agency_active_rows": len(active_targets),
+            "agency_placeholder_rows": max(0, len(targets) - len(active_targets)),
             "min_rows_soft": 120,
             "min_rows_wave2": 150,
             "min_rows_wave3": 200,
@@ -158,7 +161,7 @@ def build_value_plan_snapshot(*, motion_top_n: int = 5) -> dict[str, Any]:
             "runner": "scripts/run_founder_strongest_ops.py",
         },
         "warnings_ar": _build_warnings(
-            first_paid, evidence, evening, targets, gtm, expansion, strongest_ops
+            first_paid, evidence, evening, active_targets, gtm, expansion, strongest_ops
         ),
     }
 
