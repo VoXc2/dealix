@@ -1383,6 +1383,28 @@ def _daemon_terminal_state(payload: Any) -> tuple[bool, bool, str, str]:
     return False, False, text, ""
 
 
+def _daemon_session_status(base: str, session_id: str, dir_query: str) -> str | None:
+    """Best-effort auxiliary liveness from OpenCode session status.
+
+    Unknown/unavailable status never grants liveness. Only a current busy state may extend
+    the idle window, while retry/idle/unknown fail closed and the hard deadline remains authoritative.
+    """
+    status, body = _daemon_request(
+        base, "GET", f"/session/status?directory={dir_query}", timeout=10
+    )
+    if status != 200 or not body:
+        return None
+    try:
+        payload = json.loads(body)
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return None
+    item = payload.get(session_id) if isinstance(payload, dict) else None
+    if not isinstance(item, dict):
+        return "idle" if isinstance(payload, dict) else None
+    state = str(item.get("type") or "").strip().lower()
+    return state if state in {"busy", "retry", "idle"} else None
+
+
 def execute_opencode_daemon(
     job: dict[str, Any],
     cwd: Path,
@@ -1498,6 +1520,9 @@ def execute_opencode_daemon(
         )
         if status != 200 or not body:
             if now_epoch() - last_progress_at >= idle_timeout_s:
+                if _daemon_session_status(base, session_id, dir_query) == "busy":
+                    last_progress_at = now_epoch()
+                    continue
                 _daemon_abort(base, session_id, dir_query)
                 full = last_text[:20000]
                 return {
@@ -1552,6 +1577,9 @@ def execute_opencode_daemon(
                 "model": model,
             }
         if now_epoch() - last_progress_at >= idle_timeout_s:
+            if _daemon_session_status(base, session_id, dir_query) == "busy":
+                last_progress_at = now_epoch()
+                continue
             _daemon_abort(base, session_id, dir_query)
             full = last_text[:20000]
             return {
@@ -2357,7 +2385,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--job-class", default="DETERMINISTIC")
     parser.add_argument("--authority", default="L1")
     parser.add_argument("--priority", type=float, default=50.0)
-    parser.add_argument("--modifying", action="store_true")
+    parser.add_argument("--modifying", action="store_true", default=None)
     parser.add_argument("--data-sensitivity", choices=DATA_SENSITIVITY_LEVELS)
     parser.add_argument("--executor", help="JSON executor spec")
     parser.add_argument("--acceptance", help="JSON acceptance spec")

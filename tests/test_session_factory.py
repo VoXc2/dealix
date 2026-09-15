@@ -1214,6 +1214,22 @@ def test_run_job_rechecks_live_base_after_executor_before_acceptance(tmp_path: P
     assert job["RESULT"]["acceptance"]["passed"] is False
 
 
+def test_cli_submit_infers_modifying_from_engineering_job_class(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(factory, "resolve_live_base_sha", lambda repo_root=None: "live-main-sha")
+    monkeypatch.setattr(factory, "share_state_with_operator", lambda _root: {"shared": True})
+    rc = factory.main([
+        "submit", "--state-dir", str(tmp_path), "--owner", "dealix-engineer",
+        "--goal", "cli inference", "--job-class", "ENGINEERING",
+        "--authority", "L4", "--data-sensitivity", "INTERNAL",
+        "--executor", '{"prompt":"bounded"}',
+    ])
+    assert rc == 0
+    jobs = factory.all_jobs(tmp_path)
+    assert len(jobs) == 1
+    assert jobs[0]["MODIFYING"] is True
+    assert jobs[0]["BASE_SHA"] == "live-main-sha"
+
+
 def test_orchestrator_forwards_job_idle_timeout_to_daemon(tmp_path: Path, monkeypatch) -> None:
     job = _daemon_job()
     job["EXECUTOR"]["idle_timeout_s"] = 180
@@ -1274,6 +1290,47 @@ def test_daemon_rejects_version_mismatch(tmp_path: Path, monkeypatch) -> None:
     result = factory.execute_opencode_daemon(_daemon_job(), tmp_path, model="opencode/x-free")
     assert result["ok"] is False
     assert result.get("daemon_unavailable") is True
+
+
+def test_daemon_busy_status_extends_idle_window_until_hard_deadline(tmp_path: Path, monkeypatch) -> None:
+    routes = [
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("GET", "/session/status"), (200, {"sess-busy": {"type": "busy"}})),
+        (("GET", "/message"), (200, {"messages": []})),
+        (("POST", "/session?"), (200, {"id": "sess-busy"})),
+        (("POST", "/abort"), (200, {})),
+    ]
+    fake = _FakeDaemonHTTP(routes)
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    result = factory.execute_opencode_daemon(
+        _daemon_job(), tmp_path, model="opencode/muse-spark-1.3-contributor-free",
+        timeout_s=0.12, idle_timeout_s=0.02, poll_interval=0.01,
+    )
+    assert result["ok"] is False
+    assert result["returncode"] == 124
+    assert "deadline-exceeded" in result["stderr"]
+    assert "idle-timeout" not in result["stderr"]
+    assert any("/session/status" in url for _method, url in fake.calls)
+
+
+def test_daemon_retry_status_does_not_extend_idle_window(tmp_path: Path, monkeypatch) -> None:
+    routes = [
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("GET", "/session/status"), (200, {"sess-retry": {"type": "retry", "attempt": 1, "message": "quota", "next": 9999999999999}})),
+        (("GET", "/message"), (200, {"messages": []})),
+        (("POST", "/session?"), (200, {"id": "sess-retry"})),
+        (("POST", "/abort"), (200, {})),
+    ]
+    fake = _FakeDaemonHTTP(routes)
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    result = factory.execute_opencode_daemon(
+        _daemon_job(), tmp_path, model="opencode/muse-spark-1.3-contributor-free",
+        timeout_s=0.2, idle_timeout_s=0.02, poll_interval=0.01,
+    )
+    assert result["ok"] is False
+    assert "idle-timeout" in result["stderr"]
 
 
 def test_daemon_idle_timeout_aborts_before_full_job_deadline(tmp_path: Path, monkeypatch) -> None:
