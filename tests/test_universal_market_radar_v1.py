@@ -6,8 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from dealix.commercial.portfolio_router import DemandSignal, EntryPackage, PortfolioPackageRouter
 from dealix.commercial.brand_growth_portfolio import ZERO_AUTHORITY, validate_source_signal
+from dealix.commercial.portfolio_router import DemandSignal, EntryPackage, PortfolioPackageRouter
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -152,6 +152,30 @@ def test_read_only_runner_ranks_research_without_authority(tmp_path: Path) -> No
     assert not any(brief["authority"].values())
     assert brief["external_send_or_spend"] is False
     assert brief["new_scheduler"] is False
+
+
+def test_cross_sector_signal_is_portfolio_wide_not_a_sixteenth_sector(tmp_path: Path) -> None:
+    signal = _rankable_signal()
+    signal["signal_id"] = "signal-cross-sector-1"
+    signal["sector_family"] = "CROSS_SECTOR"
+    input_path = tmp_path / "signals.json"
+    output_path = tmp_path / "brief.json"
+    input_path.write_text(json.dumps({"signals": [signal]}), encoding="utf-8")
+
+    result = run(
+        "scripts/commercial/run_universal_market_radar_v1.py",
+        "--signals", str(input_path), "--out", str(output_path),
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    brief = json.loads(output_path.read_text(encoding="utf-8"))
+    assert brief["admitted_signal_count"] == 1
+    assert brief["invalid_signal_count"] == 0
+    row = brief["ranked_research_signals"][0]
+    assert row["sector_family"] == "CROSS_SECTOR"
+    assert row["operating_cluster"] == "PORTFOLIO_WIDE"
+    assert row["sector_priority_tier"] == "PORTFOLIO_WIDE"
+    assert all(len(v) == 0 for v in row["playbook_hypotheses"].values())
+    assert not any(row["authority"].values())
 
 
 def test_runner_rejects_currently_blocked_ahrefs_source(tmp_path: Path) -> None:

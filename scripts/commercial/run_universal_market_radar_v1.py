@@ -23,6 +23,8 @@ PLAYBOOK_PATH = ROOT / "data/commercial/universal_market_playbooks_v1.json"
 SOURCE_ACCESS_PATH = ROOT / "data/commercial/market_radar_source_access_state_v1.json"
 DEFAULT_OUT = ROOT / "data/founder_briefs/universal_market_radar_latest.json"
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
+CROSS_SECTOR = "CROSS_SECTOR"
+PORTFOLIO_WIDE_CLUSTER = "PORTFOLIO_WIDE"
 
 FACTOR_NAMES = (
     "economic_pain",
@@ -218,8 +220,8 @@ def build_brief(signals: list[Any]) -> dict[str, Any]:
                     f"source_id is blocked by current access state: {source_id}:{state}:{reason}"
                 )
             sector_id = str(raw.get("sector_family", "")).strip()
-            if sector_id not in sector_index:
-                errors.append(f"sector_family is not in the 15-sector universe: {sector_id}")
+            if sector_id != CROSS_SECTOR and sector_id not in sector_index:
+                errors.append(f"sector_family is neither CROSS_SECTOR nor in the 15-sector universe: {sector_id}")
         if errors:
             invalid_rows.append(
                 {
@@ -234,9 +236,14 @@ def build_brief(signals: list[Any]) -> dict[str, Any]:
         score, missing_factors = priority_score(receipt)
         fresh_until = parse_time(receipt.get("fresh_until"))
         stale = fresh_until is None or fresh_until <= now
-        sector = sector_index[str(receipt["sector_family"])]
+        sector_id = str(receipt["sector_family"])
+        if sector_id == CROSS_SECTOR:
+            sector = {"cluster": PORTFOLIO_WIDE_CLUSTER, "priority": PORTFOLIO_WIDE_CLUSTER}
+            cluster_playbook = {}
+        else:
+            sector = sector_index[sector_id]
+            cluster_playbook = playbooks.get("cluster_playbooks", {}).get(str(sector.get("cluster", UNKNOWN)), {})
         cluster = str(sector.get("cluster", UNKNOWN))
-        cluster_playbook = playbooks.get("cluster_playbooks", {}).get(cluster, {})
 
         valid_rows.append(
             {

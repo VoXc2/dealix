@@ -51,9 +51,11 @@ def test_sources_and_sectors_are_admitted_by_the_canonical_registries() -> None:
     source_ids = {row["source_id"] for row in radar_meta["source_registry"]}
     playbooks = json.loads((ROOT / "data" / "commercial" / "universal_market_playbooks_v1.json").read_text(encoding="utf-8"))
     sector_ids = {row["id"] for row in playbooks["sector_families"]}
+    assert radar.CROSS_SECTOR not in sector_ids  # portfolio-wide sentinel, never a 16th sector
+    admitted_sector_refs = sector_ids | {radar.CROSS_SECTOR}
     for signal in _payload()["signals"]:
         assert signal["source_id"] in source_ids, signal["signal_id"]
-        assert signal["sector_family"] in sector_ids, signal["signal_id"]
+        assert signal["sector_family"] in admitted_sector_refs, signal["signal_id"]
 
 
 def test_authority_flags_are_all_false() -> None:
