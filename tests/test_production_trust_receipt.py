@@ -138,6 +138,16 @@ def test_apps_web_dockerfile_passes_git_sha() -> None:
     assert "ARG GIT_SHA" in source
 
 
+def test_root_recovery_allows_canonical_weekly_only() -> None:
+    source = (ROOT / "scripts" / "ops" / "dealix-root-service-recover.sh").read_text(
+        encoding="utf-8"
+    )
+    assert '"dealix-company@weekly.service"' in source
+    assert '"dealix-company-weekly.timer"' in source
+    assert '"dealix-omega-weekly.service"' not in source
+    assert '"dealix-omega-weekly.timer"' not in source
+
+
 def test_weekly_proof_pack_target_verifier_passes() -> None:
     verifier = _load_fresh(
         "dealix_weekly_target_receipt",

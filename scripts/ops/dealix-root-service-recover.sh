@@ -5,8 +5,8 @@ set -Eeuo pipefail
 SERVICE="${1:?usage: dealix-root-service-recover <service> [status|restart|start]}"
 ACTION="${2:-status}"
 ALLOWED=(
-  "dealix-omega-weekly.service"
-  "dealix-omega-weekly.timer"
+  "dealix-company@weekly.service"
+  "dealix-company-weekly.timer"
   "dealix-autonomous-company.service"
   "dealix-autonomous-company.timer"
   "hermes-dealix.service"
