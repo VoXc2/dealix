@@ -1,1579 +1,2450 @@
-anchor_date: '2026-05-17'
+anchor_date: '2026-09-13'
 cycle_weeks: 28
 posts:
 - week: 1
   day: 0
-  pillar: founder_media
-  title_ar: ما بعد الـ lead أهم من الحملة
-  body_ar: 'الإعلانات تجيب الاهتمام. السؤال الذي يدفع العميل للشراء:
+  surface: founder_linkedin
+  pillar: executive_signal
+  format: founder_pov
+  title_ar: 'Execution Gap: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'الفجوة بين القرار والتنفيذ أهم من عدد أدوات AI.
 
-    من رد؟ من تابع؟ ما الدليل؟ ما الخطوة التالية؟
 
-    هذا Post-Lead Revenue Ops — وليس «أداة AI» عامة.
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w1-execution-gap-1
+  status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
+- week: 1
+  day: 1
+  surface: company_linkedin
+  pillar: executive_signal
+  format: company_architecture
+  title_ar: Execution Gap داخل نموذج Dealix
+  body_ar: 'الفجوة بين القرار والتنفيذ أهم من عدد أدوات AI.
 
-    '
-  cta_ar: احصل على Risk Score مجاني أو Sample Proof Pack
-  aeo_slug: post-lead-revenue-ops
+
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w1-execution-gap-2
+  status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
+- week: 1
+  day: 2
+  surface: linkedin
+  pillar: executive_signal
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Execution Gap
+  body_ar: 'الفجوة بين القرار والتنفيذ أهم من عدد أدوات AI.
+
+
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w1-execution-gap-3
   status: approved
-- week: 1
-  day: 1
-  pillar: proof
-  title_ar: ما هو Proof Pack؟
-  body_ar: 'Proof Pack ليس تقريراً طويلاً بلا قرار.
-
-    هو: workflow واحد · 10 leads · فجوات SOAEN · 3 قرارات · خطوة توسع أو توقف.
-
-    '
-  cta_ar: شاهد Sample Proof Pack للوكالات
-  aeo_slug: what-is-proof-pack
-  status: draft
-- week: 1
-  day: 2
-  pillar: objection
-  title_ar: عندنا CRM — لماذا Dealix؟
-  body_ar: 'CRM يخزّن. السؤال: من يملك follow-up؟
-
-    Dealix يكمّل CRM بطبقة ما بعد الـ lead: owner · evidence · next action.
-
-    '
-  cta_ar: ديمو 10 دقائق — بدون التزام
-  aeo_slug: crm-vs-revenue-ops
-  status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 1
   day: 3
-  pillar: trust
-  title_ar: لا واتساب بارد — عمداً
-  body_ar: 'Dealix لا يرسل واتساب بارد ولا LinkedIn آلي.
+  surface: linkedin
+  pillar: executive_signal
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Execution Gap'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    الحوكمة ليست عائقاً للبيع — هي ما يثبت الثقة لعميلك النهائي.
 
-    '
-  cta_ar: اقرأ سياسة No cold WhatsApp
-  aeo_slug: no-cold-whatsapp-policy
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w1-execution-gap-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 1
   day: 4
-  pillar: founder_media
-  title_ar: معيار SOAEN في جملة
-  body_ar: 'Source · Owner · Approval · Evidence · Next Action.
+  surface: linkedin
+  pillar: executive_signal
+  format: conversion_cta
+  title_ar: من Execution Gap إلى Execution Diagnostic
+  body_ar: 'الفجوة بين القرار والتنفيذ أهم من عدد أدوات AI.
 
-    أي lead بلا owner ليس pipeline. أي follow-up بلا evidence ليس تشغيلاً.
 
-    '
-  cta_ar: Risk Score لحسابكم
-  aeo_slug: soaen-standard
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w1-execution-gap-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 2
   day: 0
-  pillar: proof
-  title_ar: الوكالة تجيب الاهتمام — Dealix يثبت ما بعده
-  body_ar: 'Motion A: pilot على عميل واحد · 10 leads · Proof Pack خلال ~7 أيام.
+  surface: founder_linkedin
+  pillar: strategic_pov
+  format: founder_pov
+  title_ar: 'Dealix Company: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Strategy + Systems + Intelligence + Products تحت شركة واحدة؛ Dealix OS
+    منتج رئيسي داخلها.
 
-    ثم قرار: تكرار · co-sell · أو Diagnostic أعمق.
 
-    '
-  cta_ar: Agency Proof Pack — عيّنة
-  aeo_slug: agency-proof-for-clients
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w2-dealix-company-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 2
   day: 1
-  pillar: objection
-  title_ar: لماذا نبدأ بـ 10 leads فقط؟
-  body_ar: 'نخفّض المخاطرة لا القيمة: نطاق صغير · أدلة حقيقية · قرار واضح.
+  surface: company_linkedin
+  pillar: strategic_pov
+  format: company_architecture
+  title_ar: Dealix Company داخل نموذج Dealix
+  body_ar: 'Strategy + Systems + Intelligence + Products تحت شركة واحدة؛ Dealix OS
+    منتج رئيسي داخلها.
 
-    لا اشتراك كبير قبل Proof.
 
-    '
-  cta_ar: 10-Lead Audit من 499 SAR
-  aeo_slug: 10-lead-audit
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w2-dealix-company-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 2
   day: 2
-  pillar: founder_media
-  title_ar: كيف تراجع متابعة leads؟
-  body_ar: '1) مصدر كل lead  2) owner  3) وقت أول رد  4) evidence  5) next action.
+  surface: linkedin
+  pillar: strategic_pov
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Dealix Company
+  body_ar: 'Strategy + Systems + Intelligence + Products تحت شركة واحدة؛ Dealix OS
+    منتج رئيسي داخلها.
 
-    غياب أي عنصر = تسريب إيراد بعد الحملة.
 
-    '
-  cta_ar: قائمة مراجعة مجانية
-  aeo_slug: audit-lead-follow-up
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w2-dealix-company-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 2
   day: 3
-  pillar: trust
-  title_ar: موافقة بشرية قبل أي إجراء AI في المبيعات
-  body_ar: 'قبل توسيع agents: من يملك action؟ ما approval؟ ما evidence؟ ما rollback؟
+  surface: linkedin
+  pillar: strategic_pov
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Dealix Company'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    Dealix يبدأ بالحوكمة لا بالميزات.
 
-    '
-  cta_ar: دليل AI approval للمبيعات
-  aeo_slug: ai-approval-sales
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w2-dealix-company-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 2
   day: 4
-  pillar: proof
-  title_ar: أين يضيع الإيراد بعد الإعلانات؟
-  body_ar: 'ليس دائماً في الإعلان — غالباً في: لا owner · رد متأخر · لا proof للعميل.
+  surface: linkedin
+  pillar: strategic_pov
+  format: conversion_cta
+  title_ar: من Dealix Company إلى Execution Diagnostic
+  body_ar: 'Strategy + Systems + Intelligence + Products تحت شركة واحدة؛ Dealix OS
+    منتج رئيسي داخلها.
 
-    التشخيص أولاً ثم Sprint إن ثبتت القيمة.
 
-    '
-  cta_ar: Governed Diagnostic — نطاق محدود
-  aeo_slug: revenue-leakage-after-ads
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w2-dealix-company-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 3
   day: 0
-  pillar: founder_media
-  title_ar: شراكة وكالة — عميل واحد أولاً
-  body_ar: 'Co-sell بدون التزام ضخم: أنتم العلاقة · Dealix التشخيص والـ Proof.
+  surface: founder_linkedin
+  pillar: governed_ai
+  format: founder_pov
+  title_ar: 'Governed AI: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Owner + authority + evidence + rollback قبل توسيع أي Agent.
 
-    لا white-label قبل 3 pilots ناجحة.
 
-    '
-  cta_ar: Partner intro — ديمو 10 دقائق
-  aeo_slug: partner-onboarding
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w3-governed-ai-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 3
   day: 1
-  pillar: objection
-  title_ar: عندنا AI داخلي
-  body_ar: 'ممتاز — السؤال: هل كل action له source وapproval وevidence؟
+  surface: company_linkedin
+  pillar: governed_ai
+  format: company_architecture
+  title_ar: Governed AI داخل نموذج Dealix
+  body_ar: 'Owner + authority + evidence + rollback قبل توسيع أي Agent.
 
-    Dealix طبقة diagnostic/proof قبل التوسع.
 
-    '
-  cta_ar: Executive Growth OS — للمؤسسين
-  aeo_slug: govern-ai-before-scale
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w3-governed-ai-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 3
   day: 2
-  pillar: proof
-  title_ar: قائمة متابعة للوكالات السعودية
-  body_ar: 'owner خلال 15 دقيقة · قالب follow-up · تقرير أسبوعي للعميل · حدود موافقة.
+  surface: linkedin
+  pillar: governed_ai
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Governed AI
+  body_ar: 'Owner + authority + evidence + rollback قبل توسيع أي Agent.
 
-    نطبّقها على 10 leads حقيقية عندكم.
 
-    '
-  cta_ar: Sample Proof Pack
-  aeo_slug: saudi-agency-follow-up-checklist
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w3-governed-ai-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 3
   day: 3
-  pillar: trust
-  title_ar: لا proof مزيف — لا إيراد وهمي
-  body_ar: 'كل finding له مصدر أو «مفقود» صريح.
+  surface: linkedin
+  pillar: governed_ai
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Governed AI'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    لا نعدّ revenue قبل invoice_paid.
 
-    '
-  cta_ar: Trust layer — كيف نبيع
-  aeo_slug: trust-layer
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w3-governed-ai-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 3
   day: 4
-  pillar: founder_media
-  title_ar: 'Build in public: أول Diagnostic مدفوع'
-  body_ar: 'القرار: لا features قبل أول Diagnostic + Proof Pack مسلّم.
+  surface: linkedin
+  pillar: governed_ai
+  format: conversion_cta
+  title_ar: من Governed AI إلى Execution Diagnostic
+  body_ar: 'Owner + authority + evidence + rollback قبل توسيع أي Agent.
 
-    نستخدم ما بُني — لا نبني أكثر الآن.
 
-    '
-  cta_ar: تواصل إن كنت وكالة B2B في السعودية
-  aeo_slug: founder-build-in-public
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w3-governed-ai-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 4
   day: 0
-  pillar: proof
-  title_ar: من lead إلى قرار في 7 أيام
-  body_ar: 'workflow واحد · تصنيف · مسودات متابعة (لا إرسال من Dealix) · Proof Pack
-    · توصية توسع.
+  surface: founder_linkedin
+  pillar: revenue_systems
+  format: founder_pov
+  title_ar: 'Revenue Systems: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'تسرب المتابعة والقرار يحتاج operating system لا مزيدًا من volume.
 
-    '
-  cta_ar: احجز ديمو 10 دقائق
-  aeo_slug: lead-to-decision-7d
+
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w4-revenue-systems-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 4
   day: 1
-  pillar: objection
-  title_ar: السعر ليس المشكلة — المخاطرة هي
-  body_ar: 'Pilot صغير · عميل واحد للوكالة · أدلة قبل Retainer.
+  surface: company_linkedin
+  pillar: revenue_systems
+  format: company_architecture
+  title_ar: Revenue Systems داخل نموذج Dealix
+  body_ar: 'تسرب المتابعة والقرار يحتاج operating system لا مزيدًا من volume.
 
-    إن لم تظهر قيمة — نتوقف عند التشخيص باحترام.
 
-    '
-  cta_ar: Scope Agency Audit
-  aeo_slug: price-risk-not-value
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w4-revenue-systems-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 4
   day: 2
-  pillar: founder_media
-  title_ar: Revenue Ops ≠ Marketing
-  body_ar: 'Marketing يجلب الاهتمام. Revenue Ops يحوّل ما بعد الـ lead إلى قرار موثّق
-    قابل للبيع.
+  surface: linkedin
+  pillar: revenue_systems
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Revenue Systems
+  body_ar: 'تسرب المتابعة والقرار يحتاج operating system لا مزيدًا من volume.
 
-    '
-  cta_ar: ما هو Post-Lead Revenue Ops؟
-  aeo_slug: post-lead-revenue-ops
+
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w4-revenue-systems-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 4
   day: 3
-  pillar: trust
-  title_ar: Human approval = selling point
-  body_ar: 'للمؤسسين والمجالس: حوكمة AI في الإيراد قبل التوسع.
+  surface: linkedin
+  pillar: revenue_systems
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Revenue Systems'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    ليس بطء — هو ثقة.
 
-    '
-  cta_ar: Motion D — Executive diagnostic
-  aeo_slug: human-approval-selling-point
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w4-revenue-systems-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 4
   day: 4
-  pillar: proof
-  title_ar: 'الأسبوع القادم: أهدافك العشر'
-  body_ar: '10 لمسات موافَق عليها · 5 متابعات · 1 شريك · 1 حدث أدلة · 1 منشور SOAEN.
+  surface: linkedin
+  pillar: revenue_systems
+  format: conversion_cta
+  title_ar: من Revenue Systems إلى Execution Diagnostic
+  body_ar: 'تسرب المتابعة والقرار يحتاج operating system لا مزيدًا من volume.
 
-    نظام يخدمك — أنت توافق وتُرسل.
 
-    '
-  cta_ar: MASTER Commercial Plan — ابدأ صباحاً
-  aeo_slug: weekly-commercial-rhythm
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w4-revenue-systems-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 5
   day: 0
-  pillar: proof
-  title_ar: تشخيص 10 leads — ماذا نكتشف؟
-  body_ar: 'غياب owner · تأخر أول رد · لا evidence للعميل.
+  surface: founder_linkedin
+  pillar: saudi_opportunity
+  format: founder_pov
+  title_ar: 'Saudi Opportunity: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'الإشارة الرسمية تتحول إلى فرضية تجارية قابلة للاختبار، لا buyer intent.
 
-    التشخيص يحدد إن كان Sprint يستحق — لا اشتراك قبل Proof.
 
-    '
-  cta_ar: 10-Lead Audit — 499 SAR
-  aeo_slug: diagnostic-10-leads
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w5-saudi-opportunity-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 5
   day: 1
-  pillar: founder_media
-  title_ar: لماذا نرفض cold WhatsApp؟
-  body_ar: 'الثقة أهم من الحجم. العميل السعودي يتذكر من أزعجه.
+  surface: company_linkedin
+  pillar: saudi_opportunity
+  format: company_architecture
+  title_ar: Saudi Opportunity داخل نموذج Dealix
+  body_ar: 'الإشارة الرسمية تتحول إلى فرضية تجارية قابلة للاختبار، لا buyer intent.
 
-    Dealix يبني Post-Lead Ops بموافقة واضحة.
 
-    '
-  cta_ar: سياسة No cold WhatsApp
-  aeo_slug: why-no-cold-whatsapp
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w5-saudi-opportunity-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 5
   day: 2
-  pillar: objection
-  title_ar: نحتاج فريق مبيعات أكبر
-  body_ar: 'السؤال: هل المشكلة عدد البشر أم غياب نظام متابعة؟
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Saudi Opportunity
+  body_ar: 'الإشارة الرسمية تتحول إلى فرضية تجارية قابلة للاختبار، لا buyer intent.
 
-    أحياناً Pilot يوضح أن المشكلة تشغيل لا توظيف.
 
-    '
-  cta_ar: ديمو 10 دقائق
-  aeo_slug: sales-headcount-objection
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w5-saudi-opportunity-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 5
   day: 3
-  pillar: trust
-  title_ar: Evidence قبل Upsell
-  body_ar: 'لا Growth tier قبل Proof Pack مسلّم.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Saudi Opportunity'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    هذا يحمي علاقتك مع عميل الوكالة أيضاً.
 
-    '
-  cta_ar: Sample Proof Pack
-  aeo_slug: evidence-before-upsell
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w5-saudi-opportunity-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 5
   day: 4
-  pillar: proof
-  title_ar: وكالة واحدة · عميل واحد · أسبوع واحد
-  body_ar: 'Motion A: نطاق ضيق · أدلة حقيقية · قرار توسع أو توقف.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: conversion_cta
+  title_ar: من Saudi Opportunity إلى Execution Diagnostic
+  body_ar: 'الإشارة الرسمية تتحول إلى فرضية تجارية قابلة للاختبار، لا buyer intent.
 
-    '
-  cta_ar: Agency Proof Pack
-  aeo_slug: one-agency-one-client
+
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w5-saudi-opportunity-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 6
   day: 0
-  pillar: founder_media
-  title_ar: غرفة الحرب اليومية
-  body_ar: '10 أهداف · 5 متابعات · مسودة LinkedIn · حدث أدلة واحد.
+  surface: founder_linkedin
+  pillar: build_proof
+  format: founder_pov
+  title_ar: 'Proof Before Claim: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Capability evidence وdelivery وoutcome وCustomer Proof حالات مختلفة.
 
-    الصباح = قرار لا بحث عشوائي.
 
-    '
-  cta_ar: MASTER Commercial Plan
-  aeo_slug: daily-war-room
-  status: approved
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w6-proof-before-claim-1
+  status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 6
   day: 1
-  pillar: proof
-  title_ar: Risk Score — ماذا يقيس؟
-  body_ar: 'ليس lead score تسويقي — يقيس جاهزية ما بعد الـ lead:
+  surface: company_linkedin
+  pillar: build_proof
+  format: company_architecture
+  title_ar: Proof Before Claim داخل نموذج Dealix
+  body_ar: 'Capability evidence وdelivery وoutcome وCustomer Proof حالات مختلفة.
 
-    owner · مصدر · موافقة · evidence · next action.
 
-    '
-  cta_ar: Risk Score مجاني
-  aeo_slug: risk-score-explained
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w6-proof-before-claim-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 6
   day: 2
-  pillar: objection
-  title_ar: لدينا وكيل AI آخر
-  body_ar: 'ممتاز — هل يخرج مسودات بموافقة ولا يرسل بارد؟
+  surface: linkedin
+  pillar: build_proof
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Proof Before Claim
+  body_ar: 'Capability evidence وdelivery وoutcome وCustomer Proof حالات مختلفة.
 
-    Dealix طبقة حوكمة + Proof قبل التوسع.
 
-    '
-  cta_ar: Executive Growth OS
-  aeo_slug: another-ai-agent
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w6-proof-before-claim-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 6
   day: 3
-  pillar: trust
-  title_ar: KPI من CRM فقط
-  body_ar: 'لا أرقام إيراد مخترعة في التقارير.
+  surface: linkedin
+  pillar: build_proof
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Proof Before Claim'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    المؤسس يعبّئ import من CRM — الأتمتة تعرض الحالة فقط.
 
-    '
-  cta_ar: كيف نبيع بثقة
-  aeo_slug: kpi-from-crm-only
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w6-proof-before-claim-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 6
   day: 4
-  pillar: proof
-  title_ar: بعد Pilot — ماذا بعد؟
-  body_ar: 'Proof Pack → قرار: Retainer · تكرار · أو توقف محترم.
+  surface: linkedin
+  pillar: build_proof
+  format: conversion_cta
+  title_ar: من Proof Before Claim إلى Execution Diagnostic
+  body_ar: 'Capability evidence وdelivery وoutcome وCustomer Proof حالات مختلفة.
 
-    لا ضغط upsell.
 
-    '
-  cta_ar: Governed Diagnostic
-  aeo_slug: after-pilot-next
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w6-proof-before-claim-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 7
   day: 0
-  pillar: founder_media
-  title_ar: شراكة وكالة — 30% referral
-  body_ar: 'أنتم العلاقة · Dealix التشخيص والـ Proof.
+  surface: founder_linkedin
+  pillar: saudi_opportunity
+  format: founder_pov
+  title_ar: 'Saudi Market Access: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Market entry يبدأ evidence + route + partner fit + bounded validation.
 
-    عميل واحد أولاً — لا white-label مبكر.
 
-    '
-  cta_ar: Partner Kit
-  aeo_slug: agency-partner-referral
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w7-saudi-market-access-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 7
   day: 1
-  pillar: proof
-  title_ar: سكربت مكالمة — ليس روبوت
-  body_ar: 'آلة الإيراد تولّد سكربتات — المؤسس يتصل ويوثّق النتيجة.
+  surface: company_linkedin
+  pillar: saudi_opportunity
+  format: company_architecture
+  title_ar: Saudi Market Access داخل نموذج Dealix
+  body_ar: 'Market entry يبدأ evidence + route + partner fit + bounded validation.
 
-    Human-in-the-loop by design.
 
-    '
-  cta_ar: Pilot 499 SAR
-  aeo_slug: call-scripts-human
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w7-saudi-market-access-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 7
   day: 2
-  pillar: objection
-  title_ar: البيانات عندكم — أين الأمان؟
-  body_ar: 'PDPL · opt-out · allowed_use · suppression.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Saudi Market Access
+  body_ar: 'Market entry يبدأ evidence + route + partner fit + bounded validation.
 
-    كل إجراء خارجي له سجل تدقيق.
 
-    '
-  cta_ar: Trust layer
-  aeo_slug: data-safety-pdpl
-  status: approved
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w7-saudi-market-access-3
+  status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 7
   day: 3
-  pillar: trust
-  title_ar: مسودات Gmail — ليس إرسالاً جماعياً
-  body_ar: 'revenue-machine يملأ مسودات — أنت تراجع وتُرسل.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Saudi Market Access'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    توسيع auto-send فقط ببوابة warm + RFC.
 
-    '
-  cta_ar: اقرأ GATED_AUTO_SEND_RFC
-  aeo_slug: gmail-drafts-not-blast
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w7-saudi-market-access-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 7
   day: 4
-  pillar: proof
-  title_ar: أول Diagnostic مدفوع
-  body_ar: 'الهدف التجاري: Diagnostic + Proof قبل ميزات جديدة.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: conversion_cta
+  title_ar: من Saudi Market Access إلى Execution Diagnostic
+  body_ar: 'Market entry يبدأ evidence + route + partner fit + bounded validation.
 
-    Build in public بانضباط.
 
-    '
-  cta_ar: تواصل — وكالة B2B
-  aeo_slug: first-paid-diagnostic
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w7-saudi-market-access-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 8
   day: 0
-  pillar: founder_media
-  title_ar: تشغيل ذاتي 95% — موافقة 5%
-  body_ar: 'النظام يجهّز اليوم كاملاً — أنت توافق وتُرسل وتقيس.
+  surface: founder_linkedin
+  pillar: strategic_pov
+  format: founder_pov
+  title_ar: 'Service to Product: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'نحوّل المشكلة المتكررة المثبتة إلى product فقط عندما يبرر الدليل ذلك.
 
-    هذا أقصى أتمتة آمنة في السوق السعودي.
 
-    '
-  cta_ar: 'ابدأ الصباح: run_founder_commercial_day'
-  aeo_slug: sovereign-gtm-95-5
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w8-service-to-product-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 8
   day: 1
-  pillar: proof
-  title_ar: من إعلان إلى قرار
-  body_ar: 'الحملة تجيب lead — Revenue Ops يحوّلها لقرار موثّق.
+  surface: company_linkedin
+  pillar: strategic_pov
+  format: company_architecture
+  title_ar: Service to Product داخل نموذج Dealix
+  body_ar: 'نحوّل المشكلة المتكررة المثبتة إلى product فقط عندما يبرر الدليل ذلك.
 
-    الوكالة تبيع النتيجة لعميلها بـ Proof.
 
-    '
-  cta_ar: Post-Lead Revenue Ops
-  aeo_slug: ad-to-decision
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w8-service-to-product-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 8
   day: 2
-  pillar: objection
-  title_ar: ليس CRM جديد
-  body_ar: 'طبقة فوق CRM: owner · evidence · next action بعد الـ lead.
+  surface: linkedin
+  pillar: strategic_pov
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Service to Product
+  body_ar: 'نحوّل المشكلة المتكررة المثبتة إلى product فقط عندما يبرر الدليل ذلك.
 
-    '
-  cta_ar: CRM vs Revenue Ops
-  aeo_slug: not-another-crm
+
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w8-service-to-product-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 8
   day: 3
-  pillar: trust
-  title_ar: LinkedIn يدوي — عمداً
-  body_ar: 'لا DM آلي — مسودة + بحث profile + أنت ترسل.
+  surface: linkedin
+  pillar: strategic_pov
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Service to Product'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
-    ToS + ثقة السوق.
 
-    '
-  cta_ar: مسودة LinkedIn اليوم
-  aeo_slug: linkedin-manual-by-design
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w8-service-to-product-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 8
   day: 4
-  pillar: proof
-  title_ar: الأسبوع التاسع — كرّر الإيقاع
-  body_ar: 'نفس الحلقة: War Room · أدلة · مسودات · منشور SOAEN.
+  surface: linkedin
+  pillar: strategic_pov
+  format: conversion_cta
+  title_ar: من Service to Product إلى Execution Diagnostic
+  body_ar: 'نحوّل المشكلة المتكررة المثبتة إلى product فقط عندما يبرر الدليل ذلك.
 
-    النظام يخدمك — لا يستبدلك.
 
-    '
-  cta_ar: DEALIX Unified Revenue Atlas
-  aeo_slug: repeat-the-rhythm
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w8-service-to-product-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 9
   day: 0
-  pillar: founder_media
-  title_ar: معيار SOAEN
-  body_ar: 'Signal · Offer · Action · Evidence · Narrative — خمس فجوات قبل أي upsell.
+  surface: founder_linkedin
+  pillar: strategic_pov
+  format: founder_pov
+  title_ar: 'Strategy to Operating Model: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'الاستراتيجية التي بلا owner وcadence وacceptance لا تتحول إلى تنفيذ.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: soaen-standard
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w9-strategy-to-operating-model-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 9
   day: 1
-  pillar: proof
-  title_ar: لماذا 10 leads؟
-  body_ar: 'نبدأ بـ pilot صغير — أدلة حقيقية قبل التوسع.
+  surface: company_linkedin
+  pillar: strategic_pov
+  format: company_architecture
+  title_ar: Strategy to Operating Model داخل نموذج Dealix
+  body_ar: 'الاستراتيجية التي بلا owner وcadence وacceptance لا تتحول إلى تنفيذ.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: 10-lead-audit
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w9-strategy-to-operating-model-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 9
   day: 2
-  pillar: objection
-  title_ar: حوكمة AI قبل التوسع
-  body_ar: 'لا أتمتة إرسال — موافقة بشرية على كل لمسة خارجية.
+  surface: linkedin
+  pillar: strategic_pov
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Strategy to Operating Model
+  body_ar: 'الاستراتيجية التي بلا owner وcadence وacceptance لا تتحول إلى تنفيذ.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: govern-ai-before-scale
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w9-strategy-to-operating-model-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 9
   day: 3
-  pillar: trust
-  title_ar: أين يضيع الإيراد؟
-  body_ar: 'بعد الإعلان: لا owner · لا evidence · لا next action.
+  surface: linkedin
+  pillar: strategic_pov
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Strategy to Operating Model'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: revenue-leakage-after-ads
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w9-strategy-to-operating-model-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 9
   day: 4
-  pillar: proof
-  title_ar: كرّر الإيقاع
-  body_ar: 'War Room · أدلة · مسودات · منشور SOAEN — يومياً.
+  surface: linkedin
+  pillar: strategic_pov
+  format: conversion_cta
+  title_ar: من Strategy to Operating Model إلى Execution Diagnostic
+  body_ar: 'الاستراتيجية التي بلا owner وcadence وacceptance لا تتحول إلى تنفيذ.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: repeat-the-rhythm
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w9-strategy-to-operating-model-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 10
   day: 0
-  pillar: founder_media
-  title_ar: وكالة تبيع النتيجة
-  body_ar: 'Proof Pack أسبوعي لعميل الوكالة — ليس تقريراً عاماً.
+  surface: founder_linkedin
+  pillar: executive_signal
+  format: founder_pov
+  title_ar: 'Executive Command: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'أفضل command room يقلل القرارات الضائعة بدل إضافة dashboard جديدة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: agency-proof-for-clients
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w10-executive-command-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 10
   day: 1
-  pillar: proof
-  title_ar: قائمة متابعة سعودية
-  body_ar: '15 دقيقة owner · موافقة · evidence · تاريخ.
+  surface: company_linkedin
+  pillar: executive_signal
+  format: company_architecture
+  title_ar: Executive Command داخل نموذج Dealix
+  body_ar: 'أفضل command room يقلل القرارات الضائعة بدل إضافة dashboard جديدة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: saudi-agency-follow-up-checklist
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w10-executive-command-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 10
   day: 2
-  pillar: objection
-  title_ar: موافقة AI للمبيعات
-  body_ar: 'مسودة → موافقة → إرسال يدوي — PDPL وثقة.
+  surface: linkedin
+  pillar: executive_signal
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Executive Command
+  body_ar: 'أفضل command room يقلل القرارات الضائعة بدل إضافة dashboard جديدة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: ai-approval-sales
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w10-executive-command-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 10
   day: 3
-  pillar: trust
-  title_ar: لا CRM جديد
-  body_ar: 'طبقة فوق CRM الحالي — قرار إيراد موثّق.
+  surface: linkedin
+  pillar: executive_signal
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Executive Command'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: not-another-crm
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w10-executive-command-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 10
   day: 4
-  pillar: proof
-  title_ar: من إعلان إلى قرار
-  body_ar: 'الحملة تجيب lead — Revenue Ops يثبت المتابعة.
+  surface: linkedin
+  pillar: executive_signal
+  format: conversion_cta
+  title_ar: من Executive Command إلى Execution Diagnostic
+  body_ar: 'أفضل command room يقلل القرارات الضائعة بدل إضافة dashboard جديدة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: ad-to-decision
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w10-executive-command-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 11
   day: 0
-  pillar: founder_media
-  title_ar: تشغيل 95% / موافقة 5%
-  body_ar: 'النظام يجهّز اليوم — أنت توافق وتُرسل.
+  surface: founder_linkedin
+  pillar: systems_automation
+  format: founder_pov
+  title_ar: 'Company Brain: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'المعرفة تصبح مفيدة عندما ترتبط بقرار وsource وexpiry وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: sovereign-gtm-95-5
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w11-company-brain-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 11
   day: 1
-  pillar: proof
-  title_ar: أول Diagnostic مدفوع
-  body_ar: 'هدف تجاري: Diagnostic + Proof قبل ميزات.
+  surface: company_linkedin
+  pillar: systems_automation
+  format: company_architecture
+  title_ar: Company Brain داخل نموذج Dealix
+  body_ar: 'المعرفة تصبح مفيدة عندما ترتبط بقرار وsource وexpiry وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: first-paid-diagnostic
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w11-company-brain-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 11
   day: 2
-  pillar: objection
-  title_ar: LinkedIn يدوي
-  body_ar: 'لا DM آلي — مسودة + أنت ترسل.
+  surface: linkedin
+  pillar: systems_automation
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Company Brain
+  body_ar: 'المعرفة تصبح مفيدة عندما ترتبط بقرار وsource وexpiry وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: linkedin-manual-by-design
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w11-company-brain-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 11
   day: 3
-  pillar: trust
-  title_ar: لا واتساب بارد
-  body_ar: 'قوائم warm فقط — امتثال وثقة.
+  surface: linkedin
+  pillar: systems_automation
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Company Brain'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: no-cold-whatsapp-policy
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w11-company-brain-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 11
   day: 4
-  pillar: proof
-  title_ar: Risk Score مجاني
-  body_ar: 'ابدأ بقياس الجاهزية — ثم Proof Pack.
+  surface: linkedin
+  pillar: systems_automation
+  format: conversion_cta
+  title_ar: من Company Brain إلى Execution Diagnostic
+  body_ar: 'المعرفة تصبح مفيدة عندما ترتبط بقرار وsource وexpiry وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: post-lead-revenue-ops
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w11-company-brain-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 12
   day: 0
-  pillar: founder_media
-  title_ar: Unified Revenue Atlas
-  body_ar: 'خريطة واحدة: استراتيجية + تكتيك + أدلة.
+  surface: founder_linkedin
+  pillar: revenue_systems
+  format: founder_pov
+  title_ar: 'Opportunity Graph: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'الفرصة ليست lead؛ تحتاج evidence وstage وowner وprobability وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: crm-vs-revenue-ops
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w12-opportunity-graph-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 12
   day: 1
-  pillar: proof
-  title_ar: Sample Proof Pack
-  body_ar: 'عينة عامة قبل الشراء — أقسام وحالة.
+  surface: company_linkedin
+  pillar: revenue_systems
+  format: company_architecture
+  title_ar: Opportunity Graph داخل نموذج Dealix
+  body_ar: 'الفرصة ليست lead؛ تحتاج evidence وstage وowner وprobability وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: what-is-proof-pack
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w12-opportunity-graph-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 12
   day: 2
-  pillar: objection
-  title_ar: سعر مرتفع؟
-  body_ar: 'ابدأ بـ 499 ر.س — pilot وليس عقد سنوي.
+  surface: linkedin
+  pillar: revenue_systems
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Opportunity Graph
+  body_ar: 'الفرصة ليست lead؛ تحتاج evidence وstage وowner وprobability وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: 10-lead-audit
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w12-opportunity-graph-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 12
   day: 3
-  pillar: trust
-  title_ar: شريك co-sell
-  body_ar: 'Motion شركاء — عميل واحد مشترك.
+  surface: linkedin
+  pillar: revenue_systems
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Opportunity Graph'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: partner-intro
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w12-opportunity-graph-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 12
   day: 4
-  pillar: proof
-  title_ar: جاهز للتدشين
-  body_ar: 'صفحة /ar · funnel · آلة يومية — Soft Launch.
+  surface: linkedin
+  pillar: revenue_systems
+  format: conversion_cta
+  title_ar: من Opportunity Graph إلى Execution Diagnostic
+  body_ar: 'الفرصة ليست lead؛ تحتاج evidence وstage وowner وprobability وnext action.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: governed-max-launch
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w12-opportunity-graph-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 13
   day: 0
-  pillar: founder_media
-  title_ar: توسعة Wave 2
-  body_ar: '100–150 حساب warm فقط — بعد 3 discovery حقيقية.
+  surface: founder_linkedin
+  pillar: revenue_systems
+  format: founder_pov
+  title_ar: 'Follow-up Recovery: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'قبل زيادة leads، افحص أين تسقط المتابعة الحالية ومن يملكها.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: abm-wave2-warm
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w13-follow-up-recovery-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 13
   day: 1
-  pillar: proof
-  title_ar: حزمة عميل قبل الاجتماع
-  body_ar: 'War Room → client pack → Discovery سبعة أسئلة.
+  surface: company_linkedin
+  pillar: revenue_systems
+  format: company_architecture
+  title_ar: Follow-up Recovery داخل نموذج Dealix
+  body_ar: 'قبل زيادة leads، افحص أين تسقط المتابعة الحالية ومن يملكها.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: client-pack-sop
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w13-follow-up-recovery-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 13
   day: 2
-  pillar: objection
-  title_ar: لماذا لا أتمتة كاملة؟
-  body_ar: '95% تجهيز · 5% موافقة — امتثال وثقة.
+  surface: linkedin
+  pillar: revenue_systems
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Follow-up Recovery
+  body_ar: 'قبل زيادة leads، افحص أين تسقط المتابعة الحالية ومن يملكها.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: governed-automation-95-5
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w13-follow-up-recovery-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 13
   day: 3
-  pillar: trust
-  title_ar: أدلة قابلة للتدقيق
-  body_ar: 'كل إيراد مربوط بحدث في CSV.
+  surface: linkedin
+  pillar: revenue_systems
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Follow-up Recovery'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: evidence-events-close
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w13-follow-up-recovery-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 13
   day: 4
-  pillar: proof
-  title_ar: Motion A يومياً
-  body_ar: '10 P0 وكالات — مسودة ثم إرسال يدوي.
+  surface: linkedin
+  pillar: revenue_systems
+  format: conversion_cta
+  title_ar: من Follow-up Recovery إلى Execution Diagnostic
+  body_ar: 'قبل زيادة leads، افحص أين تسقط المتابعة الحالية ومن يملكها.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: motion-a-pipeline
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w13-follow-up-recovery-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 14
   day: 0
-  pillar: founder_media
-  title_ar: قيمة Diagnostic
-  body_ar: '4,999–15,000 ر.س — مدخل محادثة وليس CRM جديد.
+  surface: founder_linkedin
+  pillar: revenue_systems
+  format: founder_pov
+  title_ar: 'Buying Committee: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'B2B enterprise قرار جماعي؛ contact واحد لا يساوي buying authority.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: first-paid-diagnostic-value
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w14-buying-committee-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 14
   day: 1
-  pillar: proof
-  title_ar: Sprint 499
-  body_ar: 'بعد القبول — pilot صغير بأدلة.
+  surface: company_linkedin
+  pillar: revenue_systems
+  format: company_architecture
+  title_ar: Buying Committee داخل نموذج Dealix
+  body_ar: 'B2B enterprise قرار جماعي؛ contact واحد لا يساوي buying authority.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: lead-intelligence-sprint
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w14-buying-committee-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 14
   day: 2
-  pillar: objection
-  title_ar: Growth بعد Proof
-  body_ar: 'لا upsell قبل proof_pack_delivered.
+  surface: linkedin
+  pillar: revenue_systems
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Buying Committee
+  body_ar: 'B2B enterprise قرار جماعي؛ contact واحد لا يساوي buying authority.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: growth-after-proof-only
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w14-buying-committee-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 14
   day: 3
-  pillar: trust
-  title_ar: KPI من CRM فقط
-  body_ar: 'kpi_founder_commercial_import.yaml — لا أرقام مخترعة.
+  surface: linkedin
+  pillar: revenue_systems
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Buying Committee'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: no-invented-crm-kpi
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w14-buying-committee-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 14
   day: 4
-  pillar: proof
-  title_ar: غرفة الحرب
-  body_ar: 'أعلى 10 + متابعات + أحداث اليوم.
+  surface: linkedin
+  pillar: revenue_systems
+  format: conversion_cta
+  title_ar: من Buying Committee إلى Execution Diagnostic
+  body_ar: 'B2B enterprise قرار جماعي؛ contact واحد لا يساوي buying authority.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: revenue-war-room-daily
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w14-buying-committee-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 15
   day: 0
-  pillar: founder_media
-  title_ar: شركاء co-sell
-  body_ar: 'Motion C — عميل مشترك · intro موثّق.
+  surface: founder_linkedin
+  pillar: revenue_systems
+  format: founder_pov
+  title_ar: 'Proposal Architecture: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'العرض الأقوى يربط problem → scope → acceptance → economics → proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: partner-motion-c
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w15-proposal-architecture-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 15
   day: 1
-  pillar: proof
-  title_ar: تنفيذي AI
-  body_ar: 'Motion D — حوكمة قبل توسع AI.
+  surface: company_linkedin
+  pillar: revenue_systems
+  format: company_architecture
+  title_ar: Proposal Architecture داخل نموذج Dealix
+  body_ar: 'العرض الأقوى يربط problem → scope → acceptance → economics → proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: executive-diagnostic-motion-d
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w15-proposal-architecture-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 15
   day: 2
-  pillar: objection
-  title_ar: PDPL والاتصال
-  body_ar: 'قوائم warm · موافقة · لا scraping.
+  surface: linkedin
+  pillar: revenue_systems
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Proposal Architecture
+  body_ar: 'العرض الأقوى يربط problem → scope → acceptance → economics → proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: pdpl-contactability
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w15-proposal-architecture-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 15
   day: 3
-  pillar: trust
-  title_ar: Risk Score عام
-  body_ar: '/ar/risk-score — قياس قبل البيع.
+  surface: linkedin
+  pillar: revenue_systems
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Proposal Architecture'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: public-risk-score-funnel
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w15-proposal-architecture-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 15
   day: 4
-  pillar: proof
-  title_ar: Learn AEO
-  body_ar: '/ar/learn — 6+ مقالات إجابة.
+  surface: linkedin
+  pillar: revenue_systems
+  format: conversion_cta
+  title_ar: من Proposal Architecture إلى Execution Diagnostic
+  body_ar: 'العرض الأقوى يربط problem → scope → acceptance → economics → proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: learn-hub-six-articles
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w15-proposal-architecture-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 16
   day: 0
-  pillar: founder_media
-  title_ar: إطلاق مدفوع لاحقاً
-  body_ar: 'Moyasar + HubSpot — بعد أول Diagnostic.
+  surface: founder_linkedin
+  pillar: revenue_systems
+  format: founder_pov
+  title_ar: 'Negotiation Guardrails: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'أي concession يحتاج give-get واضحًا ويحمي النطاق والهامش.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: paid-launch-after-soft
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w16-negotiation-guardrails-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 16
   day: 1
-  pillar: proof
-  title_ar: تتبع أول مدفوع
-  body_ar: 'invoice → payment → proof pack.
+  surface: company_linkedin
+  pillar: revenue_systems
+  format: company_architecture
+  title_ar: Negotiation Guardrails داخل نموذج Dealix
+  body_ar: 'أي concession يحتاج give-get واضحًا ويحمي النطاق والهامش.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: first-paid-diagnostic-tracker
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w16-negotiation-guardrails-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 16
   day: 2
-  pillar: objection
-  title_ar: لا إعلان قبل Proof
-  body_ar: '3–5 اجتماعات discovery قبل paid ads.
+  surface: linkedin
+  pillar: revenue_systems
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Negotiation Guardrails
+  body_ar: 'أي concession يحتاج give-get واضحًا ويحمي النطاق والهامش.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: no-ads-before-proof
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w16-negotiation-guardrails-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 16
   day: 3
-  pillar: trust
-  title_ar: Dealix Cloud
-  body_ar: 'Business NOW + Operator — قرار يومي.
+  surface: linkedin
+  pillar: revenue_systems
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Negotiation Guardrails'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: dealix-cloud-founder
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w16-negotiation-guardrails-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 16
   day: 4
-  pillar: proof
-  title_ar: توسع مستدام
-  body_ar: 'كرّر Motion A · أدلة · شريك · retainer.
+  surface: linkedin
+  pillar: revenue_systems
+  format: conversion_cta
+  title_ar: من Negotiation Guardrails إلى Execution Diagnostic
+  body_ar: 'أي concession يحتاج give-get واضحًا ويحمي النطاق والهامش.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: sustainable-revenue-expansion
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w16-negotiation-guardrails-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 17
   day: 0
-  pillar: founder_media
-  title_ar: قيمة يومية 90 دقيقة
-  body_ar: 'brief · war-room · approvals — لا بناء ميزات قبل scope.
+  surface: founder_linkedin
+  pillar: governed_ai
+  format: founder_pov
+  title_ar: 'AI Governance Readiness: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'الحوكمة طبقة تشغيل يومية وليست policy PDF فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: founder-90min-cockpit
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w17-ai-governance-readiness-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 17
   day: 1
-  pillar: proof
-  title_ar: حزمة عميل SOP
-  body_ar: 'generate_client_pack قبل كل Discovery.
+  surface: company_linkedin
+  pillar: governed_ai
+  format: company_architecture
+  title_ar: AI Governance Readiness داخل نموذج Dealix
+  body_ar: 'الحوكمة طبقة تشغيل يومية وليست policy PDF فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: client-pack-sop-daily
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w17-ai-governance-readiness-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 17
   day: 2
-  pillar: objection
-  title_ar: لماذا Soft Launch؟
-  body_ar: 'بيع + قمع عام بدون Moyasar حتى 3–5 اجتماعات.
+  surface: linkedin
+  pillar: governed_ai
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص AI Governance Readiness
+  body_ar: 'الحوكمة طبقة تشغيل يومية وليست policy PDF فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: soft-launch-governed
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w17-ai-governance-readiness-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 17
   day: 3
-  pillar: trust
-  title_ar: Value Plan JSON
-  body_ar: 'لقطة واحدة: Motion A + KPI + gates.
+  surface: linkedin
+  pillar: governed_ai
+  format: truth_firewall
+  title_ar: 'Truth Firewall: AI Governance Readiness'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: value-plan-json-daily
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w17-ai-governance-readiness-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 17
   day: 4
-  pillar: proof
-  title_ar: توسعة 150 حساب
-  body_ar: 'Wave 2 — warm فقط · لا scraping.
+  surface: linkedin
+  pillar: governed_ai
+  format: conversion_cta
+  title_ar: من AI Governance Readiness إلى Execution Diagnostic
+  body_ar: 'الحوكمة طبقة تشغيل يومية وليست policy PDF فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: abm-150-target-pool
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w17-ai-governance-readiness-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 18
   day: 0
-  pillar: founder_media
-  title_ar: مسار Motion B
-  body_ar: 'B مباشر فقط بعد أول Proof من Motion A.
+  surface: founder_linkedin
+  pillar: governed_ai
+  format: founder_pov
+  title_ar: 'Agent Reliability: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Agent جيد يعني evals وtool authority وfallback وreceipts، لا prompt جميل
+    فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: motion-b-after-a
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w18-agent-reliability-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 18
   day: 1
-  pillar: proof
-  title_ar: Data Pack 1500
-  body_ar: 'بعد قبول Diagnostic — لا upsell مبكر.
+  surface: company_linkedin
+  pillar: governed_ai
+  format: company_architecture
+  title_ar: Agent Reliability داخل نموذج Dealix
+  body_ar: 'Agent جيد يعني evals وtool authority وfallback وreceipts، لا prompt جميل
+    فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: data-pack-offer
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w18-agent-reliability-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 18
   day: 2
-  pillar: objection
-  title_ar: تكامل HubSpot
-  body_ar: 'Truth Matrix: أخضر فقط عند المفتاح.
+  surface: linkedin
+  pillar: governed_ai
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Agent Reliability
+  body_ar: 'Agent جيد يعني evals وtool authority وfallback وreceipts، لا prompt جميل
+    فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: hubspot-when-ready
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w18-agent-reliability-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 18
   day: 3
-  pillar: trust
-  title_ar: أدلة مساءً
-  body_ar: 'founder_evening.ps1 — سطر واحد يومياً.
+  surface: linkedin
+  pillar: governed_ai
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Agent Reliability'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: founder-evening-evidence
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w18-agent-reliability-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 18
   day: 4
-  pillar: proof
-  title_ar: Weekly scorecard
-  body_ar: 'أدلة · Proof · conversion — كل جمعة.
+  surface: linkedin
+  pillar: governed_ai
+  format: conversion_cta
+  title_ar: من Agent Reliability إلى Execution Diagnostic
+  body_ar: 'Agent جيد يعني evals وtool authority وfallback وreceipts، لا prompt جميل
+    فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: weekly-scorecard-friday
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w18-agent-reliability-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 19
   day: 0
-  pillar: founder_media
-  title_ar: شركاء /ar/partners
-  body_ar: 'Motion D · co-sell · intro موثّق.
+  surface: founder_linkedin
+  pillar: governed_ai
+  format: founder_pov
+  title_ar: 'Privacy by Workflow: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'الغرض والصلاحية والاحتفاظ والعزل يجب أن تعيش داخل workflow.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: partners-funnel
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w19-privacy-by-workflow-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 19
   day: 1
-  pillar: proof
-  title_ar: Learn hub SEO
-  body_ar: '6+ مقالات — إجابة مباشرة للسوق.
+  surface: company_linkedin
+  pillar: governed_ai
+  format: company_architecture
+  title_ar: Privacy by Workflow داخل نموذج Dealix
+  body_ar: 'الغرض والصلاحية والاحتفاظ والعزل يجب أن تعيش داخل workflow.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: learn-hub-aeo
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w19-privacy-by-workflow-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 19
   day: 2
-  pillar: objection
-  title_ar: سعر Growth
-  body_ar: '2,999 SAR/mo — بعد Proof Pack فقط.
+  surface: linkedin
+  pillar: governed_ai
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Privacy by Workflow
+  body_ar: 'الغرض والصلاحية والاحتفاظ والعزل يجب أن تعيش داخل workflow.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: growth-2999-after-proof
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w19-privacy-by-workflow-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 19
   day: 3
-  pillar: trust
-  title_ar: PDPL contactability
-  body_ar: 'قوائم opt-in · لا بارد.
+  surface: linkedin
+  pillar: governed_ai
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Privacy by Workflow'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: pdpl-warm-lists
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w19-privacy-by-workflow-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 19
   day: 4
-  pillar: proof
-  title_ar: Commercial expansion
-  body_ar: 'expand_commercial_ops_all — idempotent.
+  surface: linkedin
+  pillar: governed_ai
+  format: conversion_cta
+  title_ar: من Privacy by Workflow إلى Execution Diagnostic
+  body_ar: 'الغرض والصلاحية والاحتفاظ والعزل يجب أن تعيش داخل workflow.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: commercial-expansion-stack
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w19-privacy-by-workflow-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 20
   day: 0
-  pillar: founder_media
-  title_ar: من 120 إلى 150
-  body_ar: 'توسعة استهداف — تدوير P0 يومي.
+  surface: founder_linkedin
+  pillar: saudi_opportunity
+  format: founder_pov
+  title_ar: 'Partner Route: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'الشراكة تحتاج buyer fit ودورًا اقتصاديًا وإثباتًا، لا قائمة logos.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: scale-targeting-wave2
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w20-partner-route-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 20
   day: 1
-  pillar: proof
-  title_ar: 20 أسبوع محتوى
-  body_ar: '80–100 منشور — مسودة وموافقة.
+  surface: company_linkedin
+  pillar: saudi_opportunity
+  format: company_architecture
+  title_ar: Partner Route داخل نموذج Dealix
+  body_ar: 'الشراكة تحتاج buyer fit ودورًا اقتصاديًا وإثباتًا، لا قائمة logos.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: social-20-week-queue
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w20-partner-route-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 20
   day: 2
-  pillar: objection
-  title_ar: لا fake revenue
-  body_ar: 'كل رقم من CRM أو evidence.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Partner Route
+  body_ar: 'الشراكة تحتاج buyer fit ودورًا اقتصاديًا وإثباتًا، لا قائمة logos.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: no-fake-revenue-article-8
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w20-partner-route-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 20
   day: 3
-  pillar: trust
-  title_ar: Paid launch gate
-  body_ar: 'verify_paid_launch_readiness بعد Soft.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Partner Route'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: paid-launch-readiness
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w20-partner-route-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 20
   day: 4
-  pillar: proof
-  title_ar: أول عميل مدفوع
-  body_ar: 'Diagnostic → Proof → Sprint — حلقة واحدة.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: conversion_cta
+  title_ar: من Partner Route إلى Execution Diagnostic
+  body_ar: 'الشراكة تحتاج buyer fit ودورًا اقتصاديًا وإثباتًا، لا قائمة logos.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: first-customer-closed-loop
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w20-partner-route-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 21
   day: 0
-  pillar: founder_media
-  title_ar: من 150 إلى 200
-  body_ar: 'توسعة استراتيجية — inbound/AEO لا بث بارد.
+  surface: founder_linkedin
+  pillar: saudi_opportunity
+  format: founder_pov
+  title_ar: 'Tender Intelligence: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Tender signal دليل طلب فقط؛ لا يعني qualification أو invitation أو award.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: wave3-200-pool
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w21-tender-intelligence-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 21
   day: 1
-  pillar: proof
-  title_ar: 15 لمسة يومية
-  body_ar: 'موافقة ثم إرسال يدوي — حوكمة PDPL.
+  surface: company_linkedin
+  pillar: saudi_opportunity
+  format: company_architecture
+  title_ar: Tender Intelligence داخل نموذج Dealix
+  body_ar: 'Tender signal دليل طلب فقط؛ لا يعني qualification أو invitation أو award.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: fifteen-touches-quota
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w21-tender-intelligence-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 21
   day: 2
-  pillar: objection
-  title_ar: لماذا لا 500 حساب؟
-  body_ar: 'Wave 3 بعد أول Proof مدفوع — ليس scraping.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Tender Intelligence
+  body_ar: 'Tender signal دليل طلب فقط؛ لا يعني qualification أو invitation أو award.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: wave3-gate-inbound
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w21-tender-intelligence-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 21
   day: 3
-  pillar: trust
-  title_ar: Commercial value map
-  body_ar: 'خريطة قيمة — Diagnostic → Sprint → Growth.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Tender Intelligence'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: commercial-value-map
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w21-tender-intelligence-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 21
   day: 4
-  pillar: proof
-  title_ar: Motion C/D بعد A
-  body_ar: 'شريك وتنفيذي — بعد إثبات Motion A.
+  surface: linkedin
+  pillar: saudi_opportunity
+  format: conversion_cta
+  title_ar: من Tender Intelligence إلى Execution Diagnostic
+  body_ar: 'Tender signal دليل طلب فقط؛ لا يعني qualification أو invitation أو award.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: motion-cd-after-proof
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w21-tender-intelligence-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 22
   day: 0
-  pillar: founder_media
-  title_ar: تشغيل مساءً
-  body_ar: 'سطر evidence واحد — يغلق اليوم.
+  surface: founder_linkedin
+  pillar: build_proof
+  format: founder_pov
+  title_ar: 'Customer Value: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'التسليم لا ينتهي عند النشاط؛ يجب ربطه بالـbaseline والنتيجة والقبول.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: founder-evening-evidence
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w22-customer-value-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 22
   day: 1
-  pillar: proof
-  title_ar: حزم 12 اجتماع
-  body_ar: 'prepare_soft_launch_meetings — top-12.
+  surface: company_linkedin
+  pillar: build_proof
+  format: company_architecture
+  title_ar: Customer Value داخل نموذج Dealix
+  body_ar: 'التسليم لا ينتهي عند النشاط؛ يجب ربطه بالـbaseline والنتيجة والقبول.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: twelve-meeting-packs
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w22-customer-value-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 22
   day: 2
-  pillar: objection
-  title_ar: Moyasar لاحقاً
-  body_ar: 'دفع يدوي أولاً — ثم live keys.
+  surface: linkedin
+  pillar: build_proof
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Customer Value
+  body_ar: 'التسليم لا ينتهي عند النشاط؛ يجب ربطه بالـbaseline والنتيجة والقبول.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: moyasar-after-soft-pass
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w22-customer-value-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 22
   day: 3
-  pillar: trust
-  title_ar: Railway bootstrap
-  body_ar: 'Alembic + War Room seed عند الإنتاج.
+  surface: linkedin
+  pillar: build_proof
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Customer Value'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: railway-prod-bootstrap
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w22-customer-value-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 22
   day: 4
-  pillar: proof
-  title_ar: Official launch verify
-  body_ar: 'company + GTM + FE build.
+  surface: linkedin
+  pillar: build_proof
+  format: conversion_cta
+  title_ar: من Customer Value إلى Execution Diagnostic
+  body_ar: 'التسليم لا ينتهي عند النشاط؛ يجب ربطه بالـbaseline والنتيجة والقبول.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: official-launch-verify
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w22-customer-value-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 23
   day: 0
-  pillar: founder_media
-  title_ar: Unified Revenue Atlas
-  body_ar: 'استراتيجية + تكتيك + أدلة — مرجع واحد.
+  surface: founder_linkedin
+  pillar: build_proof
+  format: founder_pov
+  title_ar: 'Proof Ledger: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Payment وDelivery وOutcome وPublication Permission سجلات مستقلة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: unified-revenue-atlas-daily
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w23-proof-ledger-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 23
   day: 1
-  pillar: proof
-  title_ar: Full Ops Close
-  body_ar: 'Champion · Procurement · زوايا إغلاق.
+  surface: company_linkedin
+  pillar: build_proof
+  format: company_architecture
+  title_ar: Proof Ledger داخل نموذج Dealix
+  body_ar: 'Payment وDelivery وOutcome وPublication Permission سجلات مستقلة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: full-ops-close-engine
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w23-proof-ledger-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 23
   day: 2
-  pillar: objection
-  title_ar: لا بناء قبل scope
-  body_ar: 'لا ميزات قبل scope_requested.
+  surface: linkedin
+  pillar: build_proof
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Proof Ledger
+  body_ar: 'Payment وDelivery وOutcome وPublication Permission سجلات مستقلة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: no-build-before-scope
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w23-proof-ledger-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 23
   day: 3
-  pillar: trust
-  title_ar: Article 13
-  body_ar: '3 عملاء مدفوعين — بوابة توسع.
+  surface: linkedin
+  pillar: build_proof
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Proof Ledger'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: article-13-three-paid
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w23-proof-ledger-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 23
   day: 4
-  pillar: proof
-  title_ar: Retainer بعد Proof
-  body_ar: 'Managed Ops — بعد تسليم Proof.
+  surface: linkedin
+  pillar: build_proof
+  format: conversion_cta
+  title_ar: من Proof Ledger إلى Execution Diagnostic
+  body_ar: 'Payment وDelivery وOutcome وPublication Permission سجلات مستقلة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: retainer-after-proof-pack
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w23-proof-ledger-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 24
   day: 0
-  pillar: founder_media
-  title_ar: 24 أسبوع محتوى
-  body_ar: '120 منشور مسودة — SOAEN أسبوعياً.
+  surface: founder_linkedin
+  pillar: strategic_pov
+  format: founder_pov
+  title_ar: 'Content as Distribution: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'المحتوى الجيد يخلق perspective ومحادثة مؤهلة، لا مجرد impressions.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: social-24-week-cycle
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w24-content-as-distribution-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 24
   day: 1
-  pillar: proof
-  title_ar: 200 هدف warm
-  body_ar: 'ABM wave-3 seed — تدوير P0.
+  surface: company_linkedin
+  pillar: strategic_pov
+  format: company_architecture
+  title_ar: Content as Distribution داخل نموذج Dealix
+  body_ar: 'المحتوى الجيد يخلق perspective ومحادثة مؤهلة، لا مجرد impressions.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: targeting-200-warm
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w24-content-as-distribution-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 24
   day: 2
-  pillar: objection
-  title_ar: لا LinkedIn آلي
-  body_ar: 'مسودة في النظام — أنت ترسل.
+  surface: linkedin
+  pillar: strategic_pov
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Content as Distribution
+  body_ar: 'المحتوى الجيد يخلق perspective ومحادثة مؤهلة، لا مجرد impressions.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: linkedin-manual-only
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w24-content-as-distribution-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 24
   day: 3
-  pillar: trust
-  title_ar: Dealix Revenue OS
-  body_ar: 'catalog · anti-waste · signals.
+  surface: linkedin
+  pillar: strategic_pov
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Content as Distribution'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: dealix-revenue-os-catalog
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w24-content-as-distribution-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 24
   day: 4
-  pillar: proof
-  title_ar: إيراد حقيقي
-  body_ar: 'لمسة → أدلة → دفع → Proof Pack.
+  surface: linkedin
+  pillar: strategic_pov
+  format: conversion_cta
+  title_ar: من Content as Distribution إلى Execution Diagnostic
+  body_ar: 'المحتوى الجيد يخلق perspective ومحادثة مؤهلة، لا مجرد impressions.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: real-revenue-closed-loop
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w24-content-as-distribution-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 25
   day: 0
-  pillar: founder_media
-  title_ar: Motions B/C/D
-  body_ar: 'أنابيب Motions — B بعد Proof · C شريك · D تنفيذي.
+  surface: founder_linkedin
+  pillar: systems_automation
+  format: founder_pov
+  title_ar: 'AI Model Economics: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'اختيار النموذج قرار جودة/حساسية/تكلفة/سياسة وليس سباق benchmark فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: motions-bcd-pipelines
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w25-ai-model-economics-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 25
   day: 1
-  pillar: proof
-  title_ar: Motion B مباشر
-  body_ar: 'B2B — governed_diagnostic بعد Motion A.
+  surface: company_linkedin
+  pillar: systems_automation
+  format: company_architecture
+  title_ar: AI Model Economics داخل نموذج Dealix
+  body_ar: 'اختيار النموذج قرار جودة/حساسية/تكلفة/سياسة وليس سباق benchmark فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: motion-b-direct
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w25-ai-model-economics-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 25
   day: 2
-  pillar: objection
-  title_ar: لا فتح B مبكراً
-  body_ar: 'أول Proof Pack قبل توسعة B2B.
+  surface: linkedin
+  pillar: systems_automation
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص AI Model Economics
+  body_ar: 'اختيار النموذج قرار جودة/حساسية/تكلفة/سياسة وليس سباق benchmark فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: gate-motion-b
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w25-ai-model-economics-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 25
   day: 3
-  pillar: trust
-  title_ar: شريك Motion C
-  body_ar: 'partner_intro موثّق — لا cold.
+  surface: linkedin
+  pillar: systems_automation
+  format: truth_firewall
+  title_ar: 'Truth Firewall: AI Model Economics'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: motion-c-partner-intro
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w25-ai-model-economics-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 25
   day: 4
-  pillar: proof
-  title_ar: تنفيذي Motion D
-  body_ar: 'executive_diagnostic — حوكمة AI.
+  surface: linkedin
+  pillar: systems_automation
+  format: conversion_cta
+  title_ar: من AI Model Economics إلى Execution Diagnostic
+  body_ar: 'اختيار النموذج قرار جودة/حساسية/تكلفة/سياسة وليس سباق benchmark فقط.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: motion-d-executive
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w25-ai-model-economics-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 26
   day: 0
-  pillar: founder_media
-  title_ar: 250 هدف تحضير
-  body_ar: 'wave4 — inbound/AEO بعد إثبات إيراد.
+  surface: founder_linkedin
+  pillar: build_proof
+  format: founder_pov
+  title_ar: 'Production Trust: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Build success أو HTTP 200 وحدهما لا يثبتان release صحيحًا.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: wave4-250-pool
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w26-production-trust-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 26
   day: 1
-  pillar: proof
-  title_ar: أنابيب يومية
-  body_ar: 'founder_all_motions_pipeline.py كل صباح.
+  surface: company_linkedin
+  pillar: build_proof
+  format: company_architecture
+  title_ar: Production Trust داخل نموذج Dealix
+  body_ar: 'Build success أو HTTP 200 وحدهما لا يثبتان release صحيحًا.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: founder-all-motions
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w26-production-trust-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 26
   day: 2
-  pillar: objection
-  title_ar: لا wave4 بارد
-  body_ar: '500+ لاحقاً — محتوى + inbound فقط.
+  surface: linkedin
+  pillar: build_proof
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Production Trust
+  body_ar: 'Build success أو HTTP 200 وحدهما لا يثبتان release صحيحًا.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: wave4-warm-only
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w26-production-trust-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 26
   day: 3
-  pillar: trust
-  title_ar: توسعة أسبوعية CI
-  body_ar: 'GitHub Actions — expand idempotent.
+  surface: linkedin
+  pillar: build_proof
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Production Trust'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: weekly-expand-workflow
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w26-production-trust-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 26
   day: 4
-  pillar: proof
-  title_ar: Value map API
-  body_ar: 'خريطة قيمة + expansion status.
+  surface: linkedin
+  pillar: build_proof
+  format: conversion_cta
+  title_ar: من Production Trust إلى Execution Diagnostic
+  body_ar: 'Build success أو HTTP 200 وحدهما لا يثبتان release صحيحًا.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: commercial-value-map
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w26-production-trust-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 27
   day: 0
-  pillar: founder_media
-  title_ar: 28 أسبوع محتوى
-  body_ar: '140 منشور — مسودة وموافقة.
+  surface: founder_linkedin
+  pillar: systems_automation
+  format: founder_pov
+  title_ar: 'Private SaaS Readiness: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'Multi-tenant productization يأتي بعد proof متكرر وحدود tenant واضحة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: social-28-weeks
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w27-private-saas-readiness-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 27
   day: 1
-  pillar: proof
-  title_ar: حزم 10 اجتماعات
-  body_ar: 'prepare_soft_launch_meetings --top-n 10.
+  surface: company_linkedin
+  pillar: systems_automation
+  format: company_architecture
+  title_ar: Private SaaS Readiness داخل نموذج Dealix
+  body_ar: 'Multi-tenant productization يأتي بعد proof متكرر وحدود tenant واضحة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: ten-meeting-packs
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w27-private-saas-readiness-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 27
   day: 2
-  pillar: objection
-  title_ar: CRM حقيقي
-  body_ar: 'لا أرقام مخترعة في الأتمتة.
+  surface: linkedin
+  pillar: systems_automation
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Private SaaS Readiness
+  body_ar: 'Multi-tenant productization يأتي بعد proof متكرر وحدود tenant واضحة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: crm-kpi-only
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w27-private-saas-readiness-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 27
   day: 3
-  pillar: trust
-  title_ar: Dual track A/B
-  body_ar: 'مسار A للترويج · B للops حتى Proof.
+  surface: linkedin
+  pillar: systems_automation
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Private SaaS Readiness'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: gtm-dual-track
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w27-private-saas-readiness-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 27
   day: 4
-  pillar: proof
-  title_ar: TTV metrics
-  body_ar: 'من evidence CSV — شركات حقيقية.
+  surface: linkedin
+  pillar: systems_automation
+  format: conversion_cta
+  title_ar: من Private SaaS Readiness إلى Execution Diagnostic
+  body_ar: 'Multi-tenant productization يأتي بعد proof متكرر وحدود tenant واضحة.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: ttv-evidence-metrics
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w27-private-saas-readiness-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 28
   day: 0
-  pillar: founder_media
-  title_ar: إغلاق الحلقة
-  body_ar: 'Diagnostic → Proof → Sprint — شركة واحدة.
+  surface: founder_linkedin
+  pillar: build_proof
+  format: founder_pov
+  title_ar: 'Stop / Expand / Redesign: الفكرة التي يجب أن تتغير قبل أي أتمتة'
+  body_ar: 'نهاية أي Sprint ليست upsell تلقائيًا؛ الدليل يقرر الخطوة التالية.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: close-revenue-loop
+    في Dealix نبدأ من المشكلة الاقتصادية أو التشغيلية، ثم نحدد signal وowner وnext
+    action وproof قبل اختيار التقنية.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w28-stop---expand---redesign-1
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 28
   day: 1
-  pillar: proof
-  title_ar: Retainer لاحق
-  body_ar: 'Growth 2999 بعد Proof فقط.
+  surface: company_linkedin
+  pillar: build_proof
+  format: company_architecture
+  title_ar: Stop / Expand / Redesign داخل نموذج Dealix
+  body_ar: 'نهاية أي Sprint ليست upsell تلقائيًا؛ الدليل يقرر الخطوة التالية.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: retainer-after-proof
+    Dealix تعمل عبر Strategy & Transformation، Systems & Automation، Intelligence
+    & Market Access، وTrust/Governance/Proof. Dealix OS يدخل فقط عندما تكون طبقة تشغيل
+    مستمرة هي الحل المناسب.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w28-stop---expand---redesign-2
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 28
   day: 2
-  pillar: objection
-  title_ar: لا بناء قبل إيراد
-  body_ar: 'بوابة القيمة مفتوحة = Motion A.
+  surface: linkedin
+  pillar: build_proof
+  format: operator_playbook
+  title_ar: 5 أسئلة لتشخيص Stop / Expand / Redesign
+  body_ar: 'نهاية أي Sprint ليست upsell تلقائيًا؛ الدليل يقرر الخطوة التالية.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: no-build-article
+    1) ما الـsignal الحقيقي؟ 2) من يملك القرار؟ 3) ما الـnext action؟ 4) ما الـauthority؟
+    5) ما الـproof الذي يثبت الحركة؟'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w28-stop---expand---redesign-3
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 28
   day: 3
-  pillar: trust
-  title_ar: حوكمة كاملة
-  body_ar: 'SOAEN في كل لمسة ومنشور.
+  surface: linkedin
+  pillar: build_proof
+  format: truth_firewall
+  title_ar: 'Truth Firewall: Stop / Expand / Redesign'
+  body_ar: 'Research ≠ Relationship · Public contact ≠ Consent · Draft ≠ Sent · Quote
+    ≠ Payment · Demo ≠ Customer Proof.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: full-soaen-stack
+    السرعة الحقيقية تأتي من معرفة الدليل المطلوب للانتقال بين الحالات.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w28-stop---expand---redesign-4
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
 - week: 28
   day: 4
-  pillar: proof
-  title_ar: Dealix جاهز
-  body_ar: '200–250 pool · 28w · 4 Motions.
+  surface: linkedin
+  pillar: build_proof
+  format: conversion_cta
+  title_ar: من Stop / Expand / Redesign إلى Execution Diagnostic
+  body_ar: 'نهاية أي Sprint ليست upsell تلقائيًا؛ الدليل يقرر الخطوة التالية.
 
 
-    #Dealix #RevenueOps #السعودية'
-  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
-  aeo_slug: dealix-expansion-ready
+    لا تبدأ بشراء منصة جديدة. ابدأ بـworkflow واحد: baseline، owner، signal، action،
+    authority، proof. إذا لم نجد حالة قابلة للقياس نتوقف؛ وإذا وجدناها ننتقل إلى Qualified
+    Discovery ثم customer-specific scope.'
+  cta_ar: Execution Diagnostic → qualified discovery → customer-specific quote. لا
+    Checkout تلقائي ولا نشر أو إرسال خارجي تلقائي.
+  aeo_slug: w28-stop---expand---redesign-5
   status: draft
+  launch_authority: corporate_brand_gtm_v1
+  external_publish_allowed: false
+launch_authority: corporate_brand_gtm_v1
+content_model: verified_signal_to_channel_native_draft
+external_publish_allowed: false
