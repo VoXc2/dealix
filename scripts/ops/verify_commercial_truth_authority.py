@@ -5,8 +5,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import Counter
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from dealix.commercial.commercial_truth_authority import (
     CURRENT_AUTHORITY,
@@ -15,7 +20,6 @@ from dealix.commercial.commercial_truth_authority import (
     load_registry,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
 TEXT_SUFFIXES = {".md", ".json", ".yaml", ".yml", ".txt", ".html", ".ts", ".tsx"}
 SCAN_ROOTS = ("docs", "business", "config/company", "landing", "apps/web")
 

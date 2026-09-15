@@ -578,6 +578,36 @@ def test_execute_local_ai_honors_bounded_timeout_and_generation(tmp_path: Path, 
     assert captured["body"]["options"]["num_predict"] == 160
 
 
+def test_execute_local_ai_default_timeout_allows_cpu_cold_start(tmp_path: Path, monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class _Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return b'{"response":"ok"}'
+
+    def _urlopen(request, timeout):
+        captured["timeout"] = timeout
+        return _Response()
+
+    monkeypatch.setattr(factory.urllib.request, "urlopen", _urlopen)
+    job = factory.make_job(
+        owner_agent="dealix-sales",
+        business_goal="cold-start-safe",
+        job_class="LOCAL_AI",
+        authority_level="L2",
+        modifying=False,
+        executor={"prompt": "brief"},
+    )
+    assert factory.execute_local_ai(job, tmp_path)["ok"] is True
+    assert captured["timeout"] == 60
+
+
 def test_execute_local_ai_caps_requested_bounds(tmp_path: Path, monkeypatch) -> None:
     captured: dict[str, object] = {}
 
@@ -995,6 +1025,40 @@ def test_orchestrator_fails_closed_when_daemon_down_without_opt_in(tmp_path: Pat
     assert result.get("daemon_unavailable") is True
 
 
+def test_orchestrator_recovers_from_aborted_daemon_timeout_with_cli(tmp_path: Path, monkeypatch) -> None:
+    _stub_opencode_env(
+        tmp_path, monkeypatch, selected_text=None, catalog=["opencode/muse-spark-1.3-contributor-free"]
+    )
+    monkeypatch.delenv("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK", raising=False)
+
+    monkeypatch.setattr(
+        factory,
+        "execute_opencode_daemon",
+        lambda *_args, **_kwargs: {
+            "ok": False,
+            "returncode": 124,
+            "stdout": "",
+            "stderr": "daemon-deadline-exceeded: session aborted",
+            "duration_s": 10,
+            "via": "daemon",
+            "session_id": "sess-timeout",
+            "model": "opencode/muse-spark-1.3-contributor-free",
+        },
+    )
+    captured: dict[str, object] = {}
+
+    def _capture(argv, cwd, timeout=600, env=None, stdin=None):
+        captured["argv"] = argv
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    result = factory.execute_opencode(_daemon_job(), tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert result["fallback_reason"] == "daemon-timeout-after-abort"
+    assert result["daemon_session_id"] == "sess-timeout"
+    assert captured["argv"][:3] == [str(tmp_path / "opencode"), "run", "--auto"]
+
+
 def test_orchestrator_cli_fallback_requires_explicit_opt_in(tmp_path: Path, monkeypatch) -> None:
     _stub_opencode_env(
         tmp_path, monkeypatch, selected_text=None, catalog=["opencode/muse-spark-1.3-contributor-free"]
@@ -1033,6 +1097,33 @@ def test_daemon_rejects_version_mismatch(tmp_path: Path, monkeypatch) -> None:
     result = factory.execute_opencode_daemon(_daemon_job(), tmp_path, model="opencode/x-free")
     assert result["ok"] is False
     assert result.get("daemon_unavailable") is True
+
+
+def test_daemon_idle_timeout_aborts_before_full_job_deadline(tmp_path: Path, monkeypatch) -> None:
+    routes = [
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("GET", "/message"), (200, {"messages": []})),
+        (("POST", "/session?"), (200, {"id": "sess-idle"})),
+        (("POST", "/abort"), (200, {})),
+    ]
+    fake = _FakeDaemonHTTP(routes)
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 300
+    result = factory.execute_opencode_daemon(
+        job,
+        tmp_path,
+        model="opencode/muse-spark-1.3-contributor-free",
+        timeout_s=2.0,
+        idle_timeout_s=0.05,
+        poll_interval=0.01,
+    )
+    assert result["ok"] is False
+    assert result["returncode"] == 124
+    assert "idle-timeout" in result["stderr"]
+    assert result["session_id"] == "sess-idle"
+    assert any("abort" in url for _method, url in fake.calls)
 
 
 def test_daemon_timeout_aborts_session(tmp_path: Path, monkeypatch) -> None:
