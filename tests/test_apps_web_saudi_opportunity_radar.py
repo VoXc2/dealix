@@ -54,3 +54,10 @@ def test_saudi_opportunity_radar_is_wired_into_commercial_navigation() -> None:
     assert 'href="/saudi-opportunity-radar"' in services
     assert "services_saudi_opportunity_radar" in services
     assert '{ path: "/saudi-opportunity-radar", priority: 0.9, changeFrequency: "weekly" }' in sitemap
+    assert 'path: "/proof-vault"' not in sitemap
+
+
+def test_saudi_opportunity_radar_does_not_link_to_internal_proof_vault() -> None:
+    text = RADAR.read_text(encoding="utf-8")
+    assert 'href="/proof-vault"' not in text
+    assert 'href="/cases"' in text

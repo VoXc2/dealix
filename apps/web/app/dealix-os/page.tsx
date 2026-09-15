@@ -18,7 +18,7 @@ export default function DealixOSPage() {
         </p>
         <div className="actions" style={{ justifyContent: "center" }}>
           <TrackedLink href="/book" ctaId="dealix_os_execution_diagnostic" surface="dealix_os_hero">ابدأ بمشكلة تشغيل واحدة</TrackedLink>
-          <TrackedLink href="/proof-vault" ctaId="dealix_os_to_proof" surface="dealix_os_hero">شاهد منهج الإثبات</TrackedLink>
+          <TrackedLink href="/cases" ctaId="dealix_os_to_proof" surface="dealix_os_hero">شاهد منهج الإثبات</TrackedLink>
         </div>
       </section>
 

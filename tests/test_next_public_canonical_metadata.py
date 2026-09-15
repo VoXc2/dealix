@@ -27,7 +27,6 @@ def test_static_public_routes_own_route_specific_canonicals() -> None:
         "cases/page.tsx": "/cases",
         "saudi-opportunity-radar/page.tsx": "/saudi-opportunity-radar",
         "safety/page.tsx": "/safety",
-        "proof-vault/page.tsx": "/proof-vault",
     }
     for file_name, canonical in routes.items():
         source = _read(file_name)
@@ -72,3 +71,10 @@ def test_every_reviewed_legacy_fixed_offer_surface_is_quarantined_by_redirect() 
     )
     for source in retired:
         assert f'{{ source: "{source}"' in config, source
+
+
+def test_internal_proof_vault_is_not_public_canonical() -> None:
+    source = _read("proof-vault/page.tsx")
+    assert 'canonical: "/proof-vault"' not in source
+    assert "index: false" in source
+    assert "follow: false" in source

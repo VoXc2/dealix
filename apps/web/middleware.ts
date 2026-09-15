@@ -10,7 +10,7 @@ const INTERNAL_PAGE_PREFIXES = [
   "/dashboard", "/data-room", "/delivery-workspace", "/growth-command-center",
   "/lead-engine", "/persuasion-room", "/product-network", "/quotes", "/revenue",
   "/revenue-machine", "/sales-agent", "/sales-agent-lab", "/sales-assets",
-  "/sales-machine", "/saudi-opportunity-radar", "/settings", "/client-portal",
+  "/sales-machine", "/settings", "/client-portal",
   "/daily-draft", "/sandbox", "/app", "/cmd-v2", "/dx3", "/iv4",
   "/rcmax", "/s9", "/t10", "/x5", "/z8", "/a14",
 ] as const;

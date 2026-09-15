@@ -29,6 +29,7 @@ export default function ServicesPage() {
         </p>
         <div className="actions" style={{ justifyContent: "center" }}>
           <Link href="/book">ابدأ Free Execution Diagnostic</Link>
+          <Link href="/saudi-opportunity-radar" data-cta-id="services_saudi_opportunity_radar">شاهد Saudi Opportunity Radar</Link>
           <Link href="/sectors">اختر قطاعك</Link>
         </div>
       </section>

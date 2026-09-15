@@ -64,7 +64,8 @@ def test_observed_internal_surfaces_are_fail_closed() -> None:
 
 def test_public_buying_and_trust_routes_remain_public() -> None:
     for path in ("/", "/book", "/pricing", "/services", "/cases", "/safety",
-                 "/agents", "/products", "/sectors", "/dealix-os", "/client-portal/demo"):
+                 "/agents", "/products", "/sectors", "/dealix-os", "/saudi-opportunity-radar",
+                 "/client-portal/demo"):
         assert not _guarded(path), path
 
 def test_pages_that_read_tracked_commercial_ledgers_are_guarded() -> None:
@@ -91,3 +92,20 @@ def test_founder_operational_contract_is_covered() -> None:
     }
     prefixes = set(_array("INTERNAL_PAGE_PREFIXES"))
     assert required <= prefixes
+
+def test_public_radar_and_internal_proof_vault_do_not_conflict() -> None:
+    assert not _guarded("/saudi-opportunity-radar")
+    assert not _guarded("/ar/saudi-opportunity-radar")
+    assert _guarded("/proof-vault")
+    assert _guarded("/en/proof-vault")
+
+
+def test_public_surfaces_do_not_link_to_internal_proof_vault() -> None:
+    public_files = [
+        ROOT / "apps/web/components/landing/InteractiveHome.tsx",
+        ROOT / "apps/web/app/dealix-os/page.tsx",
+        ROOT / "apps/web/app/ar/case-studies/page.tsx",
+        ROOT / "apps/web/app/saudi-opportunity-radar/page.tsx",
+    ]
+    for path in public_files:
+        assert 'href="/proof-vault"' not in path.read_text(encoding="utf-8"), path

@@ -30,7 +30,7 @@ export default function CaseStudiesPage() {
         </div>
         <div className="mt-8 flex flex-wrap gap-4">
           <Link
-            href="/proof-vault"
+            href="/cases"
             className="rounded-2xl bg-cyan-400 px-8 py-3 font-semibold text-[#06111f] hover:bg-cyan-300"
           >
             شاهد Proof Vault

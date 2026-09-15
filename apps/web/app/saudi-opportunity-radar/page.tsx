@@ -29,7 +29,7 @@ const signals = [
     who: "منشآت تجاوزت إيراداتها الخاضعة لضريبة القيمة المضافة 187,500 ر.س في أي من 2022–2025، وفق إعلان زاتكا، مع ضرورة التحقق من الإشعار الفعلي لكل منشأة.",
     diagnostic: "Free Fatoora applicability & readiness diagnostic: إشعار الموجة، وضع ERP/الفوترة، فجوات التكامل، evidence المطلوبة، وخارطة remediation أولية.",
     boundary: "لا رأي ضريبي أو شهادة امتثال أو ادعاء اعتماد من زاتكا. أي opinion تنظيمي متخصص يمر عبر جهة مؤهلة عند الحاجة.",
-    source: "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+    source: "https://zatca.gov.sa/ar/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
   },
   {
     authority: "CST",
@@ -38,7 +38,7 @@ const signals = [
     observed: "2026",
     deadline: "إشارة جاهزية حالية ضمن عام 2026",
     who: "شركات التقنية التي تحوّل AI من توجه استراتيجي إلى تشغيل داخلي أو حلول موجهة للعملاء أو AI agents.",
-    diagnostic: "Free AI readiness diagnostic عبر الأبعاد الواردة في الدليل: السياق، البيانات، البنية التحتية، المهارات والخبرات، والثقافة المؤسسية.",
+    diagnostic: "Free AI readiness diagnostic عبر الأبعاد الخمسة الواردة في الدليل: السياق، البيانات، البنية التحتية، المهارات والخبرات، والثقافة المؤسسية.",
     boundary: "تقييم جاهزية وهندسة أدلة، وليس certification أو ضمان نجاح مبادرة AI أو إثبات أن شركة بعينها تريد الشراء.",
     source: "https://www.cst.gov.sa/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
   },
@@ -165,7 +165,7 @@ export default function SaudiOpportunityRadarPage() {
           <TrackedLink href="/book?source=saudi-opportunity-radar-bottom" ctaId="saudi_radar_bottom_diagnostic" surface="saudi_opportunity_radar_bottom">
             ابدأ Free Execution Diagnostic
           </TrackedLink>
-          <TrackedLink href="/proof-vault" ctaId="saudi_radar_proof" surface="saudi_opportunity_radar_bottom">
+          <TrackedLink href="/cases" ctaId="saudi_radar_cases" surface="saudi_opportunity_radar_bottom">
             شاهد Proof Model
           </TrackedLink>
         </div>

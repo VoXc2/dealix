@@ -1,7 +1,10 @@
 import { loadDemoWorkspaces, loadWorkspaces } from "@/lib/client/portal";
 import { ProofTimeline } from "@/components/client/ProofTimeline";
 
-export const metadata = { title: "Proof Vault — Dealix" , alternates: { canonical: "/proof-vault" } };
+export const metadata = {
+  title: "Proof Vault — Dealix",
+  robots: { index: false, follow: false },
+};
 export const dynamic = "force-static";
 
 export default function ProofVaultPage() {
