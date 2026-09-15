@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import urllib.error
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -252,3 +253,39 @@ def test_api_identity_mismatch_is_hold() -> None:
         "api: provider receipt repository mismatch" in item
         for item in result["evidence_errors"]
     )
+
+
+def test_identity_probe_sends_canonical_trust_headers(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class Response:
+        status = 200
+        headers = {"Server": "cloudflare"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    def fake_urlopen(req, timeout):
+        captured["headers"] = {str(k).lower(): v for k, v in req.header_items()}
+        captured["timeout"] = timeout
+        return Response()
+
+    monkeypatch.setattr(MODULE.urllib.request, "urlopen", fake_urlopen)
+    status, server = MODULE._probe("https://api.example.test/healthz", method="GET", timeout=7.0)
+    assert status == 200
+    assert server == "cloudflare"
+    assert captured["headers"]["user-agent"] == "Dealix-Production-Trust/1.0"
+    assert captured["headers"]["accept"] == "application/json"
+    assert captured["timeout"] == 7.0
+
+
+def test_identity_probe_keeps_real_403_as_failure(monkeypatch) -> None:
+    def fake_urlopen(req, timeout):
+        raise urllib.error.HTTPError(req.full_url, 403, "Forbidden", None, None)
+
+    monkeypatch.setattr(MODULE.urllib.request, "urlopen", fake_urlopen)
+    status, _server = MODULE._probe("https://api.example.test/healthz", method="GET")
+    assert status == 403

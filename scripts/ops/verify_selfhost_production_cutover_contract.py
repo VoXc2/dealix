@@ -49,6 +49,7 @@ required = {
         "127.0.0.1:${DEALIX_SELFHOST_WEB_PORT",
         "127.0.0.1:${DEALIX_SELFHOST_INGRESS_PORT",
         "pgvector/pgvector:pg18",
+        "dealix-postgres-canary:/var/lib/postgresql",
         "GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}",
         'profiles: ["public-cutover"]',
         "${DEALIX_PUBLIC_HTTP_BIND:-127.0.0.1:18080}:80",
@@ -111,7 +112,7 @@ forbidden = {
     "legacy_backup": ["docker compose"],
     "legacy_health": ["docker compose"],
     # Canonical canary must never bind public ingress ports itself.
-    "canonical_compose": ['"80:80"', '"443:443"', "image: postgres:16"],
+    "canonical_compose": ['"80:80"', '"443:443"', "image: postgres:16", "dealix-postgres-canary:/var/lib/postgresql/data"],
     "cutover": ["railway up", "railway redeploy", "cloudflare", "aws route53"],
     # Backup must never leak the DB password through env/config/args.
     "backup_runner": ["-e PGPASSWORD"],

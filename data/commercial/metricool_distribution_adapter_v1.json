@@ -1,7 +1,7 @@
 {
   "schema": "dealix.metricool-distribution-adapter.v1",
-  "version": "2026-09-08.1",
-  "observed_at": "2026-09-08T05:52:00+03:00",
+  "version": "2026-09-15.1",
+  "observed_at": "2026-09-15T08:18:00+03:00",
   "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
   "canonical_truth_owner": "DEALIX_COMPANY_MACHINE",
   "purpose": "Bounded social analytics, draft review and distribution rendering for Dealix. Metricool is never CRM, consent authority, opportunity truth, proof truth, economic truth, approval authority or company brain.",
@@ -13,7 +13,8 @@
     "provider_readiness": "PROVIDERS_PENDING",
     "scheduled_posts_observed": 0,
     "analytics_schema_access": "AVAILABLE",
-    "review_capability": "UNPROVEN_UNTIL_PLAN_AND_PROVIDER_SUPPORT_ARE_VERIFIED"
+    "review_capability": "UNPROVEN_UNTIL_PLAN_AND_PROVIDER_SUPPORT_ARE_VERIFIED",
+    "observation_method": "connected Metricool control-plane read-only observation"
   },
   "supported_distribution_targets": [
     "dealix_linkedin_page",

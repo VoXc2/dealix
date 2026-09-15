@@ -2,7 +2,7 @@ import { DELIVERY_PIPELINE } from "@/lib/company-os/company-os";
 
 export const metadata = {
   title: "Delivery OS — Dealix",
-  description: "How Dealix delivers a real operating system to the client in 30 days, with proof, governance, and expansion.",
+  description: "How Dealix delivers a governed operating system through customer-specific stages, proof, governance, and evidence-based expansion.",
 };
 
 export default function DeliveryOsPage() {

@@ -133,3 +133,29 @@ def test_renderer_or_scheduler_cannot_become_truth_owner() -> None:
         "economic_truth",
     }
     assert policy["public_publish_still_action_bound"] is True
+
+
+def test_official_social_provider_readiness_is_explicit_and_fail_closed() -> None:
+    registry = _registry()
+    contract = registry["official_provider_contract"]
+    assert contract["authority"] == "READINESS_ONLY_NO_SEND_PUBLISH_OR_SPEND"
+    assert contract["runtime_truth"]["provider_connected_is_not_publish_authority"] is True
+
+    channels = registry["channels"]
+    linkedin = channels["dealix_linkedin_page"]
+    assert "w_organization_social" in linkedin["required_capabilities"]
+    assert linkedin["public_publish_gate"].startswith("EXACT_ACTION_BOUND")
+
+    tiktok = channels["tiktok"]
+    assert "approved_video.publish_scope" in tiktok["required_capabilities"]
+    assert "audit_pass_before_public_direct_post" in tiktok["activation_evidence_required"]
+    assert tiktok["ai_content_contract"]["provider_field"] == "post_info.is_aigc"
+
+    youtube = channels["youtube"]
+    assert "oauth_scope_youtube.upload" in youtube["required_capabilities"]
+    assert youtube["ai_content_contract"]["provider_field"] == "status.containsSyntheticMedia"
+
+    x = channels["x"]
+    assert "tweet.write" in x["required_capabilities"]
+    assert x["cost_contract"]["spend_default"] is False
+    assert x["cost_contract"]["credit_purchase_requires_separate_authority"] is True

@@ -48,10 +48,6 @@ FORBIDDEN_PATTERNS = [
 #                      We allow it here for now to avoid a destructive
 #                      unilateral copy change; it is tracked explicitly.
 ALLOWLIST: dict[str, dict[str, str]] = {
-    "ai-team.html": {
-        "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
-        "scraping": "doctrine negation ('no scraping' / policy-blocked)",
-    },
     "architecture.html": {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
         "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
@@ -77,10 +73,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
         "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
     },
-    "pricing.html": {
-        "cold": "doctrine negation ('لا cold WhatsApp ولا LinkedIn automation')",
-        "scraping": "doctrine negation ('لا scraping مخالف')",
-    },
     "subprocessors.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
@@ -88,10 +80,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "terms.html": {
         "cold": "doctrine negation ('لا cold WhatsApp أو mass LinkedIn automation')",
         "scraping": "doctrine negation ('لا scraping مخالف')",
-    },
-    "trust-center.html": {
-        "cold": "doctrine negation ('NO_COLD_WHATSAPP / لا Cold WhatsApp')",
-        "scraping": "doctrine negation ('لا Scraping مخالف')",
     },
     "webinar.html": {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",

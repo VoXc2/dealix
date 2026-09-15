@@ -8,32 +8,32 @@ const systems = [
   {
     title: "WhatsApp Revenue OS",
     desc: "تحويل واتساب من محادثات مشتتة إلى pipeline مبيعات ومتابعة وحجوزات وتقارير.",
-    price: "12,000–45,000 ريال إعداد",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
   {
     title: "Review Intelligence OS",
     desc: "تحويل التقييمات والشكاوى إلى قرارات تشغيلية وتقارير للإدارة والفروع.",
-    price: "10,000–35,000 ريال إعداد",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
   {
     title: "AI Business Command Center",
     desc: "غرفة قيادة تنفيذية تربط المبيعات، المتابعة، العروض، التقييمات، والتقارير.",
-    price: "75,000–180,000 ريال إعداد",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
   {
     title: "Brand Intelligence OS",
     desc: "توحيد الهوية، الرسائل، العروض، قوالب المحتوى، ونبرة العلامة عبر القنوات.",
-    price: "15,000–60,000 ريال إعداد",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
   {
     title: "AI Agent Workforce OS",
     desc: "تصميم agents داخل الشركة لأدوار واضحة مع صلاحيات وحدود ومراجعة بشرية.",
-    price: "40,000–180,000 ريال إعداد",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
   {
     title: "Custom Enterprise System",
     desc: "نظام مخصص حسب عمليات الشركة وبياناتها وفريقها وتكاملاتها.",
-    price: "180,000+ ريال",
+    price: "عرض مخصص بعد Qualified Discovery",
   },
 ];
 
@@ -56,7 +56,7 @@ export default function TransformationPage() {
 
         <div className="mt-10 flex flex-wrap gap-4">
           <a href="/ar/diagnostic-sprint" className="rounded-2xl bg-cyan-400 px-8 py-4 text-lg font-black text-[#06111f] hover:bg-cyan-300">
-            ابدأ بتشخيص مدفوع
+            ابدأ بالتشخيص التنفيذي المجاني
           </a>
           <a href="/ar/company-os" className="rounded-2xl border border-white/20 px-8 py-4 text-lg font-semibold hover:bg-white/10">
             شاهد نظام الشركة اليومي

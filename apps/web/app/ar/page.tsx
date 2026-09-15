@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Dealix — نظام الإيراد للشركات السعودية",
   description:
-    "Dealix يحوّل بيانات المبيعات والمتابعات إلى Revenue OS عملي خلال 5–7 أيام. تشخيص مدفوع، تشغيل شهري، غرفة قيادة تنفيذية.",
+    "Dealix يبدأ بـ Free Execution Diagnostic مجاني، ثم Qualified Discovery، ثم نطاق ومدة ومعايير قبول وعرض خاص بكل عميل.",
 };
 
 const pains = [
@@ -16,9 +16,9 @@ const pains = [
 const steps = [
   {
     num: "01",
-    title: "P1 — تشخيص سريع في أسبوع",
-    body: "نأخذ عينة من بياناتك ونسلّم Proof Pack: خريطة تسرب الإيراد، أفضل 20 فرصة للمتابعة، مسودات رسائل جاهزة.",
-    price: "3,500–15,000 ريال",
+    title: "P1 — Free Execution Diagnostic",
+    body: "نأخذ عينة من بياناتك ونبني خريطة المشكلة والأدلة والأولويات بدون بطاقة.",
+    price: "مجاني · بدون بطاقة",
     href: "/ar/p1",
     color: "border-cyan-400/40 bg-cyan-400/5",
     tag: "text-cyan-300",
@@ -26,9 +26,9 @@ const steps = [
   },
   {
     num: "02",
-    title: "P2 — تشغيل شهري بدون فريق",
+    title: "P2 — تشغيل مبيعات محكوم",
     body: "كل أسبوع: أولويات المتابعة، مسودات الرسائل، تحضير الاجتماعات، Scorecard قابل للقياس. أنت تراجع وترسل.",
-    price: "8,000–30,000 ريال/شهر",
+    price: "عرض مخصص بعد Qualified Discovery",
     href: "/ar/p2",
     color: "border-emerald-400/50 bg-emerald-400/10",
     tag: "text-emerald-300",
@@ -38,7 +38,7 @@ const steps = [
     num: "03",
     title: "P3 — غرفة قيادة تنفيذية",
     body: "الإيراد، القرارات، المخاطر، وProof Packs في مكان واحد. Weekly Decision Brief للمؤسس بدون اجتماع إضافي.",
-    price: "20,000–60,000 ريال إعداد",
+    price: "عرض مخصص بعد Qualified Discovery",
     href: "/ar/p3",
     color: "border-violet-400/40 bg-violet-400/5",
     tag: "text-violet-300",
@@ -49,7 +49,7 @@ const steps = [
 const differentiators = [
   {
     title: "نبدأ بإثبات القيمة",
-    body: "P1 هو تشخيص مدفوع خلال أسبوع — لا عقد شهري، لا التزام طويل، فقط نتيجة أولاً.",
+    body: "نبدأ بتشخيص تنفيذي مجاني بدون بطاقة. أي تدخل مدفوع يأتي فقط بعد Qualified Discovery وبنطاق ومدة وعرض خاص بالعميل.",
   },
   {
     title: "AI يكتب، أنت ترسل",
@@ -75,7 +75,7 @@ export default function ArabicHomePage() {
           Revenue OS للشركات السعودية
         </p>
         <h1 className="max-w-5xl text-4xl font-black leading-[1.15] md:text-7xl">
-          حوّل بيانات مبيعاتك إلى نظام إيراد واضح خلال أسبوع واحد.
+          حوّل بيانات مبيعاتك إلى نظام إيراد واضح يبدأ بإثبات مجاني.
         </h1>
         <p className="mt-7 max-w-3xl text-xl leading-9 text-slate-300">
           Dealix يأخذ pipeline المتوقف، والمتابعات العشوائية، والفرص الضائعة — ويحوّلها إلى أولويات واضحة، مسودات جاهزة، وقرارات موثّقة.
@@ -85,13 +85,13 @@ export default function ArabicHomePage() {
             href="/ar/p1"
             className="rounded-2xl bg-cyan-400 px-8 py-4 text-lg font-black text-[#06111f] hover:bg-cyan-300"
           >
-            ابدأ تشخيص P1 — أسبوع واحد
+            ابدأ التشخيص المجاني
           </a>
           <a
             href="/ar/pricing"
             className="rounded-2xl border border-white/20 px-8 py-4 text-lg font-semibold text-white hover:bg-white/10"
           >
-            الأسعار الكاملة
+            طريقة التعاقد
           </a>
           <a
             href="/ar/transformation"
@@ -174,7 +174,7 @@ export default function ArabicHomePage() {
         <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/5 p-10 md:p-14 text-center">
           <h2 className="text-3xl font-black md:text-4xl">جاهز تبدأ؟</h2>
           <p className="mt-4 text-lg text-slate-300">
-            P1 يبدأ خلال 24 ساعة من الاتفاق. لا عقد شهري. لا التزام طويل. فقط نتيجة.
+            ابدأ بالتشخيص التنفيذي المجاني. أي تدخل لاحق يحدد نطاقه ومدته وعرضه بعد Qualified Discovery.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a
@@ -201,7 +201,7 @@ export default function ArabicHomePage() {
             <a href="/ar/p1" className="hover:text-cyan-300">P1 تشخيص</a>
             <a href="/ar/p2" className="hover:text-emerald-300">P2 تشغيل شهري</a>
             <a href="/ar/p3" className="hover:text-violet-300">P3 قيادة تنفيذية</a>
-            <a href="/ar/pricing" className="hover:text-white">الأسعار</a>
+            <a href="/ar/pricing" className="hover:text-white">طريقة التعاقد</a>
             <a href="/ar/demo" className="hover:text-white">الديمو</a>
             <a href="/ar/zatca-readiness" className="hover:text-amber-300">ZATCA</a>
             <a href="mailto:hello@dealix.me" className="hover:text-white">تواصل معنا</a>

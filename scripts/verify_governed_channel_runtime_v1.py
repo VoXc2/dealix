@@ -207,6 +207,53 @@ def main() -> int:
         "canonical email registry weakened",
     )
 
+    provider_contract = registry.get("official_provider_contract", {})
+    require(
+        provider_contract.get("authority") == "READINESS_ONLY_NO_SEND_PUBLISH_OR_SPEND",
+        "social provider contract must remain readiness-only",
+    )
+    provider_truth = provider_contract.get("runtime_truth", {})
+    require(
+        provider_truth.get("provider_connected_is_not_publish_authority") is True,
+        "provider connectivity must not become publish authority",
+    )
+
+    org_linkedin = registry_channels.get("dealix_linkedin_page", {})
+    require(
+        "w_organization_social" in set(org_linkedin.get("required_capabilities", [])),
+        "LinkedIn organization publish permission contract missing",
+    )
+    tiktok = registry_channels.get("tiktok", {})
+    require(
+        {"approved_video.publish_scope", "target_user_authorization"}
+        <= set(tiktok.get("required_capabilities", [])),
+        "TikTok direct-post capability contract incomplete",
+    )
+    require(
+        "audit_pass_before_public_direct_post" in set(tiktok.get("activation_evidence_required", [])),
+        "TikTok public-post audit gate missing",
+    )
+    youtube = registry_channels.get("youtube", {})
+    require(
+        {"oauth_scope_youtube.upload", "videos.insert"}
+        <= set(youtube.get("required_capabilities", [])),
+        "YouTube upload capability contract incomplete",
+    )
+    require(
+        youtube.get("ai_content_contract", {}).get("provider_field") == "status.containsSyntheticMedia",
+        "YouTube synthetic-media disclosure contract missing",
+    )
+    x_channel = registry_channels.get("x", {})
+    require(
+        {"oauth_user_context", "tweet.write", "sufficient_api_credits_or_approved_cost_budget"}
+        <= set(x_channel.get("required_capabilities", [])),
+        "X user-write or cost authority contract incomplete",
+    )
+    require(
+        x_channel.get("cost_contract", {}).get("spend_default") is False,
+        "X paid API use must default deny",
+    )
+
     # Slack is allowed only as a bounded transport into the existing Company
     # Autopilot. The contract must point to source-controlled implementation and
     # keep all material authorities disabled until an end-to-end runtime receipt

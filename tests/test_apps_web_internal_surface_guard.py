@@ -88,10 +88,16 @@ def test_founder_operational_contract_is_covered() -> None:
     required = {
         "/crm", "/operator", "/review-queue", "/outreach-lab", "/followups",
         "/command-center", "/war-room", "/pipeline", "/kpi-finance", "/deals",
-        "/proof-vault", "/approvals", "/founder",
+        "/proof-vault", "/approvals", "/founder", "/hubspot-os", "/automated-sales",
     }
     prefixes = set(_array("INTERNAL_PAGE_PREFIXES"))
     assert required <= prefixes
+
+def test_internal_commercial_ops_api_prefixes_are_fail_closed() -> None:
+    prefixes = set(_array("INTERNAL_API_PREFIXES"))
+    assert "/api/hubspot-os" in prefixes
+    assert "/api/sales-machine" in prefixes
+
 
 def test_public_radar_and_internal_proof_vault_do_not_conflict() -> None:
     assert not _guarded("/saudi-opportunity-radar")
