@@ -9,6 +9,30 @@ from typing import Any
 
 from dealix.commercial_ops.paths import AGENCY_TARGETS_CSV
 
+REPLACE_PREFIX = "REPLACE:"
+GENERIC_COMPANY_PREFIXES = ("هدف استراتيجي " ,)
+
+
+def is_placeholder_target(row: dict[str, str]) -> bool:
+    """Return True for seed/template rows that do not represent a verified target."""
+    company = (row.get("company") or "").strip()
+    contact = (row.get("contact") or "").strip()
+    notes = (row.get("notes") or "").strip().lower()
+    if not company or company.startswith(REPLACE_PREFIX):
+        return True
+    if any(company.startswith(prefix) for prefix in GENERIC_COMPANY_PREFIXES):
+        return True
+    if contact.startswith(REPLACE_PREFIX):
+        return True
+    if "مثال تدريبي" in notes or "training" in notes or "placeholder" in notes:
+        return True
+    return False
+
+
+def real_targets(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    return [row for row in rows if not is_placeholder_target(row)]
+
+
 TARGET_FIELDS = (
     "company",
     "contact",
@@ -39,7 +63,7 @@ def build_war_room_today(
     top_n: int = 10,
 ) -> dict[str, Any]:
     """Rank targets for today's War Room (no scraping)."""
-    rows = targets if targets is not None else load_targets()
+    rows = real_targets(targets if targets is not None else load_targets())
     active_statuses = {
         "not_contacted",
         "message_drafted",

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnostic
+from dealix.commercial_ops.targeting_csv import is_placeholder_target, load_targets
 from dealix.commercial_ops.paths import (
     FOUNDER_BRIEFS_DIR,
     REPO_ROOT,
@@ -59,6 +60,7 @@ def build_value_map_status() -> dict[str, Any]:
     """Snapshot for founder commercial status from current launch authority."""
     pipeline = analyze_first_paid_diagnostic()
     agency_rows = _count_csv_rows(AGENCY_CSV)
+    agency_active_rows = len([row for row in load_targets(AGENCY_CSV) if not is_placeholder_target(row)])
     brief_date = _latest_brief_date()
 
     artifacts: dict[str, bool] = {
@@ -74,7 +76,9 @@ def build_value_map_status() -> dict[str, Any]:
         "generated_at": datetime.now(UTC).isoformat(),
         "brief_latest_date": brief_date,
         "agency_seed_rows": agency_rows,
-        "agency_seed_strict_ok": agency_rows >= 80,
+        "agency_active_rows": agency_active_rows,
+        "agency_placeholder_rows": max(0, agency_rows - agency_active_rows),
+        "agency_seed_strict_ok": agency_active_rows >= 80,
         "first_paid": pipeline,
         "artifacts": artifacts,
         # Compatibility key retained. The value is the current launch path,

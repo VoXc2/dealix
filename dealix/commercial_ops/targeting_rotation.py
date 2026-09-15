@@ -61,7 +61,7 @@ def select_daily_p0_targets(
     on_date: date | None = None,
 ) -> list[dict[str, str]]:
     """Pick today's P0 accounts: priority, status, cooldown since last touch."""
-    from dealix.commercial_ops.targeting_csv import load_targets
+    from dealix.commercial_ops.targeting_csv import is_placeholder_target, load_targets
 
     pool = rows if rows is not None else load_targets(AGENCY_TARGETS_CSV)
     today = on_date or datetime.now(UTC).date()
@@ -70,6 +70,8 @@ def select_daily_p0_targets(
 
     eligible: list[dict[str, str]] = []
     for row in pool:
+        if is_placeholder_target(row):
+            continue
         st = (row.get("status") or "not_contacted").strip().lower()
         if st in CLOSED:
             continue

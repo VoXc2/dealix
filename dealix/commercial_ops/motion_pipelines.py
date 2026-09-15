@@ -8,7 +8,7 @@ from typing import Any
 from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnostic
 from dealix.commercial_ops.motion_a_pipeline import STATUS_NEXT_AR, _stage_for_status
 from dealix.commercial_ops.outreach_drafts import attach_outreach_drafts
-from dealix.commercial_ops.targeting_csv import build_war_room_today, load_targets
+from dealix.commercial_ops.targeting_csv import build_war_room_today, is_placeholder_target, load_targets
 from dealix.commercial_ops.targeting_rotation import select_daily_p0_targets
 
 MOTION_META: dict[str, dict[str, Any]] = {
@@ -92,7 +92,7 @@ def build_motion_pipeline_plan(*, motion: str, top_n: int = 5) -> dict[str, Any]
         "first_paid": paid,
         "focus_ar": focus_ar,
         "targets": targets_out,
-        "pool_size": len([r for r in load_targets() if (r.get("motion") or "A").upper() == m]),
+        "pool_size": len([r for r in load_targets() if not is_placeholder_target(r) and (r.get("motion") or "A").upper() == m]),
         "doc_path": meta.get("doc"),
     }
 
