@@ -78,6 +78,11 @@ def test_run_job_revalidates_direct_entry_before_execution(tmp_path: Path, monke
     assert outcome["reason"] == "canonical-admission-rejected"
     assert any("OWNER_AGENT" in error for error in outcome["errors"])
     assert called is False
+    assert job["STATUS"] == "BLOCKED"
+    persisted = factory.read_json(factory.job_path(tmp_path, job["JOB_ID"]), {})
+    assert persisted["STATUS"] == "BLOCKED"
+    snapshot = factory.read_json(factory.queue_path(tmp_path), {})
+    assert snapshot["counts"]["BLOCKED"] == 1
     assert factory.read_lease(tmp_path, job["JOB_ID"]) is None
 
 
@@ -768,6 +773,16 @@ def test_create_worktree_requires_live_base_for_modifying(tmp_path: Path) -> Non
     bogus = factory.create_worktree(job, repo_root=repo, worktree_root=tmp_path / "wt")
     assert bogus["ok"] is False
     assert bogus["reason"] == "live-base-unresolvable"
+
+
+def test_frozen_release_default_has_no_baked_historical_sha() -> None:
+    source = (ROOT / "scripts/ops/session_factory.py").read_text(encoding="utf-8")
+    assert "8bb0a6c382c49ca288f7b579cae07676f006e229" not in source
+    expected = subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+        capture_output=True, text=True, check=True,
+    ).stdout.strip()
+    assert factory.resolve_source_checkout_sha(ROOT) == expected
 
 
 def test_make_job_withholds_frozen_base_for_modifying(monkeypatch) -> None:

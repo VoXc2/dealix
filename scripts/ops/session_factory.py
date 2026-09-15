@@ -33,8 +33,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import pwd
 import pathlib
+import pwd
 import re
 import shutil
 import subprocess
@@ -64,7 +64,30 @@ from model_cost_policy import (
 REPO_ROOT = Path(__file__).resolve().parents[2]
 STATE_DIR = Path(os.environ.get("DEALIX_SESSION_FACTORY_STATE", "/opt/dealix/control/state/session_factory"))
 WORKTREE_ROOT = Path(os.environ.get("DEALIX_SESSION_FACTORY_WORKTREES", "/opt/dealix/worktrees/auto"))
-FROZEN_RELEASE_SHA = os.environ.get("DEALIX_FROZEN_RELEASE_SHA", "8bb0a6c382c49ca288f7b579cae07676f006e229")
+
+
+def resolve_source_checkout_sha(repo_root: pathlib.Path | str | None = None) -> str | None:
+    """Resolve the SHA of the source checkout executing this factory."""
+    repo = pathlib.Path(repo_root or REPO_ROOT)
+    git = shutil.which("git")
+    if not git:
+        return None
+    try:
+        result = subprocess.run(
+            [git, "-C", str(repo), "rev-parse", "--verify", "HEAD^{commit}"],
+            capture_output=True, text=True, timeout=10, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    sha = result.stdout.strip()
+    return sha if result.returncode == 0 and re.fullmatch(r"[0-9a-f]{40}", sha) else None
+
+
+FROZEN_RELEASE_SHA = (
+    os.environ.get("DEALIX_FROZEN_RELEASE_SHA", "").strip()
+    or resolve_source_checkout_sha()
+    or "UNRESOLVED"
+)
 
 def resolve_live_base_sha(repo_root: pathlib.Path | str | None = None) -> str | None:
     """Resolve the exact live base for autonomous jobs, or None.
@@ -241,13 +264,13 @@ STATES = (
 TERMINAL_STATES = frozenset({"SUCCEEDED", "FAILED", "SUPERSEDED", "CANCELLED"})
 
 ALLOWED_TRANSITIONS: dict[str, set[str]] = {
-    "QUEUED": {"READY", "WAITING_L5", "CANCELLED", "SUPERSEDED"},
+    "QUEUED": {"READY", "BLOCKED", "WAITING_L5", "CANCELLED", "SUPERSEDED"},
     "READY": {"CLAIMED", "BLOCKED", "CANCELLED", "SUPERSEDED"},
     "CLAIMED": {"RUNNING", "BLOCKED", "RECOVERABLE", "FAILED", "CANCELLED"},
     "RUNNING": {"VERIFYING", "FAILED", "RECOVERABLE", "BLOCKED", "WAITING_L5", "CANCELLED"},
     "VERIFYING": {"SUCCEEDED", "FAILED", "RECOVERABLE", "BLOCKED"},
     "FAILED": {"RECOVERABLE", "BLOCKED", "CANCELLED"},
-    "RECOVERABLE": {"READY", "FAILED", "CANCELLED"},
+    "RECOVERABLE": {"READY", "BLOCKED", "FAILED", "CANCELLED"},
     "BLOCKED": {"READY", "CANCELLED"},
     "WAITING_L5": {"READY", "CANCELLED"},
     "SUCCEEDED": set(),
@@ -1826,9 +1849,25 @@ def run_job(
     """Execute one READY job through launch -> verify -> record -> cleanup."""
     errors = validate_job(job)
     if errors:
+        previous = job.get("STATUS")
+        terminal = "BLOCKED" if can_transition(previous, "BLOCKED") else "FAILED"
+        if can_transition(previous, terminal):
+            transition(job, terminal, reason="canonical-admission-rejected: " + "; ".join(errors))
+        save_job(root, job)
+        append_ledger(
+            root,
+            {
+                "event": "job_admission_rejected",
+                "JOB_ID": job.get("JOB_ID"),
+                "from": previous,
+                "status": job.get("STATUS"),
+                "errors": errors,
+            },
+        )
+        write_queue_snapshot(root)
         return {
             "ok": False,
-            "status": "BLOCKED",
+            "status": job.get("STATUS", terminal),
             "reason": "canonical-admission-rejected",
             "errors": errors,
             "job": job,
