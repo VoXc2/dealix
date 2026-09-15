@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
+  alternates: { canonical: "/pricing" },
   title: "Engagement Path — Dealix",
   description:
     "Dealix تبدأ بـExecution Diagnostic، ثم Qualified Discovery وعرض خاص بالعميل، ثم Outcome Sprint وDealix Runtime عند ثبوت القيمة. لا سعر عام ولا Checkout عام.",

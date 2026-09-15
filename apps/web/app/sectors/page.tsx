@@ -4,6 +4,7 @@ import PageShell from "@/components/PageShell";
 import { capabilityById, sectorCatalog } from "@/lib/public-catalog";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/sectors" },
   title: "القطاعات — Dealix",
   description: "حلول Dealix المخصصة لقطاعات السعودية: الحكومة، البناء، الصناعة، اللوجستيات، الطاقة، التعدين، العقار، الصحة، المالية، التجزئة، السياحة، التقنية وغيرها.",
 };

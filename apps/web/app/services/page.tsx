@@ -4,6 +4,7 @@ import PageShell from "@/components/PageShell";
 import { capabilityCatalog } from "@/lib/public-catalog";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/services" },
   title: "الخدمات والحلول — Dealix",
   description: "خدمات Dealix للشركات السعودية: استراتيجية وتحول، AI agents، أتمتة، إيراد، عملاء، بيانات، معرفة، تكاملات، حوكمة، جاهزية أمنية، Fatoora، سوق وشركاء وDealix OS.",
 };

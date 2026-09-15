@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/saudi-opportunity-radar" },
   title: "Saudi Opportunity Radar | Dealix",
   description:
     "Fresh Saudi regulatory and market signals translated into evidence-governed B2B diagnostics. Public signals are research, not buyer intent or customer proof.",

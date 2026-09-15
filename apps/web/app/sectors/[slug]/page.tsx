@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const sector = sectorBySlug[slug];
   if (!sector) return {};
   return {
+    alternates: { canonical: `/sectors/${slug}` },
     title: `${sector.nameAr} — حلول Dealix`,
     description: `حلول Dealix لقطاع ${sector.nameAr}: ${sector.focus}`,
   };

@@ -81,7 +81,7 @@ def test_book_page_is_inbound_execution_diagnostic_with_evidence_first_truth() -
     assert "لا يتم اعتبار المشكلة أو العائد أو Proof مثبتًا من مجرد التسجيل" in text
     assert "هذه الصفحة قناة inbound" in text
     assert "لا تعتبر رقمًا أو بريدًا عامًا موافقة على مراسلات تسويقية" in text
-    assert "شبكة Dealix الوكيلة المحكومة" in text
+    assert "لا تحول Research أو Draft أو Diagnostic hypothesis إلى علاقة أو إرسال فعلي أو Customer Proof" in text
     assert "Dealix الخمسة" not in text
 
     for forbidden in ("سعر ثابت", "نضمن ROI", "public checkout", "auto-send"):

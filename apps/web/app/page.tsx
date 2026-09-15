@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import { InteractiveHome } from "@/components/landing/InteractiveHome";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "sami.assiri11@gmail.com";
 
 const structuredData = {

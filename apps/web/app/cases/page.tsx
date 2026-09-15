@@ -1,6 +1,7 @@
 import { SECTOR_DIAGNOSTIC_CATALOG } from "@/lib/sales-machine/sector-diagnostic-catalog";
 
 export const metadata = {
+  alternates: { canonical: "/cases" },
   title: "Sector Diagnostics — Dealix",
   description: "Evidence-bound diagnostic plays across 20 sectors, from economic problem to governed execution.",
 };

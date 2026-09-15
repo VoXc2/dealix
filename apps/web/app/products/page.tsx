@@ -3,6 +3,7 @@ import Link from "next/link";
 import PageShell from "@/components/PageShell";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/products" },
   title: "المنتجات والـRuntime — Dealix",
   description: "Dealix OS ومنتجات تشغيلية قابلة للتركيب حول Company Brain والإيراد والتسليم والحوكمة والذكاء والتكاملات، بنطاق خاص بكل عميل.",
 };

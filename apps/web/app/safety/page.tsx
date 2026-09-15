@@ -1,7 +1,7 @@
 import { CircuitBreakerTable } from "@/components/safety/CircuitBreakerTable";
 import { KillSwitchPanel } from "@/components/safety/KillSwitchPanel";
 
-export const metadata = { title: "Runtime Safety — Dealix" };
+export const metadata = { title: "Runtime Safety — Dealix" , alternates: { canonical: "/safety" } };
 
 const breakers = [
   { key: "whatsapp-send", state: "closed", lastTriggeredAt: "2026-05-14T08:00:00Z" },
