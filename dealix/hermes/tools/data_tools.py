@@ -336,10 +336,12 @@ async def generate_data_passport(tenant_id: str) -> dict[str, Any]:
         "aggregate_dq_score": 78,
         "pii_sources_count": 1,
         "total_record_count": 1_590,
-        "governance_flags": [],
-        "pdpl_compliant": True,
+        "governance_flags": ["synthetic_example_data", "pdpl_attestation_not_proven"],
+        "data_mode": "synthetic_example",
+        "pdpl_assurance_status": "CONTROL_IMPLEMENTED_NOT_ATTESTED",
+        "pdpl_compliance_certified": False,
         "retention_policy": "project_duration",
-        "last_audit_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+        "last_audit_date": None,
     }
 
     logger.info("data_passport_generated", tenant_id=tenant_id)

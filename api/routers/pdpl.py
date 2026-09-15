@@ -3,7 +3,7 @@ PDPL Compliance — API router.
 مسارات API للامتثال لنظام حماية البيانات الشخصية السعودي.
 
 Endpoints:
-  POST  /api/v1/pdpl/consent/request      — send consent request (email + WhatsApp)
+  POST  /api/v1/pdpl/consent/request      — prepare consent request payloads (no send)
   POST  /api/v1/pdpl/consent/grant        — record explicit consent grant
   POST  /api/v1/pdpl/consent/revoke       — record permanent consent revocation
   DELETE /api/v1/pdpl/data/{contact_id}   — erasure request (Art. 13, cascade soft-delete)
@@ -92,15 +92,16 @@ async def _write_audit(
 
 # ── Consent Request ────────────────────────────────────────────────────────
 
-@router.post("/consent/request", summary="Send PDPL consent request (email + WhatsApp)")
+@router.post("/consent/request", summary="Prepare PDPL consent request payloads (no send)")
 async def request_consent(
     payload: dict[str, Any] = Body(...),
     db: AsyncSession = Depends(get_db),
     user: Any = Depends(get_current_user),
 ) -> dict[str, Any]:
     """
-    Send a PDPL Art. 5 consent request via email and/or WhatsApp.
-    يرسل طلب موافقة PDPL عبر البريد الإلكتروني و/أو واتساب.
+    Prepare PDPL consent request payloads for email and/or WhatsApp.
+    This endpoint does not dispatch an external message.
+    يجهز طلب موافقة PDPL دون تنفيذ إرسال خارجي.
 
     Required: contact_id, tenant_id, purpose, consent_url
     Optional: contact_name, contact_email, contact_phone, locale
@@ -118,7 +119,11 @@ async def request_consent(
     if not contact_id or not consent_url:
         raise HTTPException(status_code=422, detail="contact_id and consent_url are required")
 
-    results: dict[str, Any] = {"contact_id": contact_id, "channels_queued": []}
+    results: dict[str, Any] = {
+        "contact_id": contact_id,
+        "channels_prepared": [],
+        "delivery_executed": False,
+    }
 
     # Email
     if contact_email:
@@ -137,12 +142,12 @@ async def request_consent(
             tenant_id=tenant_id,
             channel="email",
             purpose=purpose,
-            status="sent",
+            status="prepared",
             consent_url=consent_url,
             locale=locale,
         )
         db.add(req_record)
-        results["channels_queued"].append("email")
+        results["channels_prepared"].append("email")
         results["email_payload"] = email_payload
 
     # WhatsApp
@@ -160,21 +165,26 @@ async def request_consent(
             tenant_id=tenant_id,
             channel="whatsapp",
             purpose=purpose,
-            status="sent",
+            status="prepared",
             consent_url=consent_url,
             locale=locale,
         )
         db.add(req_record_wa)
-        results["channels_queued"].append("whatsapp")
+        results["channels_prepared"].append("whatsapp")
         results["whatsapp_message"] = wa_message
 
     await _write_audit(
         db, "pdpl.consent_request", "contact", contact_id, tenant_id,
-        diff={"purpose": purpose, "channels": results["channels_queued"]},
+        diff={
+            "purpose": purpose,
+            "channels": results["channels_prepared"],
+            "state": "prepared",
+            "delivery_executed": False,
+        },
     )
 
-    log.info("pdpl_consent_request_sent", contact_id=contact_id, purpose=purpose)
-    return {**results, "status": "queued", "pdpl_article": "Art. 5 — Lawful basis / consent"}
+    log.info("pdpl_consent_request_prepared", contact_id=contact_id, purpose=purpose)
+    return {**results, "status": "prepared", "pdpl_article": "Art. 5 — Lawful basis / consent"}
 
 
 @router.post("/consent/grant", summary="Record explicit consent grant (PDPL Art. 5)")
