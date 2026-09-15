@@ -31,6 +31,7 @@ The factory is deterministic and safe to run without any model provider.
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import math
 import os
@@ -43,6 +44,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -714,6 +716,23 @@ def governor_path(root: Path) -> Path:
     return root / "RESOURCE_GOVERNOR_STATE.json"
 
 
+def admission_lock_path(root: Path) -> Path:
+    return root / "SESSION_FACTORY_ADMISSION.lock"
+
+
+@contextmanager
+def admission_lock(root: Path):
+    """Serialize governor -> claim -> lease decisions across concurrent ticks."""
+    root.mkdir(parents=True, exist_ok=True)
+    path = admission_lock_path(root)
+    with open(path, "a+", encoding="utf-8") as handle:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
 def job_path(root: Path, job_id: str) -> Path:
     return jobs_dir(root) / f"{job_id}.json"
 
@@ -833,6 +852,7 @@ def acquire_lease(
     lease = {
         "schema": LEASE_SCHEMA,
         "JOB_ID": job["JOB_ID"],
+        "MODIFYING": bool(job.get("MODIFYING")),
         "WORKTREE": job.get("WORKTREE"),
         "FILES_OR_SCOPE": scope or ",".join(job.get("FILES_IN_SCOPE") or []) or "job",
         "OWNER": owner,
@@ -960,7 +980,13 @@ def compute_max_concurrent_deep(resources: dict[str, Any]) -> int:
 
 def governor_state(root: Path, resources: dict[str, Any] | None = None) -> dict[str, Any]:
     resources = resources or read_resources()
-    deep_active = sum(1 for lease in active_leases(root) if lease.get("JOB_ID") and not lease_expired(lease))
+    deep_active = sum(
+        1
+        for lease in active_leases(root)
+        if lease.get("JOB_ID")
+        and not lease_expired(lease)
+        and bool(lease.get("MODIFYING", True))
+    )
     max_deep = compute_max_concurrent_deep(resources)
     payload = {
         "schema": GOVERNOR_SCHEMA,
@@ -1978,6 +2004,7 @@ def run_job(
     repo_root: Path | None = None,
     worktree_root: Path | None = None,
     recover_expired: bool = False,
+    preclaimed: bool = False,
 ) -> dict[str, Any]:
     """Execute one READY job through launch -> verify -> record -> cleanup."""
     errors = validate_job(job)
@@ -2011,19 +2038,24 @@ def run_job(
 
     if job.get("STATUS") == "WAITING_L5":
         return {"ok": False, "status": "WAITING_L5", "reason": "L5 not auto-executed", "job": job}
-    if job.get("STATUS") not in ("READY", "RECOVERABLE", "QUEUED"):
+    runnable_states = ("CLAIMED",) if preclaimed else ("READY", "RECOVERABLE", "QUEUED")
+    if job.get("STATUS") not in runnable_states:
         return {"ok": False, "status": job.get("STATUS"), "reason": "not-runnable", "job": job}
-    if job.get("STATUS") in ("QUEUED", "RECOVERABLE"):
+    if not preclaimed and job.get("STATUS") in ("QUEUED", "RECOVERABLE"):
         transition(job, "READY", reason="admitted to run")
 
-    transition(job, "CLAIMED", reason=f"claimed by {owner}")
-    acquired, lease = acquire_lease(
-        root,
-        job,
-        owner=owner,
-        ttl_seconds=int(job.get("TIME_BUDGET") or 600) + 300,
-        reclaim_expired=recover_expired,
-    )
+    if preclaimed:
+        lease = read_lease(root, job["JOB_ID"])
+        acquired = bool(lease and not lease_expired(lease))
+    else:
+        transition(job, "CLAIMED", reason=f"claimed by {owner}")
+        acquired, lease = acquire_lease(
+            root,
+            job,
+            owner=owner,
+            ttl_seconds=int(job.get("TIME_BUDGET") or 600) + 300,
+            reclaim_expired=recover_expired,
+        )
     if not acquired:
         # CLAIMED cannot transition directly back to READY. Park the job in the
         # existing RECOVERABLE state so a later queue tick can legally admit it
@@ -2152,25 +2184,70 @@ def process_queue(
     repo_root: Path | None = None,
     worktree_root: Path | None = None,
 ) -> list[dict[str, Any]]:
-    """Promote and run READY jobs within the live deep-work resource budget."""
-    governor = governor_state(root)
-    available = int(governor["deep_wip_available"])
-    # ResourceGovernor is the hard upper bound: a caller limit may only reduce
-    # capacity, never escalate past it.
-    budget = available if limit is None else min(int(limit), available)
-    candidates = [
-        job
-        for job in all_jobs(root)
-        if job.get("STATUS") == "READY"
-    ]
-    candidates.sort(key=lambda item: -(item.get("PRIORITY") or 0))
+    """Run READY jobs with atomic admission across concurrent tick processes.
+
+    Only governor -> claim -> lease is serialized. Executor work runs outside
+    the lock, so separate ticks may fill live capacity without over-admitting.
+    """
     processed: list[dict[str, Any]] = []
-    for job in candidates:
-        if budget <= 0:
+    modifying_started = 0
+    attempted: set[str] = set()
+    while True:
+        claimed: dict[str, Any] | None = None
+        with admission_lock(root):
+            governor = governor_state(root)
+            available = int(governor["deep_wip_available"])
+            candidates = [
+                job
+                for job in all_jobs(root)
+                if job.get("STATUS") == "READY" and job["JOB_ID"] not in attempted
+            ]
+            candidates.sort(key=lambda item: -(item.get("PRIORITY") or 0))
+            for candidate in candidates:
+                if candidate.get("MODIFYING"):
+                    if available <= 0:
+                        continue
+                    if limit is not None and modifying_started >= max(0, int(limit)):
+                        continue
+                transition(
+                    candidate,
+                    "CLAIMED",
+                    reason=f"atomically admitted by {candidate.get('OWNER_AGENT', 'dealix-pm')}",
+                )
+                acquired, lease = acquire_lease(
+                    root,
+                    candidate,
+                    owner=candidate.get("OWNER_AGENT", "dealix-pm"),
+                    ttl_seconds=int(candidate.get("TIME_BUDGET") or 600) + 300,
+                )
+                if not acquired:
+                    reason = (lease or {}).get("reason", "LEASE_NOT_ACQUIRED")
+                    transition(candidate, "RECOVERABLE", reason=f"atomic admission lease not acquired: {reason}")
+                    save_job(root, candidate)
+                    append_ledger(
+                        root,
+                        {"event": "lease_contention", "JOB_ID": candidate["JOB_ID"], "reason": reason},
+                    )
+                    attempted.add(candidate["JOB_ID"])
+                    continue
+                save_job(root, candidate)
+                append_ledger(root, {"event": "job_atomically_admitted", "JOB_ID": candidate["JOB_ID"]})
+                claimed = candidate
+                attempted.add(candidate["JOB_ID"])
+                if candidate.get("MODIFYING"):
+                    modifying_started += 1
+                break
+        if claimed is None:
             break
-        if job.get("MODIFYING"):
-            budget -= 1
-        processed.append(run_job(root, job, repo_root=repo_root, worktree_root=worktree_root))
+        processed.append(
+            run_job(
+                root,
+                claimed,
+                repo_root=repo_root,
+                worktree_root=worktree_root,
+                preclaimed=True,
+            )
+        )
     return processed
 
 

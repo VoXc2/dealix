@@ -4,7 +4,9 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import multiprocessing
 import subprocess
+import time
 import urllib.parse
 from pathlib import Path
 
@@ -756,6 +758,57 @@ def test_process_queue_caller_limit_only_reduces(tmp_path: Path, monkeypatch) ->
     monkeypatch.setattr(factory, "run_job", _stub)
     factory.process_queue(tmp_path, limit=1)
     assert len(calls) == min(1, available)
+
+
+def test_read_only_lease_does_not_consume_deep_wip(tmp_path: Path) -> None:
+    job = _deterministic_job(modifying=False, business_goal="read only lease")
+    factory.submit_job(tmp_path, job)
+    acquired, _ = factory.acquire_lease(tmp_path, job, owner="dealix-pm")
+    assert acquired is True
+    state = factory.governor_state(
+        tmp_path,
+        resources={"mem_available_mb": 8192, "cpu_count": 4, "load1": 0, "load5": 0, "load15": 0, "disk_free_gb": 10},
+    )
+    assert state["deep_wip_active"] == 0
+
+
+def test_parallel_ticks_cannot_over_admit_modifying_jobs(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("DEALIX_DEEP_WIP_CEILING", "1")
+    marker_dir = tmp_path / "markers"
+    marker_dir.mkdir()
+    started = multiprocessing.get_context("fork").Event()
+
+    for index in range(2):
+        factory.submit_job(
+            tmp_path,
+            _deterministic_job(modifying=True, business_goal=f"parallel admission {index}"),
+        )
+
+    def _stub(_root, job, **_kwargs):
+        (marker_dir / job["JOB_ID"]).write_text("ran", encoding="utf-8")
+        started.set()
+        time.sleep(0.5)
+        return {"ok": True, "status": "SUCCEEDED", "job": job}
+
+    monkeypatch.setattr(factory, "run_job", _stub)
+
+    def _tick() -> None:
+        factory.process_queue(tmp_path, limit=1)
+
+    ctx = multiprocessing.get_context("fork")
+    first = ctx.Process(target=_tick)
+    second = ctx.Process(target=_tick)
+    first.start()
+    assert started.wait(timeout=2)
+    second.start()
+    second.join(timeout=3)
+    first.join(timeout=3)
+    assert first.exitcode == 0
+    assert second.exitcode == 0
+    assert len(list(marker_dir.iterdir())) == 1
+    active = [lease for lease in factory.active_leases(tmp_path) if not factory.lease_expired(lease)]
+    assert len(active) == 1
+    assert active[0]["MODIFYING"] is True
 
 
 def test_execute_opencode_rejects_stale_nonfree_selected_model(tmp_path: Path, monkeypatch) -> None:
