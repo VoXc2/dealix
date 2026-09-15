@@ -4,7 +4,10 @@ import { InteractiveHome } from "@/components/landing/InteractiveHome";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    languages: { "ar-SA": "/", "en-SA": "/en", "x-default": "/" },
+  },
 };
 const companyContactEmail = process.env.NEXT_PUBLIC_COMPANY_CONTACT_EMAIL?.trim();
 

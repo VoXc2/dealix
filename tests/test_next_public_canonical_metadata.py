@@ -15,11 +15,14 @@ def test_root_layout_does_not_force_home_canonical_on_every_route() -> None:
 
 def test_home_owns_the_root_canonical() -> None:
     home = _read("page.tsx")
-    assert 'alternates: { canonical: "/" }' in home
+    assert 'canonical: "/"' in home
+    assert '"ar-SA": "/"' in home
+    assert '"en-SA": "/en"' in home
 
 
 def test_static_public_routes_own_route_specific_canonicals() -> None:
     routes = {
+        "en/page.tsx": "/en",
         "services/page.tsx": "/services",
         "sectors/page.tsx": "/sectors",
         "products/page.tsx": "/products",

@@ -5,6 +5,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages: Array<{ path: string; priority: number; changeFrequency: "daily" | "weekly" | "monthly" }> = [
     { path: "", priority: 1.0, changeFrequency: "daily" },
+    { path: "/en", priority: 0.96, changeFrequency: "weekly" },
     { path: "/company", priority: 0.95, changeFrequency: "weekly" },
     { path: "/services", priority: 0.98, changeFrequency: "weekly" },
     { path: "/sectors", priority: 0.98, changeFrequency: "weekly" },

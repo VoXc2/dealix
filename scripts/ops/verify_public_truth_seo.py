@@ -9,7 +9,7 @@ BLOCKED_INTERNAL = [
     "/founder", "/sales-machine", "/revenue-machine", "/hubspot-os", "/daily-draft",
 ]
 REQUIRED_PUBLIC = [
-    "/company", "/services", "/sectors", "/products", "/dealix-os", "/book",
+    "/en", "/company", "/services", "/sectors", "/products", "/dealix-os", "/book",
     "/saudi-opportunity-radar", "/pricing", "/cases", "/safety",
 ]
 LEGACY_REDIRECTS = ["/pricing.html", "/academy.html", "/checkout.html"]
