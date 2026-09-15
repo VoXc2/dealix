@@ -1673,7 +1673,17 @@ def execute_opencode(
     model, hold = _resolve_opencode_model(job)
     if hold is not None:
         return hold
-    daemon = execute_opencode_daemon(job, cwd, model=model)
+    executor = job.get("EXECUTOR") if isinstance(job.get("EXECUTOR"), dict) else {}
+    raw_idle_timeout = executor.get("idle_timeout_s")
+    idle_timeout_s: float | None = None
+    if raw_idle_timeout is not None:
+        try:
+            parsed_idle_timeout = float(raw_idle_timeout)
+        except (TypeError, ValueError):
+            parsed_idle_timeout = 0.0
+        if parsed_idle_timeout > 0:
+            idle_timeout_s = parsed_idle_timeout
+    daemon = execute_opencode_daemon(job, cwd, model=model, idle_timeout_s=idle_timeout_s)
     # OpenCode 1.18.x can leave a healthy loopback daemon session running
     # without a terminal assistant message until the bounded deadline. The
     # daemon executor aborts that session before returning 124, so a same-model

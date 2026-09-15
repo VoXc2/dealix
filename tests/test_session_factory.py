@@ -1214,6 +1214,38 @@ def test_run_job_rechecks_live_base_after_executor_before_acceptance(tmp_path: P
     assert job["RESULT"]["acceptance"]["passed"] is False
 
 
+def test_orchestrator_forwards_job_idle_timeout_to_daemon(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job()
+    job["EXECUTOR"]["idle_timeout_s"] = 180
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    captured: dict[str, object] = {}
+
+    def _daemon(*_args, **kwargs):
+        captured.update(kwargs)
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "via": "daemon"}
+
+    monkeypatch.setattr(factory, "execute_opencode_daemon", _daemon)
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert captured["idle_timeout_s"] == 180.0
+
+
+def test_orchestrator_ignores_invalid_job_idle_timeout(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job()
+    job["EXECUTOR"]["idle_timeout_s"] = "not-a-number"
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    captured: dict[str, object] = {}
+
+    def _daemon(*_args, **kwargs):
+        captured.update(kwargs)
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "via": "daemon"}
+
+    monkeypatch.setattr(factory, "execute_opencode_daemon", _daemon)
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert captured["idle_timeout_s"] is None
+
+
 def test_modifying_daemon_timeout_never_falls_back_to_cli(tmp_path: Path, monkeypatch) -> None:
     job = _daemon_job(modifying=True)
     monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
