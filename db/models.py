@@ -888,11 +888,11 @@ class UserInviteRecord(Base):
 
 class ConsentRequestRecord(Base):
     """
-    Tracks PDPL consent request dispatches (email + WhatsApp).
+    Tracks PDPL consent request preparation and verified dispatch state.
     سجل إرسال طلبات الموافقة وفق المادة الخامسة من نظام PDPL.
 
-    One record per (contact_id × channel × purpose) dispatch.
-    Enables audit of when consent was requested and via which channel.
+    One record per (contact_id × channel × purpose) request preparation.
+    A later authorized sender may promote state only from a delivery receipt.
     """
 
     __tablename__ = "consent_requests"
@@ -902,8 +902,8 @@ class ConsentRequestRecord(Base):
     tenant_id: Mapped[str] = mapped_column(String(64), index=True)
     channel: Mapped[str] = mapped_column(String(32), index=True)   # email | whatsapp | sms
     purpose: Mapped[str] = mapped_column(String(64), index=True)   # PDPL_PURPOSES constant
-    status: Mapped[str] = mapped_column(String(32), default="sent", index=True)
-    # sent | delivered | responded_grant | responded_revoke | expired
+    status: Mapped[str] = mapped_column(String(32), default="prepared", index=True)
+    # prepared | sent | delivered | responded_grant | responded_revoke | expired
     consent_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     locale: Mapped[str] = mapped_column(String(8), default="ar")
     responded_at: Mapped[datetime | None] = mapped_column(nullable=True)

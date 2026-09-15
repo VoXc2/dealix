@@ -77,8 +77,8 @@ class WeeklyReport:
         lines.append(f"- **HOT:** {lq.get('hot', 0)} | **WARM:** {lq.get('warm', 0)} | **COOL:** {lq.get('cool', 0)} | **COLD:** {lq.get('cold', 0)}")
         lines.append(f"- **Avg Score:** {lq.get('avg_score', 0):.1f}/100")
         lines.append(f"  - **متوسط النقاط:** {lq.get('avg_score', 0):.1f}/100")
-        lines.append(f"- **PDPL Compliant:** {lq.get('pdpl_compliant_pct', 0):.0f}%")
-        lines.append(f"  - **الامتثال لنظام PDPL:** {lq.get('pdpl_compliant_pct', 0):.0f}%")
+        lines.append(f"- **PDPL Policy Gate Coverage:** {lq.get('pdpl_compliant_pct', 0):.0f}%")
+        lines.append(f"  - **تغطية بوابات سياسة PDPL:** {lq.get('pdpl_compliant_pct', 0):.0f}%")
         lines.append("")
 
         # ── Content Performance ─────────────────────────────────────────
@@ -204,7 +204,8 @@ class WeeklyReportGenerator:
             "cool": cool,
             "cold": cold,
             "avg_score": float(d.get("avg_score", 0)),
-            "pdpl_compliant_pct": float(d.get("pdpl_compliant_pct", 100)),
+            "pdpl_compliant_pct": float(d.get("pdpl_compliant_pct", 0)),
+            "pdpl_metric_semantics": "policy_gate_coverage_not_legal_compliance",
             "label_ar": "جودة العملاء المحتملين",
             "label_en": "Lead Quality",
         }

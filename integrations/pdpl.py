@@ -16,7 +16,7 @@ Key PDPL Articles addressed:
   - Art. 13: Data subject right to erasure
   - Art. 14: Data portability
   - Art. 18: Audit trail requirements
-  - Art. 21: Data breach notification (72h to SDAIA)
+  - Implementing Regulations Art. 24: qualifying breach notification (72h)
   - Art. 25: Cross-border transfer restrictions
 
 Ref: SDAIA PDPL Implementing Regulations 2023
@@ -261,11 +261,11 @@ def build_monthly_audit_report(
     processing_activities: list[str],
 ) -> dict[str, Any]:
     """
-    Build a monthly PDPL compliance audit report.
-    يبني تقرير تدقيق الامتثال الشهري لـ PDPL.
+    Build a monthly PDPL control-evidence report.
+    This is operational evidence, not a compliance certification or legal attestation.
+    يبني تقرير أدلة الضوابط دون إصدار شهادة امتثال.
 
-    Required by SDAIA for data controllers — must be retained for 5 years.
-    Art. 18 — record-keeping obligation.
+    Retention and legal applicability must be verified for the specific controller.
     """
     total_audits = len(audit_records)
     action_counts: dict[str, int] = {}
@@ -301,27 +301,35 @@ def build_monthly_audit_report(
         "breach_incidents": breach_incidents,
         "processing_activities": processing_activities,
         "compliance_checklist": _compliance_checklist(),
-        "certifications": {
-            "pdpl_compliant": True,
-            "audit_trail_complete": total_audits > 0,
-            "consent_records_maintained": consent_stats.get("total_records", 0) > 0,
-            "erasure_capability": True,
+        "assurance": {
+            "assurance_status": "CONTROL_IMPLEMENTED_NOT_ATTESTED",
+            "pdpl_compliance_certified": False,
+            "audit_trail_evidence": "PRESENT" if total_audits > 0 else "NOT_PROVEN",
+            "consent_records_evidence": (
+                "PRESENT" if consent_stats.get("total_records", 0) > 0 else "NOT_PROVEN"
+            ),
+            "erasure_capability": "CONTROL_IMPLEMENTED_NOT_ATTESTED",
         },
     }
 
 
 def _compliance_checklist() -> list[dict[str, Any]]:
-    """Standard PDPL compliance checklist items."""
+    """Control checklist; implementation state is never a compliance attestation."""
+    implemented = "CONTROL_IMPLEMENTED_NOT_ATTESTED"
     return [
-        {"article": "Art. 5", "requirement": "Lawful basis documented", "status": "compliant"},
-        {"article": "Art. 6", "requirement": "Purpose limitation enforced", "status": "compliant"},
-        {"article": "Art. 10", "requirement": "Data minimization applied", "status": "compliant"},
-        {"article": "Art. 12", "requirement": "Accuracy controls in place", "status": "compliant"},
-        {"article": "Art. 13", "requirement": "Erasure capability operational", "status": "compliant"},
-        {"article": "Art. 14", "requirement": "Data portability endpoint available", "status": "compliant"},
-        {"article": "Art. 18", "requirement": "Audit trail maintained", "status": "compliant"},
-        {"article": "Art. 21", "requirement": "Breach notification procedure in place (72h to SDAIA)", "status": "compliant"},
-        {"article": "Art. 25", "requirement": "Cross-border transfer controls documented", "status": "review_required"},
+        {"article": "Art. 5", "requirement": "Lawful basis controls", "status": implemented},
+        {"article": "Art. 6", "requirement": "Purpose limitation controls", "status": implemented},
+        {"article": "Art. 10", "requirement": "Data minimization controls", "status": implemented},
+        {"article": "Art. 12", "requirement": "Accuracy controls", "status": implemented},
+        {"article": "Art. 13", "requirement": "Erasure capability", "status": implemented},
+        {"article": "Art. 14", "requirement": "Data portability capability", "status": implemented},
+        {"article": "Art. 18", "requirement": "Audit trail capability", "status": implemented},
+        {
+            "article": "Implementing Regulations Art. 24",
+            "requirement": "Qualifying breach notification procedure (72h threshold)",
+            "status": implemented,
+        },
+        {"article": "Art. 25", "requirement": "Cross-border transfer controls", "status": "REVIEW_REQUIRED"},
     ]
 
 
@@ -393,15 +401,16 @@ def build_breach_notification(
     mitigation_steps: list[str],
 ) -> dict[str, Any]:
     """
-    Build PDPL Art. 21 data breach notification package.
-    يبني حزمة إشعار خرق البيانات وفق المادة 21 من PDPL.
+    Prepare a breach-notification evidence package under Implementing Regulations Art. 24.
+    This function does not decide legal applicability and does not submit a notification.
+    يجهز حزمة أدلة إشعار تسرب البيانات دون تنفيذ الإشعار.
 
-    Must be reported to SDAIA within 72 hours of discovery.
+    The 72-hour rule applies when the Article 24 harm/rights threshold is met.
     """
     return {
         "notification_id": str(uuid.uuid4()),
         "notification_type": "PDPL_DATA_BREACH_NOTIFICATION",
-        "pdpl_article": "Art. 21 — Breach Notification (72h to SDAIA)",
+        "pdpl_article": "Implementing Regulations Art. 24 — Personal Data Breach Notification",
         "tenant_id": tenant_id,
         "generated_at": datetime.now(UTC).isoformat(),
         "breach": {
@@ -412,12 +421,17 @@ def build_breach_notification(
         },
         "mitigation": mitigation_steps,
         "notification_deadlines": {
-            "sdaia_notification_hours": 72,
-            "sdaia_portal": "https://sdaia.gov.sa",
-            "contact_subjects_required": estimated_subjects_count > 0,
+            "competent_authority_notification_hours": 72,
+            "applicability": "QUALIFYING_BREACH_ONLY",
+            "threshold": "potential_harm_or_conflict_with_data_subject_rights_or_interests",
+            "data_subject_notification": "REQUIRES_SEPARATE_ARTICLE_24_THRESHOLD_ASSESSMENT",
         },
-        "status": "draft",
-        "warning": "This notification must be reviewed by legal counsel before submission to SDAIA.",
+        "status": "prepared",
+        "submission_executed": False,
+        "warning": (
+            "Prepared package only. Applicability, threshold, competent authority, "
+            "and submission must be verified before any external action."
+        ),
     }
 
 
