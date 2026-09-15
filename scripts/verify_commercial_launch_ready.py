@@ -149,12 +149,12 @@ def check_paths() -> None:
 
 
 def check_targeting_rows() -> None:
-    from dealix.commercial_ops.targeting_csv import is_placeholder_target, load_targets
+    from dealix.commercial_ops.targeting_csv import load_targets
+    from dealix.commercial_ops.targeting_rotation import select_daily_p0_targets
 
     rows = load_targets()
-    real = [row for row in rows if not is_placeholder_target(row)]
     seed = len(rows)
-    eligible = len(real)
+    eligible = len(select_daily_p0_targets(rows, top_n=max(seed, 1)))
     if eligible:
         ok(f"targeting real_eligible={eligible} seed_inventory={seed}")
     else:
@@ -212,19 +212,14 @@ def check_social_queue() -> None:
 
 def check_war_room_build() -> None:
     from dealix.commercial_ops.outreach_drafts import attach_outreach_drafts
-    from dealix.commercial_ops.targeting_csv import (
-        build_war_room_today,
-        is_placeholder_target,
-        load_targets,
-    )
+    from dealix.commercial_ops.targeting_csv import build_war_room_today, load_targets
     from dealix.commercial_ops.targeting_rotation import select_daily_p0_targets
 
     source_rows = load_targets()
-    real_rows = [row for row in source_rows if not is_placeholder_target(row)]
     pool = select_daily_p0_targets(source_rows, top_n=10)
     pack = attach_outreach_drafts(build_war_room_today(pool, top_n=10))
     items = (pack.get("targets") or {}).get("items") or []
-    if not real_rows:
+    if not pool:
         if items:
             fail("war room promoted targets despite truthful empty eligible set")
         else:

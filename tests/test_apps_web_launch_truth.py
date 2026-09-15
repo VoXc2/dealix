@@ -98,6 +98,7 @@ def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
         '{ source: "/proof.html", destination: "/", permanent: true }',
         '{ source: "/workflow.html", destination: "/pricing", permanent: true }',
         '{ source: "/trust.html", destination: "/safety", permanent: true }',
+        '{ source: "/trust-center.html", destination: "/safety", permanent: true }',
         '{ source: "/services.html", destination: "/services", permanent: true }',
         '{ source: "/ai-team.html", destination: "/dealix-os", permanent: true }',
         '{ source: "/checkout.html", destination: "/pricing", permanent: true }',

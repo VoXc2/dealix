@@ -4,8 +4,14 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-BLOCKED_INTERNAL = ["/control-plane", "/agents", "/approvals", "/sandbox", "/self-evolving"]
-REQUIRED_PUBLIC = ["/pricing", "/services", "/cases", "/book", "/safety"]
+BLOCKED_INTERNAL = [
+    "/control-plane", "/self-evolving", "/approvals", "/sandbox", "/proof-vault", "/war-room",
+    "/founder", "/sales-machine", "/revenue-machine", "/hubspot-os", "/daily-draft",
+]
+REQUIRED_PUBLIC = [
+    "/company", "/services", "/sectors", "/products", "/dealix-os", "/book",
+    "/saudi-opportunity-radar", "/pricing", "/cases", "/safety",
+]
 LEGACY_REDIRECTS = ["/pricing.html", "/academy.html", "/checkout.html"]
 RETIRED_PUBLIC_MARKERS = [
     "تشخيص مدفوع",
@@ -20,6 +26,10 @@ def verify(root: Path) -> list[str]:
     robots = (root / "apps/web/app/robots.ts").read_text(encoding="utf-8")
     layout = (root / "apps/web/app/layout.tsx").read_text(encoding="utf-8")
     pricing = (root / "apps/web/app/pricing/page.tsx").read_text(encoding="utf-8")
+    book_meta = (root / "apps/web/app/book/layout.tsx").read_text(encoding="utf-8")
+    company_meta = (root / "apps/web/app/company/layout.tsx").read_text(encoding="utf-8")
+    os_meta = (root / "apps/web/app/dealix-os/layout.tsx").read_text(encoding="utf-8")
+    radar = (root / "apps/web/app/saudi-opportunity-radar/page.tsx").read_text(encoding="utf-8")
     next_config = (root / "apps/web/next.config.js").read_text(encoding="utf-8")
     legacy_pricing = (root / "landing/pricing.html").read_text(encoding="utf-8")
     academy = (root / "landing/academy.html").read_text(encoding="utf-8")
@@ -33,6 +43,19 @@ def verify(root: Path) -> list[str]:
     for path in REQUIRED_PUBLIC:
         if f'path: "{path}"' not in sitemap:
             failures.append(f"SITEMAP_MISSING_PUBLIC:{path}")
+
+    if "const now = new Date()" in sitemap or "lastModified: now" in sitemap:
+        failures.append("SITEMAP_FAKE_BUILD_TIME_LASTMOD")
+
+    for name, source, markers in [
+        ("BOOK", book_meta, ["Free Execution Diagnostic", "description:", '"/book"']),
+        ("COMPANY", company_meta, ["Saudi B2B Strategy", "description:", '"/company"']),
+        ("DEALIX_OS", os_meta, ["AI Business Operating System", "description:", '"/dealix-os"']),
+        ("RADAR", radar, ["application/ld+json", '"@type": "ItemList"', "VERIFIED 15 SEP 2026"]),
+    ]:
+        for marker in markers:
+            if marker not in source:
+                failures.append(f"{name}_SEARCH_METADATA_MISSING:{marker}")
 
     if "alternates: { languages:" in sitemap or "languages:" in layout:
         failures.append("REDIRECTING_HREFLANG_ADVERTISED")

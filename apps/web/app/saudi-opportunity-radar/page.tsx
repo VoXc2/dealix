@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Saudi Opportunity Radar | Dealix",
   description:
     "Fresh Saudi regulatory and market signals translated into evidence-governed B2B diagnostics. Public signals are research, not buyer intent or customer proof.",
+  openGraph: {
+    title: "Saudi Opportunity Radar | Dealix",
+    description: "Official-source Saudi signals translated into free evidence-governed diagnostics without turning research into buyer intent.",
+    url: "/saudi-opportunity-radar",
+    type: "website",
+  },
 };
 
 const signals = [
@@ -97,11 +103,29 @@ const signals = [
     boundary: "Dealix لا تمثل نفسها كمقدم Open Banking مرخص من SAMA؛ الدعم محصور في نطاق تقني غير مرخص وخلف شريك مناسب عند اللزوم.",
     source: "https://sama.gov.sa/en-US/MediaCenter/News/pages/news-1135.aspx",
   },
-] as const;
+ ] as const;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Dealix Saudi Opportunity Radar",
+  description: "Official-source Saudi market and regulatory signals mapped to free evidence-governed diagnostics.",
+  itemListElement: signals.map((signal, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: signal.title,
+    url: `https://dealix.me/saudi-opportunity-radar#${signal.id}`,
+  })),
+};
 
 export default function SaudiOpportunityRadarPage() {
   return (
     <main className="dx-corporate-page">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <section className="card dot-pattern" style={{ textAlign: "center" }}>
         <p className="eyebrow">SAUDI OPPORTUNITY RADAR · OFFICIAL-SOURCE FIRST</p>
         <h1>إشارات سعودية حديثة تتحول إلى تشخيص تجاري وتشغيلي — بدون اختراع طلب عميل.</h1>
@@ -119,7 +143,7 @@ export default function SaudiOpportunityRadarPage() {
       </section>
 
       <section className="card">
-        <p className="eyebrow">CURRENT OFFICIAL SIGNALS · VERIFIED 13 SEP 2026</p>
+        <p className="eyebrow">CURRENT OFFICIAL SIGNALS · VERIFIED 15 SEP 2026</p>
         <h2>{signals.length} إشارات عامة قابلة للتحويل إلى readiness work واضح — لا إلى pipeline تلقائي.</h2>
         <div className="cards" style={{ marginTop: "var(--sp-5)" }}>
           {signals.map((signal) => (

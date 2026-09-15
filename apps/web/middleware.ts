@@ -12,7 +12,7 @@ const INTERNAL_PAGE_PREFIXES = [
   "/lead-engine", "/hubspot-os", "/automated-sales", "/persuasion-room", "/product-network", "/quotes", "/revenue",
   "/revenue-machine", "/sales-agent", "/sales-agent-lab", "/sales-assets",
   "/sales-machine", "/settings", "/client-portal",
-  "/daily-draft", "/sandbox", "/app", "/cmd-v2", "/dx3", "/iv4",
+  "/daily-draft", "/sandbox", "/self-evolving", "/app", "/cmd-v2", "/dx3", "/iv4",
   "/rcmax", "/s9", "/t10", "/x5", "/z8", "/a14",
 ] as const;
 

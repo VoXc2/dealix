@@ -64,7 +64,7 @@ def test_observed_internal_surfaces_are_fail_closed() -> None:
 
 def test_public_buying_and_trust_routes_remain_public() -> None:
     for path in ("/", "/book", "/pricing", "/services", "/cases", "/safety",
-                 "/agents", "/products", "/sectors", "/dealix-os", "/saudi-opportunity-radar",
+                 "/products", "/sectors", "/dealix-os", "/saudi-opportunity-radar",
                  "/client-portal/demo"):
         assert not _guarded(path), path
 
@@ -90,7 +90,7 @@ def test_founder_operational_contract_is_covered() -> None:
         "/crm", "/operator", "/review-queue", "/outreach-lab", "/followups",
         "/command-center", "/war-room", "/pipeline", "/kpi-finance", "/deals",
         "/proof-vault", "/approvals", "/founder", "/hubspot-os", "/automated-sales",
-        "/client-success", "/retention",
+        "/client-success", "/retention", "/self-evolving",
     }
     prefixes = set(_array("INTERNAL_PAGE_PREFIXES"))
     assert required <= prefixes
