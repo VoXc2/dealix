@@ -19,9 +19,9 @@ services:
       BASE_URL: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
       DEALIX_API_BASE: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
       CORS_ORIGINS: http://127.0.0.1:${DEALIX_SELFHOST_WEB_PORT:-13000}
-      DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
+      DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}
       DEALIX_ORCHESTRATOR_BACKEND: ${DEALIX_ORCHESTRATOR_BACKEND:-postgres}
-      DEALIX_ORCHESTRATOR_DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
+      DEALIX_ORCHESTRATOR_DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}
       EXTERNAL_SEND_ENABLED: "false"
       OUTBOUND_MODE: draft_only
       EMAIL_SEND_ENABLED: "false"
@@ -74,7 +74,8 @@ services:
     environment:
       POSTGRES_USER: dealix_canary
       POSTGRES_DB: dealix_canary
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: ${DEALIX_CANARY_POSTGRES_PASSWORD:-}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
     volumes:
       - dealix-postgres-canary:/var/lib/postgresql
     restart: unless-stopped

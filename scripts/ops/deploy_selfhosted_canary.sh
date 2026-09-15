@@ -39,8 +39,19 @@ export DEALIX_IMAGE_TAG="${CURRENT_SHA:0:12}"
 export COMPOSE_PROJECT_NAME="dealix-selfhost-${CURRENT_SHA:0:12}"
 export DEALIX_APP_ENV="${DEALIX_APP_ENV:-development}"
 export DEALIX_ORCHESTRATOR_BACKEND="${DEALIX_ORCHESTRATOR_BACKEND:-postgres}"
-export DEALIX_DATABASE_URL="${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}"
 
+if [[ "$USE_LOCAL_DB" == "1" ]]; then
+  : "${DEALIX_CANARY_POSTGRES_PASSWORD:?set DEALIX_CANARY_POSTGRES_PASSWORD for local-db canary}"
+  if ! [[ "$DEALIX_CANARY_POSTGRES_PASSWORD" =~ ^[A-Za-z0-9._~-]{16,128}$ ]]; then
+    echo "HOLD: DEALIX_CANARY_POSTGRES_PASSWORD must be 16-128 URL-safe unreserved characters" >&2
+    exit 64
+  fi
+  export DEALIX_DATABASE_URL="postgresql+asyncpg://dealix_canary:${DEALIX_CANARY_POSTGRES_PASSWORD}@postgres:5432/dealix_canary"
+else
+  : "${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL when local-db canary is disabled}"
+fi
+
+echo "CANARY_POSTGRES_PASSWORD_CONTRACT=PASS"
 docker compose -f "$COMPOSE_FILE" build --pull api web
 
 if [[ "$USE_LOCAL_DB" == "1" ]]; then
