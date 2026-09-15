@@ -59,6 +59,12 @@ def test_pg18_database_volume_uses_version_aware_parent_mount() -> None:
     assert 'profiles: ["local-db", "production-db"]' in text
 
 
+def test_canonical_compose_has_no_passwordless_database_fallback() -> None:
+    text = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
+    assert "dealix_canary@postgres" not in text
+    assert text.count("DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}") >= 1
+
+
 def test_pg18_canary_host_auth_requires_runtime_password() -> None:
     compose = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
     runner = (ROOT / "scripts/ops/deploy_selfhosted_canary.sh").read_text(encoding="utf-8")

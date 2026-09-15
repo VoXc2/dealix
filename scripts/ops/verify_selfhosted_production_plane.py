@@ -27,7 +27,7 @@ def main() -> int:
         "127.0.0.1:${DEALIX_SELFHOST_DB_PORT:-15432}:5432",
         "dealix-postgres-data:/var/lib/postgresql",
         "APP_ENV: ${DEALIX_APP_ENV:-development}",
-        "DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}",
+        "DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}",
         "GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}",
         "APP_SECRET_KEY: ${APP_SECRET_KEY:-}",
         "JWT_SECRET_KEY: ${JWT_SECRET_KEY:-}",
