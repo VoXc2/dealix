@@ -1283,6 +1283,7 @@ def execute_opencode_daemon(
     base_url: str | None = None,
     timeout_s: float | None = None,
     poll_interval: float = 2.0,
+    idle_timeout_s: float | None = None,
 ) -> dict[str, Any]:
     """Bounded headless execution against the existing loopback OpenCode daemon.
 
@@ -1368,14 +1369,43 @@ def execute_opencode_daemon(
     computed_deadline = started + max(30, min(budget, 1800))
     deadline = started + timeout_s if timeout_s is not None else computed_deadline
     interval = max(0.01, min(float(poll_interval or 2.0), 30.0))
+    explicit_idle_timeout = idle_timeout_s is not None
+    if idle_timeout_s is None:
+        try:
+            idle_timeout_s = float(os.environ.get("DEALIX_OPENCODE_DAEMON_IDLE_TIMEOUT_S", "45"))
+        except ValueError:
+            idle_timeout_s = 45.0
+    idle_floor = 0.01 if explicit_idle_timeout else 15.0
+    idle_timeout_s = max(idle_floor, min(float(idle_timeout_s), 300.0))
     last_text = ""
+    last_progress_at = now_epoch()
+    last_body = ""
     while now_epoch() < deadline:
         time.sleep(interval)
         status, body = _daemon_request(
             base, "GET", f"/session/{session_id}/message?directory={dir_query}", timeout=15
         )
         if status != 200 or not body:
+            if now_epoch() - last_progress_at >= idle_timeout_s:
+                _daemon_abort(base, session_id, dir_query)
+                full = last_text[:20000]
+                return {
+                    "ok": False,
+                    "returncode": 124,
+                    "stdout": redact(full),
+                    "stderr": "daemon-idle-timeout: session aborted after no observable progress",
+                    "stdout_full": full,
+                    "stderr_full": "daemon-idle-timeout",
+                    "duration_s": round(now_epoch() - started, 3),
+                    "via": "daemon",
+                    "session_id": session_id,
+                    "model": model,
+                    "idle_timeout_s": idle_timeout_s,
+                }
             continue
+        if body != last_body:
+            last_progress_at = now_epoch()
+            last_body = body
         try:
             payload = json.loads(body)
         except (json.JSONDecodeError, ValueError, TypeError):
@@ -1410,6 +1440,22 @@ def execute_opencode_daemon(
                 "session_id": session_id,
                 "model": model,
             }
+        if now_epoch() - last_progress_at >= idle_timeout_s:
+            _daemon_abort(base, session_id, dir_query)
+            full = last_text[:20000]
+            return {
+                "ok": False,
+                "returncode": 124,
+                "stdout": redact(full),
+                "stderr": "daemon-idle-timeout: session aborted after no observable progress",
+                "stdout_full": full,
+                "stderr_full": "daemon-idle-timeout",
+                "duration_s": round(now_epoch() - started, 3),
+                "via": "daemon",
+                "session_id": session_id,
+                "model": model,
+                "idle_timeout_s": idle_timeout_s,
+            }
     _daemon_abort(base, session_id, dir_query)
     full = last_text[:20000]
     return {
@@ -1429,11 +1475,11 @@ def execute_opencode_daemon(
 def execute_opencode_cli(
     job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, model: str | None = None
 ) -> dict[str, Any]:
-    """Legacy direct ``opencode run --auto`` launch (explicit opt-in only).
+    """Bounded direct ``opencode run --auto`` launch with isolated state.
 
-    The direct CLI hangs before session creation on the current host even with
-    an isolated control database, so it is never implicit fallback: use
-    requires ``allow_cli_fallback`` / ``DEALIX_OPENCODE_ALLOW_CLI_FALLBACK``.
+    This path uses the same verified model authority and autonomous permission
+    policy as the daemon executor. It is retained as a recovery transport for
+    an unavailable daemon (explicit opt-in) or an aborted idle daemon session.
     """
     binary = resolve_opencode_binary()
     if not binary:
@@ -1494,23 +1540,37 @@ def execute_opencode(
 ) -> dict[str, Any]:
     """Daemon-first headless OpenCode execution for Session Factory jobs.
 
-    The existing loopback daemon is the only automatic path: the direct CLI
-    hangs before session creation on the current host, so it is never implicit
-    fallback. CLI compatibility requires explicit opt-in via
-    ``allow_cli_fallback`` or ``DEALIX_OPENCODE_ALLOW_CLI_FALLBACK=1`` (with a
-    test proving the opt-in); otherwise a dead daemon fails closed as HOLD.
+    The loopback daemon remains the preferred automatic path. A daemon that is
+    unavailable still requires explicit CLI opt-in. A daemon session that hits
+    its bounded deadline is aborted first and may then recover through the
+    same verified-model CLI executor; this prevents a healthy-but-stuck daemon
+    from disabling the company while preserving model, permission, and
+    worktree isolation.
     """
     model, hold = _resolve_opencode_model(job)
     if hold is not None:
         return hold
     daemon = execute_opencode_daemon(job, cwd, model=model)
-    if not daemon.get("daemon_unavailable"):
+    # OpenCode 1.18.x can leave a healthy loopback daemon session running
+    # without a terminal assistant message until the bounded deadline. The
+    # daemon executor aborts that session before returning 124, so a same-model
+    # CLI retry is safe: it stays in the same isolated worktree, keeps the
+    # autonomous permission policy, and cannot spill to an unverified paid
+    # model because ``_resolve_opencode_model`` already established authority.
+    daemon_timed_out_after_abort = (
+        daemon.get("via") == "daemon" and int(daemon.get("returncode") or 0) == 124
+    )
+    if not daemon.get("daemon_unavailable") and not daemon_timed_out_after_abort:
         return daemon
     if allow_cli_fallback is None:
         flag = str(os.environ.get("DEALIX_OPENCODE_ALLOW_CLI_FALLBACK") or "").strip().lower()
-        allow_cli_fallback = flag in ("1", "true", "yes", "on")
+        allow_cli_fallback = flag in ("1", "true", "yes", "on") or daemon_timed_out_after_abort
     if allow_cli_fallback:
-        return execute_opencode_cli(job, cwd, db_dir=db_dir, model=model)
+        cli = execute_opencode_cli(job, cwd, db_dir=db_dir, model=model)
+        if daemon_timed_out_after_abort:
+            cli["fallback_reason"] = "daemon-timeout-after-abort"
+            cli["daemon_session_id"] = daemon.get("session_id")
+        return cli
     return daemon
 
 
@@ -1519,9 +1579,9 @@ def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     executor = job.get("EXECUTOR") or {}
     prompt = executor.get("prompt") or job.get("BUSINESS_GOAL", "")
     try:
-        timeout_seconds = int(executor.get("timeout_seconds", 30))
+        timeout_seconds = int(executor.get("timeout_seconds", 60))
     except (TypeError, ValueError):
-        timeout_seconds = 30
+        timeout_seconds = 60
     timeout_seconds = max(5, min(timeout_seconds, 120))
     try:
         num_predict = int(executor.get("num_predict", 128))
