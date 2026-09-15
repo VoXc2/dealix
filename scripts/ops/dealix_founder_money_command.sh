@@ -70,7 +70,7 @@ run_py_if_exists ceo_master_plan scripts/run_ceo_master_plan_status.py
 run_py_if_exists first_paid_gate scripts/founder_paid_launch_gate.py
 run_py_if_exists first_paid_tracker scripts/verify_first_paid_diagnostic_tracker.py
 run_py_if_exists commercial_value_map scripts/commercial_value_map_status.py
-run_py_if_exists phase_0_1_close scripts/phase_0_1_close_helper.py
+run_py_if_exists phase_0_1_close scripts/phase_0_1_close_helper.py --check-dod
 run_py_if_exists commercial_intelligence scripts/commercial/verify_commercial_intelligence.py
 
 if [ -x scripts/ops/dealix_founder_cockpit_full.sh ]; then

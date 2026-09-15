@@ -80,15 +80,28 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "--event",
-        required=True,
+        required=False,
         choices=sorted(ALLOWED_EVENTS),
-        help="Evidence event type to append",
+        help="Evidence event type to append; omitted with --check-dod",
     )
     p.add_argument("--notes", default="", help="Optional notes (no payment refs invented)")
     p.add_argument("--amount-sar", default="", help="Only for payment_received — founder must supply")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--check-dod", action="store_true", help="Print DoD status without appending")
     args = p.parse_args()
+
+    if not args.check_dod and not args.event:
+        p.error("--event is required unless --check-dod is used")
+
+    # DoD status is evidence-only and must not require a configured active deal.
+    # This keeps observation separate from mutation and avoids fabricating a
+    # company/event just to inspect readiness.
+    if args.check_dod:
+        paid = analyze_first_paid_diagnostic()
+        print("== FIRST_PAID_DIAGNOSTIC DoD ==")
+        for line in _dod_checklist(paid):
+            print(line)
+        return 0 if paid.get("first_close_ready") else 1
 
     deal_cfg = _load_deal()
     active = deal_cfg.get("active_deal") if isinstance(deal_cfg.get("active_deal"), dict) else {}
@@ -106,13 +119,6 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
-
-    paid = analyze_first_paid_diagnostic()
-    if args.check_dod:
-        print("== FIRST_PAID_DIAGNOSTIC DoD ==")
-        for line in _dod_checklist(paid):
-            print(line)
-        return 0 if paid.get("first_close_ready") else 1
 
     amount = (args.amount_sar or "").strip()
     if not amount:
