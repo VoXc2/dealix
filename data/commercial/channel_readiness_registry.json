@@ -1,7 +1,7 @@
 {
   "schema": "dealix.channel-readiness-registry.v2",
-  "version": "2026-09-08.1",
-  "generated_at": "2026-09-08",
+  "version": "2026-09-15.1",
+  "generated_at": "2026-09-15",
   "purpose": "Canonical source for Dealix channel role, readiness, activation gates, execution mode, identity dependencies, official capability and known blockers. This registry never grants relationship, consent, send, publish, spend, payment or production authority and contains no credentials.",
   "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
   "global_rules": {
@@ -23,6 +23,24 @@
     "paid_spend_requires_explicit_budget_authority": true,
     "external_publish_requires_channel_capability_and_action_bound_authority": true,
     "binding_quote_contract_payment_and_live_voice_require_separate_authority": true
+  },
+  "official_provider_contract": {
+    "checked_at": "2026-09-15",
+    "authority": "READINESS_ONLY_NO_SEND_PUBLISH_OR_SPEND",
+    "sources": {
+      "linkedin_posts_api": "https://learn.microsoft.com/en-au/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-03",
+      "tiktok_direct_post": "https://developers.tiktok.com/docs/en/content-posting-api-reference-direct-post",
+      "youtube_videos_insert": "https://developers.google.com/youtube/v3/docs/videos/insert",
+      "youtube_video_status": "https://developers.google.com/youtube/v3/docs/videos",
+      "x_api_pricing": "https://docs.x.com/x-api/getting-started/pricing",
+      "x_auth_mapping": "https://docs.x.com/fundamentals/authentication/guides/v2-authentication-mapping"
+    },
+    "runtime_truth": {
+      "provider_connected_is_not_publish_authority": true,
+      "oauth_or_token_present_is_not_publish_authority": true,
+      "draft_or_scheduled_item_is_not_published": true,
+      "platform_acceptance_is_not_customer_outcome": true
+    }
   },
   "channel_eligibility_contract": {
     "required_inputs": [
@@ -92,9 +110,10 @@
       "role": "ORGANIZATION_AUTHORITY_CONTENT_AND_LEAD_CAPTURE",
       "state": "OFFICIAL_API_OR_NATIVE_CONFIGURATION_REQUIRED",
       "owned_publish_mode": "VERSIONED_LINKEDIN_POSTS_API_OR_NATIVE",
-      "required_capabilities": ["organization_admin_access", "approved_posting_permissions_if_automated"],
+      "required_capabilities": ["organization_admin_access", "w_organization_social", "versioned_posts_api_headers"],
       "optional_capabilities": ["lead_sync_after_approved_access", "organization_analytics"],
-      "activation_evidence_required": ["organization_admin_access", "approved_app_permissions", "token_storage_outside_repo", "private_or_draft_canary_where_possible"],
+      "activation_evidence_required": ["organization_page_role_admin_content_admin_or_direct_sponsored_content_poster", "approved_w_organization_social", "token_storage_outside_repo", "linkedin_version_header", "x_restli_protocol_version_2_0_0", "private_or_draft_canary_where_possible"],
+      "public_publish_gate": "EXACT_ACTION_BOUND_AUTHORITY_AFTER_CAPABILITY_PROOF",
       "phone_dependency": false
     },
     "instagram": {
@@ -127,7 +146,10 @@
       "state": "CHANNEL_AND_OAUTH_READINESS_REQUIRED",
       "owned_publish_mode": "YOUTUBE_DATA_API_VIDEOS_INSERT_OR_NATIVE",
       "important_truth": "Uploads from unverified API projects can be restricted to private until required audit or compliance passes.",
-      "activation_evidence_required": ["dealix_channel_identity", "oauth_client", "approved_token_storage", "private_or_unlisted_upload_canary_before_public_automation"],
+      "required_capabilities": ["authorized_channel", "oauth_scope_youtube.upload", "videos.insert"],
+      "activation_evidence_required": ["dealix_channel_identity", "oauth_client", "youtube.upload_scope", "approved_token_storage", "private_upload_canary", "audit_or_verified_project_before_public_api_upload"],
+      "ai_content_contract": {"containsSyntheticMedia_required_when_realistic_altered_or_synthetic": true, "provider_field": "status.containsSyntheticMedia"},
+      "public_publish_gate": "VERIFIED_OR_AUDITED_PROJECT_PLUS_EXACT_ACTION_BOUND_AUTHORITY",
       "phone_dependency": false
     },
     "tiktok": {
@@ -135,17 +157,23 @@
       "role": "SHORT_FORM_REACH_AND_EXECUTIVE_EDUCATION",
       "state": "DEVELOPER_APP_AUTHORIZATION_AND_AUDIT_REQUIRED_FOR_PUBLIC_DIRECT_POST",
       "owned_publish_mode": "CONTENT_POSTING_API_DIRECT_OR_DRAFT_UPLOAD",
-      "activation_evidence_required": ["scope_approval", "user_authorization", "audit_or_platform_eligibility_before_public_direct_post"],
+      "required_capabilities": ["registered_developer_app", "content_posting_api_product", "approved_video.publish_scope", "target_user_authorization", "creator_info_query_before_direct_post"],
+      "activation_evidence_required": ["registered_developer_app", "content_posting_api_enabled", "approved_video.publish_scope", "target_user_authorization", "creator_info_query_receipt", "private_only_canary_while_client_unaudited", "audit_pass_before_public_direct_post"],
+      "ai_content_contract": {"is_aigc_required_when_applicable": true, "provider_field": "post_info.is_aigc"},
+      "public_publish_gate": "AUDITED_CLIENT_PLUS_EXACT_ACTION_BOUND_AUTHORITY",
       "phone_dependency": false
     },
     "x": {
       "priority": "B",
       "role": "FAST_MARKET_COMMENTARY_EXECUTIVE_SIGNAL_AND_LISTENING",
-      "state": "ACCOUNT_AND_API_READINESS_REQUIRED",
+      "state": "ACCOUNT_API_USER_AUTH_AND_COST_AUTHORITY_REQUIRED",
       "owned_publish_mode": "AUTHORIZED_X_API_OR_NATIVE",
       "automation_allowed": ["research", "drafting", "owned_account_analytics", "authorized_webhook_signal_ingest"],
       "automation_blocked": ["uncontrolled_reply_bot", "engagement_spam", "public_publish_without_action_bound_authority"],
-      "activation_evidence_required": ["dealix_account", "approved_api_access_if_automated", "provider_plan_supports_required_endpoints"],
+      "required_capabilities": ["developer_app", "oauth_user_context", "tweet.write", "sufficient_api_credits_or_approved_cost_budget"],
+      "activation_evidence_required": ["dealix_account", "developer_app", "user_context_authorization", "tweet.write_scope_or_equivalent_user_write_authority", "cost_budget_authority", "provider_plan_supports_required_endpoints"],
+      "cost_contract": {"pricing_model": "pay_per_usage_credit_based", "spend_default": false, "credit_purchase_requires_separate_authority": true},
+      "public_publish_gate": "EXACT_ACTION_BOUND_AUTHORITY_AFTER_CAPABILITY_AND_COST_PROOF",
       "phone_dependency": false
     },
     "snapchat": {

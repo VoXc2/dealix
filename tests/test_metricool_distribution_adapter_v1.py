@@ -61,3 +61,13 @@ def test_content_atom_requires_evidence_and_exact_publish_authority() -> None:
     required = set(atom["required_fields"])
     assert {"content_id", "evidence_refs", "claims_status", "single_cta", "fresh_until"} <= required
     assert "action_bound_publish_authority" in atom["publish_transition_requires"]
+
+
+def test_live_metricool_observation_does_not_invent_provider_connectivity() -> None:
+    data = _contract()
+    connection = data["metricool_connection"]
+    assert data["version"] == "2026-09-15.1"
+    assert connection["provider_networks_observed"] == []
+    assert connection["scheduled_posts_observed"] == 0
+    assert connection["provider_readiness"] == "PROVIDERS_PENDING"
+    assert data["provider_activation_gate"]["current_verdict"] == "HOLD_PROVIDERS_PENDING"
