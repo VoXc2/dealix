@@ -19,7 +19,9 @@ hold(){ log "HOLD: $*" >&2; exit 78; }
 [[ -z "$(git status --porcelain --untracked-files=no)" ]] || hold "tracked worktree is dirty"
 [[ -f "$ENV_FILE" ]] || hold "missing production env file"
 [[ -z "$(find "$ENV_FILE" -maxdepth 0 -perm /077 -print -quit)" ]] || hold "production env permissions too broad"
-[[ "$DB_PORT" =~ ^[0-9]+$ ]] && (( DB_PORT >= 1024 && DB_PORT <= 65535 )) || hold "invalid DB port"
+if ! [[ "$DB_PORT" =~ ^[0-9]+$ ]] || (( DB_PORT < 1024 || DB_PORT > 65535 )); then
+  hold "invalid DB port"
+fi
 
 set -a
 # shellcheck disable=SC1090
