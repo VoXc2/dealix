@@ -46,3 +46,20 @@ def test_public_production_surface_registry_excludes_schema_endpoints() -> None:
     assert "/openapi.json" not in backend.values()
     assert backend["version"] == "/version"
     assert backend["meta"] == "/api/v1/meta"
+
+
+def test_production_meta_embedded_surfaces_do_not_advertise_schema_endpoints() -> None:
+    with patch.object(platform_meta, "get_settings", return_value=_settings("production")):
+        body = asyncio.run(platform_meta.platform_meta())
+    paths = {row.get("path") for row in body["surfaces"]["api_trust_endpoints"]}
+    assert "/docs" not in paths
+    assert "/redoc" not in paths
+    assert "/openapi.json" not in paths
+    assert {"/healthz", "/version", "/api/v1/meta"} <= paths
+
+
+def test_aeo_public_hints_do_not_advertise_disabled_production_openapi() -> None:
+    from dealix.commercial_ops.aeo_meta import build_aeo_snapshot
+
+    hints = build_aeo_snapshot()["token_to_value_hints"]
+    assert "GET /openapi.json" not in hints

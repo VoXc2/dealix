@@ -13,13 +13,7 @@ api_trust_endpoints:
     purpose_ar: "Deploy identity (version, git_sha, env)"
     auth: public
   - path: /api/v1/meta
-    purpose_ar: "GTM surface registry + docs links"
-    auth: public
-  - path: /docs
-    purpose_ar: "OpenAPI interactive docs"
-    auth: public
-  - path: /openapi.json
-    purpose_ar: "OpenAPI machine-readable"
+    purpose_ar: "GTM public surface registry + canonical production links"
     auth: public
 
 frontend_public_routes:

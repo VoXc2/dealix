@@ -21,9 +21,8 @@ python scripts/verify_gtm_public_surfaces.py --api-base https://api.dealix.me
 | `/health` | ملخص حي + مزودي LLM |
 | `/version` | هوية النشر للشركاء والمراقبة |
 | `/api/v1/meta` | سجل الأسطح + روابط canonical |
-| `/docs` · `/openapi.json` | وثائق المطورين |
 
-**سياسة:** هذه المسارات في `PUBLIC_PATHS` — لا تضف أسراراً في الاستجابة.
+**سياسة:** هذه هي أسطح الثقة العامة في الإنتاج. وثائق FastAPI (`/docs`, `/redoc`, `/openapi.json`) متاحة للتطوير/الاختبار فقط ومغلقة في الإنتاج؛ لا تُعلن عنها في سجل GTM العام.
 
 ---
 

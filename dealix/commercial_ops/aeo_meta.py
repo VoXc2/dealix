@@ -33,7 +33,6 @@ def build_aeo_snapshot() -> dict[str, Any]:
             "GET /api/v1/revenue-os/catalog",
             "GET /api/v1/decision-passport/golden-chain",
             "GET /api/v1/meta",
-            "GET /openapi.json",
         ],
         "discovery_note_ar": (
             "Dealix — Revenue OS سعودي؛ كل إجراء خارجي يتطلب موافقة وجواز قرار."
