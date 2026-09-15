@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Partner Room — Dealix",
-  description: "Partner program: who we work with, what they get, and how to apply.",
+  description: "Partner exploration: collaboration patterns, governance boundaries, and qualification path.",
 };
 
 const PARTNER_TYPES = [
@@ -9,28 +9,28 @@ const PARTNER_TYPES = [
     name: "Agency Partner",
     nameAr: "شريك وكالات",
     description: "Marketing, PR, or creative agencies that serve Saudi SMEs and want a delivery OS for their clients.",
-    benefits: ["White-labeled delivery layer", "Co-branded case studies", "Joint proposals"],
+    benefits: ["Governed delivery collaboration", "Evidence-bound co-marketing where approved", "Customer-specific joint scopes"],
   },
   {
     id: "consulting",
     name: "Consulting Partner",
     nameAr: "شريك استشاري",
     description: "Strategy, ops, or finance consultants who need an execution layer after the diagnosis.",
-    benefits: ["Referral fee", "Co-implementation", "Quarterly reviews"],
+    benefits: ["Qualified referral or collaboration path", "Customer-specific co-implementation", "Evidence-based operating reviews"],
   },
   {
     id: "tech",
     name: "Technology Partner",
     nameAr: "شريك تقني",
     description: "CRMs, data platforms, or automation vendors that complement our stack.",
-    benefits: ["API integration", "Joint GTM", "Co-sell motion"],
+    benefits: ["Integration discovery", "Customer-specific joint GTM where approved", "Co-sell exploration after qualification"],
   },
   {
     id: "training",
     name: "Training Partner",
     nameAr: "شريك تدريب",
     description: "Bootcamps, training houses, and content creators who need a delivery OS for their cohorts.",
-    benefits: ["Cohort delivery layer", "Joint curriculum", "Revenue share"],
+    benefits: ["Cohort workflow discovery", "Joint curriculum exploration", "Customer-specific commercial terms"],
   },
 ];
 
@@ -59,6 +59,12 @@ export default function PartnerRoomPage() {
               </ul>
             </article>
           ))}
+        </section>
+
+        <section className="mt-10 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-5 text-sm text-white/70">
+          <strong className="text-amber-200">Commercial authority boundary.</strong>{" "}
+          These are collaboration patterns, not standing commercial terms. Referral economics, revenue share, scope, price,
+          duration, commitments, and public proof are partner-specific and require qualified discovery plus explicit approval.
         </section>
       </div>
     </main>

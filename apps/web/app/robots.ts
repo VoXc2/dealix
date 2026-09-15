@@ -13,6 +13,7 @@ const privateRoutes = [
   "/proof-vault", "/launch", "/approvals", "/founder", "/control-plane",
   "/dashboard", "/data-room", "/delivery-workspace", "/client-success", "/retention",
   "/growth", "/growth-command-center", "/commercial-intelligence", "/evidence", "/go-to-market", "/control-room",
+  "/brain", "/delivery-os", "/client-acquisition",
   "/lead-engine", "/hubspot-os", "/automated-sales",
   "/persuasion-room", "/product-network", "/quotes", "/revenue", "/revenue-machine",
   "/sales-agent", "/sales-agent-lab", "/sales-assets", "/sales-machine", "/settings",

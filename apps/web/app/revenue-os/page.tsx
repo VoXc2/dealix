@@ -12,8 +12,8 @@ export default function RevenueOSPage() {
         <h1>Turn scattered business work into pipeline, proof, and controlled automation.</h1>
         <p>Dealix Revenue OS helps founders identify opportunities, prioritize follow-up, ship offer pages, and prove revenue movement.</p>
         <div className="actions">
-          <a href="/go-to-market">Start GTM plan</a>
-          <a href="/product-network">See product network</a>
+          <a href="/book">Start free diagnostic</a>
+          <a href="/products">See products</a>
         </div>
       </section>
       <section className="cards">

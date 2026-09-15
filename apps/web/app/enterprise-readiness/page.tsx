@@ -18,22 +18,22 @@ const PILLARS = [
   {
     title: "Human approval",
     body: "Customer-facing sends, public publishing, payments, contracts, and production mutations are authority-bound actions.",
-    link: "/review-queue",
+    link: "/safety",
   },
   {
     title: "Data boundaries",
     body: "Data handling is scoped to the agreed workflow and evidence requirements. Public pages do not claim blanket certification or compliance status.",
-    link: "/data-room",
+    link: "/safety",
   },
   {
     title: "Delivery proof",
     body: "Delivery is measured against explicit acceptance criteria, evidence, and customer-validated outcomes rather than marketing promises.",
-    link: "/delivery-os",
+    link: "/cases",
   },
   {
     title: "Buyer diligence",
     body: "Procurement and security teams can review the relevant Dealix policies and artifacts before a customer-specific engagement is agreed.",
-    link: "/resources",
+    link: "/book",
   },
 ];
 

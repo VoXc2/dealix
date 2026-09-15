@@ -92,6 +92,7 @@ def test_founder_operational_contract_is_covered() -> None:
         "/proof-vault", "/approvals", "/founder", "/hubspot-os", "/automated-sales",
         "/client-success", "/retention", "/self-evolving",
         "/growth", "/commercial-intelligence", "/evidence", "/go-to-market", "/control-room",
+        "/brain", "/delivery-os", "/client-acquisition",
     }
     prefixes = set(_array("INTERNAL_PAGE_PREFIXES"))
     assert required <= prefixes
