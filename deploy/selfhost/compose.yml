@@ -61,7 +61,7 @@ services:
     networks: [dealix]
 
   postgres:
-    image: postgres:16-bookworm
+    image: pgvector/pgvector:pg18@sha256:2ba9ca5f2e7daa0f0e7723cba1ee9167bab54efd3640516a44ac1a928dd67e7a
     profiles: ["local-db"]
     environment:
       POSTGRES_USER: dealix_canary
