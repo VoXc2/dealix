@@ -1,3 +1,7 @@
+// Client-side convenience redirect only — NOT access control. The fail-closed
+// server-side gate in `src/middleware.ts` (backed by
+// `src/lib/internalSurfaces.ts`) is the enforcement point; client
+// `localStorage` JWT state is not server-verifiable authorization.
 "use client";
 
 import { useEffect } from "react";

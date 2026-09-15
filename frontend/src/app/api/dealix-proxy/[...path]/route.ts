@@ -1,6 +1,9 @@
 /**
  * Server-side proxy for founder ops APIs — keeps DEALIX_ADMIN_API_KEY off the browser.
  * Requires authenticated operator (Bearer /api/v1/auth/me) or DEALIX_OPS_PROXY_SECRET.
+ * Internal-surface classification lives in `@/lib/internalSurfaces`; the
+ * fail-closed middleware gate (`src/middleware.ts`) runs first, so a closed
+ * surface never reaches this route. This check remains as defense in depth.
  */
 import { NextRequest, NextResponse } from "next/server";
 
