@@ -230,7 +230,13 @@ def submit_dispatch_plan(
     repo_root: Path | None = None,
     worktree_root: Path | None = None,
 ) -> dict[str, Any]:
-    """Use the canonical Session Factory; never create a second durable queue."""
+    """Submit through the canonical queue; ingress never executes jobs directly.
+
+    ``execute`` is retained only as a compatibility signal for older callers.
+    Even when true it cannot call ``run_job``: queue processing/ResourceGovernor
+    owns execution admission, worktree creation, model authority and recovery.
+    """
+    del repo_root, worktree_root
     jobs = render_dispatch_plan(
         plan,
         registry=registry,
@@ -238,7 +244,6 @@ def submit_dispatch_plan(
         session_factory=session_factory,
     )
     submissions: list[dict[str, Any]] = []
-    executions: list[dict[str, Any]] = []
     for job in jobs:
         submitted = session_factory.submit_job(state_root, job)
         submitted_job = submitted.get("job") or job
@@ -249,28 +254,15 @@ def submit_dispatch_plan(
                 "status": submitted_job.get("STATUS"),
             }
         )
-        if execute and submitted.get("ok") and submitted_job.get("STATUS") == "READY":
-            outcome = session_factory.run_job(
-                state_root,
-                submitted_job,
-                repo_root=repo_root or getattr(session_factory, "REPO_ROOT", None),
-                worktree_root=worktree_root,
-            )
-            executions.append(
-                {
-                    "JOB_ID": submitted_job.get("JOB_ID"),
-                    "ok": bool(outcome.get("ok")),
-                    "status": outcome.get("status"),
-                }
-            )
     return {
         **session_adapter_receipt(jobs),
         "submitted": True,
         "execute_requested": execute,
+        "execution_deferred_to_session_factory_queue": bool(execute),
         "governor_worker_slots": plan.budget.worker_slots,
         "governor_writer_slots": plan.budget.writer_slots,
         "submissions": submissions,
-        "executions": executions,
+        "executions": [],
     }
 
 

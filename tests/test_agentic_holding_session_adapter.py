@@ -51,8 +51,7 @@ class FakeSessionFactory:
 
     @staticmethod
     def run_job(_root, job, **_kwargs):
-        job["STATUS"] = "SUCCEEDED"
-        return {"ok": True, "status": "SUCCEEDED", "job": job}
+        raise AssertionError(f"ingress must never run job directly: {job.get('JOB_ID')}")
 
 
 def _registry():
@@ -148,7 +147,7 @@ def test_dispatch_plan_renders_only_governor_selected_jobs_and_never_submits():
     assert receipt["material_external_effects_executed"] is False
 
 
-def test_submit_dispatch_plan_uses_same_factory_queue_and_runner(tmp_path):
+def test_submit_dispatch_plan_queues_only_even_when_execute_requested(tmp_path):
     registry = _registry()
     agent_id = "dealix.group.revenue"
     item = WorkItem("a", agent_id, 90, 10)
@@ -165,7 +164,9 @@ def test_submit_dispatch_plan_uses_same_factory_queue_and_runner(tmp_path):
     )
     assert receipt["submitted"] is True
     assert receipt["submissions"][0]["status"] == "READY"
-    assert receipt["executions"][0]["status"] == "SUCCEEDED"
+    assert receipt["executions"] == []
+    assert receipt["execute_requested"] is True
+    assert receipt["execution_deferred_to_session_factory_queue"] is True
     assert receipt["material_external_effects_executed"] is False
 
 
@@ -186,6 +187,7 @@ def test_l5_request_is_submitted_waiting_and_never_executed(tmp_path):
     )
     assert receipt["submissions"][0]["status"] == "WAITING_L5"
     assert receipt["executions"] == []
+    assert receipt["execution_deferred_to_session_factory_queue"] is True
 
 
 def test_render_rejects_material_external_effect_even_if_called_directly():
