@@ -330,7 +330,7 @@ morning_fallback() {
 market_radar_run() {
   local radar_script input_file output_file
   radar_script="${ROOT}/scripts/commercial/run_universal_market_radar_v1.py"
-  input_file="${DEALIX_MARKET_RADAR_SIGNALS_FILE:-${SIGNAL_INBOX_DIR}/market-radar-signals.json}"
+  input_file="${DEALIX_MARKET_RADAR_SIGNALS_FILE:-${ROOT}/data/commercial/market_signal_receipts_v1.json}"
   output_file="${REPORT_DIR}/universal-market-radar-${RUN_STAMP}.json"
 
   if [[ ! -f "$radar_script" ]]; then
@@ -339,8 +339,8 @@ market_radar_run() {
     return 0
   fi
   if [[ ! -f "$input_file" ]]; then
-    log "MARKET_RADAR_STATE=WAITING_FOR_CANONICAL_SIGNAL_INPUT"
-    log "MARKET_RADAR_INPUT=NONE (no collector or connector has supplied a source-bound handoff)"
+    log "MARKET_RADAR_BLOCKED: signal input missing at $input_file"
+    RUN_FAILED=1
     return 0
   fi
   if [[ ! -r "$input_file" ]]; then
@@ -349,7 +349,11 @@ market_radar_run() {
     return 0
   fi
 
-  log "MARKET_RADAR_INPUT=SOURCE_BOUND_HANDOFF"
+  if [[ -n "${DEALIX_MARKET_RADAR_SIGNALS_FILE:-}" ]]; then
+    log "MARKET_RADAR_INPUT=EXPLICIT_SOURCE_BOUND_OVERRIDE"
+  else
+    log "MARKET_RADAR_INPUT=CANONICAL_SOURCE_MANAGED_RECEIPTS"
+  fi
   run_step "read-only market radar brief" python3 "$radar_script" --signals "$input_file" --out "$output_file"
   if [[ -s "$output_file" ]]; then
     chmod 0640 "$output_file" 2>/dev/null || true

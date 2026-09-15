@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 RADAR_PATH = ROOT / "data/commercial/universal_market_radar_v1.json"
 PLAYBOOK_PATH = ROOT / "data/commercial/universal_market_playbooks_v1.json"
 SOURCE_ACCESS_PATH = ROOT / "data/commercial/market_radar_source_access_state_v1.json"
+DEFAULT_SIGNALS = ROOT / "data/commercial/market_signal_receipts_v1.json"
 DEFAULT_OUT = ROOT / "data/founder_briefs/universal_market_radar_latest.json"
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
 CROSS_SECTOR = "CROSS_SECTOR"
@@ -344,7 +345,7 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--signals", type=Path, default=None)
+    parser.add_argument("--signals", type=Path, default=DEFAULT_SIGNALS)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--stdout", action="store_true")
     args = parser.parse_args()
