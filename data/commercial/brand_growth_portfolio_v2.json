@@ -1,6 +1,6 @@
 {
   "schema": "dealix.brand-growth-portfolio.v2",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "generated_at": "2026-08-30",
   "purpose": "One portfolio contract for Dealix brand, demand, distribution, relationships, revenue, delivery, proof and learning arms. It composes existing canonical owners and does not create parallel truth, scheduling or agent systems.",
   "parents": {
@@ -67,6 +67,17 @@
     "dealix-delivery",
     "dealix-engineer"
   ],
+  "canonical_workers_field_semantics": "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY",
+  "legacy_executor_aliases": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-content",
+    "dealix-delivery",
+    "dealix-engineer"
+  ],
+  "logical_agent_authority": "dealix.agentic_holding.runtime.build_current_registry",
+  "fixed_five_authority": false,
+  "runtime_capacity_authority": "ResourceGovernor+Session Factory",
   "arms": [
     {
       "id": "BRAND_AUTHORITY",
@@ -371,6 +382,8 @@
   "allocation_model": {
     "formula": "expected_verified_movement * evidence * urgency * reuse / founder_minutes / agent_tool_cost / risk / capacity",
     "max_active_growth_bets_per_week": 3,
+    "max_active_growth_bets_per_week_semantics": "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY",
+    "runtime_capacity_authority": "ResourceGovernor+Session Factory",
     "max_active_build_prs_per_owner": 2,
     "founder_output_sections": [
       "MONEY",

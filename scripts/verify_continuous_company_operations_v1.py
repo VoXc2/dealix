@@ -20,6 +20,14 @@ EXPECTED_WORKERS = {
     "dealix-delivery",
     "dealix-engineer",
 }
+# Historical five names are legacy compatibility aliases only. Canonical
+# logical-agent authority is the Agentic Holding current registry; runtime
+# capacity belongs to ResourceGovernor + Session Factory.
+LEGACY_EXECUTOR_ALIASES = EXPECTED_WORKERS
+LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+LOGICAL_AGENT_AUTHORITY = "dealix.agentic_holding.runtime.build_current_registry"
+RUNTIME_CAPACITY_AUTHORITY = "ResourceGovernor+Session Factory"
+MAX_BETS_SEMANTICS = "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY"
 
 EXPECTED_WORKLOADS = {
     "RUNTIME_TRUST_WATCH",
@@ -136,6 +144,11 @@ def main() -> None:
     require(set(runtime.get("allowed_existing_modes", [])) == EXPECTED_MODES, "existing autopilot mode set drift")
 
     require(set(data.get("canonical_workers", [])) == EXPECTED_WORKERS, "canonical worker roster drift")
+    require(data.get("canonical_workers_field_semantics") == LEGACY_ALIAS_SEMANTICS, "worker alias semantics drift")
+    require(set(data.get("legacy_executor_aliases", [])) == LEGACY_EXECUTOR_ALIASES, "legacy executor alias set drift")
+    require(data.get("logical_agent_authority") == LOGICAL_AGENT_AUTHORITY, "logical-agent authority drift")
+    require(data.get("fixed_five_authority") is False, "fixed-five authority must remain false")
+    require(data.get("runtime_capacity_authority") == RUNTIME_CAPACITY_AUTHORITY, "runtime capacity authority drift")
 
     workloads = data.get("always_on_workloads", [])
     workload_ids = {item.get("id") for item in workloads}
@@ -227,6 +240,8 @@ def main() -> None:
     founder = data.get("founder_interface", {})
     require(founder.get("sections") == EXPECTED_FOUNDER_SECTIONS, "founder command projection drift")
     require(founder.get("maximum_active_growth_bets") == 3, "founder WIP limit drift")
+    require(founder.get("maximum_active_growth_bets_semantics") == MAX_BETS_SEMANTICS, "growth-bet focus semantics drift")
+    require(founder.get("runtime_capacity_authority") == RUNTIME_CAPACITY_AUTHORITY, "founder runtime capacity authority drift")
     require(founder.get("default_low_urgency_behavior") == "BATCH_AND_DELEGATE", "founder attention policy drift")
 
     activation = data.get("activation_gate", {})

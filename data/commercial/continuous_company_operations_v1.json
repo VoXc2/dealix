@@ -1,6 +1,6 @@
 {
   "schema": "dealix.continuous-company-operations.v1",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "generated_at": "2026-08-30",
   "status": "DRAFT_REVIEW_ONLY",
   "purpose": "Make the existing Dealix Company Machine operate continuously in the founder's economic interest through bounded internal autonomy, evidence receipts, recovery and learning. This is a subordinate operating contract and does not create a scheduler, agent fleet, truth store or execution authority.",
@@ -44,6 +44,17 @@
     "dealix-delivery",
     "dealix-engineer"
   ],
+  "canonical_workers_field_semantics": "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY",
+  "legacy_executor_aliases": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-content",
+    "dealix-delivery",
+    "dealix-engineer"
+  ],
+  "logical_agent_authority": "dealix.agentic_holding.runtime.build_current_registry",
+  "fixed_five_authority": false,
+  "runtime_capacity_authority": "ResourceGovernor+Session Factory",
   "always_on_workloads": [
     {
       "id": "RUNTIME_TRUST_WATCH",
@@ -219,6 +230,8 @@
   "founder_interface": {
     "sections": ["MONEY", "DECISIONS", "RISKS", "APPROVALS", "NEXT_ACTION"],
     "maximum_active_growth_bets": 3,
+    "maximum_active_growth_bets_semantics": "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY",
+    "runtime_capacity_authority": "ResourceGovernor+Session Factory",
     "default_low_urgency_behavior": "BATCH_AND_DELEGATE",
     "escalate_when": [
       "L5_ACTION_REQUIRED",

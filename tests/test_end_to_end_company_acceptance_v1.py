@@ -50,6 +50,14 @@ def test_all_agents_and_systems_own_real_work() -> None:
     lifecycle = data["client_lifecycle"]
     assert {row["owner"] for row in lifecycle} == agents
     assert {system for row in lifecycle for system in row["systems"]} == systems
+    # Fixed-five names are legacy executor aliases only; canonical
+    # logical-agent authority is the Agentic Holding registry.
+    assert data["canonical_agents_field_semantics"] == "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+    assert set(data["legacy_executor_aliases"]) == agents
+    assert data["logical_agent_authority"] == "dealix.agentic_holding.runtime.build_current_registry"
+    assert data["fixed_five_authority"] is False
+    assert data["runtime_capacity_authority"] == "ResourceGovernor+Session Factory"
+    assert data["agent_owner_field_semantics"] == "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
 
 
 def test_operating_company_summary_exposes_five_canonical_agents_only() -> None:

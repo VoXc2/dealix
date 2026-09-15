@@ -11,6 +11,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from dealix.commercial.brand_growth_portfolio import (  # noqa: E402
+    FIXED_FIVE_AUTHORITY,
+    LEGACY_ALIAS_SEMANTICS,
+    LOGICAL_AGENT_AUTHORITY,
+    RUNTIME_CAPACITY_AUTHORITY,
     ZERO_AUTHORITY,
     allocate_portfolio,
     build_content_opportunity,
@@ -90,7 +94,13 @@ def main() -> int:
     )
     _check(len(allocation["items"]) == 1, "allocation did not return bounded item")
     _check(not any(allocation["authority"].values()), "allocation authority drift")
-    _check(route_workload("MARKET_INTELLIGENCE_EXPERIMENTATION")["worker"] == "dealix-pm", "worker drift")
+    routed = route_workload("MARKET_INTELLIGENCE_EXPERIMENTATION")
+    _check(routed["worker"] == "dealix-pm", "worker drift")
+    _check(routed["worker_alias"] == "dealix-pm", "worker alias drift")
+    _check(routed["worker_alias_semantics"] == LEGACY_ALIAS_SEMANTICS, "worker alias semantics drift")
+    _check(routed["fixed_five_authority"] is False and FIXED_FIVE_AUTHORITY is False, "fixed-five authority must remain false")
+    _check(routed["logical_agent_authority"] == LOGICAL_AGENT_AUTHORITY, "logical-agent authority drift")
+    _check(routed["runtime_capacity_authority"] == RUNTIME_CAPACITY_AUTHORITY, "runtime capacity authority drift")
 
     _check(
         "SCALE_REQUIRES_VERIFIED_OUTCOME"
@@ -110,7 +120,10 @@ def main() -> int:
     print("RADAR_TO_CONTENT_OPPORTUNITY=DRAFT_ONLY")
     print("PROOF_REUSE=PERMISSION_AND_VALIDATION_GATED")
     print("PRESIDENT_ALLOCATION=BOUNDED_INTERNAL_PRIORITY")
-    print("CANONICAL_WORKERS_ONLY=PASS")
+    print("LEGACY_EXECUTOR_ALIASES_ONLY=PASS")
+    print("FIXED_FIVE_AUTHORITY=FALSE")
+    print("LOGICAL_AGENT_AUTHORITY=AGENTIC_HOLDING_REGISTRY")
+    print("RUNTIME_CAPACITY=RESOURCE_GOVERNOR_PLUS_SESSION_FACTORY")
     print("EXTERNAL_AUTHORITY=BLOCKED")
     return 0
 

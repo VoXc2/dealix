@@ -40,6 +40,14 @@ EXPECTED_ARMS = {
 }
 
 EXPECTED_WORKERS = ["dealix-pm", "dealix-sales", "dealix-content", "dealix-delivery", "dealix-engineer"]
+# Historical five names are legacy compatibility aliases only. Canonical
+# logical-agent authority is the Agentic Holding current registry; runtime
+# capacity belongs to ResourceGovernor + Session Factory.
+LEGACY_EXECUTOR_ALIASES = list(EXPECTED_WORKERS)
+LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+LOGICAL_AGENT_AUTHORITY = "dealix.agentic_holding.runtime.build_current_registry"
+RUNTIME_CAPACITY_AUTHORITY = "ResourceGovernor+Session Factory"
+MAX_BETS_SEMANTICS = "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY"
 
 REQUIRED_FALSE_AUTHORITY = {
     "new_scheduler",
@@ -149,10 +157,24 @@ def main() -> int:
     workers = payload.get("canonical_workers", [])
     if workers != EXPECTED_WORKERS:
         fail("canonical worker roster drift")
+    if payload.get("canonical_workers_field_semantics") != LEGACY_ALIAS_SEMANTICS:
+        fail("worker alias semantics drift")
+    if payload.get("legacy_executor_aliases") != EXPECTED_WORKERS:
+        fail("legacy executor alias set drift")
+    if payload.get("logical_agent_authority") != LOGICAL_AGENT_AUTHORITY:
+        fail("logical-agent authority drift")
+    if payload.get("fixed_five_authority") is not False:
+        fail("fixed-five authority must remain false")
+    if payload.get("runtime_capacity_authority") != RUNTIME_CAPACITY_AUTHORITY:
+        fail("runtime capacity authority drift")
 
     allocation = payload.get("allocation_model", {})
     if allocation.get("max_active_growth_bets_per_week") != 3:
         fail("growth bet WIP limit drift")
+    if allocation.get("max_active_growth_bets_per_week_semantics") != MAX_BETS_SEMANTICS:
+        fail("growth-bet focus semantics drift")
+    if allocation.get("runtime_capacity_authority") != RUNTIME_CAPACITY_AUTHORITY:
+        fail("allocation runtime capacity authority drift")
     if allocation.get("vanity_metrics_are_diagnostic_only") is not True:
         fail("vanity metric boundary drift")
 
@@ -184,6 +206,14 @@ def main() -> int:
         fail("continuous operations objective must match portfolio objective")
     if continuity.get("canonical_workers") != EXPECTED_WORKERS:
         fail("continuous operations canonical worker roster drift")
+    if continuity.get("canonical_workers_field_semantics") != LEGACY_ALIAS_SEMANTICS:
+        fail("continuous operations worker alias semantics drift")
+    if continuity.get("legacy_executor_aliases") != EXPECTED_WORKERS:
+        fail("continuous operations legacy alias set drift")
+    if continuity.get("logical_agent_authority") != LOGICAL_AGENT_AUTHORITY:
+        fail("continuous operations logical-agent authority drift")
+    if continuity.get("fixed_five_authority") is not False:
+        fail("continuous operations fixed-five authority must remain false")
 
     runtime = continuity.get("runtime_ownership", {})
     if runtime.get("scheduler_owner") != "EXISTING_DEALIX_COMPANY_AUTOPILOT_ONLY":

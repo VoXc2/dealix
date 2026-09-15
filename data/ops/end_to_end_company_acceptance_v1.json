@@ -33,6 +33,18 @@
     "dealix-engineer",
     "dealix-content"
   ],
+  "canonical_agents_field_semantics": "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY",
+  "legacy_executor_aliases": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content"
+  ],
+  "agent_owner_field_semantics": "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY",
+  "logical_agent_authority": "dealix.agentic_holding.runtime.build_current_registry",
+  "fixed_five_authority": false,
+  "runtime_capacity_authority": "ResourceGovernor+Session Factory",
   "canonical_systems": [
     "command_os",
     "revenue_os",

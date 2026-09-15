@@ -19,6 +19,13 @@ EXPECTED_AGENTS = {
     "dealix-engineer",
     "dealix-content",
 }
+# Historical five names are legacy compatibility aliases only. Canonical
+# logical-agent authority is the Agentic Holding current registry; runtime
+# capacity belongs to ResourceGovernor + Session Factory.
+LEGACY_EXECUTOR_ALIASES = set(EXPECTED_AGENTS)
+LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+LOGICAL_AGENT_AUTHORITY = "dealix.agentic_holding.runtime.build_current_registry"
+RUNTIME_CAPACITY_AUTHORITY = "ResourceGovernor+Session Factory"
 EXPECTED_SYSTEMS = {
     "command_os",
     "revenue_os",
@@ -133,6 +140,12 @@ def verify() -> list[str]:
     agents = set(contract.get("canonical_agents") or [])
     systems = set(contract.get("canonical_systems") or [])
     _error(errors, agents == EXPECTED_AGENTS, "canonical_agents")
+    _error(errors, contract.get("canonical_agents_field_semantics") == LEGACY_ALIAS_SEMANTICS, "canonical_agents_semantics")
+    _error(errors, set(contract.get("legacy_executor_aliases") or []) == LEGACY_EXECUTOR_ALIASES, "legacy_executor_aliases")
+    _error(errors, contract.get("logical_agent_authority") == LOGICAL_AGENT_AUTHORITY, "logical_agent_authority")
+    _error(errors, contract.get("fixed_five_authority") is False, "fixed_five_authority")
+    _error(errors, contract.get("runtime_capacity_authority") == RUNTIME_CAPACITY_AUTHORITY, "runtime_capacity_authority")
+    _error(errors, contract.get("agent_owner_field_semantics") == LEGACY_ALIAS_SEMANTICS, "agent_owner_semantics")
     _error(errors, systems == EXPECTED_SYSTEMS, "canonical_systems")
 
     composition = contract.get("composition_only") or {}
@@ -257,6 +270,17 @@ def verify() -> list[str]:
 
     continuous = _load(ROOT / contract_paths["continuous_operations"])
     _error(errors, set(continuous.get("canonical_workers") or []) == EXPECTED_AGENTS, "continuous_workers")
+    _error(errors, continuous.get("canonical_workers_field_semantics") == LEGACY_ALIAS_SEMANTICS, "continuous_workers_semantics")
+    _error(errors, set(continuous.get("legacy_executor_aliases") or []) == LEGACY_EXECUTOR_ALIASES, "continuous_legacy_aliases")
+    _error(errors, continuous.get("logical_agent_authority") == LOGICAL_AGENT_AUTHORITY, "continuous_logical_authority")
+    _error(errors, continuous.get("fixed_five_authority") is False, "continuous_fixed_five_authority")
+    _error(errors, continuous.get("runtime_capacity_authority") == RUNTIME_CAPACITY_AUTHORITY, "continuous_runtime_capacity")
+    _error(
+        errors,
+        (continuous.get("founder_interface") or {}).get("maximum_active_growth_bets_semantics")
+        == "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY",
+        "continuous_growth_bet_semantics",
+    )
     runtime_ownership = continuous.get("runtime_ownership") or {}
     for key in (
         "new_scheduler_allowed",
@@ -289,6 +313,9 @@ def verify() -> list[str]:
     revenue_mapping = dict(delegation.REVENUE_SPECIALIST_DELEGATION)
     canonical_agents = set(delegation.CANONICAL_AGENTS)
     _error(errors, canonical_agents == EXPECTED_AGENTS, "ai_workforce_canonical_agents")
+    # Delegated specialist roles are bounded workloads under legacy executor
+    # aliases, never a second permanent fleet or runtime-capacity authority.
+    _error(errors, getattr(delegation, "SPECIALIST_ROLE_SEMANTICS", "") == "BOUNDED_WORKLOAD_NOT_PERMANENT_AGENT", "specialist_role_semantics")
     _error(errors, set(registry_module.AGENT_REGISTRY) == set(runtime_mapping), "runtime_specialist_role_set")
     _error(errors, set(runtime_mapping.values()) <= EXPECTED_AGENTS, "runtime_specialist_owner_set")
     _error(errors, set(revenue_mapping.values()) <= EXPECTED_AGENTS, "revenue_specialist_owner_set")
@@ -361,7 +388,10 @@ def main() -> int:
             print(f"- {error}")
         return 1
     print("DEALIX_END_TO_END_COMPANY_ACCEPTANCE_V1=PASS")
-    print("agents=5")
+    print("legacy_executor_aliases=5")
+    print("fixed_five_authority=FALSE")
+    print("logical_agent_authority=AGENTIC_HOLDING_REGISTRY")
+    print("runtime_capacity=RESOURCE_GOVERNOR_PLUS_SESSION_FACTORY")
     print("runtime_specialist_roles=12")
     print("revenue_factory_specialist_roles=15")
     print("automation_plays=30")

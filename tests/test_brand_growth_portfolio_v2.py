@@ -7,6 +7,12 @@ import sys
 from pathlib import Path
 
 from dealix.commercial.brand_growth_portfolio import (
+    FIXED_FIVE_AUTHORITY,
+    LEGACY_ALIAS_SEMANTICS,
+    LEGACY_EXECUTOR_ALIASES,
+    LOGICAL_AGENT_AUTHORITY,
+    MAX_ACTIVE_GROWTH_BETS_SEMANTICS,
+    RUNTIME_CAPACITY_AUTHORITY,
     allocate_portfolio,
     build_content_opportunity,
     evaluate_proof_reuse,
@@ -182,9 +188,45 @@ def test_president_allocation_is_bounded_and_not_purchase_probability() -> None:
 
 
 def test_workloads_reuse_the_five_canonical_workers() -> None:
-    assert route_workload("DEEP_TECHNICAL_DEMAND")["worker"] == "dealix-engineer"
-    assert route_workload("PROOF_ADVOCACY_REFERRAL")["worker"] == "dealix-delivery"
+    routed = route_workload("DEEP_TECHNICAL_DEMAND")
+    assert routed["worker"] == "dealix-engineer"
+    assert routed["worker_alias"] == "dealix-engineer"
+    assert routed["worker_alias_semantics"] == LEGACY_ALIAS_SEMANTICS
+    assert routed["fixed_five_authority"] is False
+    assert FIXED_FIVE_AUTHORITY is False
+    assert routed["logical_agent_authority"] == LOGICAL_AGENT_AUTHORITY
+    assert routed["runtime_capacity_authority"] == RUNTIME_CAPACITY_AUTHORITY
+    assert set(LEGACY_EXECUTOR_ALIASES) == {
+        "dealix-pm",
+        "dealix-sales",
+        "dealix-content",
+        "dealix-delivery",
+        "dealix-engineer",
+    }
+    assert route_workload("PROOF_ADVOCACY_REFERRAL")["worker_alias"] == "dealix-delivery"
     assert route_workload("UNKNOWN")["status"] == "BLOCKED"
+
+
+def test_fixed_five_has_no_registry_or_capacity_authority() -> None:
+    assert LOGICAL_AGENT_AUTHORITY == "dealix.agentic_holding.runtime.build_current_registry"
+    assert RUNTIME_CAPACITY_AUTHORITY == "ResourceGovernor+Session Factory"
+    assert MAX_ACTIVE_GROWTH_BETS_SEMANTICS == "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY"
+    scored = score_portfolio_item(
+        {
+            "item_id": "alias-1",
+            "arm": "SEARCH_SEO_AEO",
+            "expected_verified_movement": 0.5,
+            "evidence": 0.8,
+            "urgency": 0.5,
+            "reuse": 0.5,
+            "founder_minutes": 10,
+            "agent_tool_cost": 1,
+            "risk": 0.2,
+            "capacity": 1,
+        }
+    )
+    assert scored["worker_alias_semantics"] == LEGACY_ALIAS_SEMANTICS
+    assert scored["fixed_five_authority"] is False
 
 
 def test_experiment_decisions_are_evidence_gated() -> None:

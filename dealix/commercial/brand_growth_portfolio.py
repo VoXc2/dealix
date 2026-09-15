@@ -1,9 +1,16 @@
 """Deterministic execution primitives for the Brand & Growth Portfolio V2.
 
-This module composes the existing Market Radar, canonical workers, channel
-registry and proof owners. It is deliberately read-only/draft-only: it cannot
-create relationship, consent, send, publish, quote, payment, proof or
-production authority.
+This module composes the existing Market Radar, legacy executor aliases,
+channel registry and proof owners. It is deliberately read-only/draft-only:
+it cannot create relationship, consent, send, publish, quote, payment, proof
+or production authority.
+
+Omega V3 authority: canonical logical-agent roster is the Agentic Holding
+current registry (``dealix.agentic_holding.runtime.build_current_registry``);
+runtime capacity belongs to ResourceGovernor + Session Factory. The five
+historical executor names below are legacy compatibility aliases only, never
+fleet-size or runtime-capacity authority. The portfolio Top-3 cap is an
+economic focus heuristic only.
 """
 
 from __future__ import annotations
@@ -52,6 +59,21 @@ GROWTH_ARMS = frozenset(
     }
 )
 
+LEGACY_EXECUTOR_ALIASES = (
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-content",
+    "dealix-delivery",
+    "dealix-engineer",
+)
+LEGACY_ALIAS_SEMANTICS = "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_ARCHITECTURE_AUTHORITY"
+LOGICAL_AGENT_AUTHORITY = "dealix.agentic_holding.runtime.build_current_registry"
+RUNTIME_CAPACITY_AUTHORITY = "ResourceGovernor+Session Factory"
+FIXED_FIVE_AUTHORITY = False
+MAX_ACTIVE_GROWTH_BETS_SEMANTICS = "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY"
+
+# Backward-compatible alias map only. Values are legacy executor aliases, not
+# canonical logical-agent roster, fleet-size, or runtime-capacity authority.
 CANONICAL_WORKERS = {
     "BRAND_AUTHORITY": "dealix-content",
     "WEBSITE_CONVERSION": "dealix-content",
@@ -371,6 +393,11 @@ def score_portfolio_item(item: Mapping[str, Any]) -> dict[str, Any]:
         "item_id": item_id,
         "arm": arm,
         "worker": CANONICAL_WORKERS.get(arm),
+        "worker_alias": CANONICAL_WORKERS.get(arm),
+        "worker_alias_semantics": LEGACY_ALIAS_SEMANTICS,
+        "fixed_five_authority": FIXED_FIVE_AUTHORITY,
+        "logical_agent_authority": LOGICAL_AGENT_AUTHORITY,
+        "runtime_capacity_authority": RUNTIME_CAPACITY_AUTHORITY,
         "authority": _authority(),
     }
     if errors:
@@ -423,6 +450,9 @@ def allocate_portfolio(items: list[Mapping[str, Any]], *, limit: int = 5) -> dic
     return {
         "status": "READ_ONLY",
         "limit": limit,
+        "limit_semantics": MAX_ACTIVE_GROWTH_BETS_SEMANTICS,
+        "runtime_capacity_authority": RUNTIME_CAPACITY_AUTHORITY,
+        "fixed_five_authority": FIXED_FIVE_AUTHORITY,
         "items": accepted[:limit],
         "overflow_count": max(0, len(accepted) - limit),
         "rejected": rejected,
@@ -456,7 +486,12 @@ def validate_experiment(experiment: Mapping[str, Any]) -> list[str]:
 
 
 def route_workload(arm: str) -> dict[str, Any]:
-    """Map an arm to an existing canonical worker, never a new agent."""
+    """Map an arm to a legacy executor alias, never a new agent/fleet/scheduler.
+
+    The returned ``worker`` value is a compatibility alias only. Canonical
+    logical-agent authority is the Agentic Holding registry; runtime capacity
+    belongs to ResourceGovernor + Session Factory.
+    """
 
     normalized = _text(arm).upper()
     if normalized not in GROWTH_ARMS:
@@ -470,6 +505,11 @@ def route_workload(arm: str) -> dict[str, Any]:
         "arm": normalized,
         "status": "INTERNAL_WORKLOAD",
         "worker": CANONICAL_WORKERS[normalized],
+        "worker_alias": CANONICAL_WORKERS[normalized],
+        "worker_alias_semantics": LEGACY_ALIAS_SEMANTICS,
+        "fixed_five_authority": FIXED_FIVE_AUTHORITY,
+        "logical_agent_authority": LOGICAL_AGENT_AUTHORITY,
+        "runtime_capacity_authority": RUNTIME_CAPACITY_AUTHORITY,
         "new_permanent_agent": False,
         "new_scheduler": False,
         "authority": _authority(),
@@ -479,6 +519,12 @@ def route_workload(arm: str) -> dict[str, Any]:
 __all__ = [
     "AUTHORITY_KEYS",
     "CANONICAL_WORKERS",
+    "FIXED_FIVE_AUTHORITY",
+    "LEGACY_ALIAS_SEMANTICS",
+    "LEGACY_EXECUTOR_ALIASES",
+    "LOGICAL_AGENT_AUTHORITY",
+    "MAX_ACTIVE_GROWTH_BETS_SEMANTICS",
+    "RUNTIME_CAPACITY_AUTHORITY",
     "CUSTOMER_PROOF_CLASSES",
     "EXPERIMENT_DECISIONS",
     "GROWTH_ARMS",
