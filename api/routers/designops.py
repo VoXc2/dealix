@@ -74,7 +74,7 @@ class ProposalPageRequest(BaseModel):
     scope_ar: str = ""
     scope_en: str = ""
     deliverables: list[str] = Field(default_factory=list)
-    timeline_days: int = 30
+    timeline_days: int | None = None
     price_band_sar: str = "quote_after_discovery"
     blocked_actions: list[str] = Field(default_factory=list)
     proof_plan: list[str] = Field(default_factory=list)

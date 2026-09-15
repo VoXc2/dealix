@@ -1,6 +1,6 @@
 """Current-authority bilingual Revenue Command Pilot proposal generator.
 
-The public/first-launch Dealix motion is one quote-only 30-day Pilot. Legacy
+The public/first-launch Dealix motion is one quote-only, customer-specific Pilot. Legacy
 ``recommended_service`` and ``price_band_sar`` inputs remain in the function
 signature for API compatibility, but they cannot create a public/fixed-price
 proposal. Every artifact remains internal-review / approval-required and has no
@@ -20,7 +20,7 @@ from auto_client_acquisition.designops.generators.markdown_renderer import (
 _FOUNDER_SEND_RULE_AR = "المؤسس يجب أن يرسل هذا العرض يدويًا — لا إرسال آلي."
 _FOUNDER_SEND_RULE_EN = "Founder must manually send this proposal — no auto-send."
 CURRENT_SERVICE = "Revenue Command Pilot"
-CURRENT_TIMELINE_DAYS = 30
+CURRENT_TIMELINE_DAYS: None = None
 PRICE_AUTHORITY = "quote_after_discovery"
 
 _RETIRED_INPUT_TOKENS = (
@@ -53,12 +53,12 @@ def generate_proposal_page(
     scope_ar: str,
     scope_en: str,
     deliverables: list[str],
-    timeline_days: int,
+    timeline_days: int | None,
     price_band_sar: str,
     blocked_actions: list[str],
     proof_plan: list[str],
 ) -> dict[str, Any]:
-    """Compose an internal-review proposal for the current 30-day Pilot.
+    """Compose an internal-review proposal for the current customer-specific Pilot.
 
     ``recommended_service``, ``timeline_days`` and ``price_band_sar`` are
     accepted only to avoid breaking existing callers. The artifact normalizes
@@ -118,12 +118,12 @@ def generate_proposal_page(
             "title": "المنتج والمسار الحالي",
             "body": (
                 "Dealix — Saudi-first AI Business Operating System. "
-                "الحركة المدفوعة الأولى: Revenue Command Pilot لمدة 30 يومًا فقط."
+                "الحركة المدفوعة الأولى: Revenue Command Pilot بنطاق ومدة ومعايير قبول خاصة بالعميل بعد qualified discovery."
             ),
         },
         {"title": "النطاق", "body": scope_ar or "—"},
         {"title": "المخرجات", "items": current_deliverables},
-        {"title": "المدة", "body": "30 يومًا"},
+        {"title": "المدة", "body": "تُحدد لكل عميل بعد qualified discovery واعتماد النطاق ومعايير القبول"},
         {
             "title": "السعر",
             "body": (
@@ -173,12 +173,12 @@ def generate_proposal_page(
             "title": "Current product path",
             "body": (
                 "Dealix — Saudi-first AI Business Operating System. "
-                "The first paid motion is one 30-day Revenue Command Pilot."
+                "The first paid motion is a Revenue Command Pilot with customer-specific scope, duration, and acceptance criteria after qualified discovery."
             ),
         },
         {"title": "Scope", "body": scope_en or "-"},
         {"title": "Deliverables", "items": current_deliverables},
-        {"title": "Timeline", "body": "30 days"},
+        {"title": "Timeline", "body": "Customer-specific after qualified discovery and approval of scope and acceptance criteria"},
         {
             "title": "Price",
             "body": (
@@ -228,7 +228,7 @@ def generate_proposal_page(
         f"customer_handle={customer_handle}",
         "launch_authority=revenue_command_pilot_30d",
         "price_authority=customer_specific_quote_after_qualified_discovery",
-        "timeline_days=30",
+        "duration_authority=customer_specific_after_qualified_discovery",
     ]
 
     md_full = render_artifact_markdown(
@@ -261,7 +261,7 @@ def generate_proposal_page(
     markdown_ar = (
         f"# {title_ar}\n\n"
         f"{scope_ar or '—'}\n\n"
-        "Revenue Command Pilot — 30 يومًا — Quote خاص بالعميل بعد Discovery.\n\n"
+        "Revenue Command Pilot — مدة ونطاق ومعايير قبول خاصة بالعميل — Quote بعد Discovery.\n\n"
         f"> {_FOUNDER_SEND_RULE_AR}\n"
         "> لا live charge — لا وعد بإيراد أو ROI.\n"
     )

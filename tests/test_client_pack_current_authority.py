@@ -31,7 +31,7 @@ def test_client_pack_normalizes_legacy_offer_and_drops_contact_data() -> None:
 
     assert pack["offer_id"] == "revenue_command_pilot_30d"
     assert pack["recommended_service"] == "Revenue Command Pilot"
-    assert pack["timeline_days"] == 30
+    assert pack["timeline_days"] is None
     assert pack["price_band_sar"] == "quote_after_discovery"
     assert pack["legacy_offer_id_input"] == "growth_starter"
     assert pack["safe_to_send"] is False
@@ -65,7 +65,8 @@ def test_active_client_pack_runbook_has_no_retired_price_or_offer_path() -> None
         ROOT / "docs/commercial/ops_client_pack/dealix_ops_runbook_ar.md"
     ).read_text(encoding="utf-8")
 
-    assert "30-day Revenue Command Pilot" in runbook
+    assert "نطاق ومدة ومعايير قبول خاصة بالعميل" in runbook
+    assert "30-day Revenue Command Pilot" not in runbook
     assert "customer-specific quote" in runbook
     assert "STOP / EXPAND / REDESIGN" in runbook
     assert "public fixed price" in runbook

@@ -12,7 +12,7 @@ def test_proposal_request_default_is_current_paid_motion() -> None:
     request = ProposalPageRequest(customer_handle="ACME")
 
     assert request.recommended_service == "revenue_command_pilot_30d"
-    assert request.timeline_days == 30
+    assert request.timeline_days is None
     assert request.price_band_sar == "quote_after_discovery"
 
 
@@ -36,7 +36,7 @@ def test_designops_proposal_normalizes_legacy_price_fields() -> None:
     blob = body["markdown"] + "\n" + body["html"]
 
     assert manifest["recommended_service"] == "Revenue Command Pilot"
-    assert manifest["timeline_days"] == 30
+    assert manifest["timeline_days"] is None
     assert manifest["price_band_sar"] == "quote_after_discovery"
     assert manifest["quote_only"] is True
     assert manifest["safe_to_send"] is False

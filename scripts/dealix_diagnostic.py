@@ -130,7 +130,7 @@ def _legacy_render_markdown(
     if summary_ar:
         md.append(f"> {summary_ar}")
     md.append("")
-    md.append("**نطاق Revenue Command Pilot لمدة 30 يومًا — يحدد بعد discovery:**")
+    md.append("**نطاق ومدة ومعايير قبول Revenue Command Pilot — خاصة بالعميل بعد discovery:**")
     for s in services[:7]:
         sid = s.get("service_id", "?")
         name_ar = s.get("name_ar", sid)
@@ -178,7 +178,7 @@ def _legacy_render_markdown(
     if summary_en:
         md.append(f"> {summary_en}")
     md.append("")
-    md.append("**30-day Revenue Command Pilot scope — defined after discovery:**")
+    md.append("**Revenue Command Pilot scope, duration, and acceptance criteria — customer-specific after discovery:**")
     for s in services[:7]:
         sid = s.get("service_id", "?")
         name_en = s.get("name_en", sid)

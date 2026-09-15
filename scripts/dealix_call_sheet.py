@@ -87,17 +87,17 @@ GENERIC_TALKING_POINTS = [
      "en": "Start with a free diagnostic — a clear picture of your ops capability, no commitment."},
     {"ar": "كل إجراء خارجي بموافقتك أولاً — لا أتمتة بلا مراجعة.",
      "en": "Every external action needs your approval first — no automation without review."},
-    {"ar": "نبدأ بـ discovery، ثم نطاق Revenue Command Pilot لمدة 30 يومًا وquote موثق.",
-     "en": "We start with discovery, then a 30-day Revenue Command Pilot scope and documented quote."},
+    {"ar": "نبدأ بـ discovery، ثم نطاق ومدة ومعايير قبول Revenue Command Pilot خاصة بالعميل وquote موثق.",
+     "en": "We start with discovery, then a customer-specific Revenue Command Pilot scope, duration, acceptance criteria, and documented quote."},
 ]
 
 # 5-rung ladder labels (bilingual).
 RUNGS = {
     "diagnostic": {"ar": "تشخيص مجاني (0 ر.س)", "en": "Free Diagnostic (0 SAR)"},
-    "sprint": {"ar": "Revenue Command Pilot (30 يومًا، quote بعد discovery)", "en": "Revenue Command Pilot (30 days, quote after discovery)"},
-    "data_pack": {"ar": "Data-to-Revenue Pack (1,500 ر.س)", "en": "Data-to-Revenue Pack (1,500 SAR)"},
-    "managed": {"ar": "Managed Revenue Ops (2,999–4,999 ر.س/شهر)", "en": "Managed Revenue Ops (2,999–4,999 SAR/mo)"},
-    "custom": {"ar": "Custom AI Project (5,000–25,000 ر.س)", "en": "Custom AI Project (5,000–25,000 SAR)"},
+    "sprint": {"ar": "Revenue Command Pilot (مدة ونطاق خاصان بالعميل، quote بعد discovery)", "en": "Revenue Command Pilot (customer-specific duration and scope, quote after discovery)"},
+    "data_pack": {"ar": "Data-to-Revenue Pack (quote خاص بالعميل بعد discovery)", "en": "Data-to-Revenue Pack (customer-specific quote after discovery)"},
+    "managed": {"ar": "Managed Revenue Ops (quote وشروط خاصة بالعميل بعد discovery)", "en": "Managed Revenue Ops (customer-specific quote and terms after discovery)"},
+    "custom": {"ar": "Custom AI Project (quote خاص بالعميل بعد discovery)", "en": "Custom AI Project (customer-specific quote after discovery)"},
 }
 
 

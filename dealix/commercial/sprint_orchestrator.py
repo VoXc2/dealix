@@ -280,7 +280,7 @@ def _run_day_4(ctx: SprintContext) -> SprintDayResult:
             "lang": "ar",
             "body": (
                 f"فريق {customer_ar}، نبدأ بتشخيص محدود لقطاع {sector}. بعد discovery "
-                f"يمكن إعداد نطاق Revenue Command Pilot لمدة 30 يومًا وquote موثق."
+                f"يمكن إعداد نطاق ومدة ومعايير قبول Revenue Command Pilot خاصة بالعميل وquote موثق."
             ),
             "channel": "whatsapp",
             "status": "draft_only",
@@ -290,7 +290,7 @@ def _run_day_4(ctx: SprintContext) -> SprintDayResult:
             "lang": "en",
             "body": (
                 f"Hi {customer}, we start with a bounded diagnostic for {sector} businesses. "
-                f"After discovery, we can prepare a 30-day Revenue Command Pilot scope and documented quote."
+                f"After discovery, we can prepare a customer-specific Revenue Command Pilot scope, duration, acceptance criteria, and documented quote."
             ),
             "channel": "whatsapp",
             "status": "draft_only",
@@ -306,11 +306,11 @@ def _run_day_4(ctx: SprintContext) -> SprintDayResult:
                 "subject_ar": f"جلسة اكتشاف لمسار الإيراد لدى {customer_ar}",
                 "body_en": (
                     f"We've identified {pain}. "
-                    f"After discovery, we can prepare a 30-day Pilot scope and documented quote."
+                    f"After discovery, we can prepare a customer-specific Pilot scope, duration, acceptance criteria, and documented quote."
                 ),
                 "body_ar": (
                     f"رصدنا {pain_ar}. "
-                    f"بعد discovery يمكن إعداد نطاق Pilot لمدة 30 يومًا وquote موثق."
+                    f"بعد discovery يمكن إعداد نطاق Pilot ومدة ومعايير قبول خاصة بالعميل وquote موثق."
                 ),
             },
         ],
@@ -319,7 +319,7 @@ def _run_day_4(ctx: SprintContext) -> SprintDayResult:
 
     proposal_md = (
         f"# Revenue Command Pilot — {customer}\n\n"
-        "Draft scope only. A 30-day operating scope and documented quote may be "
+        "Draft scope only. A customer-specific scope, duration, acceptance criteria, and documented quote may be "
         "prepared after discovery. No payment link or external send is allowed "
         "before explicit approval."
     )

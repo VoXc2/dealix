@@ -66,12 +66,12 @@ export const hubspotLaunchTasks = [
 ];
 
 export const hubspotServiceCatalog = [
-  ["Revenue Command Room Sprint", "12,000 SAR", "one-time then retainer"],
-  ["Company Brain Sprint", "25,000 SAR", "one-time then retainer"],
-  ["Follow-up Recovery Sprint", "9,000 SAR", "one-time then retainer"],
-  ["AI Sales Agent Setup", "15,000 SAR", "setup + monthly"],
-  ["AI Trust and Governance OS", "15,000 SAR", "setup + audit retainer"],
-  ["Client Delivery OS", "18,000 SAR", "setup + monthly"],
+  ["Revenue Command Room Sprint", "Customer-specific quote", "scope/terms after qualified discovery"],
+  ["Company Brain Sprint", "Customer-specific quote", "scope/terms after qualified discovery"],
+  ["Follow-up Recovery Sprint", "Customer-specific quote", "scope/terms after qualified discovery"],
+  ["AI Sales Agent Setup", "Customer-specific quote", "scope/terms after qualified discovery"],
+  ["AI Trust and Governance OS", "Customer-specific quote", "scope/terms after qualified discovery"],
+  ["Client Delivery OS", "Customer-specific quote", "scope/terms after qualified discovery"],
 ];
 
 export const hubspotCommercialPayload = {

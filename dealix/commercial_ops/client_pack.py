@@ -1,4 +1,4 @@
-"""Per-company Revenue Command Pilot pack — internal review only, no auto-send."""
+"""Per-company Revenue Command Pilot pack with customer-specific scope/duration — internal review only, no auto-send."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ CLIENT_PACKS_DIR = REPO_ROOT / "data" / "client_packs"
 LEGACY_DECK_TEMPLATE = REPO_ROOT / "docs/commercial/ops_client_pack/dealix_ops_sales_kit_ar.pptx"
 RUNBOOK_PATH = REPO_ROOT / "docs/commercial/ops_client_pack/dealix_ops_runbook_ar.md"
 CURRENT_SERVICE = "Revenue Command Pilot"
-CURRENT_TIMELINE_DAYS = 30
+CURRENT_TIMELINE_DAYS: None = None
 PRICE_AUTHORITY = "quote_after_discovery"
 DECK_TEMPLATE_STATUS = "quarantined_until_current_commercial_authority_review"
 
@@ -76,12 +76,12 @@ def build_client_pack_from_row(row: dict[str, str], *, write_disk: bool = True) 
     segment = (row.get("segment") or "b2b").strip()
 
     scope_ar = (
-        f"Revenue Command Pilot محكوم لمدة 30 يومًا لـ {company} ({segment}): "
+        f"Revenue Command Pilot محكوم بنطاق ومدة ومعايير قبول خاصة بالعميل لـ {company} ({segment}): "
         f"تحويل {pain or 'فجوة إيرادية/تشغيلية محددة'} إلى workflow واحد قابل للقياس، "
         "مع baseline ومصدر وowner وحدود بيانات وموافقات ومعايير قبول وProof."
     )
     scope_en = (
-        f"Governed 30-day Revenue Command Pilot for {company} ({segment}): turn "
+        f"Governed customer-specific Revenue Command Pilot for {company} ({segment}): turn "
         f"{pain or 'one specific revenue/operating gap'} into one measurable workflow "
         "with a baseline/source, owner, data boundary, approvals, acceptance criteria, and Proof."
     )
@@ -121,7 +121,7 @@ def build_client_pack_from_row(row: dict[str, str], *, write_disk: bool = True) 
             f"2. Pain hypothesis — {pain or 'TBD from qualified discovery'}",
             f"3. Segment — {segment}",
             "4. Product — Dealix · Revenue + Proof + Command",
-            "5. Pilot — one workflow · 30 days · quote after qualified discovery",
+            "5. Pilot — one workflow · customer-specific duration and acceptance criteria · quote after qualified discovery",
             "6. Proof — weekly + final evidence and stop / expand / redesign decision",
             "",
             "Contact: intentionally not copied into this minimum-data pack.",

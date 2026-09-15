@@ -397,12 +397,12 @@ async def revenue_machine_run(body: dict[str, Any] = Body(default={})) -> dict[s
             msg_ar = (
                 f"{brief.best_first_sentence}\n\n"
                 f"{brief.dealix_fit}\n\n"
-                "نبدأ بتشخيص مختصر، ثم نجهّز نطاق Revenue Command Pilot لمدة 30 يومًا وquote موثقًا. "
+                "نبدأ بتشخيص مختصر، ثم نجهّز نطاق Revenue Command Pilot بمدة ومعايير قبول خاصة بالعميل وquote موثقًا بعد discovery. "
                 "تناسبكم 20 دقيقة هذا الأسبوع؟"
             )
             msg_en = (
                 f"Quick reach-out about {cand['company_name']}. "
-                f"{brief.dealix_fit}. We start with discovery, then prepare a 30-day Pilot scope and documented quote — "
+                f"{brief.dealix_fit}. We start with discovery, then prepare a customer-specific Pilot scope, duration, acceptance criteria, and documented quote — "
                 "open to a 20-min chat this week?"
             )
             ld = LinkedInDraftRecord(
@@ -437,7 +437,7 @@ async def revenue_machine_run(body: dict[str, Any] = Body(default={})) -> dict[s
                 f"شركتكم في {cand.get('sector_ar') or cand.get('sector') or 'القطاع'} "
                 f"بـ {cand.get('city') or 'السعودية'} — "
                 f"{brief.pain_hypothesis}\n\n"
-                "نبدأ بتشخيص مختصر لفهم المسار، ثم نجهّز نطاق Pilot لمدة 30 يومًا للمراجعة، بدون وعد نتائج.\n\n"
+                "نبدأ بتشخيص مختصر لفهم المسار، ثم نجهّز نطاق Pilot ومدة ومعايير قبول خاصة بالعميل للمراجعة، بدون وعد نتائج.\n\n"
                 f"تناسبكم 20 دقيقة هذا الأسبوع نوضح؟"
             )
             call_scripts_out.append({

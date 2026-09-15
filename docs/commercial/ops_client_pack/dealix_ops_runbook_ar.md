@@ -3,7 +3,7 @@
 > **Internal review only.** هذا الملف يجهز Discovery وScope وProof؛ لا يرسل عرضًا، لا يصدر Quote/Invoice/Payment request، ولا يمنح صلاحية تواصل أو نشر.
 
 ## الهدف
-تحويل مشكلة إيرادية/تشغيلية واحدة إلى **30-day Revenue Command Pilot** محكوم وقابل للقياس، ثم اتخاذ قرار `STOP / EXPAND / REDESIGN` من الأدلة.
+تحويل مشكلة إيرادية/تشغيلية واحدة إلى **Revenue Command Pilot** بنطاق ومدة ومعايير قبول خاصة بالعميل، ثم اتخاذ قرار `STOP / EXPAND / REDESIGN` من الأدلة.
 
 ## المنتج والمسار المعتمد
 
@@ -15,7 +15,7 @@
 Free Mini Diagnostic
 → qualified discovery
 → customer-specific quote بعد الموافقة
-→ 30-day Revenue Command Pilot
+→ Revenue Command Pilot بنطاق ومدة ومعايير قبول خاصة بالعميل
 → weekly + final Proof
 → STOP / EXPAND / REDESIGN
 ```
@@ -51,7 +51,7 @@ Free Mini Diagnostic
 
 ## Scope المقترح
 
-**Revenue Command Pilot — 30 يومًا**
+**Revenue Command Pilot — نطاق ومدة ومعايير قبول خاصة بالعميل**
 
 - Workflow واحد فقط.
 - Baseline + first-party source، أو Missing-evidence state صريح.
@@ -129,8 +129,8 @@ Activity
 [ ] acceptance_criteria_defined
 [ ] customer_specific_quote_approved
 [ ] start/payment condition approved for this customer
-[ ] weekly_proof_pack_x4
-[ ] weekly_executive_readout_x4
+[ ] proof_cadence_defined_in_approved_scope
+[ ] executive_readout_cadence_defined_in_approved_scope
 [ ] final_proof_pack_delivered
 [ ] outcome_review_stop_expand_or_redesign
 [ ] real-source CRM/KPI sync where applicable

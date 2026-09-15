@@ -322,13 +322,13 @@ class WarmIntroGenerator:
                 "body_ar": (
                     f"مرحبًا {name}،\n\nDealix تبدأ بتشخيص مختصر لفهم مشكلة تشغيل واحدة قبل تحديد النطاق أو السعر. "
                     f"بالنسبة لـ {company}، الفرضية الأولية هي: {pain}.\n\n"
-                    "بعد جلسة الاكتشاف نجهّز نطاق Revenue Command Pilot لمدة 30 يومًا وquote موثقًا للمراجعة؛ لا نعد بنتيجة إيراد.\n\n"
+                    "بعد جلسة الاكتشاف نجهّز نطاق Revenue Command Pilot ومدة ومعايير قبول خاصة بالعميل وquote موثقًا للمراجعة؛ لا نعد بنتيجة إيراد.\n\n"
                     f"هل يناسبك تشخيص مختصر؟\n\n{founder}"
                 ),
                 "body_en": (
                     f"Hi {name},\n\nDealix starts with a bounded diagnostic to understand one operating problem before setting scope or price. "
                     f"For {company}, the initial hypothesis is: {pain}.\n\n"
-                    "After discovery, we prepare a 30-day Revenue Command Pilot scope and documented quote for review; we do not promise revenue outcomes.\n\n"
+                    "After discovery, we prepare a customer-specific Revenue Command Pilot scope, duration, acceptance criteria, and documented quote for review; we do not promise revenue outcomes.\n\n"
                     f"Would a short diagnostic be useful?\n\n{founder}"
                 ),
             },

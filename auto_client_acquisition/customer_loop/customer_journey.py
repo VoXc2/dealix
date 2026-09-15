@@ -27,7 +27,7 @@ _NEXT_ACTIONS_AR: dict[JourneyState, list[str]] = {
     ],
     JourneyState.DIAGNOSTIC_SENT: [
         "تابَع رد العميل خلال 48 ساعة (مرّة فقط، لا spam).",
-        "إذا اهتمّ، جهّز نطاق Pilot لمدة 30 يومًا وquote موثقًا بعد discovery.",
+        "إذا اهتمّ، جهّز نطاق Pilot ومدة ومعايير قبول خاصة بالعميل وquote موثقًا بعد discovery.",
         "وثّق التقييم في docs/proof-events/<slug>.json.",
     ],
     JourneyState.PILOT_OFFERED: [
@@ -42,7 +42,7 @@ _NEXT_ACTIONS_AR: dict[JourneyState, list[str]] = {
     ],
     JourneyState.PAID_OR_COMMITTED: [
         "افتح ServiceSession للعميل — Top 5 services واحدة بناء على القطاع.",
-        "أرسل خطّة 7 أيام للعميل (مسوّدة، تحتاج موافقتك).",
+        "حضّر خطّة التسليم الخاصة بالعميل (مسوّدة، تحتاج موافقتك).",
         "أنشئ ProofEvent: invoice_paid_or_committed.",
     ],
     JourneyState.IN_DELIVERY: [
@@ -61,7 +61,7 @@ _NEXT_ACTIONS_AR: dict[JourneyState, list[str]] = {
         "حدّد موعد جلسة upsell خلال أسبوعين.",
     ],
     JourneyState.UPSELL_RECOMMENDED: [
-        "اقترح Executive Growth OS بـ 2,999 ريال/شهر.",
+        "اقترح Executive Growth OS فقط عبر quote وشروط خاصة بالعميل بعد discovery.",
         "أو Partnership Growth إذا كان العميل وكالة.",
         "إذا رفض، انتقل لـ Nurture لمدّة 30 يوم.",
     ],
@@ -90,7 +90,7 @@ _NEXT_ACTIONS_EN: dict[JourneyState, list[str]] = {
     ],
     JourneyState.DIAGNOSTIC_SENT: [
         "Follow up once within 48h (single touch, never spam).",
-        "If interested, prepare a 30-day Pilot scope and documented quote after discovery.",
+        "If interested, prepare a customer-specific Pilot scope, duration, acceptance criteria, and documented quote after discovery.",
         "Record the assessment in docs/proof-events/<slug>.json.",
     ],
     JourneyState.PILOT_OFFERED: [
@@ -105,7 +105,7 @@ _NEXT_ACTIONS_EN: dict[JourneyState, list[str]] = {
     ],
     JourneyState.PAID_OR_COMMITTED: [
         "Open a ServiceSession (one of Top 5 by sector).",
-        "Send the 7-day plan to the customer (draft; needs your approval).",
+        "Prepare the customer-specific delivery plan for review (draft; needs your approval).",
         "Create ProofEvent: invoice_paid_or_committed.",
     ],
     JourneyState.IN_DELIVERY: [
@@ -124,7 +124,7 @@ _NEXT_ACTIONS_EN: dict[JourneyState, list[str]] = {
         "Schedule an upsell call within 2 weeks.",
     ],
     JourneyState.UPSELL_RECOMMENDED: [
-        "Offer Executive Growth OS at 2,999 SAR/month.",
+        "Offer Executive Growth OS only through a customer-specific quote and terms after discovery.",
         "Or Partnership Growth if the customer is an agency.",
         "If declined, move to Nurture for 30 days.",
     ],

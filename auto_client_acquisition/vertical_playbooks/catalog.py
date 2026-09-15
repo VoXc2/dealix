@@ -76,8 +76,8 @@ _AGENCY = Playbook(
         "Too many low-quality leads",
         "High ops cost vs average margins",
     ],
-    best_first_offer_ar="Discovery → Revenue Command Pilot لمدة 30 يومًا وquote موثق.",
-    best_first_offer_en="Discovery → 30-day Revenue Command Pilot with documented quote.",
+    best_first_offer_ar="Discovery → Revenue Command Pilot بنطاق ومدة ومعايير قبول خاصة بالعميل وquote موثق.",
+    best_first_offer_en="Discovery → customer-specific Revenue Command Pilot scope, duration, acceptance criteria, and documented quote.",
     diagnostic_questions_ar=[
         "كم عميل B2B لديكم حالياً، ومتوسّط حجم العقد الشهري؟",
         "ما متوسّط زمن الردّ على lead جديد؟",
@@ -100,7 +100,7 @@ _AGENCY = Playbook(
     ),
     proof_metric="qualified_opportunities_per_pilot_week",
     blocked_actions=["send_cold_whatsapp", "auto_dm_linkedin", "buy_followers"],
-    upsell_path="Executive Growth OS 2,999 SAR/mo بعد أوّل Proof Pack موقَّع.",
+    upsell_path="Executive Growth OS via customer-specific quote/terms after the first signed Proof Pack.",
 )
 
 _B2B_SERVICES = Playbook(
@@ -145,7 +145,7 @@ _B2B_SERVICES = Playbook(
     ),
     proof_metric="pipeline_visibility_score_delta",
     blocked_actions=["send_cold_whatsapp", "auto_dm_linkedin"],
-    upsell_path="Data to Revenue 1,500 SAR (one-shot) → Executive Growth OS recurring.",
+    upsell_path="Data to Revenue via customer-specific quote → Executive Growth OS under separately approved customer-specific terms.",
 )
 
 _SAAS = Playbook(
@@ -195,7 +195,7 @@ _SAAS = Playbook(
     ),
     proof_metric="trial_to_paid_conversion_delta",
     blocked_actions=["send_cold_whatsapp", "auto_dm_linkedin", "fake_trial_users"],
-    upsell_path="Executive Growth OS 2,999 SAR/mo + Partnership Growth.",
+    upsell_path="Executive Growth OS + Partnership Growth via customer-specific quote/terms after discovery.",
 )
 
 _TRAINING_CONSULTING = Playbook(
@@ -214,8 +214,8 @@ _TRAINING_CONSULTING = Playbook(
         "CEO-dependent sales",
         "Hard to repeat the offer after a successful first pilot",
     ],
-    best_first_offer_ar="Discovery → Pilot لمدة 30 يومًا لبناء Proof Pack من نطاق معتمد.",
-    best_first_offer_en="Discovery → 30-day Pilot to build a Proof Pack from an approved scope.",
+    best_first_offer_ar="Discovery → Pilot بنطاق ومدة ومعايير قبول خاصة بالعميل لبناء Proof Pack من نطاق معتمد.",
+    best_first_offer_en="Discovery → customer-specific Pilot scope and duration to build a Proof Pack from approved acceptance criteria.",
     diagnostic_questions_ar=[
         "كم برنامج/استشارة سلّمتم آخر 12 شهر؟",
         "ما درجة رضا العملاء (إن وُجدت)؟ هل لديكم cases مكتوبة؟",
@@ -238,7 +238,7 @@ _TRAINING_CONSULTING = Playbook(
     ),
     proof_metric="proof_pack_signed_per_quarter",
     blocked_actions=["send_cold_whatsapp", "fake_testimonials"],
-    upsell_path="Executive Growth OS 2,999 SAR/mo + Partnership Growth.",
+    upsell_path="Executive Growth OS + Partnership Growth via customer-specific quote/terms after discovery.",
 )
 
 _LOCAL_SERVICES = Playbook(
@@ -281,7 +281,7 @@ _LOCAL_SERVICES = Playbook(
     ),
     proof_metric="reply_time_minutes_p50_delta",
     blocked_actions=["send_cold_whatsapp", "buy_phone_lists", "scrape_local_directories"],
-    upsell_path="Growth Starter 990 SAR (after S1) → Executive Growth OS later.",
+    upsell_path="Growth Starter via customer-specific quote after discovery → Executive Growth OS only under separately approved terms.",
 )
 
 
