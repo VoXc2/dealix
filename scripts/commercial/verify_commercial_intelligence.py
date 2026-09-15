@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 from datetime import UTC, datetime
 from decimal import Decimal
@@ -39,12 +40,44 @@ REQUIRED = (
     "data/commercial_intelligence/ksa_source_registry.yaml",
     "data/commercial_intelligence/dealix_department_objectives.yaml",
     "docs/commercial/DEALIX_SAUDI_COMMERCIAL_STRATEGY_2026_AR.md",
-    "vercel.json",
 )
+
+PROVIDER_AUTHORITY_SOURCE = "dealix/config/railway_services.json"
+PROVIDER_REQUIRED = {
+    "railway": ("railway.json", "dealix/config/railway_services.json"),
+    "selfhost": (
+        "deploy/selfhost/compose.yml",
+        "scripts/ops/verify_selfhosted_production_plane.py",
+        "scripts/ops/verify_selfhost_production_cutover_contract.py",
+    ),
+}
+
+
+def resolve_provider_requirements(root: Path = ROOT) -> tuple[str, tuple[str, ...]]:
+    authority_path = root / PROVIDER_AUTHORITY_SOURCE
+    try:
+        payload = json.loads(authority_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"invalid provider authority source: {authority_path}") from exc
+    authority = payload.get("productionProviderAuthority")
+    if not isinstance(authority, dict):
+        raise RuntimeError("productionProviderAuthority is missing")
+    provider = str(authority.get("provider") or "").strip().lower()
+    required = PROVIDER_REQUIRED.get(provider)
+    if required is None:
+        raise RuntimeError(f"unsupported production provider authority: {provider or 'missing'}")
+    return provider, required
 
 
 def main() -> int:
-    missing = [path for path in REQUIRED if not (ROOT / path).is_file()]
+    try:
+        provider, provider_required = resolve_provider_requirements(ROOT)
+    except RuntimeError as exc:
+        print("COMMERCIAL_INTELLIGENCE_FOUNDATION=FAIL")
+        print(f"PROVIDER_AUTHORITY_ERROR={exc}")
+        return 1
+    required = (*REQUIRED, *provider_required)
+    missing = [path for path in required if not (ROOT / path).is_file()]
     if missing:
         print("COMMERCIAL_INTELLIGENCE_FOUNDATION=FAIL")
         for path in missing:
@@ -104,6 +137,8 @@ def main() -> int:
         print("COMMERCIAL_INTELLIGENCE_FOUNDATION=FAIL")
         return 1
     print("COMMERCIAL_INTELLIGENCE_FOUNDATION=PASS")
+    print(f"PRODUCTION_PROVIDER_AUTHORITY={provider}")
+    print("VERCEL_READINESS_AUTHORITY=false")
     print("PERSISTENCE_TABLES=7")
     print(f"COMMERCIAL_FINANCE_DECISION={finance.decision.value}")
     print("EXTERNAL_ACTIONS_EXECUTED=0")
