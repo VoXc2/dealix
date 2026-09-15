@@ -271,7 +271,7 @@ _OFFER_NOTES = {
     # ── Enterprise Transformation OS ──
     "ai_command_center_os": (
         "Enterprise. Real-time executive command layer. Setup 35K–120K + "
-        "8K–35K/mo (estimates). Founder-issued invoice. Starts with paid diagnostic."
+        "8K–35K/mo (estimates). Founder-issued invoice. Starts with free diagnostic."
     ),
     "whatsapp_revenue_os": (
         "Enterprise. WhatsApp → measurable pipeline. Setup 12K–45K + 3K–15K/mo "
