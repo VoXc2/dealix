@@ -40,9 +40,17 @@ def main() -> int:
     channels = load_json("data/commercial/channel_readiness_registry.json")
     require(channels.get("global_rules", {}).get("phone_is_not_global_blocker") is True, "phone global blocker")
     channel_map = channels.get("channels", {})
-    require(channel_map.get("whatsapp", {}).get("phone_dependency") is True, "WhatsApp phone dependency")
+    whatsapp = channel_map.get("whatsapp", {})
+    voice = channel_map.get("voice", {})
+    require(whatsapp.get("phone_dependency") is True, "WhatsApp phone dependency")
+    require(whatsapp.get("whatsapp_business_number_dependency") is True, "WhatsApp business-number dependency")
+    require(voice.get("phone_dependency") is True, "Voice provider/number dependency")
+    require(voice.get("whatsapp_business_number_dependency") is False, "Voice must not depend on WhatsApp business number")
+    require("provider_and_number" in voice.get("activation_evidence_required", []), "Voice provider_and_number evidence")
+    require("cold_autodialing" in voice.get("automation_blocked", []), "Voice cold autodialing blocked")
+    require("live_outbound_without_action_bound_authority" in voice.get("automation_blocked", []), "Voice live outbound authority gate")
     for name, row in channel_map.items():
-        if name != "whatsapp":
+        if name not in {"whatsapp", "voice"}:
             require(row.get("phone_dependency") is False, f"unexpected phone dependency: {name}")
     require(channels.get("activation_switches", {}).get("PAID_MEDIA") == "PAUSED_DRAFT_ONLY", "paid media authority")
 
@@ -99,7 +107,7 @@ def main() -> int:
     require("data/commercial/content_seed_pack_2026-08-28.json" in order, "seed pack absent from bootstrap")
     hard_rules = "\n".join(manifest.get("hard_rules", []))
     require("Current main authority overrides" in hard_rules, "Draft authority firewall")
-    require("Phone readiness may block WhatsApp only" in hard_rules, "phone isolation rule")
+    require("WhatsApp business-number readiness may block WhatsApp only" in hard_rules, "phone isolation rule")
     require("freshness recheck" in hard_rules, "event freshness rule")
 
     print("DEALIX_BRAND_DISTRIBUTION_WAVE2=PASS")

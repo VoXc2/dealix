@@ -37,7 +37,7 @@
     "Never promote social engagement or analytics into revenue, payment or customer proof.",
     "Never use legacy fixed pilot prices, guarantees or retired sprint language in current public content.",
     "Never bypass platform authorization, consent, suppression or specific approval gates.",
-    "Phone readiness may block WhatsApp only; it must not block other owned-channel preparation.",
+    "WhatsApp business-number readiness may block WhatsApp only; Voice has an independent provider_and_number dependency; neither may globally block other owned-channel preparation.",
     "Event facts in seed assets require freshness recheck before publication.",
     "If evidence or authority is missing, output UNKNOWN, BLOCK or REVIEW rather than guess."
   ],

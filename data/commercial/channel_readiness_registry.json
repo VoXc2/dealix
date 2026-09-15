@@ -1,6 +1,6 @@
 {
   "schema": "dealix.channel-readiness-registry.v2",
-  "version": "2026-09-15.1",
+  "version": "2026-09-15.2",
   "generated_at": "2026-09-15",
   "purpose": "Canonical source for Dealix channel role, readiness, activation gates, execution mode, identity dependencies, official capability and known blockers. This registry never grants relationship, consent, send, publish, spend, payment or production authority and contains no credentials.",
   "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
@@ -222,7 +222,8 @@
       "automation_allowed": ["research", "inbound_classification", "response_draft", "eligible_relationship_followup_draft", "discovery_coordination_draft", "customer_service_draft", "catalog_and_flow_asset_prep"],
       "automation_blocked": ["cold_whatsapp", "bulk_unsolicited_whatsapp", "suppressed_contact", "purchased_lists", "unbounded_followup", "silent_meta_to_unofficial_fallback", "live_send_without_action_bound_authority"],
       "activation_evidence_required": ["founder_or_business_identity_ready", "official_route_ready_for_api_automation", "purpose_scoped_consent_or_relationship_basis", "suppression_ready", "template_readiness_if_required", "inbound_and_opt_out_canary"],
-      "phone_dependency": true
+      "phone_dependency": true,
+      "whatsapp_business_number_dependency": true
     },
     "sms": {
       "priority": "C",
@@ -242,7 +243,8 @@
       "automation_allowed": ["inbound_reception", "intent_classification", "qualification", "calendar_handoff", "warm_transfer_context", "requested_callback_prep", "call_summary"],
       "automation_blocked": ["cold_autodialing", "recording_without_lawful_notice_or_consent", "binding_commercial_commitment", "live_outbound_without_action_bound_authority"],
       "activation_evidence_required": ["provider_and_number", "bilingual_ar_en_acceptance", "DTMF", "human_transfer", "recording_policy", "retention_policy", "cost_and_latency_benchmark"],
-      "phone_dependency": false
+      "phone_dependency": true,
+      "whatsapp_business_number_dependency": false
     },
     "rcs": {
       "priority": "D",
