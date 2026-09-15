@@ -27,8 +27,8 @@
 - [ ] Not qualified — stop / collect missing evidence
 - [ ] Qualified Discovery — validate problem, owner, baseline, data boundary, approvals, budget, timing
 
-> The next paid step, if discovery qualifies, is a **customer-specific quote**
-> for the **30-Day Revenue Command Pilot**. There is no public fixed Pilot price.
+> If discovery qualifies, the next paid step is a **customer-specific quote and approved delivery scope**.
+> Duration, acceptance criteria, and commercial terms are set only from the named-customer evidence; there is no public or default fixed duration/price.
 
 ## Confidence / مستوى الثقة
 | Finding | Confidence | Basis |

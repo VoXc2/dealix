@@ -13,7 +13,7 @@ Stages:
     4. Qualified Discovery + customer-specific Quote authority
     5. Customer workspace
     6. Payment/start-condition gate
-    7. 30-Day Pilot delivery contract
+    7. Customer-specific governed delivery contract
     8. Proof Pack truth separation
     9. STOP / EXPAND / REDESIGN outcome review
     10. Governance / zero external effects
@@ -136,7 +136,7 @@ def stage_quote_authority(ws: Path) -> Stage:
     if not all(item in offer_gate for item in required):
         stage.fail("first-launch quote authority drift")
         return stage
-    if "30-Day Revenue Command Pilot" not in scope or "No public fixed price" not in scope:
+    if "Customer-Specific Governed Delivery Scope" not in scope or "No public fixed price" not in scope or "Duration authority" not in scope:
         stage.fail("customer scope template drift")
         return stage
     stage.ok("quote is named-customer/discovery-specific; no public fixed-price authority")
@@ -163,16 +163,16 @@ def stage_payment_gate(ws: Path) -> Stage:
     if "Payment evidence: `UNKNOWN / VERIFIED`" not in proof:
         stage.fail("proof pack does not keep payment truth separate")
         return stage
-    stage.ok("dry run creates no payment marker; real Pilot start requires documented customer start/payment evidence as applicable")
+    stage.ok("dry run creates no payment marker; real delivery start requires documented customer start/payment evidence as applicable")
     return stage
 
 
 def stage_delivery(ws: Path) -> Stage:
-    stage = Stage("delivery", "30-Day Pilot Delivery")
+    stage = Stage("delivery", "Customer-Specific Governed Delivery")
     scope = (ws / "03_command_sprint_scope.md").read_text(encoding="utf-8")
     log = (ws / "09_delivery_log.md").read_text(encoding="utf-8")
-    if not all(token in scope for token in ("Week 1", "Week 2", "Week 3", "Week 4 / Day 30")):
-        stage.fail("30-day delivery cadence missing")
+    if not all(token in scope for token in ("Milestone 1", "Milestone 2", "Milestone 3", "Final milestone", "customer-specific after Qualified Discovery")):
+        stage.fail("customer-specific delivery authority/cadence missing")
         return stage
     if "dealix-delivery" not in log or "Approval ref" not in log:
         stage.fail("delivery log is not agent/receipt driven")

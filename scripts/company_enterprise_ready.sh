@@ -20,7 +20,15 @@ run_step() {
 
 cd "$ROOT_DIR"
 
-run_step "Python available" python --version
+if [ -x "$ROOT_DIR/.venv/bin/python" ]; then
+  PYTHON="$ROOT_DIR/.venv/bin/python"
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON="$(command -v python3)"
+else
+  fail "Python available"
+fi
+
+run_step "Python available" "$PYTHON" --version
 run_step "Node available" node --version
 run_step "Docker available" docker --version
 
@@ -29,7 +37,7 @@ run_step "Infra up (postgres+redis)" docker compose up -d postgres redis
 run_step "Revenue OS master verify" bash scripts/revenue_os_master_verify.sh
 
 run_step "Backend quick regression" \
-  pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py -q --no-cov
+  "$PYTHON" -m pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py -q --no-cov
 
 if [ -d frontend ]; then
   pushd frontend >/dev/null
