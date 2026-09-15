@@ -1896,6 +1896,41 @@ def run_job(
     executor = EXECUTORS.get(job.get("EXECUTION_MODE"), execute_deterministic)
     result = executor(job, _working_dir(job, repo_root))
 
+    # A modifying job may start on exact-current main and become stale while
+    # the executor is still running. Re-resolve live authority before any
+    # acceptance decision. Preserve the isolated worktree on drift so useful
+    # candidate changes can be reconciled onto the new live main; never clean
+    # or present stale work as accepted evidence.
+    post_run_base = verify_live_base_matches(job, repo_root)
+    if not post_run_base.get("ok"):
+        reason = post_run_base.get("reason", "live-base-guard: main advanced during executor")
+        stored_result = strip_ephemeral(result)
+        acceptance = {
+            "passed": False,
+            "detail": "post_executor_live_base_guard",
+            "checks": [{"kind": "live_base_current", "ok": False, "spec": post_run_base}],
+        }
+        job.setdefault("EVIDENCE", []).append({"at": now_iso(), "event": "execution", "result": stored_result})
+        job.setdefault("EVIDENCE", []).append({"at": now_iso(), "event": "acceptance", "result": acceptance})
+        job["RESULT"] = {"executor": stored_result, "acceptance": acceptance}
+        transition(job, "FAILED", reason=reason)
+        release_lease(root, job["JOB_ID"])
+        job["NEXT_ACTION"] = "reconcile preserved candidate onto exact-current main and re-accept"
+        save_job(root, job)
+        append_ledger(
+            root,
+            {
+                "event": "job_failed",
+                "JOB_ID": job["JOB_ID"],
+                "status": "FAILED",
+                "reason": reason,
+                "post_executor_live_base": post_run_base,
+                "worktree_preserved": job.get("WORKTREE"),
+            },
+        )
+        write_queue_snapshot(root)
+        return {"ok": False, "status": "FAILED", "reason": reason, "acceptance": acceptance, "job": job}
+
     transition(job, "VERIFYING", reason="verifying acceptance evidence")
     acceptance = run_acceptance_checks(job, _working_dir(job, repo_root), result)
     stored_result = strip_ephemeral(result)

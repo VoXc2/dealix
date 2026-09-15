@@ -1134,6 +1134,48 @@ def test_modifying_opencode_cli_is_forbidden(tmp_path: Path, monkeypatch) -> Non
     assert result["fallback_denied"] == "modifying-worktree-isolation"
 
 
+def test_run_job_rechecks_live_base_after_executor_before_acceptance(tmp_path: Path, monkeypatch) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    subprocess.run(["git", "init", "-q", str(repo)], check=True)
+    subprocess.run(["git", "-C", str(repo), "config", "user.email", "test@example.invalid"], check=True)
+    subprocess.run(["git", "-C", str(repo), "config", "user.name", "Dealix Test"], check=True)
+    (repo / "x.txt").write_text("base", encoding="utf-8")
+    subprocess.run(["git", "-C", str(repo), "add", "x.txt"], check=True)
+    subprocess.run(["git", "-C", str(repo), "commit", "-qm", "base"], check=True)
+    base = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+
+    state = tmp_path / "state"
+    wt = tmp_path / "worktree"
+    job = factory.make_job(
+        owner_agent="dealix-engineer", business_goal="post executor drift canary",
+        job_class="ENGINEERING", authority_level="L4", base_sha=base, modifying=True,
+        data_sensitivity="INTERNAL", executor={"prompt": "bounded"},
+        acceptance={"criteria": "marker", "checks": [{"kind": "stdout_contains", "text": "SHOULD_NOT_ACCEPT"}]},
+    )
+    assert factory.submit_job(state, job)["ok"] is True
+
+    live_values = iter([base, base, "new-live-main"])
+    monkeypatch.setattr(factory, "resolve_live_base_sha", lambda repo_root=None: next(live_values))
+    monkeypatch.setattr(factory, "create_worktree", lambda *_a, **_k: {"ok": True, "path": str(wt)})
+    wt.mkdir()
+    monkeypatch.setattr(factory, "verify_worktree_base_matches", lambda *_a, **_k: {"ok": True})
+    monkeypatch.setitem(factory.EXECUTORS, "opencode", lambda *_a, **_k: {
+        "ok": True, "returncode": 0, "stdout": "SHOULD_NOT_ACCEPT",
+        "stdout_full": "SHOULD_NOT_ACCEPT", "stderr": "", "duration_s": 1,
+    })
+    monkeypatch.setattr(factory, "cleanup_worktree", lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("stale candidate must be preserved")))
+
+    result = factory.run_job(state, job, repo_root=repo, worktree_root=tmp_path / "worktrees")
+    assert result["ok"] is False
+    assert result["status"] == "FAILED"
+    assert result["acceptance"]["detail"] == "post_executor_live_base_guard"
+    assert job["WORKTREE"] == str(wt)
+    assert Path(job["WORKTREE"]).exists()
+    assert job["NEXT_ACTION"] == "reconcile preserved candidate onto exact-current main and re-accept"
+    assert job["RESULT"]["acceptance"]["passed"] is False
+
+
 def test_modifying_daemon_timeout_never_falls_back_to_cli(tmp_path: Path, monkeypatch) -> None:
     job = _daemon_job(modifying=True)
     monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
