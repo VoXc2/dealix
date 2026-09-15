@@ -180,6 +180,7 @@ class ActionItem:
 class TargetCard:
     id: str
     company_name: str
+    target_type: str
     segment: str
     source: str
     evidence_refs: list[str]
@@ -188,6 +189,11 @@ class TargetCard:
     suppression_state: str
     commercial_stage: str
     pain_hypothesis: str
+    recommended_offer: str
+    why_now: str
+    current_draft_ref: str
+    pilot_fixed_fee_usd: str
+    payment_method: str
     score: int
     next_action: str
     approval_status: str
@@ -271,6 +277,13 @@ def _next_action(target: dict[str, Any]) -> str:
     evidence_refs = _string_list(target.get("evidence_refs"))
     source = str(target.get("source", "")).strip()
     stage = str(target.get("commercial_stage", "RESEARCH")).upper()
+    target_type = str(target.get("target_type", "")).strip().upper()
+
+    if target_type == "INBOUND_PAID_COLLABORATION_PILOT":
+        return (
+            "review the existing inbound collaboration draft against evidence-bound "
+            "scope/payment facts; any external reply requires exact action-bound approval"
+        )
 
     if not source or not evidence_refs:
         return "BLOCKED: add source and evidence references before commercial progression"
@@ -308,6 +321,7 @@ def build_target_cards(limit: int) -> list[TargetCard]:
             TargetCard(
                 id=f"TGT-{idx:04d}",
                 company_name=str(target.get("company_name", "Unknown company")),
+                target_type=str(target.get("target_type", "unknown")).strip().upper(),
                 segment=str(target.get("segment", "unknown")),
                 source=source or "UNKNOWN_NOT_EVIDENCE_BACKED",
                 evidence_refs=evidence_refs,
@@ -316,6 +330,15 @@ def build_target_cards(limit: int) -> list[TargetCard]:
                 suppression_state=suppression,
                 commercial_stage=stage,
                 pain_hypothesis=str(target.get("pain_hypothesis", "UNKNOWN_NOT_EVIDENCE_BACKED")),
+                recommended_offer=str(target.get("recommended_offer", "")).strip(),
+                why_now=str(target.get("why_now", "")).strip(),
+                current_draft_ref=str(target.get("current_draft_ref", "")).strip(),
+                pilot_fixed_fee_usd=(
+                    str(target.get("pilot_fixed_fee_usd", "")).strip()
+                    if target.get("pilot_fixed_fee_usd") is not None
+                    else ""
+                ),
+                payment_method=str(target.get("payment_method", "")).strip(),
                 score=score_target(target) if evidence_ready else 0,
                 next_action=_next_action(target),
                 approval_status=(
@@ -349,6 +372,24 @@ def build_actions() -> list[ActionItem]:
 
 
 def _draft_for(card: TargetCard) -> str:
+    if card.target_type == "INBOUND_PAID_COLLABORATION_PILOT":
+        details = [
+            f"INTERNAL REVIEW ONLY — inbound paid collaboration with {card.company_name}.",
+            "This is a founder-income collaboration lane, not Dealix customer revenue or a Dealix diagnostic offer.",
+        ]
+        if card.pilot_fixed_fee_usd:
+            details.append(f"Evidence-bound pilot fee: USD {card.pilot_fixed_fee_usd}.")
+        if card.payment_method:
+            details.append(f"Evidence-bound payment method: {card.payment_method}.")
+        if card.current_draft_ref:
+            details.append(
+                f"Review the existing current draft ref {card.current_draft_ref}; "
+                "do not replace it with generic Dealix sales copy."
+            )
+        else:
+            details.append("HOLD: no exact current draft reference; prepare review notes only, not a send body.")
+        return " ".join(details)
+
     return (
         f"السلام عليكم [الاسم]، معك مؤسس Dealix. لاحظت سياقًا مرتبطًا بـ {card.company_name} "
         f"وأبغى أتأكد من فرضية واحدة بدل ما أفترض: {card.pain_hypothesis}. "
@@ -367,12 +408,18 @@ def build_approval_queue(cards: list[TargetCard]) -> list[dict[str, Any]]:
             {
                 "target_id": card.id,
                 "company_name": card.company_name,
-                "action_type": "relationship_governed_follow_up_draft",
+                "target_type": card.target_type,
+                "action_type": (
+                    "inbound_paid_collaboration_review"
+                    if card.target_type == "INBOUND_PAID_COLLABORATION_PILOT"
+                    else "relationship_governed_follow_up_draft"
+                ),
                 "commercial_stage": card.commercial_stage,
                 "relationship_state": card.relationship_state,
                 "consent_state": card.consent_state,
                 "suppression_state": card.suppression_state,
                 "evidence_refs": card.evidence_refs,
+                "current_draft_ref": card.current_draft_ref,
                 "draft_text": _draft_for(card),
                 "risk_flags": [
                     "external_action_requires_action_bound_approval",
