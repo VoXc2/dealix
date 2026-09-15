@@ -19,9 +19,9 @@ services:
       BASE_URL: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
       DEALIX_API_BASE: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
       CORS_ORIGINS: http://127.0.0.1:${DEALIX_SELFHOST_WEB_PORT:-13000}
-      DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}
+      DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
       DEALIX_ORCHESTRATOR_BACKEND: ${DEALIX_ORCHESTRATOR_BACKEND:-postgres}
-      DEALIX_ORCHESTRATOR_DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}
+      DEALIX_ORCHESTRATOR_DATABASE_URL: ${DEALIX_DATABASE_URL:-postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary}
       EXTERNAL_SEND_ENABLED: "false"
       OUTBOUND_MODE: draft_only
       EMAIL_SEND_ENABLED: "false"
@@ -70,17 +70,19 @@ services:
 
   postgres:
     image: pgvector/pgvector:pg18@sha256:2ba9ca5f2e7daa0f0e7723cba1ee9167bab54efd3640516a44ac1a928dd67e7a
-    profiles: ["local-db"]
+    profiles: ["local-db", "production-db"]
     environment:
-      POSTGRES_USER: dealix_canary
-      POSTGRES_DB: dealix_canary
-      POSTGRES_PASSWORD: ${DEALIX_CANARY_POSTGRES_PASSWORD:-}
+      POSTGRES_USER: ${POSTGRES_USER:-dealix_canary}
+      POSTGRES_DB: ${POSTGRES_DB:-dealix_canary}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    ports:
+      - "127.0.0.1:${DEALIX_SELFHOST_DB_PORT:-15432}:5432"
     volumes:
-      - dealix-postgres-canary:/var/lib/postgresql
+      - dealix-postgres-data:/var/lib/postgresql
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dealix_canary -d dealix_canary"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dealix_canary} -d ${POSTGRES_DB:-dealix_canary}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -128,6 +130,6 @@ networks:
   dealix: {}
 
 volumes:
-  dealix-postgres-canary: {}
+  dealix-postgres-data: {}
   dealix-caddy-data: {}
   dealix-caddy-config: {}

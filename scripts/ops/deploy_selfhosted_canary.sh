@@ -10,6 +10,7 @@ EXPECTED_SHA="${DEALIX_EXPECTED_SHA:-}"
 USE_LOCAL_DB="${DEALIX_SELFHOST_LOCAL_DB:-0}"
 API_PORT="${DEALIX_SELFHOST_API_PORT:-18000}"
 WEB_PORT="${DEALIX_SELFHOST_WEB_PORT:-13000}"
+DB_PORT="${DEALIX_SELFHOST_DB_PORT:-15432}"
 
 if ! [[ "$API_PORT" =~ ^[0-9]+$ ]] || (( API_PORT < 1024 || API_PORT > 65535 )); then
   echo "HOLD: invalid DEALIX_SELFHOST_API_PORT=$API_PORT" >&2
@@ -19,8 +20,13 @@ if ! [[ "$WEB_PORT" =~ ^[0-9]+$ ]] || (( WEB_PORT < 1024 || WEB_PORT > 65535 ));
   echo "HOLD: invalid DEALIX_SELFHOST_WEB_PORT=$WEB_PORT" >&2
   exit 64
 fi
+if ! [[ "$DB_PORT" =~ ^[0-9]+$ ]] || (( DB_PORT < 1024 || DB_PORT > 65535 )); then
+  echo "HOLD: invalid DEALIX_SELFHOST_DB_PORT=$DB_PORT" >&2
+  exit 64
+fi
 export DEALIX_SELFHOST_API_PORT="$API_PORT"
 export DEALIX_SELFHOST_WEB_PORT="$WEB_PORT"
+export DEALIX_SELFHOST_DB_PORT="$DB_PORT"
 
 if [[ -z "$EXPECTED_SHA" ]]; then
   echo "HOLD: DEALIX_EXPECTED_SHA is required" >&2
@@ -39,35 +45,38 @@ export DEALIX_IMAGE_TAG="${CURRENT_SHA:0:12}"
 export COMPOSE_PROJECT_NAME="dealix-selfhost-${CURRENT_SHA:0:12}"
 export DEALIX_APP_ENV="${DEALIX_APP_ENV:-development}"
 export DEALIX_ORCHESTRATOR_BACKEND="${DEALIX_ORCHESTRATOR_BACKEND:-postgres}"
-
 if [[ "$USE_LOCAL_DB" == "1" ]]; then
   : "${DEALIX_CANARY_POSTGRES_PASSWORD:?set DEALIX_CANARY_POSTGRES_PASSWORD for local-db canary}"
   if ! [[ "$DEALIX_CANARY_POSTGRES_PASSWORD" =~ ^[A-Za-z0-9._~-]{16,128}$ ]]; then
     echo "HOLD: DEALIX_CANARY_POSTGRES_PASSWORD must be 16-128 URL-safe unreserved characters" >&2
     exit 64
   fi
-  export DEALIX_DATABASE_URL="postgresql+asyncpg://dealix_canary:${DEALIX_CANARY_POSTGRES_PASSWORD}@postgres:5432/dealix_canary"
+  export POSTGRES_USER=dealix_canary
+  export POSTGRES_DB=dealix_canary
+  export POSTGRES_PASSWORD="$DEALIX_CANARY_POSTGRES_PASSWORD"
+  export DEALIX_DATABASE_URL="postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
 else
   : "${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL when local-db canary is disabled}"
 fi
 
 echo "CANARY_POSTGRES_PASSWORD_CONTRACT=PASS"
+
 docker compose -f "$COMPOSE_FILE" build --pull api web
 
 if [[ "$USE_LOCAL_DB" == "1" ]]; then
   docker compose -f "$COMPOSE_FILE" --profile local-db up -d postgres
   for _ in $(seq 1 30); do
     if docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
-      pg_isready -U dealix_canary -d dealix_canary >/dev/null 2>&1; then
+      pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then
       break
     fi
     sleep 2
   done
   docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
-    pg_isready -U dealix_canary -d dealix_canary >/dev/null
+    pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null
 
   if ! docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
-    psql -U dealix_canary -d dealix_canary -Atc \
+    psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
     "select to_regclass('public.alembic_version') is not null" | grep -qx t; then
     docker compose -f "$COMPOSE_FILE" --profile local-db run --rm \
       -e DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1 \

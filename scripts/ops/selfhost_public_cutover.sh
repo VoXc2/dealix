@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Source-owned controller for the single canonical self-host graph.
-# Safe default: --preflight. --stage/--cutover are material L5 operations and are never auto-executed.
 set -Eeuo pipefail
 umask 077
 
@@ -13,67 +11,142 @@ ENV_FILE="${DEALIX_ENV_FILE:-$ROOT/.env.prod}"
 COMPOSE_FILE="$ROOT/deploy/selfhost/compose.yml"
 API_PORT="${DEALIX_SELFHOST_API_PORT:-18000}"
 WEB_PORT="${DEALIX_SELFHOST_WEB_PORT:-13000}"
+DB_PORT="${DEALIX_SELFHOST_DB_PORT:-15432}"
 
 log(){ printf '[selfhost-cutover] %s\n' "$*"; }
-die(){ log "HOLD: $*" >&2; exit 78; }
-[[ "$MODE" == --preflight || "$MODE" == --stage || "$MODE" == --cutover ]] || die "mode must be --preflight, --stage, or --cutover"
-[[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]] || die "DEALIX_EXPECTED_SHA must be an exact 40-char SHA"
-CURRENT_SHA="$(git rev-parse HEAD)"
-[[ "$CURRENT_SHA" == "$EXPECTED_SHA" ]] || die "exact-head mismatch current=$CURRENT_SHA expected=$EXPECTED_SHA"
-[[ -z "$(git status --porcelain --untracked-files=no)" ]] || die "tracked worktree is dirty"
-[[ -f "$ENV_FILE" ]] || die "missing production env file: $ENV_FILE"
-if [[ -n "$(find "$ENV_FILE" -maxdepth 0 -perm /077 -print -quit)" ]]; then die "production env must not be group/world accessible"; fi
+hold(){ log "HOLD: $*" >&2; exit 78; }
+[[ "$MODE" == --preflight || "$MODE" == --stage || "$MODE" == --cutover ]] || hold "invalid mode"
+[[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]] || hold "DEALIX_EXPECTED_SHA must be exact"
+[[ "$(git rev-parse HEAD)" == "$EXPECTED_SHA" ]] || hold "exact-head mismatch"
+[[ -z "$(git status --porcelain --untracked-files=no)" ]] || hold "tracked worktree is dirty"
+[[ -f "$ENV_FILE" ]] || hold "missing production env file"
+[[ -z "$(find "$ENV_FILE" -maxdepth 0 -perm /077 -print -quit)" ]] || hold "production env permissions too broad"
 
 set -a
 # shellcheck disable=SC1090
 source "$ENV_FILE"
 set +a
+for key in POSTGRES_USER POSTGRES_DB POSTGRES_PASSWORD DEALIX_DATABASE_URL; do
+  value="${!key:-}"
+  [[ -n "$value" ]] || hold "missing $key"
+  case "$value" in *CHANGE_ME*|*change-me*|*REPLACE*) hold "placeholder $key" ;; esac
+done
+python3 - "$DEALIX_DATABASE_URL" "$POSTGRES_USER" "$POSTGRES_DB" <<'PY'
+import sys
+from urllib.parse import unquote, urlparse
+url, expected_user, expected_db = sys.argv[1:]
+u = urlparse(url.replace("postgresql+asyncpg://", "postgresql://", 1))
+host = (u.hostname or "").lower()
+if host != "postgres":
+    raise SystemExit("production cutover DB must be canonical self-host postgres")
+if any(marker in host for marker in ("railway", "rlwy.net")):
+    raise SystemExit("Railway database cannot authorize self-host cutover")
+if unquote(u.username or "") != expected_user or u.path.lstrip("/") != expected_db:
+    raise SystemExit("production DB URL user/database mismatch")
+if not unquote(u.password or ""):
+    raise SystemExit("production DB URL password missing")
+PY
+
 export DEALIX_GIT_SHA="$EXPECTED_SHA"
 export DEALIX_IMAGE_TAG="${EXPECTED_SHA:0:12}"
 export DEALIX_APP_ENV=production
 export DEALIX_SELFHOST_API_PORT="$API_PORT"
 export DEALIX_SELFHOST_WEB_PORT="$WEB_PORT"
-export COMPOSE_PROJECT_NAME="dealix-selfhost-${EXPECTED_SHA:0:12}"
+export DEALIX_SELFHOST_DB_PORT="$DB_PORT"
+export COMPOSE_PROJECT_NAME="${DEALIX_PRODUCTION_PROJECT_NAME:-dealix-production}"
 COMPOSE=(docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE")
-
-# Configuration stays safe by default because public-ingress binds loopback high ports unless --cutover explicitly overrides them.
-"${COMPOSE[@]}" --profile public-cutover config >/dev/null
-docker run --rm -v "$ROOT/ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" caddy:2.11.4-alpine caddy validate --config /etc/caddy/Caddyfile >/dev/null
-log "PREFLIGHT=PASS sha=$EXPECTED_SHA canonical_compose=deploy/selfhost/compose.yml public_bind=LOOPBACK_DEFAULT"
+"${COMPOSE[@]}" --profile production-db --profile public-cutover config >/dev/null
+docker run --rm -v "$ROOT/ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" \
+  caddy:2.11.4-alpine caddy validate --config /etc/caddy/Caddyfile >/dev/null
+log "PREFLIGHT=PASS sha=$EXPECTED_SHA project=$COMPOSE_PROJECT_NAME public_bind=LOOPBACK_DEFAULT"
 if [[ "$MODE" == --preflight ]]; then
   log "PUBLIC_CUTOVER=NOT_EXECUTED"
   exit 0
 fi
 
-[[ "${DEALIX_STAGE_PRODUCTION:-}" == YES ]] || die "$MODE requires DEALIX_STAGE_PRODUCTION=YES"
-[[ "$CONFIRM_SHA" == "$EXPECTED_SHA" ]] || die "$MODE requires CONFIRM_SHA to equal DEALIX_EXPECTED_SHA"
+[[ "${DEALIX_STAGE_PRODUCTION:-}" == YES ]] || hold "$MODE requires DEALIX_STAGE_PRODUCTION=YES"
+[[ "$CONFIRM_SHA" == "$EXPECTED_SHA" ]] || hold "CONFIRM_SHA must equal exact release SHA"
+DATA_RECEIPT="${DEALIX_DATA_MIGRATION_RECEIPT:-}"
+[[ -n "$DATA_RECEIPT" && -f "$DATA_RECEIPT" ]] || hold "production data migration receipt required"
+mapfile -t MIGRATION < <(python3 - "$DATA_RECEIPT" "$EXPECTED_SHA" <<'PY'
+import hashlib, json, os, stat, sys
+from datetime import UTC, datetime
+path, expected = sys.argv[1:]
+if stat.S_IMODE(os.stat(path).st_mode) & 0o077:
+    raise SystemExit("migration receipt permissions too broad")
+data = json.load(open(path, encoding="utf-8")); signature = data.pop("payload_sha256", "")
+canonical = json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+if signature != hashlib.sha256(canonical).hexdigest(): raise SystemExit("migration receipt integrity failure")
+if data.get("schema_version") != "dealix.railway-data-migration-receipt.v1" or data.get("status") != "PASS": raise SystemExit("migration receipt invalid")
+if data.get("migration_mode") != "production" or data.get("target_release_sha") != expected: raise SystemExit("migration receipt release/mode mismatch")
+if data.get("publication_consent_inferred") is not False: raise SystemExit("publication consent invariant failed")
+if int(data.get("public_consent_true", -1)) != 0 or int(data.get("approval_not_required", -1)) != 0: raise SystemExit("proof governance invariant failed")
+if int(data.get("source_rows", -1)) != int(data.get("archived_rows", -2)): raise SystemExit("migration row parity failed")
+expiry = datetime.fromisoformat(str(data["expires_at"]).replace("Z", "+00:00")).astimezone(UTC)
+if datetime.now(UTC) > expiry: raise SystemExit("migration receipt expired")
+print(data["archived_rows"]); print(data["typed_proof"]); print(data["typed_conversations"]); print(data["target_alembic_head"])
+PY
+)
+[[ "${#MIGRATION[@]}" == 4 ]] || hold "migration receipt parse failed"
+"${COMPOSE[@]}" --profile production-db up -d postgres
+for _ in $(seq 1 30); do
+  if "${COMPOSE[@]}" --profile production-db exec -T postgres \
+    pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null 2>&1; then break; fi
+  sleep 2
+done
+"${COMPOSE[@]}" --profile production-db exec -T postgres \
+  pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null || hold "production postgres not ready"
+
+DB_STATE="$("${COMPOSE[@]}" --profile production-db exec -T postgres \
+  psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
+  "select coalesce((select version_num from alembic_version limit 1),'')||'|'||(select count(*) from operational_event_streams where stream_id='railway_legacy_20260915')||'|'||(select count(*) from proof_events where evidence_source='railway_production_backup')||'|'||(select count(*) from conversations where id like 'legacy:%')")" || hold "production DB migration evidence query failed"
+IFS='|' read -r DB_HEAD DB_ARCHIVED DB_PROOF DB_CONVERSATIONS <<< "$DB_STATE"
+[[ "$DB_HEAD" == "${MIGRATION[3]}" ]] || hold "production DB Alembic head mismatch"
+[[ "$DB_ARCHIVED" == "${MIGRATION[0]}" ]] || hold "production DB archived row mismatch"
+[[ "$DB_PROOF" == "${MIGRATION[1]}" ]] || hold "production DB proof row mismatch"
+[[ "$DB_CONVERSATIONS" == "${MIGRATION[2]}" ]] || hold "production DB conversation row mismatch"
+
 "${COMPOSE[@]}" build --pull api web
 "${COMPOSE[@]}" up -d api web
-
 verify_json_sha(){
   local url="$1" service="$2" body
-  body="$(curl -fsS "$url")" || die "health request failed: $url"
+  body="$(curl -fsS "$url")" || hold "health request failed: $url"
   python3 - "$EXPECTED_SHA" "$service" "$body" <<'PY'
 import json, sys
-sha, service, raw = sys.argv[1:]
+expected, service, raw = sys.argv[1:]
 data = json.loads(raw)
-assert data.get("status") == "ok", data
-assert data.get("service") == service, data
-assert data.get("git_sha") == sha, data
+if data.get("status") != "ok" or data.get("service") != service or data.get("git_sha") != expected:
+    raise SystemExit(1)
 PY
 }
 verify_json_sha "http://127.0.0.1:${API_PORT}/version" dealix-api
 verify_json_sha "http://127.0.0.1:${WEB_PORT}/healthz" dealix-web
-log "STAGE=PASS sha=$EXPECTED_SHA public_ingress=NOT_STARTED"
+log "STAGE=PASS sha=$EXPECTED_SHA db_migration_receipt=PASS public_ingress=NOT_STARTED"
 if [[ "$MODE" == --stage ]]; then
   log "PUBLIC_CUTOVER=NOT_EXECUTED"
   exit 0
 fi
 
-[[ "${DEALIX_PUBLIC_CUTOVER:-}" == YES ]] || die "--cutover requires DEALIX_PUBLIC_CUTOVER=YES"
+[[ "${DEALIX_PUBLIC_CUTOVER:-}" == YES ]] || hold "DEALIX_PUBLIC_CUTOVER=YES required"
+SOURCE_RECEIPT="${DEALIX_SOURCE_BACKUP_RECEIPT:-}"
+TARGET_RECEIPT="${DEALIX_SELFHOST_BACKUP_RECEIPT:-}"
+QUIET_RECEIPT="${DEALIX_QUIESCENCE_RECEIPT:-}"
+for receipt in "$SOURCE_RECEIPT" "$TARGET_RECEIPT" "$QUIET_RECEIPT"; do
+  [[ -n "$receipt" && -f "$receipt" ]] || hold "complete cutover receipt set required"
+done
+python3 scripts/ops/verify_selfhost_cutover_receipts.py \
+  --expected-sha "$EXPECTED_SHA" \
+  --source-backup-receipt "$SOURCE_RECEIPT" \
+  --migration-receipt "$DATA_RECEIPT" \
+  --selfhost-backup-receipt "$TARGET_RECEIPT" \
+  --quiescence-receipt "$QUIET_RECEIPT" || hold "cutover receipts failed"
+
 export DEALIX_PUBLIC_HTTP_BIND="0.0.0.0:80"
 export DEALIX_PUBLIC_HTTPS_BIND="0.0.0.0:443"
 "${COMPOSE[@]}" --profile public-cutover up -d public-ingress
+ss -lnt | grep -Eq '(^|[[:space:]]):80([[:space:]]|$)' || hold "public port 80 not listening"
+ss -lnt | grep -Eq '(^|[[:space:]]):443([[:space:]]|$)' || hold "public port 443 not listening"
 log "PUBLIC_INGRESS_STARTED=YES sha=$EXPECTED_SHA http=0.0.0.0:80 https=0.0.0.0:443"
 log "DNS_MUTATION=NOT_EXECUTED"
+log "RAILWAY_DECOMMISSION=NOT_EXECUTED"
 log "PRODUCTION_GREEN=NOT_PROVEN"

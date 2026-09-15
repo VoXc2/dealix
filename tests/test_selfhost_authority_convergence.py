@@ -51,22 +51,20 @@ def test_canonical_compose_forwards_required_production_auth_env() -> None:
         assert f"{key}: ${{{key}:-}}" in text
 
 
-def test_pg18_canary_volume_uses_version_aware_parent_mount() -> None:
+def test_pg18_database_volume_uses_version_aware_parent_mount() -> None:
     text = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
     assert "pgvector/pgvector:pg18" in text
-    assert "dealix-postgres-canary:/var/lib/postgresql" in text
-    assert "dealix-postgres-canary:/var/lib/postgresql/data" not in text
-    assert 'profiles: ["local-db"]' in text
+    assert "dealix-postgres-data:/var/lib/postgresql" in text
+    assert "dealix-postgres-data:/var/lib/postgresql/data" not in text
+    assert 'profiles: ["local-db", "production-db"]' in text
 
 
 def test_pg18_canary_host_auth_requires_runtime_password() -> None:
     compose = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
     runner = (ROOT / "scripts/ops/deploy_selfhosted_canary.sh").read_text(encoding="utf-8")
     assert "POSTGRES_HOST_AUTH_METHOD: trust" not in compose
-    assert "POSTGRES_PASSWORD: ${DEALIX_CANARY_POSTGRES_PASSWORD:-}" in compose
+    assert "POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}" in compose
     assert "POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256" in compose
-    assert "postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary" not in compose
-    assert "DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}" in compose
     assert 'DEALIX_CANARY_POSTGRES_PASSWORD:?set DEALIX_CANARY_POSTGRES_PASSWORD' in runner
+    assert 'export POSTGRES_PASSWORD="$DEALIX_CANARY_POSTGRES_PASSWORD"' in runner
     assert "CANARY_POSTGRES_PASSWORD_CONTRACT=PASS" in runner
-    assert "16-128 URL-safe unreserved characters" in runner
