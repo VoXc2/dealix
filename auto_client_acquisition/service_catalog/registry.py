@@ -10,7 +10,7 @@ Constitution:
 - Article 11: pricing changes are 1-line edits to this file (no engine code).
 
 First-launch motion:
-  Free Diagnostic → Revenue Command Pilot (30 days, quote-only after discovery).
+  Free Diagnostic → Revenue Command Pilot (customer-specific duration, quote-only after discovery).
   Every other price remains an internal experiment or future catalogue entry
   until a separate approval changes ``commercial_status``.
 
@@ -65,11 +65,12 @@ _FREE_DIAGNOSTIC = ServiceOffering(
 
 _REVENUE_COMMAND_PILOT = ServiceOffering(
     id="revenue_command_pilot_30d",
-    name_ar="تجربة مركز قيادة الإيرادات — 30 يومًا",
-    name_en="Revenue Command Pilot — 30 days",
+    name_ar="تجربة مركز قيادة الإيرادات — مدة مخصصة للحالة",
+    name_en="Revenue Command Pilot — customer-specific duration",
     price_sar=0.0,
     price_unit="custom",
-    duration_days=30,
+    duration_days=None,
+    duration_policy="customer_specific_after_qualified_discovery",
     deliverables=(
         "Company Brain v1",
         "One ICP",

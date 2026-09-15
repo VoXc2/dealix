@@ -53,6 +53,7 @@ def _display_path(path: Path) -> str:
 
 OUT_ROOT = _default_out_root()
 DATA_ROOT = ROOT / "data" / "self_operating_company_os"
+MARKET_SIGNALS_PATH = ROOT / "data" / "commercial" / "market_signal_receipts_v1.json"
 
 CANONICAL_COMMERCIAL_PATH = [
     "REAL_INTERACTION",
@@ -61,7 +62,7 @@ CANONICAL_COMMERCIAL_PATH = [
     "FREE_MINI_DIAGNOSTIC",
     "QUALIFIED_DISCOVERY",
     "CUSTOMER_SPECIFIC_QUOTE",
-    "30_DAY_REVENUE_COMMAND_PILOT",
+    "CUSTOMER_SPECIFIC_GOVERNED_DELIVERY",
     "PAYMENT_EVIDENCE",
     "DELIVERY_EVIDENCE",
     "CUSTOMER_VALIDATED_PROOF",
@@ -69,7 +70,7 @@ CANONICAL_COMMERCIAL_PATH = [
 ]
 
 CANONICAL_ENTRY_OFFER = "Free Mini Diagnostic"
-CANONICAL_PILOT = "30-Day Revenue Command Pilot"
+CANONICAL_PAID_DELIVERY = "Customer-Specific Governed Delivery"
 
 FORBIDDEN_ENV_FLAGS = {
     "DEALIX_EXTERNAL_SEND": "1",
@@ -135,7 +136,7 @@ PLAYBOOKS = [
     {
         "name": "delivery_and_proof",
         "priority": 85,
-        "goal": "Prepare governed 30-day delivery and customer-validated Proof Packs.",
+        "goal": "Prepare governed customer-specific delivery and customer-validated Proof Packs.",
         "safe_actions": [
             "validate scope baseline and data-boundary evidence",
             "prepare delivery work queues and acceptance criteria",
@@ -248,6 +249,71 @@ def load_targets() -> list[dict[str, Any]]:
     return [item for item in data if isinstance(item, dict)]
 
 
+def _parse_iso_utc(value: Any) -> datetime | None:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(UTC)
+
+
+def _signal_score(signal: dict[str, Any], now: datetime) -> int:
+    factors = signal.get("priority_factors") if isinstance(signal.get("priority_factors"), dict) else {}
+    positive = sum(int(factors.get(key, 0) or 0) for key in (
+        "economic_pain", "measurable_outcome", "buyer_access", "data_availability",
+        "repeatability", "readiness", "distribution_density",
+    ))
+    friction = sum(int(factors.get(key, 0) or 0) for key in (
+        "regulatory_friction", "integration_complexity", "founder_minutes",
+    ))
+    fresh_until = _parse_iso_utc(signal.get("fresh_until"))
+    observed_at = _parse_iso_utc(signal.get("observed_at"))
+    if fresh_until is None or fresh_until <= now:
+        return -10_000
+    days_left = max(0.0, (fresh_until - now).total_seconds() / 86400)
+    urgency = 20 if days_left <= 3 else 14 if days_left <= 14 else 8 if days_left <= 60 else 3
+    recency = 0
+    if observed_at is not None:
+        age_days = max(0.0, (now - observed_at).total_seconds() / 86400)
+        recency = 8 if age_days <= 7 else 5 if age_days <= 30 else 2 if age_days <= 90 else 0
+    return (positive * 2) - friction + urgency + recency
+
+
+def load_fresh_market_signals(limit: int = 8, *, now: datetime | None = None) -> list[dict[str, Any]]:
+    current = now.astimezone(UTC) if now is not None else datetime.now(UTC)
+    try:
+        payload = json.loads(MARKET_SIGNALS_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    signals = payload.get("signals", []) if isinstance(payload, dict) else []
+    admitted: list[dict[str, Any]] = []
+    for signal in signals:
+        if not isinstance(signal, dict):
+            continue
+        authority = signal.get("authority") if isinstance(signal.get("authority"), dict) else {}
+        protected = ("relationship", "consent", "offer", "price", "quote", "contract", "external_send", "public_publish")
+        if any(authority.get(key) is not False for key in protected):
+            continue
+        if "INTERNAL_RESEARCH_ONLY" not in _string_list(signal.get("allowed_use")):
+            continue
+        if not str(signal.get("source_ref", "")).strip() or not str(signal.get("provenance_ref", "")).strip():
+            continue
+        if not _string_list(signal.get("evidence_refs")) or not _string_list(signal.get("facts")):
+            continue
+        if _signal_score(signal, current) <= -10_000:
+            continue
+        admitted.append(signal)
+    admitted.sort(key=lambda item: (_signal_score(item, current), str(item.get("observed_at", ""))), reverse=True)
+    return admitted[: max(0, limit)]
+
+
 def score_target(target: dict[str, Any]) -> int:
     fit = int(target.get("fit_score", 50))
     urgency = int(target.get("urgency_score", 50))
@@ -298,7 +364,7 @@ def _next_action(target: dict[str, Any]) -> str:
     if stage == "CUSTOMER_SPECIFIC_QUOTE":
         return "wait for approved customer acceptance and payment/start-condition evidence"
     if stage in {"VERIFIED_PAYMENT", "PAYMENT_EVIDENCE"}:
-        return f"handoff authorized scope to dealix-delivery for {CANONICAL_PILOT}"
+        return f"handoff authorized customer-specific scope to dealix-delivery for {CANONICAL_PAID_DELIVERY}"
     if stage in {"DELIVERY", "DELIVERY_EVIDENCE"}:
         return "continue governed delivery and assemble customer evidence gaps"
     if stage in {"CUSTOMER_VALIDATED_PROOF", "PERMISSIONED_PROOF"}:
@@ -438,9 +504,10 @@ def write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def write_content_queue(cards: list[TargetCard]) -> Path:
+def write_content_queue(cards: list[TargetCard], market_signals: list[dict[str, Any]] | None = None) -> Path:
     today = date_stamp()
     path = OUT_ROOT / "content" / f"{today}.md"
+    signals = market_signals if market_signals is not None else load_fresh_market_signals()
     lines = [
         f"# Dealix evidence-backed content queue — {today}",
         "",
@@ -450,7 +517,7 @@ def write_content_queue(cards: list[TargetCard]) -> Path:
         "- Proof draft: what separates activity, delivery, payment, value and publication permission.",
         "- Market draft: why a real interaction is more valuable than a scraped contact list.",
         "",
-        "## Evidence-derived angles",
+        "## Evidence-derived relationship angles",
     ]
     for card in cards[:5]:
         if card.evidence_refs:
@@ -458,6 +525,27 @@ def write_content_queue(cards: list[TargetCard]) -> Path:
                 f"- {card.company_name}: {card.pain_hypothesis} "
                 f"(stage={card.commercial_stage}; evidence={len(card.evidence_refs)})"
             )
+    lines.extend(["", "## Fresh verified market-signal draft angles"])
+    if not signals:
+        lines.append("- None current. Stale or authority-bearing market signals are excluded.")
+    for signal in signals:
+        facts = _string_list(signal.get("facts"))
+        inferences = _string_list(signal.get("inferences"))
+        fact = " ".join((facts[0] if facts else "").split())
+        inference = " ".join((inferences[0] if inferences else "").split())
+        source_ref = " ".join(str(signal.get("source_ref", "")).split())
+        provenance = " ".join(str(signal.get("provenance_ref", "")).split())
+        signal_id = " ".join(str(signal.get("signal_id", "UNKNOWN_SIGNAL")).split())
+        sector = " ".join(str(signal.get("sector_family", "UNKNOWN")).split())
+        fresh_until = " ".join(str(signal.get("fresh_until", "UNKNOWN")).split())
+        claim_label = " [ORGANIZER CLAIM]" if "organizer" in fact.lower() and "claim" in fact.lower() else ""
+        lines.append(f"- **{signal_id}** | sector={sector} | fresh_until={fresh_until}")
+        lines.append(f"  - source: {source_ref}")
+        lines.append(f"  - provenance: {provenance}")
+        lines.append(f"  - verified fact{claim_label}: {fact}")
+        if inference:
+            lines.append(f"  - internal draft angle: {inference}")
+        lines.append("  - authority: INTERNAL_RESEARCH_ONLY; relationship=false; consent=false; offer=false; price=false; external_send=false; public_publish=false")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return path
 
@@ -547,6 +635,7 @@ def main() -> int:
     today = date_stamp()
     tripwire = env_tripwire()
     cards = build_target_cards(args.limit)
+    market_signals = load_fresh_market_signals(limit=min(max(args.limit, 1), 12))
     actions = build_actions()
     approvals = build_approval_queue(cards)
 
@@ -566,6 +655,7 @@ def main() -> int:
         "safe_actions_count": len(actions),
         "evidence_backed_target_count": len(cards),
         "approval_ready_count": len(approvals),
+        "fresh_market_signal_count": len(market_signals),
     }
 
     # Universal Diagnostic Factory enrichment — D1 rapid per target (evidence-first, never fails cycle)
@@ -586,7 +676,7 @@ def main() -> int:
     write_json(OUT_ROOT / "actions" / f"{today}.json", [asdict(action) for action in actions])
     write_json(OUT_ROOT / "approvals" / f"{today}.json", approvals)
     write_json(OUT_ROOT / "proof" / f"{today}.json", proof_log)
-    write_content_queue(cards)
+    write_content_queue(cards, market_signals)
     report = write_daily_report(cards, actions, approvals, tripwire)
     verification = verify_outputs()
 
@@ -597,6 +687,7 @@ def main() -> int:
         "targets": len(cards),
         "actions": len(actions),
         "approvals": len(approvals),
+        "market_signals": len(market_signals),
         "missing": verification["missing"],
         "tripwire_violations": tripwire,
     }

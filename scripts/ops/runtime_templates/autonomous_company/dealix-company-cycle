@@ -1,0 +1,555 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+
+export TZ=Asia/Riyadh
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+export PYTHONNOUSERSITE=1
+export GH_PROMPT_DISABLED=1
+export GIT_TERMINAL_PROMPT=0
+
+REPO="${DEALIX_REPO:-/opt/dealix/workspace/dealix}"
+CONTROL="${DEALIX_CONTROL:-/opt/dealix/control}"
+AUTONOMY="$CONTROL/autonomous-company"
+
+STATE="$AUTONOMY/state"
+PROOF="$AUTONOMY/proof"
+INBOX="$AUTONOMY/agent-inbox"
+
+CYCLE="${1:-trust}"
+
+LOCK="/run/lock/dealix-company-cycle.lock"
+
+mkdir -p "$PROOF"
+
+exec 9>"$LOCK"
+
+if ! flock -n 9; then
+  echo "CYCLE=SKIPPED_LOCKED"
+  exit 0
+fi
+
+STAMP="$(date +%Y%m%dT%H%M%S)"
+RUN="$PROOF/$STAMP-$CYCLE"
+
+mkdir -p "$RUN"
+chmod 0700 "$RUN"
+
+###############################################################################
+# SAFETY KILL SWITCHES
+###############################################################################
+
+export PRODUCTION_GREEN=false
+
+export DEALIX_EXTERNAL_SEND=0
+export EMAIL_LIVE_SEND=0
+export WHATSAPP_OUTBOUND=0
+export PUBLIC_PUBLISH=0
+export PAID_SPEND=0
+export PAYMENT_EXECUTION=0
+export PRODUCTION_MUTATION=0
+export DNS_MUTATION=0
+export DB_MUTATION=0
+export SECRET_MUTATION=0
+
+export DEALIX_EXTERNAL_OUTREACH_ENABLED=false
+export EXTERNAL_OUTREACH_ENABLED=false
+export AUTO_SEND_ENABLED=false
+export WHATSAPP_ALLOW_LIVE_SEND=false
+export MOYASAR_LIVE_MODE=0
+export DEALIX_LIVE_CHARGE=false
+export DEALIX_AUTO_MERGE=false
+export AGENT_APPROVAL_MODE=required
+export DEALIX_PROOF_MODE=verified_only
+
+###############################################################################
+# CURRENT PRODUCTION-GREEN READ
+###############################################################################
+
+is_green() {
+  grep -Rqs '^PRODUCTION_GREEN=true$' \
+    "$CONTROL/state" \
+    "$STATE" 2>/dev/null
+}
+
+if is_green; then
+  GREEN=true
+  LIMIT=100
+else
+  GREEN=false
+  LIMIT=25
+fi
+
+echo "TIMESTAMP=$(date -Is)"
+echo "CYCLE=$CYCLE"
+echo "PRODUCTION_GREEN=$GREEN"
+echo "GROWTH_LIMIT=$LIMIT"
+
+###############################################################################
+# RUNTIME
+###############################################################################
+
+PY="$REPO/.venv/bin/python"
+
+if [[ ! -x "$PY" ]]; then
+  PY="$(command -v python3 || true)"
+fi
+
+[[ -x "$PY" ]] || {
+  echo "CYCLE=BLOCKED_PYTHON"
+  exit 2
+}
+
+###############################################################################
+# HELPERS
+###############################################################################
+
+declare -A RESULT
+CYCLE_FAILED=0
+
+run_capture() {
+  local name="$1"
+  shift
+
+  local out="$RUN/$name.log"
+
+  echo
+  echo "RUN=$name"
+
+  set +e
+  timeout --kill-after=15s 900s \
+    "$@" >"$out" 2>&1
+  local rc=$?
+  set -e
+
+  RESULT["$name"]="$rc"
+
+  echo "RC_${name}=$rc"
+
+  if (( rc == 0 )); then
+    echo "RESULT_${name}=PASS"
+  else
+    CYCLE_FAILED=1
+    echo "RESULT_${name}=FAIL"
+    tail -n 80 "$out" || true
+  fi
+
+  return 0
+}
+
+run_py_if_exists() {
+  local name="$1"
+  local script="$2"
+  shift 2
+
+  if [[ -f "$REPO/$script" ]]; then
+    run_capture "$name" \
+      "$PY" "$REPO/$script" "$@"
+  else
+    RESULT["$name"]=127
+    CYCLE_FAILED=1
+    echo "RESULT_${name}=BLOCKED_MISSING_SCRIPT"
+  fi
+}
+
+emit_task() {
+  local agent="$1"
+  local priority="$2"
+  local objective="$3"
+
+  local dir="$INBOX/$agent"
+  mkdir -p "$dir"
+
+  cat >"$dir/${STAMP}-${CYCLE}.md" <<EOF
+# DEALIX AGENT TASK
+
+timestamp: $(date -Is)
+cycle: $CYCLE
+agent: $agent
+priority: $priority
+production_green: $GREEN
+autonomy: L0-L4
+external_send: false
+
+## Objective
+
+$objective
+
+## Required behavior
+
+READ
+-> RECONCILE
+-> EXECUTE SAFE WORK
+-> VERIFY
+-> PROVE
+
+Use current repository/company truth.
+
+Do not invent:
+- relationship
+- consent
+- payment
+- proof
+- authority
+
+Material actions go to Approval Queue.
+EOF
+}
+
+###############################################################################
+# TASK ENVELOPES
+###############################################################################
+
+case "$CYCLE" in
+
+  trust)
+    emit_task \
+      dealix-engineer \
+      P0 \
+      "Inspect Production Trust from live server and provider evidence: source freshness, runtime health, public Web/API, release parity and next exact blocker. GitHub Actions are non-authoritative."
+
+    emit_task \
+      dealix-pm \
+      P0 \
+      "Convert Production Trust truth into the highest-value company next action."
+
+    ;;
+
+  company)
+    emit_task \
+      dealix-pm \
+      P0 \
+      "Run the canonical Dealix Company OS. Refresh Company Brain, Strategy, Action Queue and Approval Queue."
+
+    emit_task \
+      dealix-sales \
+      P1 \
+      "Refresh evidence-backed revenue actions from the canonical Company OS."
+
+    emit_task \
+      dealix-delivery \
+      P1 \
+      "Refresh active delivery/value/proof actions from the canonical Company OS."
+
+    emit_task \
+      dealix-content \
+      P2 \
+      "Refresh proof-backed distribution actions from the canonical Company OS."
+
+    ;;
+
+  growth)
+    emit_task \
+      dealix-sales \
+      P1 \
+      "Rank the opportunity universe probability-first and maintain bounded Deep WIP. Prepare diagnostics and drafts only."
+
+    ;;
+
+  money)
+    emit_task \
+      dealix-pm \
+      P0 \
+      "Produce CEO economic truth: verified cash, pipeline, TOP 5 actions, approvals, risks and first-close blockers."
+
+    ;;
+
+  gmail)
+    emit_task \
+      dealix-sales \
+      P1 \
+      "Prepare personalized Gmail drafts, LinkedIn drafts and call scripts. No live external send."
+
+    ;;
+
+  content)
+    emit_task \
+      dealix-content \
+      P1 \
+      "Generate evidence-bounded bilingual content drafts from current Company OS, market signals, and legitimate proof. Draft-only: no public publish or external send."
+
+    ;;
+
+  delivery)
+    emit_task \
+      dealix-delivery \
+      P1 \
+      "Review active delivery workspaces, acceptance evidence, open risks, and proof gaps. Do not create customer truth without an authorized client workspace."
+
+    ;;
+
+  learning)
+    emit_task \
+      dealix-pm \
+      P1 \
+      "Review company failures and learning events; convert root causes into bounded improvements."
+
+    emit_task \
+      dealix-engineer \
+      P1 \
+      "Convert technical failures into regression guards and bounded repo fixes."
+
+    ;;
+
+  proof)
+    emit_task \
+      dealix-delivery \
+      P1 \
+      "Generate weekly proof truth. Preserve synthetic/customer evidence boundaries."
+
+    emit_task \
+      dealix-content \
+      P2 \
+      "Prepare content opportunities from legitimate proof only."
+
+    ;;
+
+  strategy)
+    emit_task \
+      dealix-pm \
+      P0 \
+      "Weekly portfolio reset: Production Trust, Money Now, Delivery, Proof, learning and founder-minute reduction."
+
+    ;;
+
+esac
+
+###############################################################################
+# EXECUTION
+###############################################################################
+
+cd "$REPO"
+
+GTM_PREFLIGHT="$AUTONOMY/gtm/bin/dealix-omnichannel-cycle"
+case "$CYCLE" in
+  company|growth|money|gmail|strategy)
+    if [[ -x "$GTM_PREFLIGHT" ]]; then
+      run_capture gtm_preflight "$GTM_PREFLIGHT" preflight
+    fi
+    ;;
+esac
+
+case "$CYCLE" in
+
+  trust)
+
+    run_capture git_status \
+      git status -sb
+
+    run_capture git_recent \
+      git log -8 --oneline --decorate
+
+    run_capture runtime_drift \
+      "$AUTONOMY/bin/dealix-runtime-drift-check"
+
+    run_capture source_truth \
+      bash -lc 'printf "LOCAL_HEAD="; git rev-parse HEAD; printf "ORIGIN_MAIN="; git rev-parse origin/main; printf "UNSANCTIONED_DIRTY_COUNT="; /opt/dealix/control/autonomous-company/bin/dealix-source-status --count'
+
+    ;;
+
+  company)
+
+    run_py_if_exists \
+      company_os_daily \
+      scripts/commercial/run_company_os_daily.py \
+      --client dealix \
+      --mode draft-only \
+      --limit "$LIMIT"
+
+    ;;
+
+  growth)
+
+    run_py_if_exists \
+      autonomous_growth \
+      scripts/commercial/run_autonomous_growth_daily.py \
+      --autonomy-level 3 \
+      --mode draft-only \
+      --limit "$LIMIT"
+
+    ;;
+
+  money)
+
+    if [[ -f "$REPO/scripts/ops/dealix_founder_money_command.sh" ]]; then
+
+      run_capture \
+        founder_money_command \
+        env \
+          DEALIX_REPO_ROOT="$REPO" \
+          DEALIX_MONEY_REPORT_ROOT="$AUTONOMY/reports/founder_money_command" \
+          bash "$REPO/scripts/ops/dealix_founder_money_command.sh"
+
+    else
+      RESULT["founder_money_command"]=127
+      CYCLE_FAILED=1
+      echo "FOUNDER_MONEY_COMMAND=BLOCKED_MISSING"
+    fi
+
+    ;;
+
+  gmail)
+
+    if [[ -f "$REPO/scripts/run_dealix_daily_gmail_drafts.py" ]]; then
+
+      if [[ "$GREEN" == "true" ]]; then
+
+        run_capture \
+          gmail_drafts \
+          "$PY" \
+          "$REPO/scripts/run_dealix_daily_gmail_drafts.py" \
+          --no-digest \
+          --gmail-drafts 15 \
+          --linkedin-drafts 8 \
+          --call-scripts 5
+
+      else
+
+        # Pre-green: evidence-first local preparation only. Never call Production API
+        # and never create provider drafts. Zero eligible targets is a valid PASS.
+        run_capture \
+          gmail_drafts \
+          "$PY" \
+          "$REPO/scripts/commercial/run_targeted_outreach_clean_v2.py" \
+          --profile "$REPO/presentations/company-profile/dealix-company-profile.pdf" \
+          --report-root "$AUTONOMY/reports/targeted_outreach" \
+          --max-drafts 3
+
+      fi
+
+    else
+      RESULT["gmail_drafts"]=127
+      CYCLE_FAILED=1
+      echo "GMAIL_DRAFTS=BLOCKED_MISSING_SCRIPT"
+    fi
+
+    ;;
+
+  content)
+
+    CONTENT_OUT="$AUTONOMY/reports/content_factory/$STAMP-$CYCLE"
+    mkdir -p "$CONTENT_OUT"
+    run_py_if_exists \
+      content_factory \
+      scripts/dealix_content_factory_daily.py \
+      --out-dir "$CONTENT_OUT"
+
+    if [[ -f "$REPO/scripts/commercial/verify_dealix_corporate_brand_gtm_v1.py" ]]; then
+      run_py_if_exists content_verifier scripts/commercial/verify_dealix_corporate_brand_gtm_v1.py
+    fi
+
+    ;;
+
+  delivery)
+
+    ACTIVE_CLIENTS=0
+    while IFS= read -r client_dir; do
+      [[ -n "$client_dir" ]] || continue
+      slug="$(basename "$client_dir")"
+      ACTIVE_CLIENTS=$((ACTIVE_CLIENTS + 1))
+      run_capture "client_day_${slug//[^A-Za-z0-9_]/_}" \
+        "$PY" "$REPO/scripts/delivery/client_day.py" --client-slug "$slug"
+    done < <(find "$REPO/clients" -mindepth 1 -maxdepth 1 -type d ! -name '_*' -print 2>/dev/null | sort)
+    echo "ACTIVE_CLIENT_WORKSPACES=$ACTIVE_CLIENTS"
+    run_py_if_exists delivery_os_verify scripts/verify_delivery_os.py
+    if [[ -f "$REPO/scripts/verify_client_acquisition_delivery_os.py" ]]; then
+      run_py_if_exists acquisition_delivery_verify scripts/verify_client_acquisition_delivery_os.py
+    fi
+
+    ;;
+
+  learning)
+
+    run_py_if_exists \
+      self_improvement \
+      scripts/commercial/run_self_improvement_daily.py \
+      --client dealix \
+      --mode draft-only
+
+    ;;
+
+  proof)
+
+    run_py_if_exists \
+      weekly_proof \
+      scripts/commercial/run_weekly_proof_pack.py \
+      --client dealix \
+      --mode draft-only
+
+    ;;
+
+  strategy)
+
+    run_py_if_exists \
+      company_os_daily \
+      scripts/commercial/run_company_os_daily.py \
+      --client dealix \
+      --mode draft-only \
+      --limit "$LIMIT"
+
+    if [[ -f "$REPO/scripts/ops/dealix_founder_money_command.sh" ]]; then
+      run_capture \
+        founder_money_command \
+        env \
+          DEALIX_REPO_ROOT="$REPO" \
+          DEALIX_MONEY_REPORT_ROOT="$AUTONOMY/reports/founder_money_command" \
+          bash "$REPO/scripts/ops/dealix_founder_money_command.sh"
+    fi
+
+    run_py_if_exists \
+      self_improvement \
+      scripts/commercial/run_self_improvement_daily.py \
+      --client dealix \
+      --mode draft-only
+
+    ;;
+
+  *)
+    echo "UNKNOWN_CYCLE=$CYCLE"
+    exit 64
+    ;;
+
+esac
+
+###############################################################################
+# RECEIPT
+###############################################################################
+
+RECEIPT="$RUN/RECEIPT.txt"
+
+{
+  echo "DEALIX_AUTONOMOUS_COMPANY_CYCLE"
+  echo "TIMESTAMP=$(date -Is)"
+  echo "CYCLE=$CYCLE"
+  echo "PRODUCTION_GREEN=$GREEN"
+  echo "GROWTH_LIMIT=$LIMIT"
+  echo "CYCLE_FAILED=$CYCLE_FAILED"
+  echo
+
+  for name in "${!RESULT[@]}"; do
+    echo "${name}_RC=${RESULT[$name]}"
+  done
+
+  echo
+  echo "EMAIL_LIVE_SEND=false"
+  echo "WHATSAPP_OUTBOUND=false"
+  echo "PUBLIC_PUBLISH=false"
+  echo "PAYMENT_EXECUTION=false"
+  echo "PRODUCTION_MUTATION=false"
+  echo "MERGE_EXECUTION=false"
+  echo "L5_EXECUTED=NONE"
+} >"$RECEIPT"
+
+chmod 0600 "$RECEIPT"
+
+echo
+if (( CYCLE_FAILED != 0 )); then
+  echo "CYCLE_RESULT=FAIL"
+  echo "CYCLE_COMPLETE=$CYCLE"
+  echo "PROOF=$RUN"
+  exit 1
+fi
+echo "CYCLE_RESULT=PASS"
+echo "CYCLE_COMPLETE=$CYCLE"
+echo "PROOF=$RUN"

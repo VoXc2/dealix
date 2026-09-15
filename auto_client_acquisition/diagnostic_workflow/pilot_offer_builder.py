@@ -7,12 +7,12 @@ from auto_client_acquisition.diagnostic_workflow.schemas import (
 )
 
 _DESCRIPTION_AR = (
-    "Revenue Command Pilot لمدّة 30 يومًا بنطاق تشغيل واحد ومراجعة المؤسس "
-    "لكلّ خطوة. السعر والنطاق يحددان في quote موثق بعد جلسة الاكتشاف."
+    "Revenue Command Pilot بنطاق ومدة مخصصين للحالة ومراجعة المؤسس "
+    "لكلّ خطوة. السعر والنطاق والمدة تحدد في quote موثق بعد جلسة الاكتشاف."
 )
 _DESCRIPTION_EN = (
-    "A 30-day Revenue Command Pilot covering one operating scope with founder "
-    "review at every step. Price and scope are set in a documented quote after discovery."
+    "A Revenue Command Pilot with customer-specific scope and duration and founder "
+    "review at every step. Price, scope, and duration are set in a documented quote after discovery."
 )
 _TERMS_AR = (
     "لا فاتورة ولا رابط دفع قبل اعتماد quote ومسار الدفع. لا يوجد التزام "

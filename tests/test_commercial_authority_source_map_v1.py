@@ -35,7 +35,8 @@ def test_business_now_client_pack_has_no_global_price_authority() -> None:
     assert pack["public_fixed_price"] is False
     assert pack["price_authority"] == "customer_specific_quote_after_qualified_discovery"
     assert pack["quote_requires_founder_approval"] is True
-    assert "30-Day Revenue Command Pilot" in pack["primary_offer_pitch_ar"]
+    assert "Revenue Command Pilot" in pack["primary_offer_pitch_ar"]
+    assert "30-Day Revenue Command Pilot" not in pack["primary_offer_pitch_ar"]
 
 
 def test_business_now_pilot_action_uses_canonical_paid_motion() -> None:
@@ -64,7 +65,7 @@ def test_company_brain_pack_generator_cannot_recreate_retired_offer_ladder() -> 
 
     for required in (
         'CANONICAL_ENTRY_OFFER = "Free Mini Diagnostic"',
-        'CANONICAL_PAID_OFFER = "30-Day Revenue Command Pilot"',
+        'CANONICAL_PAID_OFFER = "Revenue Command Pilot"',
         "Customer-Specific Quote",
         "Verified Payment",
         "Customer-Validated Proof",

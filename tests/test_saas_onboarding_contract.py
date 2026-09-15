@@ -69,7 +69,9 @@ def test_self_serve_onboarding_is_explicitly_gated_and_jwt_guards_remain() -> No
 
     assert '"/api/v1/onboarding/",' in middleware
     assert "path.startswith(PUBLIC_PREFIXES)" in middleware
+    assert "SELF_SERVE_PUBLIC_SIGNUP_AUTHORITY = False" in router_source
     assert 'os.getenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "false")' in router_source
+    assert "return SELF_SERVE_PUBLIC_SIGNUP_AUTHORITY and requested" in router_source
     assert "def _require_self_serve_signup_enabled()" in router_source
     plans_section = router_source.split('@router.get("/plans"', 1)[1].split(
         '@router.post("/signup"', 1

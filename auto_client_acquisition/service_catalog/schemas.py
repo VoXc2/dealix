@@ -47,7 +47,8 @@ class ServiceOffering(BaseModel):
     name_en: str = Field(..., min_length=1, max_length=120)
     price_sar: float = Field(..., ge=0)
     price_unit: Literal["one_time", "per_month", "custom"] = "one_time"
-    duration_days: int = Field(..., ge=0, le=365)
+    duration_days: int | None = Field(..., ge=0, le=365)
+    duration_policy: Literal["fixed_internal_estimate", "customer_specific_after_qualified_discovery", "ongoing_or_scoped"] = "fixed_internal_estimate"
     deliverables: tuple[str, ...] = Field(..., min_length=1)
     kpi_commitment_ar: str
     kpi_commitment_en: str

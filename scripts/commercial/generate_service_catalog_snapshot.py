@@ -6,7 +6,7 @@ entries. Public frontend data must not re-export those internal fixed prices or
 inactive packages. The governed public projection is produced by
 ``scripts/dealix_export_service_catalog_json.py`` and contains only the current
 Free Mini Diagnostic -> qualified discovery -> customer-specific quote ->
-30-Day Revenue Command Pilot path.
+customer-specific Revenue Command Pilot path.
 
 No external calls are made.
 """

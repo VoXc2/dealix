@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+
+export TZ=Asia/Riyadh
+
+CONTROL="${DEALIX_CONTROL:-/opt/dealix/control}"
+AUTONOMY="$CONTROL/autonomous-company"
+BIN="$AUTONOMY/bin"
+STATE="$AUTONOMY/state/dispatch"
+
+TODAY="$(date +%F)"
+DOW="$(date +%u)"
+NOW_H="$(date +%H)"
+NOW_M="$(date +%M)"
+
+NOW_MIN=$((10#$NOW_H * 60 + 10#$NOW_M))
+
+DAY_DIR="$STATE/$TODAY"
+mkdir -p "$DAY_DIR"
+
+###############################################################################
+# DAY GROUPS
+#
+# date +%u:
+# 1 Mon
+# 2 Tue
+# 3 Wed
+# 4 Thu
+# 5 Fri
+# 6 Sat
+# 7 Sun
+###############################################################################
+
+is_business_day() {
+  case "$DOW" in
+    1|2|3|4|7) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+target_min() {
+  local hhmm="$1"
+  local hh="${hhmm:0:2}"
+  local mm="${hhmm:2:2}"
+
+  echo $((10#$hh * 60 + 10#$mm))
+}
+
+run_due() {
+  local hhmm="$1"
+  local window="$2"
+  local key="$3"
+  local cycle="$4"
+  local day_mode="${5:-all}"
+
+  local target
+  target="$(target_min "$hhmm")"
+
+  if [[ "$day_mode" == "business" ]] && ! is_business_day; then
+    return 0
+  fi
+
+  if [[ "$day_mode" == "thursday" && "$DOW" != "4" ]]; then
+    return 0
+  fi
+
+  if [[ "$day_mode" == "sunday" && "$DOW" != "7" ]]; then
+    return 0
+  fi
+
+  if (( NOW_MIN < target || NOW_MIN >= target + window )); then
+    return 0
+  fi
+
+  local marker="$DAY_DIR/${key}.done"
+
+  if [[ -f "$marker" ]]; then
+    return 0
+  fi
+
+  echo "DISPATCH=$key cycle=$cycle time=$(date -Is)"
+
+  set +e
+  "$BIN/dealix-company-cycle" "$cycle"
+  local rc=$?
+  set -e
+
+  if (( rc == 0 )); then
+    {
+      echo "timestamp=$(date -Is)"
+      echo "cycle=$cycle"
+      echo "rc=0"
+    } >"$marker"
+  else
+    echo "DISPATCH_FAILED=$key rc=$rc"
+  fi
+}
+
+###############################################################################
+# DAILY SCHEDULE
+###############################################################################
+
+# Trust every day.
+run_due 0615 45 trust_morning trust all
+
+# Main company machine Sunday-Thursday.
+run_due 0645 45 company_morning company business
+
+# Sales probability ranking.
+run_due 0715 45 growth_morning growth business
+
+# Weekly Sunday reset.
+run_due 0745 45 weekly_strategy strategy sunday
+
+# Founder economic truth.
+run_due 0800 45 money_morning money business
+
+# Draft communication.
+run_due 0915 45 gmail_drafts gmail business
+
+# Deep-WIP opportunity refresh.
+run_due 1030 45 growth_deep_wip growth business
+
+# Proof-led content drafts.
+run_due 1130 45 content_morning content business
+
+# Active delivery / acceptance / proof / risk review.
+run_due 1330 45 delivery_midday delivery business
+
+# Afternoon opportunity/follow-up refresh.
+run_due 1445 45 growth_afternoon growth business
+
+# Distribution/case-study/proof repurpose drafts.
+run_due 1630 45 content_afternoon content business
+
+# Evening CEO truth.
+run_due 1800 45 money_evening money business
+
+# Weekly proof.
+run_due 1900 60 weekly_proof proof thursday
+
+# Learning every day.
+run_due 2030 45 learning_evening learning all
+
+# Night trust every day.
+run_due 2315 45 trust_night trust all

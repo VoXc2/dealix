@@ -268,7 +268,7 @@ def generate_proposal_page(
     markdown_en = (
         f"# {title_en}\n\n"
         f"{scope_en or '-'}\n\n"
-        "Revenue Command Pilot — 30 days — customer-specific quote after discovery.\n\n"
+        "Revenue Command Pilot — customer-specific duration — customer-specific quote after discovery.\n\n"
         f"> {_FOUNDER_SEND_RULE_EN}\n"
         "> no live charge — no revenue or ROI promise.\n"
     )

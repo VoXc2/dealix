@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.2",
+  "schema_version": "1.3",
   "generated_from_main_sha": "7274c766dd43a23ec391b4cfbeb4fae8ae665763",
   "closure_issue": 1162,
   "canonical_commercial_path": [
     "FREE_MINI_DIAGNOSTIC",
     "QUALIFIED_DISCOVERY",
     "CUSTOMER_SPECIFIC_QUOTE",
-    "REVENUE_COMMAND_PILOT_30D",
+    "CUSTOMER_SPECIFIC_GOVERNED_DELIVERY",
     "VERIFIED_PAYMENT",
     "DELIVERY",
     "CUSTOMER_VALIDATED_PROOF",
@@ -28,8 +28,12 @@
       "customer_facing": false,
       "authority": true,
       "fixed_public_price_authority": false,
-      "expected_markers": ["primary_offer_id: revenue_command_pilot_30d"],
-      "forbidden_markers": ["primary_offer_id: seven_day_governance_diagnostic"],
+      "expected_markers": [
+        "primary_offer_id: revenue_command_pilot_30d"
+      ],
+      "forbidden_markers": [
+        "primary_offer_id: seven_day_governance_diagnostic"
+      ],
       "state": "PATCHED_IN_PR_1494"
     },
     {
@@ -41,7 +45,9 @@
       "customer_facing": false,
       "authority": true,
       "fixed_public_price_authority": false,
-      "expected_markers": ["revenue_command_pilot_30d"],
+      "expected_markers": [
+        "revenue_command_pilot_30d"
+      ],
       "forbidden_markers": [],
       "state": "CURRENT_MAIN"
     },
@@ -87,7 +93,9 @@
         "PAYMENT_PROOF_CREATED=false",
         "REVENUE_CREATED=false"
       ],
-      "forbidden_markers": ["seven_day_governance_diagnostic"],
+      "forbidden_markers": [
+        "seven_day_governance_diagnostic"
+      ],
       "state": "CURRENT_MAIN"
     },
     {
@@ -154,7 +162,9 @@
       "customer_facing": false,
       "authority": false,
       "fixed_public_price_authority": false,
-      "expected_markers": ["commercial-map"],
+      "expected_markers": [
+        "commercial-map"
+      ],
       "forbidden_markers": [],
       "state": "LEGACY_HTTP_ROUTES_QUARANTINED_SAFE_COMPATIBILITY_URL_REPLACED"
     },
@@ -178,20 +188,23 @@
     },
     {
       "id": "self-serve-onboarding-quarantine",
-      "path": "api/routers/domains/customers/__init__.py",
-      "surface": "legacy public SaaS plans and subscription-creating signup quarantine",
+      "path": "api/routers/onboarding.py",
+      "surface": "mounted onboarding router with source-disabled public plans/signup; authenticated wizard/invites retained",
       "classification": "CURRENT_CANONICAL_AUTHORITY",
       "runtime_consumed": true,
-      "customer_facing": false,
+      "customer_facing": true,
       "authority": false,
       "fixed_public_price_authority": false,
       "expected_markers": [
-        "_LEGACY_SELF_SERVE_ONBOARDING_PATHS",
-        "/api/v1/onboarding/plans",
-        "/api/v1/onboarding/signup"
+        "SELF_SERVE_PUBLIC_SIGNUP_AUTHORITY = False",
+        "def _require_self_serve_signup_enabled()",
+        "@router.get(\"/plans\"",
+        "@router.post(\"/signup\""
       ],
-      "forbidden_markers": [],
-      "state": "ACTIVE_QUARANTINE_EXISTING_TENANT_WIZARD_AND_INVITES_RETAINED"
+      "forbidden_markers": [
+        "SELF_SERVE_PUBLIC_SIGNUP_AUTHORITY = True"
+      ],
+      "state": "ACTIVE_FAIL_CLOSED_SOURCE_AUTHORITY_PRIVATE_INVITE_ONLY"
     },
     {
       "id": "finance-runtime-quarantine",

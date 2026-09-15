@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render a non-binding 30-day Revenue Command Pilot scope draft.
+"""Render a non-binding customer-specific Revenue Command Pilot scope draft.
 
 This compatibility command replaces the historical 499 SAR / 7-Day Revenue
 Proof Sprint generator. It cannot select or authorize a price, payment term,
@@ -41,10 +41,11 @@ def build_brief(
         "sector": sector,
         "commercial_path": (
             "Free Mini Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> "
-            "Revenue Command Pilot — 30 days -> Proof Pack -> Stop/Expand/Redesign"
+            "Revenue Command Pilot — customer-specific duration -> Proof Pack -> Stop/Expand/Redesign"
         ),
-        "package": "Revenue Command Pilot — 30 days",
-        "duration_days": 30,
+        "package": "Revenue Command Pilot — customer-specific duration",
+        "duration_days": None,
+        "duration_policy": "customer_specific_after_qualified_discovery",
         "quote_evidence_id": quote_evidence_id,
         "diagnostic_summary": diagnostic_summary or "UNKNOWN_NOT_EVIDENCE_BACKED",
         "scope_draft": [
@@ -80,7 +81,7 @@ def build_brief(
         "external_send_allowed": False,
         "execution_allowed": False,
         "approval_required_for_commitment": True,
-        "source": "canonical_30_day_pilot_scope_compatibility_renderer",
+        "source": "canonical_customer_specific_pilot_scope_renderer",
     }
 
 

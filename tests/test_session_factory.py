@@ -1263,7 +1263,7 @@ def test_orchestrator_ignores_invalid_job_idle_timeout(tmp_path: Path, monkeypat
     assert captured["idle_timeout_s"] is None
 
 
-def test_modifying_daemon_timeout_never_falls_back_to_cli(tmp_path: Path, monkeypatch) -> None:
+def test_modifying_daemon_timeout_without_proven_worktree_never_falls_back_to_cli(tmp_path: Path, monkeypatch) -> None:
     job = _daemon_job(modifying=True)
     monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
     monkeypatch.setattr(factory, "execute_opencode_daemon", lambda *_a, **_k: {
@@ -1271,11 +1271,56 @@ def test_modifying_daemon_timeout_never_falls_back_to_cli(tmp_path: Path, monkey
         "stderr": "daemon-deadline-exceeded: session aborted",
         "duration_s": 180, "via": "daemon", "session_id": "sess-timeout",
     })
-    monkeypatch.setattr(factory, "execute_opencode_cli", lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("modifying CLI fallback must never run")))
+    monkeypatch.setattr(factory, "execute_opencode_cli", lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("unproven modifying CLI fallback must never run")))
     result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
     assert result["ok"] is False
     assert result["returncode"] == 124
     assert result["fallback_denied"] == "modifying-worktree-isolation"
+
+
+def test_modifying_daemon_timeout_recovers_through_proven_isolated_cli(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job(modifying=True)
+    job["WORKTREE"] = str(tmp_path)
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    monkeypatch.setattr(factory, "verify_modifying_cli_worktree", lambda *_a, **_k: {"ok": True, "worktree": str(tmp_path)})
+    monkeypatch.setattr(factory, "execute_opencode_daemon", lambda *_a, **_k: {
+        "ok": False, "returncode": 124, "stdout": "",
+        "stderr": "daemon-deadline-exceeded: session aborted",
+        "duration_s": 180, "via": "daemon", "session_id": "sess-timeout",
+    })
+    monkeypatch.setattr(factory, "execute_opencode_cli", lambda *_a, **_k: {
+        "ok": True, "returncode": 0, "stdout": "RECOVERED", "stderr": "", "duration_s": 1,
+    })
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert result["fallback_reason"] == "daemon-timeout-after-abort"
+    assert result["daemon_session_id"] == "sess-timeout"
+
+
+def test_modifying_cli_pins_verified_worktree_with_dir(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job(modifying=True)
+    job["WORKTREE"] = str(tmp_path)
+    monkeypatch.setattr(factory, "verify_modifying_cli_worktree", lambda *_a, **_k: {"ok": True, "worktree": str(tmp_path)})
+    monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: str(tmp_path / "opencode"))
+    monkeypatch.setattr(factory, "_resolve_opencode_model", lambda _job: ("opencode/muse-spark-1.3-contributor-free", None))
+    policy = tmp_path / "policy.json"
+    policy.write_text("{}", encoding="utf-8")
+    monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(policy))
+    captured: dict[str, object] = {}
+
+    def _capture(argv, cwd, timeout=600, env=None, stdin=None):
+        captured["argv"] = argv
+        captured["cwd"] = cwd
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
+
+    monkeypatch.setattr(factory, "run_argv", _capture)
+    result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    argv = captured["argv"]
+    assert argv[:5] == [str(tmp_path / "opencode"), "run", "--auto", "--format", "json"]
+    assert argv[5:7] == ["-m", "opencode/muse-spark-1.3-contributor-free"]
+    assert argv[7:9] == ["--dir", str(tmp_path.resolve())]
+    assert captured["cwd"] == tmp_path
 
 def test_daemon_rejects_non_loopback_url(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setenv("DEALIX_OPENCODE_DAEMON_URL", "http://example.com:4098")

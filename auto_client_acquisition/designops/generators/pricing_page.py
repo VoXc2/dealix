@@ -34,7 +34,7 @@ CURRENT_PATH: list[dict[str, Any]] = [
     {
         "stage": "paid_motion",
         "name_ar": "Revenue Command Pilot — 30 يومًا",
-        "name_en": "Revenue Command Pilot — 30 days",
+        "name_en": "Revenue Command Pilot — customer-specific duration",
         "price_authority": "customer_specific_quote_after_qualified_discovery",
         "summary_ar": (
             "Workflow واحد + baseline + owner + approved data boundary + approval path + "

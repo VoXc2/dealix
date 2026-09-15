@@ -94,38 +94,42 @@ async def test_self_serve_onboarding_is_disabled_by_default(async_client, monkey
 
 
 @pytest.mark.asyncio
-async def test_onboarding_signup_and_wizard_flow(async_client, monkeypatch):
+async def test_self_serve_env_cannot_override_source_authority(async_client, monkeypatch):
     monkeypatch.setenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "true")
-    async with get_session() as session:
-        await _create_plan(session, slug="free", name_en="Free", monthly=0.0, yearly=0.0)
-
-    response = await async_client.post(
+    plans_response = await async_client.get("/api/v1/onboarding/plans")
+    assert plans_response.status_code == 404, plans_response.text
+    signup_response = await async_client.post(
         "/api/v1/onboarding/signup",
         json={
-            "email": "admin@testsaas.local",
+            "email": "still-blocked@example.com",
             "password": "s3cureP@ssword",
-            "name": "أحمد",
-            "company_name": "شركة الاختبار",
+            "name": "Blocked User",
+            "company_name": "Blocked Company",
             "plan_slug": "free",
             "billing_cycle": "monthly",
         },
     )
+    assert signup_response.status_code == 404, signup_response.text
 
-    assert response.status_code == 201, response.text
-    payload = response.json()
-    assert payload["tenant_id"].startswith("tnt_")
-    assert payload["user_id"].startswith("usr_")
-    assert payload["subscription_id"].startswith("sub_")
-    assert payload["plan_slug"] == "free"
-    assert payload["requires_email_verification"] is True
+
+@pytest.mark.asyncio
+async def test_existing_tenant_can_complete_wizard(async_client):
+    tenant_id = f"tnt_{uuid.uuid4().hex[:12]}"
+    user_id = f"usr_{uuid.uuid4().hex[:12]}"
+    async with get_session() as session:
+        await _create_tenant_user(
+            session,
+            tenant_id=tenant_id,
+            user_id=user_id,
+            email="wizard@testsaas.local",
+        )
 
     token = create_access_token(
-        user_id=payload["user_id"],
-        tenant_id=payload["tenant_id"],
+        user_id=user_id,
+        tenant_id=tenant_id,
         role="owner",
     )
     auth_header = {"Authorization": f"Bearer {token}"}
-
     wizard_response = await async_client.post(
         "/api/v1/onboarding/wizard",
         json={
@@ -136,7 +140,6 @@ async def test_onboarding_signup_and_wizard_flow(async_client, monkeypatch):
         },
         headers=auth_header,
     )
-
     assert wizard_response.status_code == 200, wizard_response.text
     assert wizard_response.json()["status"] == "completed"
 

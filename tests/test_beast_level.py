@@ -93,7 +93,8 @@ def test_offer_match_is_quote_only_current_path() -> None:
     assert offer["entry_price_sar"] == 0
     assert offer["price_sar"] is None
     assert offer["price_halalah"] is None
-    assert offer["paid_motion_duration_days"] == 30
+    assert offer["paid_motion_duration_days"] is None
+    assert "customer-specific duration" in offer["paid_motion"]
     assert offer["price_mode"] == "customer_specific_quote_after_qualified_discovery"
     assert offer["execution_allowed"] is False
     assert "public_fixed_pilot_price" in offer["blocked_claims"]
@@ -244,7 +245,8 @@ def test_offer_recommendation_uses_current_quote_authority() -> None:
     offer = build_offer_recommendation(p)
     assert offer["price_sar"] is None
     assert offer["entry_motion"] == "Free Mini Diagnostic"
-    assert offer["paid_motion_duration_days"] == 30
+    assert offer["paid_motion_duration_days"] is None
+    assert "customer-specific duration" in offer["paid_motion"]
 
 
 def test_content_pack_returns_5_items_and_blocks_unproven_case() -> None:

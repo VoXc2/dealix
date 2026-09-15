@@ -64,7 +64,8 @@ def test_primary_offer_is_governed_and_quote_only_after_discovery() -> None:
     audit = audit_pilot_pricing(ROOT)
     assert audit["ok"] is True
     assert audit["offer_id"] == "revenue_command_pilot_30d"
-    assert audit["duration_days"] == 30
+    assert audit["duration_days"] is None
+    assert audit["duration_policy"] == "customer_specific_after_qualified_discovery"
     assert audit["pilot_price"] is None
     assert audit["pricing_status"] == "no_public_amount_until_validation"
     assert audit["publication_status"] == "founder_approval_required"

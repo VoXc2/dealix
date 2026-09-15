@@ -109,7 +109,8 @@ def test_pilot_offer_is_quote_only_after_discovery():
     offer = build_pilot_offer(bundle)
     assert isinstance(offer, PilotOffer)
     assert offer.amount_sar is None
-    assert offer.duration_days == 30
+    assert offer.duration_days is None
+    assert offer.duration_policy == "customer_specific_after_qualified_discovery"
     assert offer.commercial_status == "quote_only"
     # A public amount is not accepted by the quote-only schema.
     with pytest.raises(Exception):
@@ -206,7 +207,8 @@ def test_router_pilot_offer_triggers_full_pipeline(client: TestClient):
     body = resp.json()
     assert body["company"] == "ACME Saudi"
     assert body["amount_sar"] is None
-    assert body["duration_days"] == 30
+    assert body["duration_days"] is None
+    assert body["duration_policy"] == "customer_specific_after_qualified_discovery"
     assert body["commercial_status"] == "quote_only"
     assert body["recommended_bundle"] in CUSTOMER_FACING_BUNDLES
     assert body["payment_url"] is None

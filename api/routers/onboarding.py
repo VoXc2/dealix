@@ -29,6 +29,9 @@ from dealix.onboarding.service import OnboardingService
 router = APIRouter(prefix="/api/v1/onboarding", tags=["Onboarding"])
 SELF_SERVE_PLAN_SLUGS = ("free", "starter", "growth")
 SelfServePlanSlug = Literal["free", "starter", "growth"]
+# Public self-serve remains source-disabled until shared multi-tenant SaaS isolation
+# is independently accepted. An environment toggle alone can never create authority.
+SELF_SERVE_PUBLIC_SIGNUP_AUTHORITY = False
 
 
 def self_serve_signup_enabled() -> bool:
@@ -40,12 +43,13 @@ def self_serve_signup_enabled() -> bool:
     self-checkout authority.
     """
 
-    return os.getenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "false").strip().lower() in {
+    requested = os.getenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "false").strip().lower() in {
         "1",
         "true",
         "yes",
         "on",
     }
+    return SELF_SERVE_PUBLIC_SIGNUP_AUTHORITY and requested
 
 
 def _require_self_serve_signup_enabled() -> None:

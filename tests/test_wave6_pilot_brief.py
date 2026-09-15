@@ -60,7 +60,7 @@ def test_quote_evidence_is_required_and_failure_writes_nothing(tmp_path) -> None
     assert not out_json.exists()
 
 
-def test_valid_brief_is_30_day_quote_only_scope(tmp_path) -> None:
+def test_valid_brief_is_customer_specific_quote_only_scope(tmp_path) -> None:
     args, out_md, out_json = _valid_args(tmp_path)
     r = _run(args)
     assert r.returncode == 0, r.stderr
@@ -68,7 +68,8 @@ def test_valid_brief_is_30_day_quote_only_scope(tmp_path) -> None:
     b = json.loads(out_json.read_text(encoding="utf-8"))
     assert b["schema"] == "dealix.revenue_command_pilot_scope_draft.v1"
     assert b["truth_class"] == "DRAFT_NOT_SENT"
-    assert b["duration_days"] == 30
+    assert b["duration_days"] is None
+    assert b["duration_policy"] == "customer_specific_after_qualified_discovery"
     assert b["quote_evidence_id"] == QUOTE_REF
     assert b["price_sar"] is None
     assert b["payment_terms"] is None

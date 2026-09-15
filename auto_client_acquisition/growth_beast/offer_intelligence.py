@@ -7,7 +7,7 @@ Current authority:
     Free Mini Diagnostic
     -> Qualified Discovery
     -> Customer-Specific Quote
-    -> Revenue Command Pilot — 30 days
+    -> Revenue Command Pilot — customer-specific duration
     -> Proof Pack
     -> Stop / Expand / Redesign
 """
@@ -67,8 +67,8 @@ def match_offer(*, sector: str, signal_type: str) -> dict:
         **angle,
         "entry_motion": "Free Mini Diagnostic",
         "entry_price_sar": 0,
-        "paid_motion": "Revenue Command Pilot — 30 days",
-        "paid_motion_duration_days": 30,
+        "paid_motion": "Revenue Command Pilot — customer-specific duration",
+        "paid_motion_duration_days": None,
         "price_mode": "customer_specific_quote_after_qualified_discovery",
         # Backward-compatible fields are intentionally null. A caller that
         # requires a number must obtain approved named-customer quote evidence.
@@ -79,7 +79,7 @@ def match_offer(*, sector: str, signal_type: str) -> dict:
             "FREE_MINI_DIAGNOSTIC",
             "QUALIFIED_DISCOVERY",
             "CUSTOMER_SPECIFIC_QUOTE",
-            "30_DAY_REVENUE_COMMAND_PILOT",
+            "CUSTOMER_SPECIFIC_GOVERNED_DELIVERY",
             "PROOF_PACK",
             "STOP_EXPAND_REDESIGN",
         ],

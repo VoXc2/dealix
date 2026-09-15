@@ -1,10 +1,7 @@
-import { WorkflowROIReport } from "../../components/value/WorkflowROIReport";
+import { redirect } from "next/navigation";
 
 export default function ValueEnginePage() {
-  return (
-    <main className="grid">
-      <h1>Value Engine</h1>
-      <WorkflowROIReport roi={{ estimated: 12000, measured: 15600 }} />
-    </main>
-  );
+  // Retired public demo: synthetic ROI examples are not customer proof or
+  // commercial authority. Canonical public proof methodology lives at /cases.
+  redirect("/cases");
 }

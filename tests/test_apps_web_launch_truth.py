@@ -94,7 +94,7 @@ def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
     required_redirects = {
         '{ source: "/pricing.html", destination: "/pricing", permanent: true }',
         '{ source: "/academy.html", destination: "/", permanent: true }',
-        '{ source: "/customer-portal.html", destination: "/", permanent: true }',
+        '{ source: "/customer-portal.html", destination: "/cases", permanent: true }',
         '{ source: "/proof.html", destination: "/", permanent: true }',
         '{ source: "/workflow.html", destination: "/pricing", permanent: true }',
         '{ source: "/trust.html", destination: "/safety", permanent: true }',
@@ -102,6 +102,7 @@ def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
         '{ source: "/ai-team.html", destination: "/agents", permanent: true }',
         '{ source: "/checkout.html", destination: "/pricing", permanent: true }',
         '{ source: "/signup", destination: "/book", permanent: true }',
+        '{ source: "/value-engine", destination: "/cases", permanent: true }',
         '{ source: "/offers", destination: "/pricing", permanent: true }',
         '{ source: "/revenue-os", destination: "/dealix-os", permanent: true }',
         '{ source: "/enterprise-readiness", destination: "/services", permanent: true }',

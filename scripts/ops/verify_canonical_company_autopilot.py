@@ -32,6 +32,10 @@ def main() -> int:
 
     if primary.get("id") != "revenue_command_pilot_30d":
         fail("unexpected_primary_motion")
+    if primary.get("duration_days") is not None:
+        fail("fixed_duration_not_authorized")
+    if primary.get("duration_policy") != "customer_specific_after_qualified_discovery":
+        fail("duration_policy_drift")
     if primary.get("checkout_enabled") is not False:
         fail("checkout_must_be_disabled")
     if pricing.get("public_amount_sar") is not None:
@@ -47,7 +51,7 @@ def main() -> int:
 
     prompt = MASTER_PROMPT.read_text(encoding="utf-8")
     required_prompt_terms = (
-        "Revenue Command Pilot — 30 days",
+        "Revenue Command Pilot — customer-specific duration after qualified discovery",
         "five qualified",
         "warm/consented",
         "Approval Center",
@@ -96,6 +100,8 @@ def main() -> int:
         "pricing_status": pricing.get("status"),
         "qualified_conversations_required": pricing.get("qualified_conversations_required"),
         "external_send_allowed": conversation.get("external_send_allowed"),
+        "duration_days": primary.get("duration_days"),
+        "duration_policy": primary.get("duration_policy"),
         "legacy_64k_reference_in_merged_autopilot": legacy_present,
         "runtime_8k_guard_present": True,
         "new_parallel_scheduler_created": False,

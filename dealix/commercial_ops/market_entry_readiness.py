@@ -247,7 +247,8 @@ def audit_pilot_pricing(repo_root: Path | None = None) -> dict[str, Any]:
         (
             bool(primary.get("id")),
             bool(primary.get("name_en")),
-            int(primary.get("duration_days") or 0) > 0,
+            primary.get("duration_days") is None,
+            primary.get("duration_policy") == "customer_specific_after_qualified_discovery",
             primary.get("public") is False,
             primary.get("checkout_enabled") is False,
             primary.get("external_quote_requires_founder_approval") is True,
@@ -270,6 +271,7 @@ def audit_pilot_pricing(repo_root: Path | None = None) -> dict[str, Any]:
         "offer_name": primary.get("name_en"),
         "offer_name_ar": primary.get("name_ar"),
         "duration_days": primary.get("duration_days"),
+        "duration_policy": primary.get("duration_policy"),
         "pilot_price": approved_amount if pricing_status == "approved" else None,
         "observed": quote_only_sources,
         "quote_only_sources_consistent": True,
