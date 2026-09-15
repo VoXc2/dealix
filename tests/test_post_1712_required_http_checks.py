@@ -1,4 +1,4 @@
-﻿from importlib.util import module_from_spec, spec_from_file_location
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 SCRIPT = Path("scripts/commercial/verify_post_1712_commercial_launch.py")
