@@ -17,20 +17,20 @@ export const serviceOsSnapshot = {
   offers: [
     {
       name: 'Revenue Command Room OS',
-      timeline: '7 days',
-      price: '5k-12k SAR',
+      scopeAuthority: 'Customer-specific scope after the Free Diagnostic and qualified discovery.',
+      commercialAuthority: 'Timeline, price, and acceptance criteria are customer-specific and require an approved quote.',
       outcome: 'Daily revenue actions, follow-up queue, proposal queue, and proof report.'
     },
     {
       name: 'Client Service OS',
-      timeline: '7-14 days',
-      price: '15k-35k SAR',
+      scopeAuthority: 'Customer-specific scope after the Free Diagnostic and qualified discovery.',
+      commercialAuthority: 'Timeline, price, and acceptance criteria are customer-specific and require an approved quote.',
       outcome: 'Client intake, workflow diagnosis, owner map, daily delivery, weekly proof, and renewal path.'
     },
     {
       name: 'AI Trust & Safety OS',
-      timeline: '7 days',
-      price: '5k-15k SAR',
+      scopeAuthority: 'Customer-specific scope after the Free Diagnostic and qualified discovery.',
+      commercialAuthority: 'Timeline, price, and acceptance criteria are customer-specific and require an approved quote.',
       outcome: 'Approval gates, safe AI policy, no fake claims, and external action review.'
     }
   ],

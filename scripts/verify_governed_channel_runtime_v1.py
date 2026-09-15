@@ -223,6 +223,19 @@ def main() -> int:
         "w_organization_social" in set(org_linkedin.get("required_capabilities", [])),
         "LinkedIn organization publish permission contract missing",
     )
+    facebook = registry_channels.get("facebook", {})
+    require(
+        {
+            "dealix_page_identity", "page_access_token_outside_repo",
+            "page_role_or_task_CREATE_CONTENT", "pages_show_list",
+            "pages_read_engagement", "pages_manage_posts",
+        } <= set(facebook.get("required_capabilities", [])),
+        "Facebook Page publish capability contract incomplete",
+    )
+    require(
+        str(facebook.get("public_publish_gate", "")).startswith("EXACT_ACTION_BOUND"),
+        "Facebook Page public publish must remain action-bound",
+    )
     tiktok = registry_channels.get("tiktok", {})
     require(
         {"approved_video.publish_scope", "target_user_authorization"}

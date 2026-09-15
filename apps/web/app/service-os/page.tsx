@@ -22,8 +22,8 @@ export default function ServiceOsPage() {
           نظام واحد يربط البيع، فهم المحادثة، استراتيجية الصفقة، تشغيل العميل، proof report، والمراجعة قبل أي إجراء خارجي حساس.
         </p>
         <div className="actions" aria-label="Service OS actions">
-          <Link href="/book">احجز مراجعة تشغيلية</Link>
-          <Link href="/pricing">الباقات التجارية</Link>
+          <Link href="/book">ابدأ التشخيص التنفيذي المجاني</Link>
+          <Link href="/services">استعرض الخدمات</Link>
           <Link href="/safety">مراجعة الأمان</Link>
         </div>
       </section>
@@ -58,14 +58,15 @@ export default function ServiceOsPage() {
 
       <section className="card" aria-label="Commercial offers">
         <p className="eyebrow">Commercial offers</p>
-        <h2>باقات جاهزة للبيع</h2>
+        <h2>مسارات قابلة للتخصيص بعد التشخيص</h2>
         <div className="grid-3">
           {serviceOsSnapshot.offers.map((offer) => (
             <article className="card" key={offer.name}>
-              <span className="badge">{offer.timeline}</span>
+              <span className="badge">Qualified discovery first</span>
               <h3>{offer.name}</h3>
               <p>{offer.outcome}</p>
-              <strong>{offer.price}</strong>
+              <strong>{offer.commercialAuthority}</strong>
+              <p>{offer.scopeAuthority}</p>
             </article>
           ))}
         </div>

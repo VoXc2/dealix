@@ -33,7 +33,9 @@
       "youtube_videos_insert": "https://developers.google.com/youtube/v3/docs/videos/insert",
       "youtube_video_status": "https://developers.google.com/youtube/v3/docs/videos",
       "x_api_pricing": "https://docs.x.com/x-api/getting-started/pricing",
-      "x_auth_mapping": "https://docs.x.com/fundamentals/authentication/guides/v2-authentication-mapping"
+      "x_auth_mapping": "https://docs.x.com/fundamentals/authentication/guides/v2-authentication-mapping",
+      "facebook_pages_permissions": "https://developers.facebook.com/docs/permissions",
+      "facebook_page_photos": "https://developers.facebook.com/docs/graph-api/reference/page/photos/"
     },
     "runtime_truth": {
       "provider_connected_is_not_publish_authority": true,
@@ -129,7 +131,9 @@
       "role": "BUSINESS_PRESENCE_RETARGETABLE_CONTENT_AND_MESSAGING",
       "state": "META_IDENTITY_CONFIGURATION_REQUIRED",
       "owned_publish_mode": "META_APPROVED_BUSINESS_API_OR_NATIVE",
-      "activation_evidence_required": ["dealix_page", "business_portfolio_access", "authorized_app_or_native_suite"],
+      "required_capabilities": ["dealix_page_identity", "page_access_token_outside_repo", "page_role_or_task_CREATE_CONTENT", "pages_show_list", "pages_read_engagement", "pages_manage_posts"],
+      "activation_evidence_required": ["dealix_page", "business_portfolio_access", "authorized_app_or_native_suite", "page_access_token_stored_outside_repo", "page_actor_can_perform_CREATE_CONTENT", "pages_show_list_permission", "pages_read_engagement_permission", "pages_manage_posts_permission", "private_or_draft_canary_where_supported"],
+      "public_publish_gate": "EXACT_ACTION_BOUND_AUTHORITY_AFTER_PAGE_IDENTITY_PERMISSION_AND_TOKEN_PROOF",
       "phone_dependency": false
     },
     "threads": {

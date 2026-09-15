@@ -26,11 +26,11 @@ def build_markdown(seed: dict) -> str:
         "",
         "## Operating verdict",
         "",
-        "HubSpot should be used as the CRM source of truth. Dealix should be used as the intelligence, scoring, drafting, negotiation, and command-center layer.",
+        "Dealix Company OS / Revenue Mesh owns commercial truth. HubSpot is an operational CRM mirror only; CRM records, stages and amounts are observations and cannot prove relationship, qualified opportunity, payment, revenue or public pricing authority.",
         "",
         "## CRM write policy",
         "",
-        "Baseline is read-only intelligence. Any CRM write-back must be approved by the owner before execution.",
+        "Baseline is read-only intelligence. Any CRM write-back remains fail-closed behind canonical relationship/evidence gates and the applicable action-bound authority; no write is performed by this generator.",
         "",
         "## Target groups found",
         "",
@@ -74,11 +74,11 @@ def build_markdown(seed: dict) -> str:
         "- tasks completed",
         "- discovery calls booked",
         "- proposals created",
-        "- deal amount",
-        "- deal stage",
+        "- mirrored deal amount (observational only; not verified revenue)",
+        "- mirrored deal stage (observational only; not commercial truth)",
         "- close rate",
         "- monthly retainer conversion",
-        "- cash collected",
+        "- verified cash only from canonical payment evidence; HubSpot may mirror the evidenced state",
     ]
     return "\n".join(lines) + "\n"
 

@@ -57,3 +57,11 @@ def test_active_customer_emitters_do_not_embed_fixed_commercial_authority() -> N
     text = "\n".join((ROOT / path).read_text(encoding="utf-8") for path in paths).casefold()
     for token in SOURCE_FORBIDDEN:
         assert token.casefold() not in text, f"fixed commercial authority returned: {token}"
+
+
+def test_hubspot_daily_generator_keeps_crm_as_mirror_not_truth_owner() -> None:
+    source = (ROOT / "scripts/commercial/generate_hubspot_commercial_os.py").read_text(encoding="utf-8")
+    assert "HubSpot should be used as the CRM source of truth" not in source
+    assert "HubSpot is an operational CRM mirror only" in source
+    assert "not verified revenue" in source
+    assert "canonical payment evidence" in source

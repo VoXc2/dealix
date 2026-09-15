@@ -146,6 +146,14 @@ def test_official_social_provider_readiness_is_explicit_and_fail_closed() -> Non
     assert "w_organization_social" in linkedin["required_capabilities"]
     assert linkedin["public_publish_gate"].startswith("EXACT_ACTION_BOUND")
 
+    facebook = channels["facebook"]
+    assert {
+        "dealix_page_identity", "page_access_token_outside_repo",
+        "page_role_or_task_CREATE_CONTENT", "pages_show_list",
+        "pages_read_engagement", "pages_manage_posts",
+    } <= set(facebook["required_capabilities"])
+    assert facebook["public_publish_gate"].startswith("EXACT_ACTION_BOUND")
+
     tiktok = channels["tiktok"]
     assert "approved_video.publish_scope" in tiktok["required_capabilities"]
     assert "audit_pass_before_public_direct_post" in tiktok["activation_evidence_required"]
