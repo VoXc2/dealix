@@ -8,18 +8,54 @@ social drafts and review metadata into local report artifacts only.
 
 from __future__ import annotations
 
+import argparse
 import json
+import os
+import sys
 from datetime import date
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from dealix.commercial_ops.social_queue import get_post_for_date
 from dealix.marketing_factory.weekly_pack import generate_weekly_pack
 
-ROOT = Path(__file__).resolve().parents[1]
 RIYADH = ZoneInfo("Asia/Riyadh")
 GTM_CONFIG = ROOT / "config" / "growth" / "dealix_gtm_social_engine_v1.json"
-OUT = ROOT / "reports" / "company_os" / "daily"
+
+# Historical/sample tracked fixture — read-only reference. Normal runtime must
+# never write here: these paths are tracked in git, so overwriting them dirties
+# the canonical checkout. They remain only so reviewers can see a sample shape.
+LEGACY_TRACKED_DIR = ROOT / "reports" / "company_os" / "daily"
+LEGACY_FIXTURE_MD = LEGACY_TRACKED_DIR / "CONTENT_DRAFTS_TODAY.md"
+
+MD_FILENAME = "CONTENT_DRAFTS_TODAY.md"
+
+
+def _default_out_dir() -> Path:
+    """One canonical runtime-output contract for generated daily artifacts.
+
+    Honor DEALIX_RUNTIME_REPORTS_ROOT (e.g. /opt/dealix/control/reports) so
+    autonomous/company runs write outside the git worktree and cannot poison
+    Source Sync — the same env contract used by the commercial runners
+    (run_self_operating_company_os, run_president_portfolio_command_v1, ...).
+    The in-repo fallback stays gitignored (reports/runtime/ in .gitignore).
+    """
+    override = os.getenv("DEALIX_RUNTIME_REPORTS_ROOT", "").strip()
+    if override:
+        return Path(override) / "content_factory" / "daily"
+    return ROOT / "reports" / "runtime" / "content_factory" / "daily"
+
+
+def resolve_out_dir(explicit: str | Path | None) -> Path:
+    """Resolve the caller's explicit output dir, else the runtime default."""
+    if explicit is not None and str(explicit).strip():
+        candidate = Path(str(explicit).strip())
+        return candidate if candidate.is_absolute() else ROOT / candidate
+    return _default_out_dir()
 
 
 def _load_gtm() -> dict:
@@ -101,11 +137,12 @@ def _markdown(pack: dict) -> str:
     return "\n".join(lines)
 
 
-def main(*, on_date: date | None = None) -> int:
+def main(*, on_date: date | None = None, out_dir: str | Path | None = None) -> int:
     # Import datetime locally so the runner remains easy to monkeypatch/test.
     from datetime import datetime
 
     today = on_date or datetime.now(RIYADH).date()
+    out = resolve_out_dir(out_dir)
     gtm = _load_gtm()
     weekly = generate_weekly_pack(week_start=today)
     canonical_today = get_post_for_date(today)
@@ -143,9 +180,11 @@ def main(*, on_date: date | None = None) -> int:
         "governance": "DRAFT_ONLY_APPROVAL_FIRST",
     }
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "CONTENT_DRAFTS_TODAY.md").write_text(_markdown(pack), encoding="utf-8")
-    (OUT / f"content_drafts_{today.isoformat()}.json").write_text(
+    out.mkdir(parents=True, exist_ok=True)
+    md_path = out / MD_FILENAME
+    json_path = out / f"content_drafts_{today.isoformat()}.json"
+    md_path.write_text(_markdown(pack), encoding="utf-8")
+    json_path.write_text(
         json.dumps(pack, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
@@ -154,8 +193,33 @@ def main(*, on_date: date | None = None) -> int:
     print(f"DRAFT_COUNT={len(drafts)}")
     print(f"CANONICAL_SOCIAL_AVAILABLE={str(canonical_today is not None).lower()}")
     print("EXTERNAL_PUBLISH_EXECUTED=false")
+    print(f"OUT_DIR={out}")
+    print(f"MARKDOWN={md_path.name}")
+    print(f"JSON={json_path.name}")
     return 0
 
 
+def _parse_cli_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Generate the daily governed multi-channel content draft pack "
+        "(draft-only; never publishes/sends). Writes markdown + dated JSON to "
+        "an untracked runtime output dir — never to tracked source fixtures."
+    )
+    parser.add_argument(
+        "--out-dir",
+        default=None,
+        help="explicit runtime output dir (default: $DEALIX_RUNTIME_REPORTS_ROOT/content_factory/daily "
+        "or reports/runtime/content_factory/daily).",
+    )
+    parser.add_argument(
+        "--date",
+        default=None,
+        help="override run date as YYYY-MM-DD (default: today Asia/Riyadh).",
+    )
+    return parser.parse_args(argv)
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _cli = _parse_cli_args()
+    _on_date = date.fromisoformat(_cli.date) if _cli.date else None
+    raise SystemExit(main(on_date=_on_date, out_dir=_cli.out_dir))

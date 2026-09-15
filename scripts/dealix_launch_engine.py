@@ -156,9 +156,14 @@ def run_generators(bundle: Path, warm_csv: Path) -> list[dict]:
     else:
         results.append({"name": "Warm-list outreach drafts", "status": FAIL, "detail": (err or out)[:200]})
 
-    # 4) Content drafts — writes to reports/company_os/daily/; copy into bundle.
-    rc, out, err = _run([PY, "scripts/dealix_content_factory_daily.py"])
-    src = REPO / "reports" / "company_os" / "daily" / "CONTENT_DRAFTS_TODAY.md"
+    # 4) Content drafts — pass an explicit runtime out-dir and read back from
+    # it. Never mutates the tracked reports/company_os/daily/ fixture; the
+    # bundle copy below is the launch-engine-owned artifact.
+    content_out = bundle / "content_factory"
+    rc, out, err = _run(
+        [PY, "scripts/dealix_content_factory_daily.py", "--out-dir", str(content_out)]
+    )
+    src = content_out / "CONTENT_DRAFTS_TODAY.md"
     if rc == 0 and src.exists():
         shutil.copyfile(src, bundle / "04_content_drafts.md")
         results.append({"name": "Content drafts", "status": PASS, "file": "04_content_drafts.md"})
