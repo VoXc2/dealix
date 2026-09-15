@@ -21,6 +21,7 @@ AUTHORITY = {
     "quote": False,
     "contract": False,
     "external_send": False,
+    "public_publish": False,
     "payment": False,
     "customer_proof": False,
     "execution": False,

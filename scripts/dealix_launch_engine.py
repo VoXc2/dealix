@@ -37,6 +37,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
+import os
 import shutil
 import subprocess
 import sys
@@ -94,16 +96,15 @@ def _run(argv: list[str], timeout: int = 240) -> tuple[int, str, str]:
         return 1, "", str(e)
 
 
-def _warm_csv(explicit: str | None) -> Path:
-    """Prefer the founder's real warm list; fall back to the template so the
-    engine always has something to run against."""
+def _warm_csv(explicit: str | None) -> Path | None:
+    """Legacy warm CSV is an optional import/compatibility path, never authority."""
     if explicit:
         p = Path(explicit)
         return p if p.is_absolute() else REPO / p
     real = REPO / "data" / "warm_list.csv"
     if real.exists() and _csv_rows(real) > 0:
         return real
-    return REPO / "data" / "warm_list.csv.template"
+    return None
 
 
 def _csv_rows(path: Path) -> int:
@@ -112,25 +113,86 @@ def _csv_rows(path: Path) -> int:
         return 0
     try:
         import csv
-
         with path.open("r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
             return sum(
-                1
-                for r in reader
+                1 for r in reader
                 if (r.get("name") or "").strip() or (r.get("company") or "").strip()
             )
     except Exception:
         return 0
 
 
+def _company_os_root() -> Path:
+    override = os.getenv("DEALIX_RUNTIME_REPORTS_ROOT", "").strip()
+    if override:
+        return Path(override) / "self_operating_company_os"
+    return REPO / "reports" / "self_operating_company_os"
+
+
+def _load_canonical_approvals() -> list[dict]:
+    today = datetime.now(UTC).strftime("%Y-%m-%d")
+    path = _company_os_root() / "approvals" / f"{today}.json"
+    if not path.exists():
+        return []
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, dict)]
+
+
+def _relationship_readiness(warm_csv: Path | None) -> dict:
+    approvals = _load_canonical_approvals()
+    if approvals:
+        return {
+            "name": "Canonical eligible relationship drafts",
+            "status": PASS,
+            "detail": f"{len(approvals)} Company OS review item(s); legacy CSV is not authority",
+        }
+    legacy_rows = _csv_rows(warm_csv) if warm_csv is not None else 0
+    detail = "HOLD/NO_ELIGIBLE_OUTBOUND — no canonical eligible relationship; research/public contacts do not create send authority"
+    if legacy_rows:
+        detail += f"; {legacy_rows} legacy CSV row(s) remain import-only"
+    return {"name": "Canonical eligible relationship drafts", "status": WARN, "detail": detail}
+
+
 # ─────────────────────────── generators ───────────────────────────
 
 
-def run_generators(bundle: Path, warm_csv: Path) -> list[dict]:
+def _write_canonical_relationship_queue(bundle: Path, approvals: list[dict]) -> Path:
+    path = bundle / "02_canonical_relationship_queue.md"
+    lines = [
+        "# Canonical Company OS relationship review queue",
+        "",
+        "Draft/review only. No external send, publish, payment, or relationship inference is executed here.",
+        "",
+    ]
+    if not approvals:
+        lines.append("HOLD/NO_ELIGIBLE_OUTBOUND — no canonical eligible relationship review items.")
+    for item in approvals:
+        lines.extend([
+            f"## {item.get('company_name', 'Unknown company')}",
+            f"- target_type: {item.get('target_type', 'UNKNOWN')}",
+            f"- action_type: {item.get('action_type', 'UNKNOWN')}",
+            f"- relationship_state: {item.get('relationship_state', 'UNKNOWN')}",
+            f"- consent_state: {item.get('consent_state', 'UNKNOWN')}",
+            f"- status: {item.get('status', 'UNKNOWN')}",
+            f"- evidence_refs: {len(item.get('evidence_refs') or [])}",
+            f"- current_draft_ref: {item.get('current_draft_ref') or 'NONE'}",
+            "",
+            str(item.get("draft_text", "REVIEW_ONLY_NO_SEND_BODY")),
+            "",
+        ])
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path
+
+
+def run_generators(bundle: Path, warm_csv: Path | None) -> list[dict]:
     results: list[dict] = []
 
-    # 1) Founder daily brief — prints markdown to stdout; capture it.
     rc, out, err = _run([PY, "scripts/dealix_founder_daily_brief.py"])
     if rc == 0 and out.strip():
         (bundle / "01_founder_brief.md").write_text(out, encoding="utf-8")
@@ -138,45 +200,40 @@ def run_generators(bundle: Path, warm_csv: Path) -> list[dict]:
     else:
         results.append({"name": "Founder daily brief", "status": FAIL, "detail": (err or out)[:200]})
 
-    # 2) Daily call sheet — writes its own file via --out.
-    rc, out, err = _run(
-        [PY, "scripts/dealix_call_sheet.py", "--csv", str(warm_csv), "--out", str(bundle / "02_call_sheet.md")]
-    )
+    rc, out, err = _run([PY, "scripts/commercial/run_self_operating_company_os.py", "--mode", "draft-only", "--limit", "50"])
+    approvals = _load_canonical_approvals() if rc == 0 else []
+    queue_path = _write_canonical_relationship_queue(bundle, approvals)
     if rc == 0:
-        results.append({"name": "Daily call sheet", "status": PASS, "file": "02_call_sheet.md", "note": out.strip().splitlines()[0] if out.strip() else ""})
+        results.append({
+            "name": "Canonical relationship review queue",
+            "status": PASS if approvals else WARN,
+            "file": queue_path.name,
+            "note": f"{len(approvals)} canonical review item(s); no external send",
+        })
     else:
-        results.append({"name": "Daily call sheet", "status": FAIL, "detail": (err or out)[:200]})
+        results.append({"name": "Canonical relationship review queue", "status": FAIL, "file": queue_path.name, "detail": (err or out)[:200]})
 
-    # 3) Warm-list outreach drafts.
-    rc, out, err = _run(
-        [PY, "scripts/warm_list_outreach.py", "--csv", str(warm_csv), "--out", str(bundle / "03_warm_outreach_drafts.md")]
-    )
-    if rc == 0:
-        results.append({"name": "Warm-list outreach drafts", "status": PASS, "file": "03_warm_outreach_drafts.md"})
-    else:
-        results.append({"name": "Warm-list outreach drafts", "status": FAIL, "detail": (err or out)[:200]})
+    if warm_csv is not None and _csv_rows(warm_csv) > 0:
+        rc, out, err = _run([PY, "scripts/dealix_call_sheet.py", "--csv", str(warm_csv), "--out", str(bundle / "03_legacy_call_sheet.md")])
+        results.append({"name": "Legacy CSV call sheet (import-only)", "status": PASS if rc == 0 else FAIL, "file": "03_legacy_call_sheet.md" if rc == 0 else "—", "detail": "" if rc == 0 else (err or out)[:200]})
+        rc, out, err = _run([PY, "scripts/warm_list_outreach.py", "--csv", str(warm_csv), "--out", str(bundle / "03_legacy_warm_outreach_drafts.md")])
+        results.append({"name": "Legacy CSV drafts (compatibility only)", "status": PASS if rc == 0 else FAIL, "file": "03_legacy_warm_outreach_drafts.md" if rc == 0 else "—", "detail": "" if rc == 0 else (err or out)[:200]})
 
-    # 4) Content drafts — pass an explicit runtime out-dir and read back from
-    # it. Never mutates the tracked reports/company_os/daily/ fixture; the
-    # bundle copy below is the launch-engine-owned artifact.
     content_out = bundle / "content_factory"
-    rc, out, err = _run(
-        [PY, "scripts/dealix_content_factory_daily.py", "--out-dir", str(content_out)]
-    )
+    rc, out, err = _run([PY, "scripts/dealix_content_factory_daily.py", "--out-dir", str(content_out)])
     src = content_out / "CONTENT_DRAFTS_TODAY.md"
     if rc == 0 and src.exists():
         shutil.copyfile(src, bundle / "04_content_drafts.md")
         results.append({"name": "Content drafts", "status": PASS, "file": "04_content_drafts.md"})
     else:
         results.append({"name": "Content drafts", "status": FAIL, "detail": (err or out)[:200]})
-
     return results
 
 
 # ─────────────────────────── readiness audit ───────────────────────────
 
 
-def run_audit(skip_tests: bool, warm_csv: Path) -> list[dict]:
+def run_audit(skip_tests: bool, warm_csv: Path | None) -> list[dict]:
     checks: list[dict] = []
 
     # Doctrine guards.
@@ -231,16 +288,8 @@ def run_audit(skip_tests: bool, warm_csv: Path) -> list[dict]:
     else:
         checks.append({"name": "Launch docs", "status": PASS, "detail": f"{len(LAUNCH_DOCS)} present"})
 
-    # Warm list populated (gates the "able to call" capability).
-    rows = _csv_rows(REPO / "data" / "warm_list.csv")
-    if rows >= 1:
-        checks.append({"name": "Warm contacts loaded", "status": PASS, "detail": f"{rows} contact(s)"})
-    else:
-        checks.append({
-            "name": "Warm contacts loaded",
-            "status": WARN,
-            "detail": "0 in data/warm_list.csv — founder must fill it (copy data/warm_list.csv.template)",
-        })
+    # Company OS is the relationship/readiness authority. Legacy CSV is import-only.
+    checks.append(_relationship_readiness(warm_csv))
 
     return checks
 
@@ -299,7 +348,7 @@ def render_index(bundle: Path, today: str, generators: list[dict], checks: list[
     else:
         L.append("- لا يوجد — كل شيء أخضر. / None — everything is green.")
     L.append("")
-    L.append("بعد تعبئة قائمة الجهات: `python scripts/dealix_launch_engine.py` يوميًا. / After filling the warm list, run the engine daily.")
+    L.append("شغّل Company OS / Launch Engine دوريًا؛ CSV القديم استيراد اختياري وليس سلطة علاقة. / Run Company OS / Launch Engine routinely; legacy CSV is optional import only, not relationship authority.")
     L.append("")
     L.append(DISCLAIMER)
     L.append("")
@@ -308,7 +357,7 @@ def render_index(bundle: Path, today: str, generators: list[dict], checks: list[
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the full Dealix local launch machine + readiness audit.")
-    parser.add_argument("--csv", default=None, help="warm-list CSV (defaults to data/warm_list.csv, else the template)")
+    parser.add_argument("--csv", default=None, help="optional legacy warm-list CSV import; canonical Company OS remains relationship authority")
     parser.add_argument("--skip-tests", action="store_true", help="skip the doctrine guard pytest run")
     parser.add_argument("--out", default=None, help="bundle dir (default data/daily_ops/<date>/)")
     args = parser.parse_args()
@@ -323,7 +372,7 @@ def main() -> int:
     print("═" * 60)
     print(f"  🚀  DEALIX LAUNCH ENGINE · {today}")
     print(f"      bundle: {bundle}")
-    print(f"      warm list: {warm_csv.name}")
+    print(f"      relationship authority: Company OS; legacy csv: {warm_csv.name if warm_csv else 'none'}")
     print("═" * 60)
 
     generators = run_generators(bundle, warm_csv)

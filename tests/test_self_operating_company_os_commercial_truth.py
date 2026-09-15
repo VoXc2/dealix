@@ -105,3 +105,37 @@ def test_executive_focus_is_state_driven_not_retired_ticket_authority(tmp_path) 
     assert "Production Trust: current exact-head acceptance" in rendered
     for retired in ("#1494", "#1476", "#1121"):
         assert retired not in rendered
+
+
+def test_inbound_paid_collaboration_uses_review_lane_not_generic_diagnostic(tmp_path) -> None:
+    module = load_runner()
+    module.DATA_ROOT = tmp_path
+    target = {
+        "company_name": "iMini",
+        "target_type": "inbound_paid_collaboration_pilot",
+        "segment": "AI creator / marketing collaboration",
+        "source": "gmail://thread/example",
+        "evidence_refs": ["gmail:thread:example", "gmail:draft:current"],
+        "relationship_state": "REAL_INTERACTION",
+        "consent_state": "NONE",
+        "suppression_state": "CLEAR",
+        "commercial_stage": "SCRIPT_READY_FOR_REVIEW",
+        "pain_hypothesis": "Scope, attribution, payment and performance-term clarity.",
+        "recommended_offer": "Bounded paid collaboration pilot",
+        "current_draft_ref": "gmail:draft:current",
+        "pilot_fixed_fee_usd": 80,
+        "payment_method": "PayPal",
+    }
+    (tmp_path / "targets.json").write_text(json.dumps([target]), encoding="utf-8")
+    cards = module.build_target_cards(50)
+    queue = module.build_approval_queue(cards)
+    assert len(queue) == 1
+    item = queue[0]
+    assert item["target_type"] == "INBOUND_PAID_COLLABORATION_PILOT"
+    assert item["action_type"] == "inbound_paid_collaboration_review"
+    assert "Free Mini Diagnostic" not in item["draft_text"]
+    assert "USD 80" in item["draft_text"]
+    assert "PayPal" in item["draft_text"]
+    assert "gmail:draft:current" in item["draft_text"]
+    assert "founder-income collaboration" in item["draft_text"]
+    assert item["status"] == "pending_action_bound_approval"
