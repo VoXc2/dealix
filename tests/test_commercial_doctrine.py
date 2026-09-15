@@ -23,6 +23,22 @@ def test_soaen_checklist_shared_with_social_queue() -> None:
     assert SOCIAL_SOAEN == SOAEN_CHECKLIST_AR
 
 
+def test_soaen_uses_current_free_diagnostic_authority() -> None:
+    text = "\n".join(SOAEN_CHECKLIST_AR)
+    assert "Free Execution Diagnostic" in text
+    assert "customer-specific scope/quote" in text
+    assert "Risk Score" not in text
+    assert "Sample Proof" not in text
+    assert "ديمو 10 دقائق" not in text
+
+
+def test_linkedin_doctrine_distinguishes_personal_from_company_api_readiness() -> None:
+    rule = next(r for r in NON_NEGOTIABLE_RULES if r["id"] == "no_linkedin_automation")
+    assert "Founder personal" in rule["ar"]
+    assert "Company Page official API" in rule["ar"]
+    assert "بدون موافقة محددة" in rule["ar"]
+
+
 def test_format_doctrine_markdown_contains_rules() -> None:
     md = format_doctrine_markdown(build_soaen_daily(date_str="2026-05-18"))
     assert "no_cold_whatsapp" in md

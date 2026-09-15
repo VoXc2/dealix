@@ -10,7 +10,7 @@ SOAEN_CHECKLIST_AR = [
     "مالك النشر والرد على التعليقات محدد",
     "مراجعة المسودة قبل النشر (Approval)",
     "لا أرقام إيراد بدون دفع مثبت (Evidence)",
-    "CTA واحد: Risk Score أو Sample Proof أو ديمو 10 دقائق (Next Action)",
+    "CTA واحد: Free Execution Diagnostic → qualified discovery → customer-specific scope/quote (Next Action)",
 ]
 
 NON_NEGOTIABLE_RULES: list[dict[str, str]] = [
@@ -21,7 +21,7 @@ NON_NEGOTIABLE_RULES: list[dict[str, str]] = [
     },
     {
         "id": "no_linkedin_automation",
-        "ar": "لا أتمتة LinkedIn — انشر يدوياً بعد SOAEN",
+        "ar": "لا automated outreach/DM/scraping على LinkedIn؛ Founder personal يدوي، وCompany Page official API لا ينشر حيًا بدون موافقة محددة",
         "en": "no_linkedin_automation",
     },
     {
