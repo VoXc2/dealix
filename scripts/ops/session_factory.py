@@ -1974,9 +1974,16 @@ def run_job(
         reclaim_expired=recover_expired,
     )
     if not acquired:
-        transition(job, "READY", reason=f"lease not acquired: {lease.get('reason')}")
+        # CLAIMED cannot transition directly back to READY. Park the job in the
+        # existing RECOVERABLE state so a later queue tick can legally admit it
+        # through RECOVERABLE -> READY after the competing lease clears. Never
+        # release the lease here: this runner did not acquire or own it.
+        reason = (lease or {}).get("reason", "LEASE_NOT_ACQUIRED")
+        transition(job, "RECOVERABLE", reason=f"lease not acquired: {reason}")
         save_job(root, job)
-        return {"ok": False, "status": "READY", "reason": lease.get("reason"), "job": job}
+        write_queue_snapshot(root)
+        append_ledger(root, {"event": "lease_contention", "JOB_ID": job["JOB_ID"], "reason": reason})
+        return {"ok": False, "status": "RECOVERABLE", "reason": reason, "job": job}
 
     # Fail-closed live base guard: modifying jobs must match current live base at claim time
     base_check = verify_live_base_matches(job, repo_root)

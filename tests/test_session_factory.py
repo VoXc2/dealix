@@ -98,6 +98,29 @@ def test_new_job_ids_are_unique() -> None:
     assert len({factory.new_job_id() for _ in range(100)}) == 100
 
 
+def test_run_job_lease_contention_parks_claim_as_recoverable_without_stealing_lease(tmp_path: Path) -> None:
+    job = _deterministic_job()
+    factory.submit_job(tmp_path, job)
+    loaded = factory.load_job(tmp_path, job["JOB_ID"])
+    assert loaded is not None and loaded["STATUS"] == "READY"
+
+    acquired, _ = factory.acquire_lease(tmp_path, loaded, owner="other-worker", ttl_seconds=60)
+    assert acquired is True
+    held_lease = factory.read_lease(tmp_path, job["JOB_ID"])
+    assert held_lease is not None
+
+    outcome = factory.run_job(tmp_path, loaded)
+
+    assert outcome["ok"] is False
+    assert outcome["status"] == "RECOVERABLE"
+    assert outcome["reason"] in {"LEASE_HELD", "LEASE_HELD_LIVE"}
+    persisted = factory.load_job(tmp_path, job["JOB_ID"])
+    assert persisted is not None and persisted["STATUS"] == "RECOVERABLE"
+    assert factory.read_lease(tmp_path, job["JOB_ID"]) == held_lease
+    snapshot = factory.read_json(factory.queue_path(tmp_path), {})
+    assert snapshot["counts"]["RECOVERABLE"] == 1
+
+
 def test_lease_contention_then_expiry_requires_reclaim(tmp_path: Path) -> None:
     job = _deterministic_job()
     factory.plan_job(job)
