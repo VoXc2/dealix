@@ -9,7 +9,8 @@ def test_iac_source_is_present_and_provider_safe() -> None:
     assert 'service("dealix"' in text
     assert 'service("web"' in text
     assert 'postgres("Postgres"' in text
-    assert 'checkSuites: true' in text
+    assert text.count('checkSuites: false') == 2
+    assert 'checkSuites: true' not in text
     for path in (
         "/api/**", "/app/**", "/db/**", "/dealix/**",
         "/alembic/**", "/alembic.ini",

@@ -15,3 +15,7 @@ Safe workflow:
 
 Never run `railway config apply`, `railway config migrate --apply`, redeploy,
 or provider mutations from unattended source acceptance.
+
+`checkSuites` is intentionally false for both production services. Dealix has no
+push GitHub Actions workflow authority; exact-head VPS/source acceptance is the
+release evidence. A failing third-party GitHub app check must not skip Railway builds.

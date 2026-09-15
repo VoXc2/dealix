@@ -21,7 +21,7 @@ def main() -> int:
     for needle in (
         'project("Dealix"', 'service("dealix"', 'service("web"',
         'postgres("Postgres"', 'rootDirectory: "."',
-        'rootDirectory: "apps/web"', 'checkSuites: true',
+        'rootDirectory: "apps/web"', 'checkSuites: false',
         'healthcheck: "/healthz"', 'dockerfilePath: "Dockerfile"',
         '/scripts/railway_predeploy.sh', '/api/**', '/app/**', '/db/**',
         '/dealix/**', '/alembic/**', '/alembic.ini',
@@ -33,6 +33,8 @@ def main() -> int:
         'domains: ["dealix.me", "www.dealix.me"]', 'preserve()',
     ):
         require(text, needle)
+    if text.count("checkSuites: false") != 2 or "checkSuites: true" in text:
+        raise SystemExit("RAILWAY_IAC_VERIFY=HOLD wait_for_ci_authority_drift")
     if re.search(r"(?:sk-|ghp_|Bearer )[A-Za-z0-9._-]{8,}", text):
         raise SystemExit("RAILWAY_IAC_VERIFY=HOLD raw_secret_literal")
 
