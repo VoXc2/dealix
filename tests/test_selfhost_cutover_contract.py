@@ -56,3 +56,39 @@ def test_no_production_secrets_in_repo() -> None:
     assert ".env.prod.example" in tracked
     template = (ROOT / ".env.prod.example").read_text(encoding="utf-8")
     assert "CHANGE_ME" in template
+
+
+def test_canonical_compose_fails_closed_without_release_identity() -> None:
+    compose = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
+    assert "DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA" in compose
+    assert "DEALIX_IMAGE_TAG:?set exact DEALIX_IMAGE_TAG" in compose
+    assert "DEALIX_GIT_SHA:-unknown" not in compose
+
+
+def test_application_rollback_uses_only_canonical_compose() -> None:
+    rollback = (ROOT / "scripts/ops/selfhost_release_rollback.sh").read_text(encoding="utf-8")
+    assert "deploy/selfhost/compose.yml" in rollback
+    assert "docker-compose.prod.yml" not in rollback
+    assert "DEALIX_GIT_SHA" in rollback
+    assert "DEALIX_IMAGE_TAG" in rollback
+    assert "database_rollback=NEVER" in rollback
+
+
+def test_single_canonical_graph_contains_safe_public_cutover_profile() -> None:
+    compose = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
+    assert 'profiles: ["public-cutover"]' in compose
+    assert "${DEALIX_PUBLIC_HTTP_BIND:-127.0.0.1:18080}:80" in compose
+    assert "${DEALIX_PUBLIC_HTTPS_BIND:-127.0.0.1:18443}:443" in compose
+    assert "../../ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" in compose
+    assert '"80:80"' not in compose
+    assert '"443:443"' not in compose
+
+
+def test_public_cutover_controller_is_explicitly_action_gated() -> None:
+    source = (ROOT / "scripts/ops/selfhost_public_cutover.sh").read_text(encoding="utf-8")
+    for needle in ("DEALIX_EXPECTED_SHA", "CONFIRM_SHA", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "0.0.0.0:80", "0.0.0.0:443"):
+        assert needle in source
+    assert "DNS_MUTATION=NOT_EXECUTED" in source
+    assert "PRODUCTION_GREEN=NOT_PROVEN" in source
+    assert "railway up" not in source
+    assert "railway redeploy" not in source

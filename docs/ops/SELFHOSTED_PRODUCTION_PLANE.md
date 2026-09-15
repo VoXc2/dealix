@@ -57,6 +57,18 @@ DEALIX_EXPECTED_SHA="$SHA" DEALIX_SELFHOST_API_PORT=18001 DEALIX_SELFHOST_WEB_PO
 DEALIX_EXPECTED_SHA="$SHA" DEALIX_SELFHOST_API_PORT=18001 DEALIX_SELFHOST_WEB_PORT=13001 DEALIX_SELFHOST_INGRESS_PORT=18081 bash scripts/ops/verify_selfhosted_ingress_canary.sh
 ```
 
+## Single-plane public cutover controller
+
+The same `deploy/selfhost/compose.yml` owns private canary, stage, and public ingress. There is no second runnable production Compose graph. `public-ingress` is a `public-cutover` profile whose default bindings are loopback-only (`127.0.0.1:18080/18443`).
+
+Source preflight (safe, no public bind):
+
+```bash
+DEALIX_EXPECTED_SHA="$(git rev-parse HEAD)" bash scripts/ops/selfhost_public_cutover.sh --preflight
+```
+
+`--stage` additionally requires `DEALIX_STAGE_PRODUCTION=YES` and `CONFIRM_SHA=<exact accepted SHA>`. `--cutover` additionally requires `DEALIX_PUBLIC_CUTOVER=YES`; only that path replaces the safe loopback defaults with `0.0.0.0:80/443`. Running either material mode remains an exact action-bound L5 operation. The controller never mutates DNS or decommissions Railway, and it reports `PRODUCTION_GREEN=NOT_PROVEN` until public parity is independently proven.
+
 ## Definition of done
 
 `SOURCE SHA = BUILT SHA = RUNNING WEB SHA = RUNNING API SHA`, plus health, critical routes, TLS, backup/restore, rollback, and public release receipt.

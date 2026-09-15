@@ -29,6 +29,7 @@ files = {
     "rollback": ROOT / "scripts/ops/selfhost_release_rollback.sh",
     "env": ROOT / ".env.prod.example",
     "plane": ROOT / "docs/ops/SELFHOSTED_PRODUCTION_PLANE.md",
+    "cutover": ROOT / "scripts/ops/selfhost_public_cutover.sh",
 }
 text = {k: p.read_text(encoding="utf-8") for k, p in files.items()}
 
@@ -48,7 +49,12 @@ required = {
         "127.0.0.1:${DEALIX_SELFHOST_WEB_PORT",
         "127.0.0.1:${DEALIX_SELFHOST_INGRESS_PORT",
         "pgvector/pgvector:pg18",
-        "GIT_SHA: ${DEALIX_GIT_SHA:-unknown}",
+        "GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}",
+        'profiles: ["public-cutover"]',
+        "${DEALIX_PUBLIC_HTTP_BIND:-127.0.0.1:18080}:80",
+        "${DEALIX_PUBLIC_HTTPS_BIND:-127.0.0.1:18443}:443",
+        "image: dealix-api:${DEALIX_IMAGE_TAG:?set exact DEALIX_IMAGE_TAG}",
+        "image: dealix-web:${DEALIX_IMAGE_TAG:?set exact DEALIX_IMAGE_TAG}",
     ],
     # Canonical backup runner: custom format + checksum + TOC, secret-file input.
     "backup_runner": [
@@ -76,6 +82,9 @@ required = {
         "CONFIRM",
         "database_rollback=NOT_EXECUTED",
         "[0-9a-f]{40}",
+        "deploy/selfhost/compose.yml",
+        "DEALIX_GIT_SHA",
+        "DEALIX_IMAGE_TAG",
     ],
     # Fail-closed production env template.
     "env": [
@@ -87,6 +96,7 @@ required = {
     ],
     # Explicit L5 cutover boundary on the canonical runbook.
     "plane": ["L5", "deploy/selfhost/compose.yml", "PRODUCTION_GREEN=NOT_PROVEN"],
+    "cutover": ["--preflight", "--stage", "--cutover", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "CONFIRM_SHA", "0.0.0.0:80", "0.0.0.0:443", "DNS_MUTATION=NOT_EXECUTED", "PRODUCTION_GREEN=NOT_PROVEN"],
 }
 missing = [
     f"{name}:{needle}"
@@ -102,6 +112,7 @@ forbidden = {
     "legacy_health": ["docker compose"],
     # Canonical canary must never bind public ingress ports itself.
     "canonical_compose": ['"80:80"', '"443:443"', "image: postgres:16"],
+    "cutover": ["railway up", "railway redeploy", "cloudflare", "aws route53"],
     # Backup must never leak the DB password through env/config/args.
     "backup_runner": ["-e PGPASSWORD"],
     # Rollback must never mutate the database.

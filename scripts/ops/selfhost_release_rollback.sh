@@ -8,7 +8,7 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." >/dev/null 2>&1 && pwd -
 cd "$ROOT"
 MODE="${1:---dry-run}"
 ENV_FILE="${ENV_FILE:-$ROOT/.env.prod}"
-COMPOSE_FILE="${COMPOSE_FILE:-$ROOT/docker-compose.prod.yml}"
+COMPOSE_FILE="${COMPOSE_FILE:-$ROOT/deploy/selfhost/compose.yml}"
 LAST_GOOD_FILE="${LAST_GOOD_FILE:-/opt/dealix/control/state/selfhost_last_good_sha}"
 
 log(){ printf '[selfhost-rollback] %s\n' "$*"; }
@@ -48,8 +48,9 @@ set -a
 source "$ENV_FILE"
 set +a
 export DEALIX_ENV_FILE="$ENV_FILE"
-export GIT_SHA="$TARGET_SHA"
-export IMAGE_TAG="$TAG"
+export DEALIX_GIT_SHA="$TARGET_SHA"
+export DEALIX_IMAGE_TAG="$TAG"
+export DEALIX_APP_ENV=production
 COMPOSE=(docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE")
 "${COMPOSE[@]}" up -d --no-build api web
 API_BODY="$("${COMPOSE[@]}" exec -T api curl -fsS http://localhost:8000/version)"

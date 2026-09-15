@@ -1,15 +1,16 @@
 services:
   api:
+    image: dealix-api:${DEALIX_IMAGE_TAG:?set exact DEALIX_IMAGE_TAG}
     build:
       context: ../..
       dockerfile: Dockerfile
       args:
-        GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+        GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}
     environment:
       PORT: "8000"
       APP_ENV: ${DEALIX_APP_ENV:-development}
       ENVIRONMENT: ${DEALIX_APP_ENV:-development}
-      GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+      GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}
       APP_URL: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
       BASE_URL: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
       DEALIX_API_BASE: http://127.0.0.1:${DEALIX_SELFHOST_API_PORT:-18000}
@@ -40,15 +41,18 @@ services:
     networks: [dealix]
 
   web:
+    image: dealix-web:${DEALIX_IMAGE_TAG:?set exact DEALIX_IMAGE_TAG}
     build:
       context: ../../apps/web
       dockerfile: Dockerfile
+      args:
+        GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: "1"
       PORT: "3000"
       HOSTNAME: 0.0.0.0
-      GIT_SHA: ${DEALIX_GIT_SHA:-unknown}
+      GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}
     ports:
       - "127.0.0.1:${DEALIX_SELFHOST_WEB_PORT:-13000}:3000"
     restart: unless-stopped
@@ -92,8 +96,33 @@ services:
     restart: unless-stopped
     networks: [dealix]
 
+  public-ingress:
+    image: caddy:2.11.4-alpine
+    profiles: ["public-cutover"]
+    ports:
+      - "${DEALIX_PUBLIC_HTTP_BIND:-127.0.0.1:18080}:80"
+      - "${DEALIX_PUBLIC_HTTPS_BIND:-127.0.0.1:18443}:443"
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:-admin@dealix.me}
+      DEALIX_DOMAIN: ${DEALIX_DOMAIN:-dealix.me}
+      DEALIX_API_DOMAIN: ${DEALIX_API_DOMAIN:-api.dealix.me}
+      DEALIX_FRONTEND_UPSTREAM: web:3000
+    volumes:
+      - ../../ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - dealix-caddy-data:/data
+      - dealix-caddy-config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: [dealix]
+
 networks:
   dealix: {}
 
 volumes:
   dealix-postgres-canary: {}
+  dealix-caddy-data: {}
+  dealix-caddy-config: {}
