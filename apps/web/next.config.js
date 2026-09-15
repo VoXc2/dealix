@@ -79,6 +79,8 @@ const nextConfig = {
       { source: "/landing", destination: "/", permanent: true },
       { source: "/ar", destination: "/", permanent: true },
       { source: "/diagnostic", destination: "/book", permanent: true },
+      { source: "/diagnostic-sprint", destination: "/book", permanent: true },
+      { source: "/intake", destination: "/book", permanent: true },
       { source: "/diagnostic.html", destination: "/book", permanent: true },
       { source: "/pricing.html", destination: "/pricing", permanent: true },
       { source: "/academy.html", destination: "/", permanent: true },
