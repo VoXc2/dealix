@@ -1530,3 +1530,306 @@ def test_opencode_private_sensitivity_never_uses_remote_model(
     assert result["ok"] is False
     assert result["returncode"] == 79
     assert "data-sensitivity-remote-denied" in result["stderr"]
+
+
+def _session_status_routes(status_value: str):
+    return [
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("GET", "/message"), (200, {"messages": []})),
+        (("POST", "/session?"), (200, {"id": "sess-status"})),
+        (("GET", "/session/sess-status/status"), (200, {"status": status_value})),
+        (("POST", "/abort"), (200, {})),
+    ]
+
+
+def test_daemon_session_status_helper_parses_busy(tmp_path: Path, monkeypatch) -> None:
+    fake = _FakeDaemonHTTP([
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("POST", "/session?"), (200, {"id": "sess-helper"})),
+        (("GET", "/session/sess-helper/status?directory="), (200, {"status": "busy"})),
+    ])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    job = _daemon_job()
+    base = factory.daemon_base_url()
+    status_text, raw = factory._daemon_session_status(base, "sess-helper", str(tmp_path), timeout=5)
+    assert status_text == "busy"
+    assert "busy" in raw
+
+
+def test_daemon_session_status_helper_parses_idle(tmp_path: Path, monkeypatch) -> None:
+    fake = _FakeDaemonHTTP([
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("POST", "/session?"), (200, {"id": "sess-helper"})),
+        (("GET", "/session/sess-helper/status?directory="), (200, {"status": "idle"})),
+    ])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    job = _daemon_job()
+    base = factory.daemon_base_url()
+    status_text, raw = factory._daemon_session_status(base, "sess-helper", str(tmp_path), timeout=5)
+    assert status_text == "idle"
+    assert "idle" in raw
+
+
+def test_daemon_session_status_helper_returns_none_on_failure(tmp_path: Path, monkeypatch) -> None:
+    fake = _FakeDaemonHTTP([
+        (("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"})),
+        (("POST", "prompt_async"), (204, "")),
+        (("POST", "/session?"), (200, {"id": "sess-helper"})),
+        (("GET", "/session/sess-helper/status?directory="), (500, "internal error")),
+    ])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    job = _daemon_job()
+    base = factory.daemon_base_url()
+    status_text, raw = factory._daemon_session_status(base, "sess-helper", str(tmp_path), timeout=5)
+    assert status_text is None
+
+
+def test_daemon_busy_status_prevents_false_idle_abort_then_succeeds(tmp_path: Path, monkeypatch) -> None:
+    """Busy session status extends liveness; terminal message then succeeds."""
+    message_calls = 0
+    status_calls = 0
+
+    def make_routes():
+        nonlocal message_calls, status_calls
+        message_calls = 0
+        status_calls = 0
+
+        class DynamicFake:
+            def __init__(self):
+                pass
+
+            def __call__(self, request, timeout=None):
+                nonlocal message_calls, status_calls
+                method = request.get_method()
+                url = request.full_url
+                if method == "GET" and "/message" in url:
+                    message_calls += 1
+                    # First few message polls return empty (simulating silent tool/build interval)
+                    if message_calls <= 3:
+                        return _FakeDaemonResponse(200, '{"messages": []}')
+                    # Then return terminal success
+                    return _FakeDaemonResponse(200, json.dumps(_live_success_messages("BUSY_STATUS_OK")))
+                if method == "GET" and "/status" in url:
+                    status_calls += 1
+                    # Session reports busy during the silent interval
+                    return _FakeDaemonResponse(200, '{"status": "busy"}')
+                if method == "POST" and "/session?" in url:
+                    return _FakeDaemonResponse(200, '{"id": "sess-busy"}')
+                if method == "POST" and "prompt_async" in url:
+                    return _FakeDaemonResponse(204, "")
+                if method == "GET" and "/global/health" in url:
+                    return _FakeDaemonResponse(200, '{"healthy": true, "version": "1.18.30"}')
+                if method == "POST" and "abort" in url:
+                    return _FakeDaemonResponse(200, "{}")
+                raise AssertionError(f"unexpected call: {method} {url}")
+
+        return DynamicFake()
+
+    fake = make_routes()
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/muse-spark-1.3-contributor-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 300
+    result = factory.execute_opencode_daemon(
+        job,
+        tmp_path,
+        model="opencode/muse-spark-1.3-contributor-free",
+        timeout_s=5.0,
+        idle_timeout_s=0.5,
+        poll_interval=0.05,
+    )
+    assert result["ok"] is True, f"expected success, got: {result}"
+    assert "BUSY_STATUS_OK" in (result.get("stdout_full") or "")
+    # Status endpoint should have been called during the silent interval
+    assert status_calls >= 1, "session status should be checked during polling"
+
+
+def test_daemon_idle_status_still_aborts_on_idle_timeout(tmp_path: Path, monkeypatch) -> None:
+    """Idle session status does not extend liveness; idle timeout still fires."""
+    message_calls = 0
+    status_calls = 0
+
+    def make_routes():
+        nonlocal message_calls, status_calls
+        message_calls = 0
+        status_calls = 0
+
+        class DynamicFake:
+            def __call__(self, request, timeout=None):
+                nonlocal message_calls, status_calls
+                method = request.get_method()
+                url = request.full_url
+                if method == "GET" and "/message" in url:
+                    message_calls += 1
+                    return _FakeDaemonResponse(200, '{"messages": []}')
+                if method == "GET" and "/status" in url:
+                    status_calls += 1
+                    # Session reports idle - should not extend liveness
+                    return _FakeDaemonResponse(200, '{"status": "idle"}')
+                if method == "POST" and "/session?" in url:
+                    return _FakeDaemonResponse(200, '{"id": "sess-idle-status"}')
+                if method == "POST" and "prompt_async" in url:
+                    return _FakeDaemonResponse(204, "")
+                if method == "GET" and "/global/health" in url:
+                    return _FakeDaemonResponse(200, '{"healthy": true, "version": "1.18.30"}')
+                if method == "POST" and "abort" in url:
+                    return _FakeDaemonResponse(200, "{}")
+                raise AssertionError(f"unexpected call: {method} {url}")
+
+        return DynamicFake()
+
+    fake = make_routes()
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/muse-spark-1.3-contributor-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 300
+    result = factory.execute_opencode_daemon(
+        job,
+        tmp_path,
+        model="opencode/muse-spark-1.3-contributor-free",
+        timeout_s=5.0,
+        idle_timeout_s=0.2,
+        poll_interval=0.05,
+    )
+    assert result["ok"] is False
+    assert result["returncode"] == 124
+    assert "idle-timeout" in result["stderr"]
+    # Status endpoint should have been called but idle should not prevent abort
+    assert status_calls >= 1
+
+
+def test_daemon_status_failure_does_not_extend_liveness(tmp_path: Path, monkeypatch) -> None:
+    """Status check failure (network/parse) does not extend liveness; idle timeout fires."""
+    message_calls = 0
+    status_calls = 0
+
+    def make_routes():
+        nonlocal message_calls, status_calls
+        message_calls = 0
+        status_calls = 0
+
+        class DynamicFake:
+            def __call__(self, request, timeout=None):
+                nonlocal message_calls, status_calls
+                method = request.get_method()
+                url = request.full_url
+                if method == "GET" and "/message" in url:
+                    message_calls += 1
+                    return _FakeDaemonResponse(200, '{"messages": []}')
+                if method == "GET" and "/status" in url:
+                    status_calls += 1
+                    # Status check fails (e.g., network error)
+                    raise ConnectionError("status endpoint unavailable")
+                if method == "POST" and "/session?" in url:
+                    return _FakeDaemonResponse(200, '{"id": "sess-status-fail"}')
+                if method == "POST" and "prompt_async" in url:
+                    return _FakeDaemonResponse(204, "")
+                if method == "GET" and "/global/health" in url:
+                    return _FakeDaemonResponse(200, '{"healthy": true, "version": "1.18.30"}')
+                if method == "POST" and "abort" in url:
+                    return _FakeDaemonResponse(200, "{}")
+                raise AssertionError(f"unexpected call: {method} {url}")
+
+        return DynamicFake()
+
+    fake = make_routes()
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/muse-spark-1.3-contributor-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 300
+    result = factory.execute_opencode_daemon(
+        job,
+        tmp_path,
+        model="opencode/muse-spark-1.3-contributor-free",
+        timeout_s=5.0,
+        idle_timeout_s=0.2,
+        poll_interval=0.05,
+    )
+    assert result["ok"] is False
+    assert result["returncode"] == 124
+    assert "idle-timeout" in result["stderr"]
+
+
+def test_daemon_hard_deadline_still_aborts_despite_busy_status(tmp_path: Path, monkeypatch) -> None:
+    """Hard job deadline aborts even if session status reports busy."""
+    call_log: list[tuple[str, str]] = []
+
+    class DynamicFake:
+        def __call__(self, request, timeout=None):
+            method = request.get_method()
+            url = request.full_url
+            call_log.append((method, url))
+            if method == "GET" and "/message" in url:
+                return _FakeDaemonResponse(200, '{"messages": []}')
+            if method == "GET" and "/status" in url:
+                # Always reports busy
+                return _FakeDaemonResponse(200, '{"status": "busy"}')
+            if method == "POST" and "/session?" in url:
+                return _FakeDaemonResponse(200, '{"id": "sess-deadline"}')
+            if method == "POST" and "prompt_async" in url:
+                return _FakeDaemonResponse(204, "")
+            if method == "GET" and "/global/health" in url:
+                return _FakeDaemonResponse(200, '{"healthy": true, "version": "1.18.30"}')
+            if method == "POST" and "abort" in url:
+                return _FakeDaemonResponse(200, "{}")
+            raise AssertionError(f"unexpected call: {method} {url}")
+
+    fake = DynamicFake()
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    monkeypatch.setattr(factory, "discover_catalog", lambda refresh=False: ["opencode/muse-spark-1.3-contributor-free"])
+    monkeypatch.setattr(factory, "discover_ollama_models", lambda: [])
+    monkeypatch.setattr(factory, "discover_router_models", lambda: [])
+
+    job = _daemon_job()
+    job["TIME_BUDGET"] = 300
+    # Very short overall timeout, but long idle timeout
+    result = factory.execute_opencode_daemon(
+        job,
+        tmp_path,
+        model="opencode/muse-spark-1.3-contributor-free",
+        timeout_s=0.3,  # hard deadline
+        idle_timeout_s=10.0,  # generous idle timeout
+        poll_interval=0.05,
+    )
+    assert result["ok"] is False
+    assert result["returncode"] == 124
+    assert "deadline-exceeded" in result["stderr"]
+    # Session should have been aborted
+    assert any("abort" in url for _method, url in call_log)
+
+
+def test_daemon_existing_guards_stay_green(tmp_path: Path, monkeypatch) -> None:
+    """Loopback/version/model/worktree guards remain intact with status-aware liveness."""
+    # Non-loopback URL still rejected
+    monkeypatch.setenv("DEALIX_OPENCODE_DAEMON_URL", "http://example.com:4098")
+    result = factory.execute_opencode_daemon(_daemon_job(), tmp_path, model="opencode/x-free")
+    assert result["ok"] is False
+    assert result.get("daemon_unavailable") is True
+    monkeypatch.delenv("DEALIX_OPENCODE_DAEMON_URL")
+
+    # Version mismatch still rejected
+    fake = _FakeDaemonHTTP([(("GET", "/global/health"), (200, {"healthy": True, "version": "2.0.0"}))])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    result = factory.execute_opencode_daemon(_daemon_job(), tmp_path, model="opencode/x-free")
+    assert result["ok"] is False
+    assert result.get("daemon_unavailable") is True
+
+    # Non-pinnable model still rejected (validated after health check, so mock health)
+    fake = _FakeDaemonHTTP([(("GET", "/global/health"), (200, {"healthy": True, "version": "1.18.30"}))])
+    monkeypatch.setattr(factory.urllib.request, "urlopen", fake)
+    result = factory.execute_opencode_daemon(_daemon_job(), tmp_path, model="no-slash")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "model-authority-unproven" in result["stderr"]

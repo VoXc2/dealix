@@ -1317,6 +1317,33 @@ def _daemon_session_id(body: str) -> str | None:
     return None
 
 
+def _daemon_session_status(
+    base: str, session_id: str, directory: str, timeout: int = 10
+) -> tuple[str | None, str]:
+    """Read /session/status for the given session through the loopback daemon.
+
+    Returns (status_text, raw_body) where status_text is one of "busy", "idle",
+    "error", "unknown", or None on failure. Never raises.
+    """
+    dir_query = urllib.parse.quote(directory, safe="")
+    status, body = _daemon_request(
+        base, "GET", f"/session/{session_id}/status?directory={dir_query}", timeout=timeout
+    )
+    if status != 200 or not body:
+        return None, body
+    try:
+        payload = json.loads(body)
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return None, body
+    if not isinstance(payload, dict):
+        return None, body
+    # OpenCode session status shape: {"status": "busy"|"idle"|"error"|...}
+    status_text = payload.get("status")
+    if isinstance(status_text, str):
+        return status_text.lower(), body
+    return None, body
+
+
 def _daemon_abort(base: str, session_id: str, dir_query: str) -> None:
     """Best-effort session abort; never raises."""
     try:
@@ -1576,6 +1603,10 @@ def execute_opencode_daemon(
                 "session_id": session_id,
                 "model": model,
             }
+        # Check session status for liveness: treat explicit busy/running as observable progress
+        session_status, _ = _daemon_session_status(base, session_id, directory, timeout=5)
+        if session_status in ("busy", "running"):
+            last_progress_at = now_epoch()
         if now_epoch() - last_progress_at >= idle_timeout_s:
             if _daemon_session_status(base, session_id, dir_query) == "busy":
                 last_progress_at = now_epoch()
