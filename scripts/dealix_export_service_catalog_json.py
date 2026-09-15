@@ -6,7 +6,7 @@ public static catalog intentionally exposes only the current governed launch
 path:
 
 Free Mini Diagnostic -> qualified discovery -> customer-specific quote ->
-30-Day Revenue Command Pilot -> governed delivery/proof.
+Customer-specific Revenue Command Pilot -> governed delivery/proof; duration stays customer-specific.
 
 This exporter validates the two public compatibility IDs against the internal
 registry, but never copies internal/future fixed prices into the public file.
@@ -63,8 +63,10 @@ def build_catalog_dict() -> dict:
             },
             {
                 "id": pilot.id,
-                "name_en": "30-Day Revenue Command Pilot",
-                "name_ar": pilot.name_ar,
+                "name_en": "Revenue Command Pilot",
+                "name_ar": "تجربة مركز قيادة الإيرادات",
+                "duration": "customer_specific_after_qualified_discovery",
+                "legacy_id_semantics": "identifier_only_no_fixed_duration_authority",
                 "pricing": "customer_specific_quote_after_qualified_discovery",
                 "commercial_status": "quote_only",
                 "public_checkout": False,

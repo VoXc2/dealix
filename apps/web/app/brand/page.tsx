@@ -198,7 +198,7 @@ export default function BrandPage() {
               <li><strong>1.</strong> Free Mini Diagnostic</li>
               <li><strong>2.</strong> Qualified Discovery</li>
               <li><strong>3.</strong> Customer-Specific Quote</li>
-              <li><strong>4.</strong> 30-Day Revenue Command Pilot</li>
+              <li><strong>4.</strong> Customer-Specific Revenue Command Pilot</li>
               <li><strong>5.</strong> Proof Review</li>
               <li><strong>6.</strong> Stop / Expand / Redesign</li>
             </ol>

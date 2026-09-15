@@ -295,10 +295,11 @@ def main() -> int:
     print("DEALIX_OPERATING_CONSTITUTION_VERIFY=PASS")
     print(f"CONSTITUTION_VERSION={data['constitution_version']}")
     print(f"NORTH_STAR={data['north_star']}")
-    print("PERMANENT_AGENTS=5")
+    print("LEGACY_EXECUTOR_ALIASES=5")
     print("PORTFOLIOS=TRUST,MONEY_NOW,COMPOUNDING")
     print(f"ACTIVE_GTM_WEDGES={len(_list(data, 'active_gtm_wedges'))}")
-    print("DEEP_WIP_MAX=3")
+    print("PORTFOLIO_DEEP_WIP_MAX=3")
+    print("RUNTIME_CAPACITY_AUTHORITY=RESOURCE_GOVERNOR_SESSION_FACTORY")
     print("L5=EXACT_ACTION_BOUND_ONLY")
     return 0
 

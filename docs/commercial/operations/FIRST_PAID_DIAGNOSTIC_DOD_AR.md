@@ -1,6 +1,6 @@
 # DoD — أول Revenue Command Pilot مدفوع + Proof Pack
 
-> **اسم الملف Legacy للتوافق فقط.** السلطة التجارية الحالية ليست Paid Diagnostic ولا Sprint قصير. المسار المعتمد هو: Free Mini Diagnostic → qualified discovery → customer-specific quote → Revenue Command Pilot لمدة 30 يومًا → source-backed Proof → stop / expand / redesign.
+> **اسم الملف Legacy للتوافق فقط.** السلطة التجارية الحالية ليست Paid Diagnostic ولا Sprint قصير. المسار المعتمد هو: Free Execution Diagnostic → qualified discovery → customer-specific quote/intervention → Revenue Command Pilot بنطاق ومدة يحددان حسب الحالة → source-backed Proof → stop / expand / redesign.
 
 **مرجع السلطة:** `dealix/config/first_launch_offer_gate.yaml` + `COMMERCIAL_IDENTITY.md`
 
@@ -30,7 +30,7 @@
 - [ ] Quote أو invoice intent أو Payment link أو verbal interest **ليست Revenue**.
 - [ ] لا أسرار أو IBAN أو بيانات بنكية أو PII غير ضروري في GitHub أو Proof عام.
 
-### التسليم — 30 يومًا
+### التسليم — نطاق ومدة مخصصان حسب الحالة
 
 - [ ] Kickoff يثبت: scope + baseline + data boundary + owners + approval path + acceptance criteria + stop conditions.
 - [ ] Workflow واحد فقط هو محور الـPilot.
@@ -57,7 +57,7 @@
 |---|---|
 | Entry | Free Mini Diagnostic — minimum-data، بدون دفع أو Lead persistence من الصفحة العامة |
 | Qualification | Qualified discovery + first-launch gate |
-| Paid motion | Revenue Command Pilot — **30 يومًا** |
+| Paid motion | Revenue Command Pilot — **النطاق والمدة حسب الحالة بعد Discovery** |
 | Price | **Customer-specific quote فقط بعد Discovery والموافقة** |
 | Expansion | فقط بعد source-backed Proof وقرار stop / expand / redesign |
 

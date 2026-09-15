@@ -32,7 +32,8 @@ def test_current_public_commercial_surfaces_have_one_quote_only_authority() -> N
     public = snapshot["public_commercial_truth"]
     assert public["status"] == "PASS", public["findings"]
     assert "Customer-specific Quote" in public["authority"]
-    assert "30-Day Revenue Command Pilot" in public["authority"]
+    assert "Customer-specific Quote/Intervention" in public["authority"]
+    assert "Governed Delivery" in public["authority"]
 
 
 def test_money_truth_keeps_sensitive_actions_blocked() -> None:

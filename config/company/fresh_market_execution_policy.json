@@ -44,7 +44,9 @@
     "invoice_is_payment": false,
     "payment_is_revenue": false,
     "delivery_is_customer_value": false,
-    "customer_value_is_public_proof": false
+    "customer_value_is_public_proof": false,
+    "public_fixed_duration_authority": false,
+    "scope_duration_policy": "customer_specific_after_qualified_discovery"
   },
   "execution": {
     "orchestrator": "Hermes",

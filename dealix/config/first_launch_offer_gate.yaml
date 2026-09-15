@@ -10,9 +10,10 @@ canonical_business_model_wins_if_stricter: true
 
 primary_motion:
   id: revenue_command_pilot_30d
-  name_ar: "تجربة مركز قيادة الإيرادات — 30 يوماً"
-  name_en: "Revenue Command Pilot — 30 days"
-  duration_days: 30
+  name_ar: "تجربة مركز قيادة الإيرادات"
+  name_en: "Revenue Command Pilot"
+  duration_days: null
+  duration_policy: customer_specific_after_qualified_discovery
   launch_stage: evidence_required
   public: false
   checkout_enabled: false
@@ -54,7 +55,7 @@ icp_hypothesis:
     - identifiable_revenue_operations_pain
     - usable_lawful_data
     - accountable_owner
-    - willingness_to_run_measured_30_day_pilot
+    - willingness_to_run_customer_specific_pilot
     - acceptance_of_human_approval_gates
   operating_signals:
     - opportunities_without_verified_owner_or_next_action
@@ -98,8 +99,8 @@ conversation_policy:
   approved_draft_ar: >-
     السلام عليكم [الاسم]، نقدر نبدأ معكم بتشخيص مختصر ومحدود لفهم مسار
     الإيراد الحالي وتحديد نقطة تشغيل واحدة مناسبة للتجربة. بعد جلسة الاكتشاف
-    نجهز نطاق Revenue Command Pilot لمدة 30 يومًا للمراجعة، بدون تغيير
-    أنظمتكم الحالية أو أي إرسال خارجي قبل الموافقة. السعر والنطاق يحددان بعد
+    نجهز نطاق Revenue Command Pilot ومدة تنفيذ مخصصة للحالة للمراجعة، بدون تغيير
+    أنظمتكم الحالية أو أي إرسال خارجي قبل الموافقة. السعر والنطاق والمدة يحددون بعد
     فهم الحالة والمتطلبات.
   negotiation:
     fixed_price_allowed: false

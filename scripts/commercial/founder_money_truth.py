@@ -107,7 +107,7 @@ def _public_truth() -> dict[str, Any]:
     return {
         "status": "PASS" if not findings else "BLOCKED",
         "findings": findings,
-        "authority": "Free Mini Diagnostic -> Qualified Discovery -> Customer-specific Quote -> 30-Day Revenue Command Pilot -> Proof -> STOP/EXPAND/REDESIGN",
+        "authority": "Free Execution Diagnostic -> Qualified Discovery -> Customer-specific Quote/Intervention -> Verified Payment/Start Authority -> Governed Delivery -> Customer-Validated Proof -> STOP/EXPAND/REDESIGN",
     }
 
 

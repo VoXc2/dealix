@@ -156,7 +156,7 @@ def _write_index_json(
             "marketing": "/ar/ops/marketing",
         },
         # Compatibility key retained while the current paid motion is the
-        # 30-day Revenue Command Pilot, not a paid Diagnostic.
+        # customer-specific Revenue Command Pilot, never a paid Diagnostic or fixed-duration authority.
         "first_paid_diagnostic": fp,
         "value_plan": vp,
         "gtm_stack": gtm_snap,

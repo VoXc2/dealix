@@ -45,5 +45,5 @@ def main():
  auth=d.get('authority') or {}
  if auth.get('L0_L4_autonomous') is not True or auth.get('L5_universal') is not False: fail('authority')
  if any(v is not False for k,v in auth.items() if k not in {'L0_L4_autonomous','L5_universal'}): fail('l5')
- print('DEALIX_ARM_REGISTRY=PASS'); print('ARMS=44'); print('PERMANENT_AGENTS=5'); print('ACTIVE_DEEP=3'); print('ADDRESSABLE_SURFACE=>=500_CAPABILITY_CELLS_NOT_PIPELINE'); return 0
+ print('DEALIX_ARM_REGISTRY=PASS'); print('ARMS=44'); print('LEGACY_EXECUTOR_ALIASES=5'); print('PORTFOLIO_ACTIVE_DEEP=3'); print('RUNTIME_CAPACITY_AUTHORITY=RESOURCE_GOVERNOR_SESSION_FACTORY'); print('ADDRESSABLE_SURFACE=>=500_CAPABILITY_CELLS_NOT_PIPELINE'); return 0
 if __name__=='__main__': raise SystemExit(main())

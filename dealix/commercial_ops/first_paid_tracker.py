@@ -30,8 +30,8 @@ SOFT_LAUNCH_TRACKER = SOFT_LAUNCH_TRACKER_YAML
 DIAGNOSTIC_PRICE_POLICY = "FREE_ALL_DEPTHS"
 
 REVENUE_LADDER_AR = (
-    "Free Mini Diagnostic → qualified discovery → customer-specific quote → "
-    "30-day Revenue Command Pilot → source-backed Proof → stop / expand / redesign"
+    "Free Execution Diagnostic → qualified discovery → customer-specific quote/intervention → "
+    "verified payment/start authority → governed delivery → customer-validated Proof → stop / expand / redesign"
 )
 
 

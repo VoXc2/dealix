@@ -30,7 +30,7 @@
 | بوابة موحّدة | `bash scripts/verify_dealix_commercial_go_live.sh` |
 | استهداف ≥80 | `py -3 scripts/verify_commercial_launch_ready.py --strict` |
 | محتوى أسبوعي | CI `weekly-founder-content.yml` |
-| أول Diagnostic مدفوع | [FIRST_PAID_DIAGNOSTIC_DOD_AR.md](operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md) |
+| أول إغلاق تجاري موثق بعد تشخيص مجاني | [FIRST_PAID_DIAGNOSTIC_DOD_AR.md](operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md) |
 
 ---
 

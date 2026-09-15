@@ -25,12 +25,13 @@ RETIRED_FIXED_PRICE_TOKENS = (
 )
 
 
-def test_active_commercial_surfaces_use_quote_only_30_day_pilot() -> None:
+def test_active_commercial_surfaces_use_quote_only_customer_specific_pilot() -> None:
     combined = "\n".join(path.read_text(encoding="utf-8") for path in ACTIVE_SURFACES)
 
-    assert "30-day Revenue Command Pilot" in combined or "30 يومًا" in combined
     assert "customer-specific quote" in combined
     assert "source-backed Proof" in combined
+    assert "30-day Revenue Command Pilot" not in combined
+    assert "30 يومًا" not in combined
 
     for token in RETIRED_FIXED_PRICE_TOKENS:
         assert token not in combined, f"retired launch token returned in active surface: {token}"
@@ -41,10 +42,10 @@ def test_first_paid_tracker_returns_current_launch_path_not_price_ladder() -> No
         encoding="utf-8"
     )
 
-    assert "Free Mini Diagnostic" in text
+    assert "Free Execution Diagnostic" in text
     assert "qualified discovery" in text
-    assert "customer-specific quote" in text
-    assert "30-day Revenue Command Pilot" in text
+    assert "customer-specific quote/intervention" in text
+    assert "30-day Revenue Command Pilot" not in text
     assert "stop / expand / redesign" in text
 
 

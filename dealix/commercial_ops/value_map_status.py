@@ -81,7 +81,7 @@ def build_value_map_status() -> dict[str, Any]:
         # not a public price/package ladder.
         "revenue_ladder_ar": pipeline.get("revenue_ladder_ar"),
         "founder_action": [
-            "Qualify one real company for a customer-specific 30-day Revenue Command Pilot",
+            "Qualify one real company for a customer-specific Revenue Command Pilot with customer-specific duration",
             "Sync kpi_founder_commercial_import.yaml from CRM when ready",
             "Complete FOUNDER_ACTION in verify_paid_launch_readiness before any live payment provider activation",
         ],

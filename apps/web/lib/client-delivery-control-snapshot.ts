@@ -4,7 +4,7 @@ export const clientDeliveryControlSnapshot = {
   control_name: "Client Delivery Control",
   delivery_method: "Qualify -> Authorize -> Baseline -> Execute -> Prove -> Decide",
   purpose:
-    "turn an approved 30-Day Revenue Command Pilot into bounded delivery with one governed commercial-to-delivery handoff and customer-validated proof",
+    "turn an approved customer-specific Revenue Command Pilot into bounded delivery with one governed commercial-to-delivery handoff and customer-validated proof",
   verdict: "CLIENT_DELIVERY_RUNTIME_RECEIPT_REQUIRED",
   commercial_account_workspace: "customers/<slug>/",
   delivery_workspace: "clients/<slug>/",

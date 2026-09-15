@@ -15,8 +15,10 @@ export const serviceCatalogSnapshot = {
     },
     {
       "id": "revenue_command_pilot_30d",
-      "name_en": "30-Day Revenue Command Pilot",
-      "name_ar": "تجربة مركز قيادة الإيرادات — 30 يومًا",
+      "name_en": "Revenue Command Pilot",
+      "name_ar": "تجربة مركز قيادة الإيرادات",
+      "duration": "customer_specific_after_qualified_discovery",
+      "legacy_id_semantics": "identifier_only_no_fixed_duration_authority",
       "pricing": "customer_specific_quote_after_qualified_discovery",
       "commercial_status": "quote_only",
       "public_checkout": false,

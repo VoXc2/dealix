@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnostic
+from dealix.commercial_ops.first_paid_tracker import analyze_first_commercial_close
 from dealix.commercial_ops.stdio_utf8 import ensure_stdout_utf8
 
 PAID_DOC = ROOT / "docs/commercial/PAID_LAUNCH_AFTER_SOFT_PASS_AR.md"
@@ -24,14 +24,14 @@ def main() -> int:
     print("  py -3 scripts/verify_commercial_launch_ready.py")
     print(f"  doc: {PAID_DOC.relative_to(ROOT)}")
 
-    paid = analyze_first_paid_diagnostic()
-    print("\n== First paid Diagnostic (evidence truth) ==")
+    paid = analyze_first_commercial_close()
+    print("\n== First verified commercial close after free diagnostic (evidence truth) ==")
     print(f"  verdict: {paid['verdict']}")
     print(f"  payment_received (real): {paid['payment_received_real']}")
     print(f"  proof_pack_delivered (real): {paid['proof_pack_delivered_real']}")
     if not paid["first_close_ready"]:
         print(
-            "  FOUNDER_ACTION: أغلق Diagnostic واحد (payment + proof + CRM KPI) قبل Paid Launch الكامل"
+            "  FOUNDER_ACTION: أغلق أول تعامل تجاري مدفوع بعد تشخيص مجاني (customer-specific scope + verified payment/start authority + delivery proof + CRM KPI)"
         )
 
     print("\n== Integration readiness ==")

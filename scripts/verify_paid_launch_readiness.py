@@ -121,7 +121,7 @@ def main() -> int:
     if not api["ready_for_payments"]:
         WARNINGS.append(f"Payments: {api['missing_payments']}")
 
-    print("\n== First paid Diagnostic pipeline ==")
+    print("\n== First verified commercial close after free diagnostic ==")
     try:
         from scripts.verify_first_paid_diagnostic_tracker import analyze
 

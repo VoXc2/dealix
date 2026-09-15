@@ -21,18 +21,44 @@
     "architecture": "agentic_holding_sector_company_mesh",
     "fixed_five_public_architecture_authority": false,
     "synthetic_demo_is_customer_proof": false,
-    "research_signal_is_relationship": false
+    "research_signal_is_relationship": false,
+    "public_fixed_duration_authority": false,
+    "scope_duration_policy": "customer_specific_after_qualified_discovery"
   },
   "current_authority": [
-    {"path": "config/company/fresh_market_execution_policy.json", "role": "commercial_and_execution_policy"},
-    {"path": "config/company/agentic_holding_canonical_contract.json", "role": "agentic_architecture_contract"},
-    {"path": "docs/architecture/DEALIX_AGENTIC_HOLDING_CANONICAL_2026_09_12.md", "role": "agentic_architecture_explanation"},
-    {"path": "config/company/saudi_market_signal_snapshot_2026_09_13.json", "role": "evidence_gated_market_signal_snapshot"},
-    {"path": "landing/public-surface-manifest.json", "role": "public_surface_authority"},
-    {"path": "landing/assets/data/services-catalog.json", "role": "public_service_catalog_authority"}
+    {
+      "path": "config/company/fresh_market_execution_policy.json",
+      "role": "commercial_and_execution_policy"
+    },
+    {
+      "path": "config/company/agentic_holding_canonical_contract.json",
+      "role": "agentic_architecture_contract"
+    },
+    {
+      "path": "docs/architecture/DEALIX_AGENTIC_HOLDING_CANONICAL_2026_09_12.md",
+      "role": "agentic_architecture_explanation"
+    },
+    {
+      "path": "config/company/saudi_market_signal_snapshot_2026_09_13.json",
+      "role": "evidence_gated_market_signal_snapshot"
+    },
+    {
+      "path": "landing/public-surface-manifest.json",
+      "role": "public_surface_authority"
+    },
+    {
+      "path": "landing/assets/data/services-catalog.json",
+      "role": "public_service_catalog_authority"
+    }
   ],
-  "deprecated_prefixes": ["docs/phase-e/"],
-  "synthetic_prefixes": ["business/demo/", "docs/assets/demos/", "docs/assets/reports/"],
+  "deprecated_prefixes": [
+    "docs/phase-e/"
+  ],
+  "synthetic_prefixes": [
+    "business/demo/",
+    "docs/assets/demos/",
+    "docs/assets/reports/"
+  ],
   "historical_exact_paths": [
     "docs/pricing.md",
     "docs/REFUND_SOP.md",
@@ -57,14 +83,34 @@
     "docs/sales-kit/dealix_saudi_business_setup.md"
   ],
   "legacy_content_markers": [
-    "499 SAR", "499 ريال", "Pilot 499", "Sprint 499",
-    "7-day pilot", "7 day pilot", "7-day sprint", "7 day sprint",
-    "sprint_499", "partner_2999", "partner_4999", "partner_12000", "partner_15000",
-    "1,500–2,500", "١٬٥٠٠–٢٬٥٠٠",
-    "PERMANENT_AGENTS == 5", "the 5 real sub-agents", "5 real sub-agents",
-    "5 وكلاء AI", "٥ وكلاء AI", "5 وكلاء، عمل حقيقي", "٥ وكلاء، عمل حقيقي",
-    "5 وكلاء + 8 موسعون", "٥ وكلاء + ٨ موسعين", "5 وكلاء أساسيون", "٥ وكلاء أساسيون",
-    "One Company, Five Core", "Core 5 + Extended 8 = 13",
+    "499 SAR",
+    "499 ريال",
+    "Pilot 499",
+    "Sprint 499",
+    "7-day pilot",
+    "7 day pilot",
+    "7-day sprint",
+    "7 day sprint",
+    "sprint_499",
+    "partner_2999",
+    "partner_4999",
+    "partner_12000",
+    "partner_15000",
+    "1,500–2,500",
+    "١٬٥٠٠–٢٬٥٠٠",
+    "PERMANENT_AGENTS == 5",
+    "the 5 real sub-agents",
+    "5 real sub-agents",
+    "5 وكلاء AI",
+    "٥ وكلاء AI",
+    "5 وكلاء، عمل حقيقي",
+    "٥ وكلاء، عمل حقيقي",
+    "5 وكلاء + 8 موسعون",
+    "٥ وكلاء + ٨ موسعين",
+    "5 وكلاء أساسيون",
+    "٥ وكلاء أساسيون",
+    "One Company, Five Core",
+    "Core 5 + Extended 8 = 13",
     "AI Operating Team mapping (5 Agents"
   ],
   "classes": {
