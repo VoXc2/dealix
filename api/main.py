@@ -259,9 +259,9 @@ def create_app() -> FastAPI:
             "safe agent runtime, market radar, compliance OS, revenue science, "
             "and Sami Personal Strategic Operator."
         ),
-        docs_url="/docs",
-        redoc_url="/redoc",
-        openapi_url="/openapi.json",
+        docs_url="/docs" if settings.app_env != "production" else None,
+        redoc_url="/redoc" if settings.app_env != "production" else None,
+        openapi_url="/openapi.json" if settings.app_env != "production" else None,
         lifespan=lifespan,
         openapi_tags=_OPENAPI_TAGS,
     )
@@ -499,7 +499,7 @@ def create_app() -> FastAPI:
             "version": settings.app_version,
             "status": "operational",
             "env": settings.app_env,
-            "docs": "/docs",
+            "docs": "/docs" if settings.app_env != "production" else None,
             "health": "/health",
             "v3_command_center": "/api/v1/v3/command-center/snapshot",
             "personal_operator_daily_brief": "/api/v1/personal-operator/daily-brief",
