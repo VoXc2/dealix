@@ -1,4 +1,4 @@
-# 09 — 30-Day Pilot Delivery Log / سجل تسليم البايلوت 30 يومًا
+# 09 — Customer-Specific Delivery Log / سجل التسليم الخاص بالعميل
 
 > Append-only, dated record of what was actually executed for the authorized
 > customer scope. Owned by `dealix-delivery`. Feeds the Proof Register and Proof
@@ -8,16 +8,16 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | |
 
-## Week 1 — Baseline & readiness
+## Milestone 1 — Baseline & readiness
 -
 
-## Week 2 — Governed execution
+## Milestone 2 — Governed execution
 -
 
-## Week 3 — Evidence-led improvement
+## Milestone 3 — Evidence-led improvement
 -
 
-## Week 4 — Final reconciliation
+## Final milestone — Evidence reconciliation
 -
 
 ## Exceptions / failures

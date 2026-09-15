@@ -69,6 +69,7 @@ def test_retired_customer_demo_labels_synthetic_truth() -> None:
     assert "synthetic" in low
     assert "ليست دليل عميل" in html
     assert "kpi" in low
+    assert "/proof-vault" not in html
 
 
 def test_retired_customer_demo_does_not_reintroduce_live_dashboard_contract() -> None:

@@ -58,13 +58,16 @@ def test_workspace_readme_and_handoff_are_truthful(workspace: Path) -> None:
     readme = workspace / "README.md"
     assert readme.exists()
     text = readme.read_text(encoding="utf-8")
-    assert "30-Day Revenue Command Pilot" in text
+    assert "customer-specific delivery workspace" in text
+    assert "30-Day Revenue Command Pilot" not in text
     assert f"Handoff mode: {SYNTHETIC_MARKER}" in text
 
     handoff = (workspace / "COMMERCIAL_HANDOFF.json").read_text(encoding="utf-8")
     assert SYNTHETIC_MARKER in handoff
     assert "quote_is_not_payment" in handoff
     assert "delivery_is_not_customer_value" in handoff
+    assert "customer_specific_after_qualified_discovery" in handoff
+    assert "30-Day Revenue Command Pilot" not in handoff
 
 
 def test_create_workspace_refuses_duplicate(workspace: Path) -> None:

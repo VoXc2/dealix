@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a governed 30-Day Revenue Command Pilot customer workspace.
+"""Create a governed customer-specific delivery workspace.
 
 Copies the canonical customer workspace into ``customers/<slug>/`` by default.
 Callers that need isolated verification may pass ``output_root`` so synthetic
@@ -7,7 +7,7 @@ state never touches the repository customer directory. The file names are kept
 stable for repository compatibility, while current commercial authority is:
 
 real interaction -> Free Mini Diagnostic -> Qualified Discovery ->
-customer-specific Quote -> 30-Day Revenue Command Pilot -> payment/start
+customer-specific Quote/scope/duration -> governed delivery -> payment/start
 evidence -> delivery -> customer-validated Proof -> STOP/EXPAND/REDESIGN.
 
 No customer-facing send, price authority, payment, production mutation, or
@@ -28,7 +28,7 @@ PILOT_WORKSPACE_FILES = (
     "00_intake.md",
     "01_company_intelligence.md",
     "02_diagnostic_summary.md",
-    "03_command_sprint_scope.md",  # compatibility filename; content is 30-day Pilot
+    "03_command_sprint_scope.md",  # compatibility filename; content is customer-specific delivery scope
     "04_revenue_map.md",
     "05_proof_register.md",
     "06_approval_register.md",
@@ -93,7 +93,7 @@ def main(argv: list[str] | None = None) -> int:
         pass
 
     parser = argparse.ArgumentParser(
-        description="Create a governed 30-Day Revenue Command Pilot customer workspace"
+        description="Create a governed customer-specific delivery workspace"
     )
     parser.add_argument("--name", required=True, help="Customer / company name")
     parser.add_argument(
@@ -113,7 +113,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     rel = target.relative_to(REPO)
-    print(f"Created customer Pilot workspace: {rel}")
+    print(f"Created governed customer delivery workspace: {rel}")
     for fname in written:
         print(f"  + {fname}")
     print("CUSTOMER_WORKSPACE_CREATED")
