@@ -42,6 +42,7 @@ def main(argv: list[str] | None = None) -> int:
             job_class="REVIEW",
             authority_level="L2",
             modifying=False,
+            data_sensitivity="PUBLIC",
             executor={"prompt": PROMPT},
         )
         job["TIME_BUDGET"] = args.timeout

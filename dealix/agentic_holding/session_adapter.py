@@ -75,6 +75,7 @@ class SessionWorkRequest:
     business_goal: str
     economic_reason: str
     job_class: str
+    data_sensitivity: str | None = None
     authority_level: str = "L3"
     urgency: str = "normal"
     base_sha: str | None = None
@@ -193,6 +194,7 @@ def render_session_job(
         tests=list(request.tests),
         files_in_scope=list(request.files_in_scope),
         context_refs=context_refs,
+        data_sensitivity=request.data_sensitivity,
         next_action=request.next_action,
     )
     return _attach_logical_identity(job, agent)

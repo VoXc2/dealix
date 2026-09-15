@@ -72,6 +72,7 @@ def scout_job(category: dict[str, Any], *, base_sha: str) -> dict[str, Any]:
         priority=float(category.get("priority") or 50),
         base_sha=base_sha,
         modifying=False,
+        data_sensitivity="PUBLIC",
         executor={"prompt": prompt},
         acceptance={
             "criteria": "official-source V2 software scout receipt with trust and capability evidence",

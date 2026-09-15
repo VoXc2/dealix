@@ -935,6 +935,7 @@ def build_job(record: dict[str, Any], *, repo_root: Path | None = None) -> dict[
         ),
         priority=float(record["score"]["total"]),
         modifying=False,
+        data_sensitivity="INTERNAL",
         executor={"prompt": build_arm_job_prompt(record)},
         acceptance={
             "criteria": (

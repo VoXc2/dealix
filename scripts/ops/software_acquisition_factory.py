@@ -441,6 +441,7 @@ def build_job(candidate: dict[str, Any], decision: Decision, *, base_sha: str) -
             priority=min(100.0, decision.score),
             base_sha=base_sha,
             modifying=True,
+            data_sensitivity="INTERNAL",
             executor={"prompt": prompt},
             acceptance={
                 "criteria": "strict isolated evidence-backed software intake receipt",
@@ -473,6 +474,7 @@ def build_job(candidate: dict[str, Any], decision: Decision, *, base_sha: str) -
             priority=min(90.0, decision.score),
             base_sha=base_sha,
             modifying=False,
+            data_sensitivity="PUBLIC",
             executor={"prompt": prompt},
             acceptance={
                 "criteria": "evidence-backed research receipt",

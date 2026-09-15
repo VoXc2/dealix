@@ -256,6 +256,7 @@ def submit_due_jobs(fabric: dict[str, Any], state_dir: Path, factory_state: Path
             economic_reason="Use cheap local intelligence on only the Top-3 research sectors",
             priority=max(70.0, 100.0 - float(cell["research_rank"])),
             modifying=False,
+            data_sensitivity="INTERNAL",
             executor={"prompt": prompt, "timeout_seconds": 60, "num_predict": 160},
             acceptance={"criteria": "bounded local sector analysis returned"},
             context_refs=[f"sector:{sector_id}:local_ai", f"route_hash:{cell['route_hash']}"],

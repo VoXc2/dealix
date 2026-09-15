@@ -144,6 +144,7 @@ def test_submit_l5_waits_and_never_runs(tmp_path: Path) -> None:
         business_goal="material send",
         job_class="COMMERCIAL_REASONING",
         authority_level="L5",
+        data_sensitivity="INTERNAL",
         executor={"prompt": "draft only"},
     )
     submitted = factory.submit_job(tmp_path, job)
@@ -303,7 +304,7 @@ def test_execute_opencode_places_auto_after_run(tmp_path: Path, monkeypatch) -> 
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
-    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, data_sensitivity="INTERNAL", executor={"prompt":"inspect"})
     result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
@@ -330,7 +331,7 @@ def test_execute_opencode_uses_selected_model_file(tmp_path: Path, monkeypatch) 
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
-    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, data_sensitivity="INTERNAL", executor={"prompt":"inspect"})
     result = factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)
     assert result["ok"] is True
     argv = captured["argv"]
@@ -356,7 +357,7 @@ def test_execute_opencode_uses_go_broker_for_r4(tmp_path: Path, monkeypatch) -> 
         captured["argv"] = argv
         return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "duration_s": 0}
     monkeypatch.setattr(factory, "run_argv", _capture)
-    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, executor={"prompt":"inspect"})
+    job = factory.make_job(owner_agent="dealix-engineer", business_goal="canary", job_class="REVIEW", authority_level="L2", modifying=False, data_sensitivity="INTERNAL", executor={"prompt":"inspect"})
     assert factory.execute_opencode_cli(job, tmp_path, db_dir=tmp_path)["ok"] is True
     assert captured["argv"][5:7] == ["-m", "opencode-go/glm-5.3"]
 
@@ -368,6 +369,7 @@ def _opencode_job(**overrides):
         "job_class": "REVIEW",
         "authority_level": "L2",
         "modifying": False,
+        "data_sensitivity": "INTERNAL",
         "executor": {"prompt": "inspect"},
     }
     kwargs.update(overrides)
@@ -569,6 +571,7 @@ def test_execute_local_ai_honors_bounded_timeout_and_generation(tmp_path: Path, 
         job_class="LOCAL_AI",
         authority_level="L2",
         modifying=False,
+        data_sensitivity="INTERNAL",
         executor={"prompt": "brief", "timeout_seconds": 75, "num_predict": 160},
         acceptance={"criteria": "bounded local analysis"},
     )
@@ -602,6 +605,7 @@ def test_execute_local_ai_default_timeout_allows_cpu_cold_start(tmp_path: Path, 
         job_class="LOCAL_AI",
         authority_level="L2",
         modifying=False,
+        data_sensitivity="INTERNAL",
         executor={"prompt": "brief"},
     )
     assert factory.execute_local_ai(job, tmp_path)["ok"] is True
@@ -633,6 +637,7 @@ def test_execute_local_ai_caps_requested_bounds(tmp_path: Path, monkeypatch) -> 
         job_class="LOCAL_AI",
         authority_level="L2",
         modifying=False,
+        data_sensitivity="INTERNAL",
         executor={"prompt": "brief", "timeout_seconds": 999, "num_predict": 9999},
         acceptance={"criteria": "bounded local analysis"},
     )
@@ -940,6 +945,7 @@ def _daemon_job(**overrides):
         "job_class": "REVIEW",
         "authority_level": "L2",
         "modifying": False,
+        "data_sensitivity": "PUBLIC",
         "executor": {"prompt": "Reply with exactly FREE_API_CANARY_OK", "model": "opencode/muse-spark-1.3-contributor-free"},
     }
     kwargs.update(overrides)
@@ -1228,3 +1234,71 @@ def test_daemon_parser_terminates_on_real_tool_loop_final_stop() -> None:
     assert clean is True
     assert "final answer" in text
     assert error == ""
+
+
+def test_model_job_requires_explicit_data_sensitivity() -> None:
+    job = factory.make_job(
+        owner_agent="dealix-engineer", business_goal="sensitivity gate",
+        job_class="REVIEW", authority_level="L2", modifying=False,
+        executor={"prompt": "inspect"},
+    )
+    errors = factory.validate_job(job)
+    assert any("missing:DATA_SENSITIVITY" in error for error in errors)
+
+
+def test_local_ai_missing_sensitivity_holds_before_network(tmp_path: Path, monkeypatch) -> None:
+    job = factory.make_job(
+        owner_agent="dealix-sales", business_goal="local sensitivity gate",
+        job_class="LOCAL_AI", authority_level="L2", modifying=False,
+        executor={"prompt": "brief"},
+    )
+    monkeypatch.setattr(
+        factory.urllib.request, "urlopen",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("network must not be called")),
+    )
+    result = factory.execute_local_ai(job, tmp_path)
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "data-sensitivity-untrusted" in result["stderr"]
+
+
+def test_model_job_rejects_invalid_data_sensitivity() -> None:
+    job = factory.make_job(
+        owner_agent="dealix-engineer", business_goal="sensitivity gate",
+        job_class="REVIEW", authority_level="L2", modifying=False,
+        data_sensitivity="secret-ish", executor={"prompt": "inspect"},
+    )
+    errors = factory.validate_job(job)
+    assert any("invalid:DATA_SENSITIVITY=SECRET-ISH" in error for error in errors)
+
+
+def test_deterministic_job_may_omit_data_sensitivity() -> None:
+    errors = factory.validate_job(_deterministic_job())
+    assert not any("DATA_SENSITIVITY" in error for error in errors)
+
+
+def test_opencode_missing_sensitivity_holds_before_catalog(tmp_path: Path, monkeypatch) -> None:
+    job = _opencode_job(data_sensitivity=None)
+    monkeypatch.setattr(
+        factory, "discover_catalog",
+        lambda refresh=False: (_ for _ in ()).throw(AssertionError("catalog must not be queried")),
+    )
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "data-sensitivity-untrusted" in result["stderr"]
+
+
+@pytest.mark.parametrize("sensitivity", ["CONFIDENTIAL", "RESTRICTED"])
+def test_opencode_private_sensitivity_never_uses_remote_model(
+    tmp_path: Path, monkeypatch, sensitivity: str
+) -> None:
+    job = _opencode_job(data_sensitivity=sensitivity)
+    monkeypatch.setattr(
+        factory, "discover_catalog",
+        lambda refresh=False: (_ for _ in ()).throw(AssertionError("catalog must not be queried")),
+    )
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is False
+    assert result["returncode"] == 79
+    assert "data-sensitivity-remote-denied" in result["stderr"]

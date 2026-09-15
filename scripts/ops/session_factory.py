@@ -207,6 +207,9 @@ ALLOWED_TRANSITIONS: dict[str, set[str]] = {
 
 AUTHORITY_LEVELS = ("L0", "L1", "L2", "L3", "L4", "L5")
 AUTHORITY_AUTO_MAX = "L4"
+DATA_SENSITIVITY_LEVELS = ("PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED")
+MODEL_EXECUTION_MODES = frozenset({"local_ai", "opencode"})
+REMOTE_OPENCODE_DENIED_SENSITIVITY = frozenset({"CONFIDENTIAL", "RESTRICTED"})
 
 JOB_CONTRACT_FIELDS = (
     "JOB_ID",
@@ -225,6 +228,7 @@ JOB_CONTRACT_FIELDS = (
     "FILES_IN_SCOPE",
     "FILES_FORBIDDEN",
     "CONTEXT_REFS",
+    "DATA_SENSITIVITY",
     "MODEL_CLASS",
     "TOKEN_BUDGET_CLASS",
     "TIME_BUDGET",
@@ -425,6 +429,7 @@ def make_job(
     tests: list[str] | None = None,
     files_in_scope: list[str] | None = None,
     context_refs: list[str] | None = None,
+    data_sensitivity: str | None = None,
     next_action: str = "",
 ) -> dict[str, Any]:
     job = empty_job()
@@ -456,6 +461,7 @@ def make_job(
             "FILES_IN_SCOPE": files_in_scope or [],
             "FILES_FORBIDDEN": [".env", "*.secret", "auth.json"],
             "CONTEXT_REFS": context_refs or [],
+            "DATA_SENSITIVITY": str(data_sensitivity).strip().upper() if data_sensitivity else None,
             "MODEL_CLASS": None,
             "TOKEN_BUDGET_CLASS": "zero" if job_class in ("DETERMINISTIC", "MONITORING") else "bounded",
             "TIME_BUDGET": 600,
@@ -556,9 +562,18 @@ def validate_job(job: dict[str, Any]) -> list[str]:
     dependencies = job.get("DEPENDENCIES") or []
     if not isinstance(dependencies, list):
         errors.append("invalid:DEPENDENCIES must be a list")
-    if job.get("EXECUTION_MODE") not in EXECUTION_MODES:
-        errors.append(f"invalid:EXECUTION_MODE={job.get('EXECUTION_MODE')}")
-    if job.get("EXECUTION_MODE") == "deterministic":
+    execution_mode = job.get("EXECUTION_MODE")
+    if execution_mode not in EXECUTION_MODES:
+        errors.append(f"invalid:EXECUTION_MODE={execution_mode}")
+    sensitivity = job.get("DATA_SENSITIVITY")
+    if execution_mode in MODEL_EXECUTION_MODES:
+        if not sensitivity:
+            errors.append("missing:DATA_SENSITIVITY (required for model-capable jobs)")
+        elif sensitivity not in DATA_SENSITIVITY_LEVELS:
+            errors.append(f"invalid:DATA_SENSITIVITY={sensitivity}")
+    elif sensitivity is not None and sensitivity not in DATA_SENSITIVITY_LEVELS:
+        errors.append(f"invalid:DATA_SENSITIVITY={sensitivity}")
+    if execution_mode == "deterministic":
         executor = job.get("EXECUTOR") or {}
         errors.extend(validate_argv(executor.get("argv")))
     return errors
@@ -1058,6 +1073,23 @@ def opencode_db_path(job: dict[str, Any], db_dir: Path | None = None) -> Path:
     return base / f"{job.get('JOB_ID') or 'job'}.db"
 
 
+def _model_data_sensitivity_hold(job: dict[str, Any], *, remote: bool) -> dict[str, Any] | None:
+    sensitivity = str(job.get("DATA_SENSITIVITY") or "").strip().upper()
+    if sensitivity not in DATA_SENSITIVITY_LEVELS:
+        return {
+            "ok": False, "returncode": 79, "stdout": "",
+            "stderr": "data-sensitivity-untrusted: HOLD (explicit trusted classification required before model launch)",
+            "duration_s": 0,
+        }
+    if remote and sensitivity in REMOTE_OPENCODE_DENIED_SENSITIVITY:
+        return {
+            "ok": False, "returncode": 79, "stdout": "",
+            "stderr": f"data-sensitivity-remote-denied: HOLD ({sensitivity} cannot use remote OpenCode routing)",
+            "duration_s": 0,
+        }
+    return None
+
+
 def _resolve_opencode_model(job: dict[str, Any]) -> tuple[str | None, dict[str, Any] | None]:
     """Resolve a catalog-bound model, or ``(None, hold_result)``.
 
@@ -1066,6 +1098,9 @@ def _resolve_opencode_model(job: dict[str, Any]) -> tuple[str | None, dict[str, 
     catalog (current canonical availability evidence). Fabricated or stale
     ``*-free`` ids HOLD instead of launching.
     """
+    sensitivity_hold = _model_data_sensitivity_hold(job, remote=True)
+    if sensitivity_hold:
+        return None, sensitivity_hold
     catalog = discover_catalog(refresh=False) or []
     available = set(catalog)
     model = (job.get("EXECUTOR") or {}).get("model")
@@ -1292,6 +1327,9 @@ def execute_opencode_daemon(
     the direct CLI here: transport/health failures return a
     ``daemon_unavailable`` HOLD so the caller can decide explicitly.
     """
+    sensitivity_hold = _model_data_sensitivity_hold(job, remote=True)
+    if sensitivity_hold:
+        return sensitivity_hold
     started = now_epoch()
     base = base_url or daemon_base_url()
     if not base:
@@ -1481,6 +1519,9 @@ def execute_opencode_cli(
     policy as the daemon executor. It is retained as a recovery transport for
     an unavailable daemon (explicit opt-in) or an aborted idle daemon session.
     """
+    sensitivity_hold = _model_data_sensitivity_hold(job, remote=True)
+    if sensitivity_hold:
+        return sensitivity_hold
     binary = resolve_opencode_binary()
     if not binary:
         return {"ok": False, "returncode": 127, "stdout": "", "stderr": "opencode-not-found", "duration_s": 0}
@@ -1576,6 +1617,9 @@ def execute_opencode(
 
 def execute_local_ai(job: dict[str, Any], cwd: Path) -> dict[str, Any]:
     """Bounded local Ollama call with capped latency and generation size."""
+    sensitivity_hold = _model_data_sensitivity_hold(job, remote=False)
+    if sensitivity_hold:
+        return sensitivity_hold
     executor = job.get("EXECUTOR") or {}
     prompt = executor.get("prompt") or job.get("BUSINESS_GOAL", "")
     try:
@@ -1990,6 +2034,7 @@ def run_autonomy_acceptance(root: Path | None = None) -> dict[str, Any]:
         authority_level="L5",
         priority=40,
         modifying=False,
+        data_sensitivity="INTERNAL",
         executor={"prompt": "draft only"},
     )
     submit_job(root, job_d)
@@ -2078,6 +2123,7 @@ def _load_job_arg(args: argparse.Namespace, root: Path) -> dict[str, Any]:
         authority_level=args.authority,
         priority=args.priority,
         modifying=args.modifying,
+        data_sensitivity=args.data_sensitivity,
         executor=json.loads(args.executor) if args.executor else {},
         acceptance=json.loads(args.acceptance) if args.acceptance else {},
     )
@@ -2134,6 +2180,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--authority", default="L1")
     parser.add_argument("--priority", type=float, default=50.0)
     parser.add_argument("--modifying", action="store_true")
+    parser.add_argument("--data-sensitivity", choices=DATA_SENSITIVITY_LEVELS)
     parser.add_argument("--executor", help="JSON executor spec")
     parser.add_argument("--acceptance", help="JSON acceptance spec")
     parser.add_argument("--json", action="store_true")
