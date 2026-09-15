@@ -1,8 +1,9 @@
 """Contracts for the Hermes arm portfolio controller (planning only).
 
-Covers the non-negotiables: canonical 44-arm registry + playbooks, exactly five
-permanent agents, ACTIVE_DEEP ARM-001/002/003 preserved at DEEP_WIP_MAX=3 unless
-real customer/economic evidence exists, research-only ranking stays LIGHT/HOLD,
+Covers the non-negotiables: canonical 44-arm registry + playbooks, Omega V3
+Agentic Holding as logical-agent authority, the historical five owner aliases only
+as compatibility executors, ACTIVE_DEEP ARM-001/002/003 preserved as the initial
+portfolio Top-3 unless real customer/economic evidence exists, research-only ranking stays LIGHT/HOLD,
 no invented revenue/pipeline, and L5 material effects stay WAITING_L5.
 """
 
@@ -45,8 +46,19 @@ def test_no_evidence_preserves_deep_wedges_and_top3() -> None:
     plan = ctrl.plan_portfolio(generated_at="fixed")
     assert plan["overall"] == "PLAN_READY"
     assert len(plan["records"]) == 44
+    # Compatibility fields remain readable, but canonical architecture lives in
+    # agent_authority and runtime capacity is not inferred from either value.
     assert plan["deep_wip_max"] == 3
     assert len(plan["permanent_agents"]) == 5
+    authority = plan["agent_authority"]
+    assert authority["canonical_architecture"] == "agentic_holding_sector_company_mesh"
+    assert authority["logical_agents"] > len(plan["permanent_agents"])
+    assert authority["sector_companies"] >= 20
+    assert authority["legacy_executor_aliases"] == plan["permanent_agents"]
+    assert authority["portfolio_deep_wip_max"] == 3
+    assert authority["runtime_capacity_authority"].startswith("ResourceGovernor")
+    assert authority["fixed_five_runtime_authority"] is False
+    assert authority["fixed_three_runtime_worker_ceiling"] is False
     assert plan["deep_wedge_ids"] == ["ARM-001", "ARM-002", "ARM-003"]
     assert plan["preserved_deep_ids"] == ["ARM-001", "ARM-002", "ARM-003"]
     assert plan["promoted_by_evidence_ids"] == []
@@ -192,6 +204,20 @@ def test_render_summary_is_truthful() -> None:
     assert "HERMES_ARM_PORTFOLIO=PLAN_READY" in summary
     assert "L5_POLICY=WAITING_L5_never_auto_executed" in summary
     assert "COUNTS_AS_REVENUE=False" in summary
+    assert "PERMANENT_AGENTS=" not in summary
+    assert "LEGACY_EXECUTOR_ALIASES=5" in summary
+    assert "PORTFOLIO_DEEP_WIP=3" in summary
+    assert "HOLDING_LOGICAL_AGENTS=" in summary
+
+
+def test_legacy_aliases_and_top3_are_not_runtime_capacity_authority() -> None:
+    source = (ROOT / "scripts" / "ops" / "hermes_arm_portfolio_controller.py").read_text(encoding="utf-8")
+    assert "Exactly five permanent agents" not in source
+    assert "runtime capacity belongs to ResourceGovernor / Session Factory" in source
+    plan = ctrl.plan_portfolio(generated_at="fixed")
+    authority = plan["agent_authority"]
+    assert authority["fixed_five_runtime_authority"] is False
+    assert authority["fixed_three_runtime_worker_ceiling"] is False
 
 
 def test_registry_copy_is_not_mutated_by_planning() -> None:
