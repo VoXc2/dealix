@@ -444,7 +444,6 @@ def create_app() -> FastAPI:
 
     # Wave 16 — Customer Intelligence + Market Intelligence + Onboarding + CEO Brief + Lead Ingestion
     from api.routers import ceo_brief as ceo_brief_router
-    from api.routers import customer_onboarding as customer_onboarding_router
     from api.routers import intelligence_health as intelligence_health_router
     from api.routers import lead_ingestion as lead_ingestion_router
 
@@ -453,7 +452,6 @@ def create_app() -> FastAPI:
     app.include_router(onboarding_router.router)
     app.include_router(solutions_router.router, prefix="/api/v1")
     app.include_router(ceo_brief_router.router)
-    app.include_router(customer_onboarding_router.router)
     app.include_router(intelligence_health_router.router)
     app.include_router(lead_ingestion_router.router)
 

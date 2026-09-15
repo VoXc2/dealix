@@ -35,6 +35,7 @@ def evaluate(root: Path) -> dict[str, object]:
     subscription_models = _read(root, "db/models_subscription.py")
     auth = _read(root, "api/routers/auth.py")
     main = _read(root, "api/main.py")
+    customers_domain = _read(root, "api/routers/domains/customers/__init__.py")
     api_key = _read(root, "api/security/api_key.py")
     onboarding_router = _read(root, "api/routers/onboarding.py")
     onboarding_service = _read(root, "dealix/onboarding/service.py")
@@ -46,6 +47,7 @@ def evaluate(root: Path) -> dict[str, object]:
     login_page = _read(root, "apps/web/app/login/page.tsx")
     dashboard_page = _read(root, "apps/web/app/[tenant]/dashboard/page.tsx")
     dashboard_entry = _read(root, "apps/web/app/dashboard/page.tsx")
+    pricing_page = _read(root, "apps/web/app/pricing/page.tsx")
     runtime_api = _read(root, "apps/web/lib/runtime-api.ts")
     next_config = _read(root, "apps/web/next.config.js")
 
@@ -77,14 +79,20 @@ def evaluate(root: Path) -> dict[str, object]:
             "plans, subscriptions, invoices, and usage metering exist",
         ),
         Check(
-            "self_serve_signup",
+            "quote_first_saas_onboarding",
             '@router.post("/signup"' in onboarding_router
             and '@router.get("/plans"' in onboarding_router
-            and 'SELF_SERVE_PLAN_SLUGS = ("free", "starter", "growth")'
-            in onboarding_router
+            and 'os.getenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "false")' in onboarding_router
+            and "_require_self_serve_signup_enabled()" in onboarding_router
+            and 'source: "/signup"' in next_config
+            and 'destination: "/book"' in next_config
+            and "لا سعر عام ولا Checkout عام" in pricing_page
             and "Role.TENANT_ADMIN.value" in onboarding_service
-            and '"/api/v1/onboarding/",' in api_key,
-            "plans/signup are reachable before credentials and create a canonical tenant administrator",
+            and '"/api/v1/onboarding/",' in api_key
+            and "app.include_router(onboarding_router.router)" in main
+            and "customer_onboarding_router" not in main
+            and "onboarding.router =" not in customers_domain,
+            "SaaS tenant provisioning exists behind one canonical router, while unattended public signup stays fail-closed behind quote-first commercial authority",
         ),
         Check(
             "protected_onboarding_operations",
@@ -185,7 +193,8 @@ def evaluate(root: Path) -> dict[str, object]:
             "NEXT_PUBLIC_DEALIX_API_BASE" in runtime_api
             and "NEXT_PUBLIC_DEALIX_API_BASE" in next_config
             and 'source: "/api/v1/:path*"' in next_config
-            and 'source: "/signup"' not in next_config
+            and 'source: "/signup"' in next_config
+            and 'destination: "/book"' in next_config
             and "X-API-Key" not in runtime_api
             and "ADMIN_API" not in runtime_api
             and 'apiUrl("/api/v1/auth/login")' in login_page,
@@ -216,26 +225,30 @@ def evaluate(root: Path) -> dict[str, object]:
     passed = all(check.passed for check in checks)
     return {
         "foundation_status": "READY" if passed else "NOT_READY",
-        "production_activation_status": "OPERATOR_GATES_REQUIRED",
+        "production_activation_status": "HOLD_PENDING_EXACT_RUNTIME_EVIDENCE",
         "checks": [asdict(check) for check in checks],
         "operator_gates": [
             {
-                "issue": 898,
-                "action": "restore Railway deploy credential and prove backend deploy",
+                "gate": "release_identity_parity",
+                "action": "prove source SHA -> build identity -> running Web/API SHA on the accepted release",
             },
             {
-                "issue": 884,
-                "action": "synchronize the dedicated protected-route smoke key",
+                "gate": "tenant_database_safety",
+                "action": "prove tenant migrations plus backup/restore on a disposable non-production database",
             },
             {
-                "issue": 894,
-                "action": "create the Next.js frontend project and complete frontend/API domain cutover",
+                "gate": "tenant_isolation_runtime",
+                "action": "prove same-tenant success and cross-tenant denial on the running release, including connector/secret isolation",
+            },
+            {
+                "gate": "commercial_activation",
+                "action": "keep self-serve signup, billing execution, and payment effects disabled until current customer-specific commercial authority explicitly enables them",
             },
         ],
         "claim_boundary": (
             "READY proves repository SaaS foundations and browser journey contracts only; "
-            "production-ready requires migrations, deployment, protected-route smoke, domains, "
-            "and disposable-tenant evidence."
+            "production-ready requires exact release identity, migration/restore proof, runtime "
+            "tenant-isolation evidence, and explicit commercial activation."
         ),
     }
 

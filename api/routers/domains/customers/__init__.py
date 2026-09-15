@@ -20,7 +20,6 @@ from api.routers import (
     customer_success,
     customer_success_os,
     executive_pack_per_customer,
-    onboarding,
     support_os,
 )
 from api.routers import (
@@ -65,17 +64,6 @@ _LEGACY_BILLING_MUTATION_PATHS = {
 # Keep read-only existing-tenant subscription/invoice/features views while
 # excluding the retired SaaS plan catalogue and subscription/payment mutations.
 _billing_router = _filtered_router(billing.router, _LEGACY_BILLING_MUTATION_PATHS)
-
-_LEGACY_SELF_SERVE_ONBOARDING_PATHS = {
-    "/api/v1/onboarding/plans",
-    "/api/v1/onboarding/signup",
-}
-
-# api.main later includes onboarding.router explicitly. Rebind the exported
-# reference to a filtered copy rather than deleting routes from the shared
-# APIRouter object. Existing-tenant wizard/invite flows remain mounted.
-onboarding.router = _filtered_router(onboarding.router, _LEGACY_SELF_SERVE_ONBOARDING_PATHS)
-
 
 _ROUTERS = [
     _billing_router,

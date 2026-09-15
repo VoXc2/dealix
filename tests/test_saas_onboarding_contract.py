@@ -11,6 +11,7 @@ ROUTER_PATH = ROOT / "api" / "routers" / "onboarding.py"
 INVITE_EMAIL_PATH = ROOT / "core" / "email" / "invites.py"
 API_KEY_PATH = ROOT / "api" / "security" / "api_key.py"
 MAIN_PATH = ROOT / "api" / "main.py"
+CUSTOMERS_DOMAIN_PATH = ROOT / "api" / "routers" / "domains" / "customers" / "__init__.py"
 
 
 def _source(path: Path) -> str:
@@ -62,20 +63,37 @@ def test_team_invite_is_admin_gated_and_has_manual_recovery() -> None:
     assert "لم يتم إرسال أي رسالة" in source
 
 
-def test_self_serve_onboarding_bypasses_platform_key_but_keeps_jwt_guards() -> None:
+def test_self_serve_onboarding_is_explicitly_gated_and_jwt_guards_remain() -> None:
     middleware = _source(API_KEY_PATH)
     router_source = _source(ROUTER_PATH)
 
     assert '"/api/v1/onboarding/",' in middleware
     assert "path.startswith(PUBLIC_PREFIXES)" in middleware
-    assert "current_user=Depends(get_current_user)" in router_source
-    assert "current_user=Depends(require_tenant_admin)" in router_source
+    assert 'os.getenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "false")' in router_source
+    assert "def _require_self_serve_signup_enabled()" in router_source
+    plans_section = router_source.split('@router.get("/plans"', 1)[1].split(
+        '@router.post("/signup"', 1
+    )[0]
     signup_section = router_source.split('@router.post("/signup"', 1)[1].split(
         '@router.post("/wizard")', 1
     )[0]
+    assert "_require_self_serve_signup_enabled()" in plans_section
+    assert "_require_self_serve_signup_enabled()" in signup_section
     assert "Depends(get_current_user)" not in signup_section
     assert "Depends(require_tenant_admin)" not in signup_section
+    assert "current_user=Depends(get_current_user)" in router_source
+    assert "current_user=Depends(require_tenant_admin)" in router_source
 
+
+
+def test_quote_first_runtime_has_one_canonical_onboarding_router() -> None:
+    main = _source(MAIN_PATH)
+    customers_domain = _source(CUSTOMERS_DOMAIN_PATH)
+
+    assert "app.include_router(onboarding_router.router)" in main
+    assert "customer_onboarding_router" not in main
+    assert "_LEGACY_SELF_SERVE_ONBOARDING_PATHS" not in customers_domain
+    assert "onboarding.router =" not in customers_domain
 
 def test_legacy_auth_invite_routes_are_replaced_by_canonical_safe_flow() -> None:
     source = _source(ROUTER_PATH)

@@ -1,5 +1,5 @@
 """
-Self-Serve Onboarding API — plans, signup, wizard, and approval-first invites.
+Quote-first SaaS onboarding API — gated signup, wizard, and approval-first invites.
 
 The canonical invitation implementation lives here. A compatibility installer
 replaces the older ``/api/v1/auth/invite`` creation and acceptance routes before
@@ -29,6 +29,35 @@ from dealix.onboarding.service import OnboardingService
 router = APIRouter(prefix="/api/v1/onboarding", tags=["Onboarding"])
 SELF_SERVE_PLAN_SLUGS = ("free", "starter", "growth")
 SelfServePlanSlug = Literal["free", "starter", "growth"]
+
+
+def self_serve_signup_enabled() -> bool:
+    """Return whether unattended public tenant creation is explicitly enabled.
+
+    Current commercial authority is quote-first: free Execution Diagnostic,
+    Qualified Discovery, then a customer-specific quote. Keep SaaS
+    provisioning available without silently creating a public fixed-plan or
+    self-checkout authority.
+    """
+
+    return os.getenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "false").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
+def _require_self_serve_signup_enabled() -> None:
+    if self_serve_signup_enabled():
+        return
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=(
+            "Self-serve signup is not enabled. Start with the free Execution "
+            "Diagnostic and Qualified Discovery."
+        ),
+    )
 
 
 class PlanOut(BaseModel):
@@ -113,13 +142,9 @@ class LegacyInviteOut(InviteOut):
 async def list_self_serve_plans(
     session: AsyncSession = Depends(get_db_session),
 ) -> dict[str, Any]:
-    """Return only plans approved for unattended self-serve signup.
+    """Return self-serve plans only when that commercial surface is enabled."""
 
-    The explicit slug allowlist avoids leaking custom/enterprise plans and also
-    remains reliable for databases seeded by older migrations where
-    ``is_public`` may be NULL because the seed used raw SQL.
-    """
-
+    _require_self_serve_signup_enabled()
     result = await session.execute(
         select(PlanRecord)
         .where(PlanRecord.slug.in_(SELF_SERVE_PLAN_SLUGS))
@@ -153,7 +178,8 @@ async def signup(
     req: SignupRequest,
     session: AsyncSession = Depends(get_db_session),
 ) -> dict[str, Any]:
-    """Create the tenant, canonical admin identity, and SaaS subscription."""
+    """Create a tenant only when unattended SaaS signup is explicitly enabled."""
+    _require_self_serve_signup_enabled()
     svc = OnboardingService(session)
     try:
         result = await svc.signup(

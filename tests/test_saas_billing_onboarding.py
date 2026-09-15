@@ -73,7 +73,29 @@ async def _create_tenant_user(session: AsyncSession, tenant_id: str, user_id: st
 
 
 @pytest.mark.asyncio
-async def test_onboarding_signup_and_wizard_flow(async_client):
+async def test_self_serve_onboarding_is_disabled_by_default(async_client, monkeypatch):
+    monkeypatch.delenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", raising=False)
+
+    plans_response = await async_client.get("/api/v1/onboarding/plans")
+    assert plans_response.status_code == 404, plans_response.text
+
+    signup_response = await async_client.post(
+        "/api/v1/onboarding/signup",
+        json={
+            "email": "blocked@example.com",
+            "password": "s3cureP@ssword",
+            "name": "Blocked User",
+            "company_name": "Blocked Company",
+            "plan_slug": "free",
+            "billing_cycle": "monthly",
+        },
+    )
+    assert signup_response.status_code == 404, signup_response.text
+
+
+@pytest.mark.asyncio
+async def test_onboarding_signup_and_wizard_flow(async_client, monkeypatch):
+    monkeypatch.setenv("DEALIX_SELF_SERVE_SIGNUP_ENABLED", "true")
     async with get_session() as session:
         await _create_plan(session, slug="free", name_en="Free", monthly=0.0, yearly=0.0)
 
