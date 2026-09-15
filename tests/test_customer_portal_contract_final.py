@@ -57,9 +57,10 @@ async def test_wave4_enriched_keys_preserved() -> None:
 def test_retired_customer_demo_redirects_to_proof_methodology() -> None:
     html = Path("landing/customer-portal.html").read_text(encoding="utf-8")
     assert "DEALIX_RETIRED_PUBLIC_SURFACE" in html
-    assert 'http-equiv="refresh" content="0; url=/proof.html"' in html
-    assert 'rel="canonical" href="https://dealix.me/proof.html"' in html
+    assert 'http-equiv="refresh" content="0; url=/cases"' in html
+    assert 'rel="canonical" href="https://dealix.me/cases"' in html
     assert 'name="robots" content="noindex,nofollow"' in html
+    assert "/proof-vault" not in html
 
 
 def test_retired_customer_demo_labels_synthetic_truth() -> None:
