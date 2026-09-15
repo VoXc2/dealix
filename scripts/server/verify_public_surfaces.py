@@ -13,8 +13,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SURFACES = {
     "backend": {
         "health": "/health",
-        "docs": "/docs",
-        "openapi": "/openapi.json",
+        "version": "/version",
+        "meta": "/api/v1/meta",
         "leads": "/api/v1/leads",
         "business_now": "/api/v1/business-now/snapshot",
     },

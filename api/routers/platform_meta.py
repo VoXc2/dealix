@@ -74,7 +74,7 @@ async def version() -> dict[str, object]:
         "env": settings.app_env,
         "git_sha": _deployment_git_sha(),
         "health": "/healthz",
-        "docs": "/docs",
+        "docs": "/docs" if settings.app_env != "production" else None,
         "meta": "/api/v1/meta",
     }
 
@@ -95,7 +95,7 @@ async def platform_meta() -> dict[str, object]:
             "health": "/health",
             "ready": "/ready",
             "live": "/live",
-            "openapi": "/openapi.json",
+            "openapi": "/openapi.json" if settings.app_env != "production" else None,
             "commercial_map": "/api/v1/commercial-map",
             "revenue_os_catalog": "/api/v1/revenue-os/catalog",
         },
