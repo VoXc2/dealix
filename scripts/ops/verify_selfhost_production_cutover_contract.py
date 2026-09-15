@@ -30,6 +30,10 @@ files = {
     "env": ROOT / ".env.prod.example",
     "plane": ROOT / "docs/ops/SELFHOSTED_PRODUCTION_PLANE.md",
     "cutover": ROOT / "scripts/ops/selfhost_public_cutover.sh",
+    "db_prep": ROOT / "scripts/ops/selfhost_prepare_production_database.sh",
+    "fingerprint": ROOT / "scripts/ops/postgres_database_fingerprint.sql",
+    "quiescence": ROOT / "scripts/ops/verify_railway_source_quiescence.sh",
+    "receipts": ROOT / "scripts/ops/verify_selfhost_cutover_receipts.py",
 }
 text = {k: p.read_text(encoding="utf-8") for k, p in files.items()}
 
@@ -48,8 +52,11 @@ required = {
         "127.0.0.1:${DEALIX_SELFHOST_API_PORT",
         "127.0.0.1:${DEALIX_SELFHOST_WEB_PORT",
         "127.0.0.1:${DEALIX_SELFHOST_INGRESS_PORT",
+        "127.0.0.1:${DEALIX_SELFHOST_DB_PORT",
+        'profiles: ["local-db", "production-db"]',
+        "POSTGRES_PASSWORD:",
+        "dealix-postgres-data:/var/lib/postgresql",
         "pgvector/pgvector:pg18",
-        "dealix-postgres-canary:/var/lib/postgresql",
         "GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}",
         'profiles: ["public-cutover"]',
         "${DEALIX_PUBLIC_HTTP_BIND:-127.0.0.1:18080}:80",
@@ -63,6 +70,11 @@ required = {
         "sha256sum",
         "pg_restore --list",
         "DEALIX_DATABASE_URL_FILE",
+        "DEALIX_BACKUP_ROLE",
+        "database_changed_during_backup_capture",
+        "database_fingerprint_sha256",
+        "dealix.railway-source-backup-receipt.v1",
+        "dealix.selfhost-backup-receipt.v1",
     ],
     # Isolated restore rehearsal with pgvector.
     "restore": [
@@ -73,6 +85,13 @@ required = {
     # Fail-closed migration: explicit flag, lossless archive, no consent inference.
     "migrate": [
         "DEALIX_DB_MIGRATION",
+        "DEALIX_SOURCE_IS_RESTORED_BACKUP",
+        "DEALIX_RAILWAY_BACKUP_SHA256",
+        "DEALIX_TARGET_RELEASE_SHA",
+        "DEALIX_L5_APPROVAL_ACTION",
+        "default_transaction_read_only",
+        "LIVE_PROVIDER_HOST_MARKERS",
+        "dealix.railway-data-migration-receipt.v1",
         "operational_event_streams",
         "consent_for_publication",
         "publication_consent_inferred=false",
@@ -97,7 +116,11 @@ required = {
     ],
     # Explicit L5 cutover boundary on the canonical runbook.
     "plane": ["L5", "deploy/selfhost/compose.yml", "PRODUCTION_GREEN=NOT_PROVEN"],
-    "cutover": ["--preflight", "--stage", "--cutover", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "CONFIRM_SHA", "0.0.0.0:80", "0.0.0.0:443", "DNS_MUTATION=NOT_EXECUTED", "PRODUCTION_GREEN=NOT_PROVEN"],
+    "cutover": ["--preflight", "--stage", "--cutover", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "DEALIX_DATA_MIGRATION_RECEIPT", "DEALIX_SOURCE_BACKUP_RECEIPT", "DEALIX_SELFHOST_BACKUP_RECEIPT", "DEALIX_QUIESCENCE_RECEIPT", "verify_selfhost_cutover_receipts.py", "CONFIRM_SHA", "0.0.0.0:80", "0.0.0.0:443", "DNS_MUTATION=NOT_EXECUTED", "RAILWAY_DECOMMISSION=NOT_EXECUTED", "PRODUCTION_GREEN=NOT_PROVEN"],
+    "db_prep": ["--preflight", "--execute", "DEALIX_PREPARE_PRODUCTION_DB", "DEALIX_BOOTSTRAP_PRODUCTION_DB", "CONFIRM_SHA", "PRODUCTION_DB_MUTATION=NOT_EXECUTED", "RAILWAY_DATA_MIGRATION=NOT_EXECUTED"],
+    "fingerprint": ["pg_tables", "to_jsonb", "ORDER BY"],
+    "quiescence": ["RAILWAY_QUIESCENCE=PASS", "dealix.railway-quiescence-receipt.v1", "database_fingerprint_sha256", "source receipt outside 30-minute cutover window"],
+    "receipts": ["SELFHOST_CUTOVER_RECEIPTS=PASS", "scratch migration receipt cannot authorize cutover", "quiescence proof must follow migration and target backup"],
 }
 missing = [
     f"{name}:{needle}"
@@ -112,7 +135,7 @@ forbidden = {
     "legacy_backup": ["docker compose"],
     "legacy_health": ["docker compose"],
     # Canonical canary must never bind public ingress ports itself.
-    "canonical_compose": ['"80:80"', '"443:443"', "image: postgres:16", "dealix-postgres-canary:/var/lib/postgresql/data"],
+    "canonical_compose": ['"80:80"', '"443:443"', "image: postgres:16", "POSTGRES_HOST_AUTH_METHOD: trust", "0.0.0.0:${DEALIX_SELFHOST_DB_PORT", "dealix-postgres-data:/var/lib/postgresql/data", "dealix-postgres-canary:/var/lib/postgresql/data"],
     "cutover": ["railway up", "railway redeploy", "cloudflare", "aws route53"],
     # Backup must never leak the DB password through env/config/args.
     "backup_runner": ["-e PGPASSWORD"],
