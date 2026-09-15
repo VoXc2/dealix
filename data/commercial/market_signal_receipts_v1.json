@@ -1,6 +1,6 @@
 {
   "schema": "dealix.market-signal-set.v1",
-  "generated_at": "2026-09-15T04:27:46+00:00",
+  "generated_at": "2026-09-15T05:45:00+00:00",
   "scope": "dealix_company",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
@@ -143,23 +143,22 @@
     {
       "signal_id": "sig-2026-zatca-wave25-feb2027",
       "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
-      "source_ref": "http://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
-      "observed_at": "2026-08-11T00:00:00+03:00",
+      "source_ref": "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
+      "observed_at": "2026-07-24T00:00:00+03:00",
       "ingested_at": "2026-09-11T16:40:00+03:00",
-      "provenance_ref": "ZATCA Wave 25 announcement (official)",
+      "provenance_ref": "ZATCA Wave 25 official announcement — 24 July 2026",
       "fresh_until": "2027-02-01T00:00:00+03:00",
       "signal_family": "REGULATION_OR_POLICY",
       "market": "SAUDI_ARABIA",
       "sector_family": "FINANCIAL_SERVICES",
       "business_archetype": "REGULATED_ENTERPRISE",
       "evidence_refs": [
-        "http://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx",
-        "https://www.vatupdate.com/2026/08/11/zatca-announces-wave-25-of-e-invoicing-threshold-halved-to-sar-187500-integration-deadline-1-february-2027"
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx"
       ],
       "facts": [
-        "ZATCA Wave 25 targets taxpayers with VAT revenues above SAR 187,500 in 2022-2025.",
-        "Integration with the Fatoora platform is required by 1 February 2027.",
-        "Previous waves carried penalties of SAR 5,000 to SAR 50,000 for non-compliance."
+        "ZATCA Wave 25 includes taxpayers whose VAT-subject revenues exceeded SAR 187,500 during 2022, 2023, 2024 or 2025.",
+        "ZATCA will notify targeted taxpayers and requires integration with the Fatoora Platform by no later than 1 February 2027.",
+        "Phase Two requires integration with Fatoora, a specified e-invoice format, and additional invoice fields."
       ],
       "inferences": [
         "A dated, mandatory integration deadline is a legitimate why-now trigger for finance-operations readiness work.",
@@ -173,7 +172,7 @@
         "INTERNAL_RESEARCH_ONLY"
       ],
       "next_evidence": [
-        "Confirm official wave criteria and totals from zatca.gov.sa only"
+        "Confirm the entity-specific ZATCA notification before treating a company as in-scope"
       ],
       "priority_factors": {
         "economic_pain": 4,
@@ -1062,6 +1061,193 @@
         "founder_minutes": 2
       },
       "priority_basis": "Internal research priority rubric (1-5). Values are internal prioritization only and are NOT purchase probability, demand evidence, relationship, consent, tender fit, award probability, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-cst-ai-adoption-guide-20260727",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies",
+      "observed_at": "2026-07-27T00:00:00+03:00",
+      "ingested_at": "2026-09-15T08:45:00+03:00",
+      "provenance_ref": "CST official AI Adoption Guide for Technology Companies — released 27 July 2026",
+      "fresh_until": "2026-12-31T23:59:59+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "TECHNOLOGY_COMPANY",
+      "evidence_refs": [
+        "https://www.cst.gov.sa/media-center/news/N2026072701",
+        "https://www.cst.gov.sa/en/knowledge-center/reports/ai-adoption-guide-for-tech-companies"
+      ],
+      "facts": [
+        "CST released an AI adoption guide for technology companies on 27 July 2026.",
+        "The guide covers internal operations, customer-facing solutions and AI-enabled implementation models including AI agents.",
+        "The guide starts organizational readiness across five dimensions: Context, Data, Infrastructure, Skills & Expertise, and Organizational Culture."
+      ],
+      "inferences": [
+        "The guide supports an evidence-bounded AI execution-readiness diagnostic hypothesis for Saudi technology companies; it does not prove buyer intent, a relationship or consent."
+      ],
+      "unknowns": [
+        "Adoption depth, budget, buyer identity and readiness for any specific company remain unknown."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Reverify CST guidance and map only company-specific evidence before qualification"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-hospitality-expo-riyadh-sep15-17",
+      "source_id": "COMPANY_OWNED_WEB",
+      "source_ref": "https://www.thehotelshowsaudiarabia.com/",
+      "observed_at": "2026-09-15T00:00:00+03:00",
+      "ingested_at": "2026-09-15T08:45:00+03:00",
+      "provenance_ref": "Hotel & Hospitality Expo Saudi Arabia official 2026 event and agenda pages",
+      "fresh_until": "2026-09-17T22:00:00+03:00",
+      "signal_family": "EVENT_OR_FIELD",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "TOURISM_QUALITY_OF_LIFE",
+      "business_archetype": "HOSPITALITY_OPERATOR_OR_SUPPLIER",
+      "evidence_refs": [
+        "https://www.thehotelshowsaudiarabia.com/",
+        "https://www.thehotelshowsaudiarabia.com/agenda/",
+        "https://www.thehotelshowsaudiarabia.com/product-sectors/hospitality-technology/"
+      ],
+      "facts": [
+        "The official event site lists Hotel & Hospitality Expo Saudi Arabia for 15-17 September 2026, 4PM-10PM daily, at RICEC in Riyadh.",
+        "The event positions its audience around hospitality suppliers, buyers and decision-makers, including operators, procurement, IT and engineering roles.",
+        "The 16 September agenda is themed around operations, technology and business performance and includes a session on turning AI ambition into operational value."
+      ],
+      "inferences": [
+        "Prepare bounded hospitality operations and AI-readiness conversation cards plus a free diagnostic hypothesis for real interactions at the event; the event listing itself is not a relationship, consent or buyer intent."
+      ],
+      "unknowns": [
+        "Actual attendance, any individual buyer problem, Dealix relationship state and consent remain unknown until evidenced."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Capture only real two-way event interactions as first-party evidence before promotion to relationship state"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 4,
+        "readiness": 5,
+        "distribution_density": 5,
+        "regulatory_friction": 2,
+        "integration_complexity": 3,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-smart-cities-saudi-expo-sep15-17",
+      "source_id": "COMPANY_OWNED_WEB",
+      "source_ref": "https://www.smartcitiessaudiexpo.com/landing-page/register-to-attend-for-free-2026-edition/",
+      "observed_at": "2026-09-15T00:00:00+03:00",
+      "ingested_at": "2026-09-15T08:45:00+03:00",
+      "provenance_ref": "Smart Cities Saudi Expo official 2026 visitor page",
+      "fresh_until": "2026-09-17T23:59:59+03:00",
+      "signal_family": "EVENT_OR_FIELD",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "URBAN_INFRASTRUCTURE_TECH_ECOSYSTEM",
+      "evidence_refs": [
+        "https://www.smartcitiessaudiexpo.com/landing-page/register-to-attend-for-free-2026-edition/",
+        "https://www.smartcitiessaudiexpo.com/landing-page/2026-edition/"
+      ],
+      "facts": [
+        "The official Smart Cities Saudi Expo page lists the event for 15-17 September 2026 at Riyadh International Convention & Exhibition Center.",
+        "The organizer markets the event as bringing 350+ local and international exhibitors and 26,000+ industry leaders; these are organizer claims, not Dealix-verified attendance counts.",
+        "The official exhibitor-facing page highlights smart-city technology partnerships and a decision-maker audience around urban innovation."
+      ],
+      "inferences": [
+        "Prepare bounded smart-city decision-intelligence, governed-agent and data-operations diagnostic hypotheses for real interactions; public exhibitor or event data does not create a Dealix relationship or consent."
+      ],
+      "unknowns": [
+        "Actual attendance, buyer authority, specific problems, procurement eligibility, relationship and consent remain unknown until separately evidenced."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize official exhibitor/project research, then promote only documented two-way interactions through the canonical relationship owner"
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 4,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 5,
+        "distribution_density": 5,
+        "regulatory_friction": 3,
+        "integration_complexity": 4,
+        "founder_minutes": 3
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, or customer facts.",
       "authority": {
         "relationship": false,
         "consent": false,
