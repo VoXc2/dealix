@@ -81,3 +81,21 @@ def test_no_secret_like_content_and_research_only_language() -> None:
     for signal in _payload()["signals"]:
         assert "INTERNAL_RESEARCH_ONLY" in signal["allowed_use"]
         assert "not" in (signal.get("priority_basis", "") + " ".join(signal["inferences"])).lower() or signal["inferences"]
+
+
+def test_current_saudi_official_and_event_signals_are_truth_bounded() -> None:
+    by_id = {row["signal_id"]: row for row in _payload()["signals"]}
+    zatca = by_id["sig-2026-zatca-wave25-feb2027"]
+    assert zatca["observed_at"].startswith("2026-07-24")
+    assert zatca["source_ref"].startswith("https://zatca.gov.sa/")
+    assert zatca["evidence_refs"] == [zatca["source_ref"]]
+    assert not any("penalt" in fact.lower() for fact in zatca["facts"])
+    cst = by_id["sig-2026-cst-ai-adoption-guide-20260727"]
+    assert cst["observed_at"].startswith("2026-07-27")
+    assert any("five dimensions" in fact.lower() for fact in cst["facts"])
+    for signal_id in ("sig-2026-hospitality-expo-riyadh-sep15-17", "sig-2026-smart-cities-saudi-expo-sep15-17"):
+        signal = by_id[signal_id]
+        assert signal["signal_family"] == "EVENT_OR_FIELD"
+        assert signal["authority"] == radar.AUTHORITY
+        blob = " ".join(signal["inferences"] + signal["unknowns"]).lower()
+        assert "relationship" in blob and "consent" in blob
