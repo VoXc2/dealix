@@ -7,14 +7,14 @@ CANONICAL_DOMAIN = "https://dealix.me"
 REVIEWED_PATHS = (
     "/",
     "/diagnostic.html",
-    "/pricing.html",
-    "/services.html",
     "/proof.html",
-    "/trust-center.html",
     "/privacy.html",
     "/terms.html",
 )
 RETIRED_PUBLIC_PATHS = (
+    "/pricing.html",
+    "/services.html",
+    "/trust-center.html",
     "/annual-pricing.html",
     "/start.html",
     "/sprint-sample.html",

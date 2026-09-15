@@ -125,7 +125,29 @@ def test_apps_web_healthz_prefers_immutable_sha() -> None:
         encoding="utf-8"
     )
     assert "git_sha" in source
-    assert source.index("VERCEL_GIT_COMMIT_SHA") < source.index('process.env.GIT_SHA')
+    ordered = [
+        "DEALIX_RELEASE_SHA",
+        "RAILWAY_GIT_COMMIT_SHA",
+        "VERCEL_GIT_COMMIT_SHA",
+        "NEXT_PUBLIC_GIT_SHA",
+        "process.env.GIT_SHA",
+    ]
+    positions = [source.index(item) for item in ordered]
+    assert positions == sorted(positions)
+
+
+def test_selfhost_verifier_tracks_current_release_identity_chain() -> None:
+    source = (ROOT / "scripts" / "ops" / "verify_selfhosted_production_plane.py").read_text(
+        encoding="utf-8"
+    )
+    for item in (
+        "DEALIX_RELEASE_SHA",
+        "RAILWAY_GIT_COMMIT_SHA",
+        "VERCEL_GIT_COMMIT_SHA",
+        "NEXT_PUBLIC_GIT_SHA",
+        "process.env.GIT_SHA",
+    ):
+        assert item in source
 
 
 def test_frontend_dockerfile_bakes_git_sha() -> None:
