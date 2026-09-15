@@ -2314,11 +2314,15 @@ def _run_command(args: argparse.Namespace, root: Path) -> int:
         return 0 if result["ok"] else 1
     if args.command == "run":
         job = _load_job_arg(args, root)
-        result = run_job(root, job, repo_root=REPO_ROOT, worktree_root=args.worktree_root, recover_expired=True)
+        # Do not override the job-level REPO contract. ``run_job`` resolves
+        # job["REPO"] when repo_root is None, preserving scratch/non-canonical
+        # execution roots and preventing accidental canonical-workspace use.
+        result = run_job(root, job, repo_root=None, worktree_root=args.worktree_root, recover_expired=True)
         print(json.dumps({k: v for k, v in result.items() if k != "job"}, indent=2, ensure_ascii=False))
         return 0 if result["ok"] else 1
     if args.command == "tick":
-        processed = process_queue(root, repo_root=REPO_ROOT, worktree_root=args.worktree_root)
+        # Per-job REPO authority must survive queue execution too.
+        processed = process_queue(root, repo_root=None, worktree_root=args.worktree_root)
         summary = [{"JOB_ID": item["job"]["JOB_ID"], "status": item["status"]} for item in processed]
         print(json.dumps({"processed": summary, "governor": governor_state(root)}, indent=2, ensure_ascii=False))
         return 0

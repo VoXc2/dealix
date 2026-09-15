@@ -1,6 +1,7 @@
 """Contracts for the Hermes Autonomous Session Factory (durable, zero-token first)."""
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import json
 import subprocess
@@ -677,6 +678,28 @@ def _never_launch(monkeypatch) -> list:
 
     monkeypatch.setattr(factory, "run_argv", _boom)
     return launched
+
+
+def test_cli_run_preserves_job_level_repo_authority(tmp_path: Path, monkeypatch) -> None:
+    scratch = tmp_path / "scratch"
+    scratch.mkdir()
+    job = _opencode_job(modifying=False)
+    job["REPO"] = str(scratch)
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(factory, "_load_job_arg", lambda _args, _root: job)
+    monkeypatch.setattr(factory, "run_job", lambda _root, _job, **kwargs: captured.update(kwargs) or {"ok": True})
+    args = argparse.Namespace(command="run", worktree_root=tmp_path / "wt", json=True)
+    assert factory._run_command(args, tmp_path / "state") == 0
+    assert captured["repo_root"] is None
+
+
+def test_cli_tick_preserves_per_job_repo_authority(tmp_path: Path, monkeypatch) -> None:
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(factory, "process_queue", lambda _root, **kwargs: captured.update(kwargs) or [])
+    monkeypatch.setattr(factory, "governor_state", lambda _root: {"deep_wip_available": 1})
+    args = argparse.Namespace(command="tick", worktree_root=tmp_path / "wt", json=True)
+    assert factory._run_command(args, tmp_path / "state") == 0
+    assert captured["repo_root"] is None
 
 
 def test_process_queue_caller_limit_cannot_exceed_governor(tmp_path: Path, monkeypatch) -> None:
