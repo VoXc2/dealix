@@ -7,6 +7,8 @@ CONTRACT=ROOT/'dealix/config/production_release_authority.json'
 IAC=ROOT/'.railway/railway.ts'
 RAILWAY=ROOT/'railway.json'
 MATRIX=ROOT/'dealix/config/railway_services.json'
+API_DOCKERFILE=ROOT/'Dockerfile'
+WEB_DOCKERFILE=ROOT/'apps/web/Dockerfile'
 REQUIRED_WATCH={'/api/**','/app/**','/db/**','/dealix/**','/alembic/**','/alembic.ini'}
 
 def main()->int:
@@ -28,6 +30,12 @@ def main()->int:
     expected=set(api['expectedWatchPatterns'])
     assert REQUIRED_WATCH <= actual
     assert actual==expected
+    for dockerfile in (API_DOCKERFILE, WEB_DOCKERFILE):
+        source=dockerfile.read_text()
+        assert 'ARG RAILWAY_GIT_COMMIT_SHA=""' in source
+        assert 'RAILWAY_GIT_COMMIT_SHA=${RAILWAY_GIT_COMMIT_SHA}' in source
+        assert 'ARG GIT_SHA=unknown' in source
+    print('RAILWAY_RUNTIME_RELEASE_IDENTITY=SOURCE_WIRED')
     print('PRODUCTION_RELEASE_AUTHORITY=PASS_SOURCE_CONTRACT_ONLY')
     print('RELEASE_MODE=manual_exact_sha')
     print('PRODUCTION_GREEN=false')

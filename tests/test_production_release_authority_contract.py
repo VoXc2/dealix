@@ -13,3 +13,10 @@ def test_release_authority_contract_fails_closed_by_default():
 
 def test_provider_source_contract_is_exact_sha_and_watch_complete():
     assert main()==0
+
+
+def test_railway_runtime_images_receive_immutable_provider_sha():
+    for rel in ('Dockerfile', 'apps/web/Dockerfile'):
+        source=(ROOT/rel).read_text(encoding='utf-8')
+        assert 'ARG RAILWAY_GIT_COMMIT_SHA=\"\"' in source
+        assert 'RAILWAY_GIT_COMMIT_SHA=${RAILWAY_GIT_COMMIT_SHA}' in source
