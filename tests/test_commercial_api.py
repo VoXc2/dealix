@@ -14,6 +14,8 @@ client = TestClient(app)
 
 
 START_GATE_REFS = {
+    "approved_duration_days": 20,
+    "approved_duration_ref": "duration://acme/20d-v1",
     "approved_scope_ref": "scope://acme/v1",
     "baseline_source_ref": "proof://baseline/acme",
     "approved_data_boundary_ref": "data-boundary://minimum-data/acme",
@@ -36,7 +38,7 @@ def test_commercial_status() -> None:
     assert data["live_charge"] is False
     assert data["automatic_upsell"] is False
     assert data["external_send"] is False
-    assert data["components"]["pilot_delivery"] == "30_day_start_gated"
+    assert data["components"]["pilot_delivery"] == "customer_specific_duration_start_gated"
     assert data["components"]["payment_link"] == "blocked_no_live_charge"
 
 
@@ -100,7 +102,7 @@ def test_pilot_start_fails_without_current_start_gate_refs() -> None:
     assert response.status_code == 422
 
 
-def test_pilot_start_is_30_day_governed_plan() -> None:
+def test_pilot_start_is_customer_specific_governed_plan() -> None:
     response = client.post(
         "/api/v1/commercial/pilot/start",
         json={
@@ -118,13 +120,19 @@ def test_pilot_start_is_30_day_governed_plan() -> None:
     assert data["external_send_allowed"] is False
     assert data["live_charge_allowed"] is False
     plan = data["plan"]
-    assert plan["launch_authority"] == "revenue_command_pilot_30d"
+    assert plan["launch_authority"] == "customer_specific_governed_pilot"
     assert plan["start_date"] == "2026-08-16"
-    assert plan["end_date"] == "2026-09-14"
+    assert plan["end_date"] == "2026-09-04"
+    assert plan["approved_duration_days"] == 20
+    assert plan["approved_duration_ref"] == "duration://acme/20d-v1"
+    assert plan["duration_authority"] == "customer_specific_approved_duration_only"
+    assert plan["legacy_fixed_duration_authority"] is False
+    assert plan["legacy_aliases_authoritative"] is False
+    assert "revenue_command_pilot_30d" in plan["legacy_launch_authority_aliases"]
     assert plan["price_authority"] == "customer_specific_quote_after_qualified_discovery"
     assert plan["external_send_allowed"] is False
     assert plan["live_charge_allowed"] is False
-    assert [row["day"] for row in plan["day_plans"]] == [1, 3, 7, 14, 21, 28, 30]
+    assert [row["day"] for row in plan["day_plans"]] == [1, 4, 7, 11, 14, 17, 20]
     assert all(row["draft_messages_ar"] == [] for row in plan["day_plans"])
     blob = str(plan)
     assert "499" not in blob
@@ -135,12 +143,43 @@ def test_pilot_start_is_30_day_governed_plan() -> None:
     assert "REDESIGN" in plan["upsell_script"]
 
 
+def test_pilot_duration_is_not_defaulted_to_30_days() -> None:
+    payload = {
+        "account_id": "acc_duration",
+        "company_name": "Duration Co",
+        "sector": "b2b_services",
+        "pain_points": [],
+        "start_date": "2026-08-16",
+        **START_GATE_REFS,
+    }
+    payload["approved_duration_days"] = 45
+    payload["approved_duration_ref"] = "duration://duration-co/45d-v1"
+    response = client.post("/api/v1/commercial/pilot/start", json=payload)
+    assert response.status_code == 200
+    plan = response.json()["plan"]
+    assert plan["end_date"] == "2026-09-29"
+    assert plan["day_plans"][-1]["day"] == 45
+    assert plan["day_plans"][-1]["day"] != 30
+
+
+def test_pilot_duration_reference_is_required() -> None:
+    payload = {
+        "account_id": "acc_duration_missing_ref",
+        "company_name": "Duration Missing Ref Co",
+        "start_date": "2026-08-16",
+        **START_GATE_REFS,
+    }
+    payload.pop("approved_duration_ref")
+    response = client.post("/api/v1/commercial/pilot/start", json=payload)
+    assert response.status_code == 422
+
+
 def test_pilot_weekly_template_requires_started_plan() -> None:
     response = client.get("/api/v1/commercial/pilot/week1-template")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "template_only"
-    assert data["launch_authority"] == "revenue_command_pilot_30d"
+    assert data["launch_authority"] == "customer_specific_governed_pilot"
     assert data["external_send_allowed"] is False
 
 

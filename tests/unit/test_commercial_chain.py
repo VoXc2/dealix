@@ -83,14 +83,19 @@ def test_warm_intro_has_whatsapp_and_email():
 
 # ── PilotDeliveryKit ────────────────────────────────────────────────────────
 
-def test_pilot_generates_7_day_plan():
+def test_pilot_generates_proportional_plan_from_approved_duration():
     req = PilotStartRequest(
         account_id="acc-001",
         company_name="Pilot Co",
         sector="b2b_services",
+        start_date="2026-08-16",
+        approved_duration_days=20,
+        approved_duration_ref="duration://pilot-co/20d-v1",
     )
     kit = PilotDeliveryKit().create_pilot_plan(req)
-    assert len(kit.day_plans) == 7
+    assert [row.day for row in kit.day_plans] == [1, 4, 7, 11, 14, 17, 20]
+    assert kit.end_date == "2026-09-04"
+    assert kit.legacy_fixed_duration_authority is False
 
 
 def test_pilot_approval_required():
@@ -98,6 +103,8 @@ def test_pilot_approval_required():
         account_id="acc-002",
         company_name="Pilot Co 2",
         sector="fintech",
+        approved_duration_days=14,
+        approved_duration_ref="duration://pilot-co-2/14d-v1",
     )
     kit = PilotDeliveryKit().create_pilot_plan(req)
     assert kit.approval_status == "approval_required"
@@ -107,9 +114,39 @@ def test_pilot_has_upsell_script():
     req = PilotStartRequest(
         account_id="acc-003",
         company_name="Pilot Co 3",
+        approved_duration_days=45,
+        approved_duration_ref="duration://pilot-co-3/45d-v1",
     )
     kit = PilotDeliveryKit().create_pilot_plan(req)
     assert kit.upsell_script
+
+
+def test_pilot_without_approved_duration_mints_no_schedule():
+    req = PilotStartRequest(
+        account_id="acc-duration-blocked",
+        company_name="No Duration Co",
+    )
+    kit = PilotDeliveryKit().create_pilot_plan(req)
+    assert kit.end_date == ""
+    assert kit.day_plans == []
+    assert kit.governance_decision == "blocked_missing_start_refs"
+    assert "approved_duration_days" in kit.missing_start_refs
+    assert "approved_duration_ref" in kit.missing_start_refs
+
+
+def test_pilot_45_day_duration_ends_on_approved_final_day():
+    req = PilotStartRequest(
+        account_id="acc-45",
+        company_name="Forty Five Day Co",
+        start_date="2026-08-16",
+        approved_duration_days=45,
+        approved_duration_ref="duration://45d/v1",
+    )
+    kit = PilotDeliveryKit().create_pilot_plan(req)
+    assert kit.end_date == "2026-09-29"
+    assert kit.day_plans[-1].day == 45
+    assert kit.day_plans[-1].day != 30
+    assert "Day-30" not in kit.upsell_script
 
 
 # ── ProofBuilder ────────────────────────────────────────────────────────────

@@ -144,9 +144,11 @@ def test_commercial_router_hard_blocks_payment_and_automatic_upsell() -> None:
     assert "cost_fields_exposed" not in text
 
 
-def test_pilot_delivery_requires_current_start_refs_and_has_30_day_outcome_review() -> None:
+def test_pilot_delivery_requires_customer_specific_duration_and_final_review() -> None:
     text = _read("dealix/commercial/pilot_delivery.py")
     for ref in (
+        "approved_duration_days",
+        "approved_duration_ref",
         "approved_scope_ref",
         "baseline_source_ref",
         "approved_data_boundary_ref",
@@ -157,7 +159,9 @@ def test_pilot_delivery_requires_current_start_refs_and_has_30_day_outcome_revie
         "start_condition_ref",
     ):
         assert ref in text
-    assert "(30," in text
+    assert "customer_specific_approved_duration_only" in text
+    assert "legacy_fixed_duration_authority: bool = False" in text
+    assert "Day-30 Outcome Review" not in text
     assert '"Final outcome review"' in text
     assert "STOP / EXPAND / REDESIGN" in text
     assert "external_send_allowed: bool = False" in text

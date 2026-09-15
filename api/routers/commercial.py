@@ -8,14 +8,14 @@ payment, and automatic expansion.  It keeps the existing diagnostic/proof/case
 study helpers, while the customer progression contract is:
 
 Free Mini Diagnostic -> qualified discovery -> founder-approved named scope ->
-quote-only 30-day Revenue Command Pilot -> weekly/final proof -> manual
+customer-specific governed Pilot -> source-backed proof -> manual
 STOP / EXPAND / REDESIGN decision.
 """
 
 from __future__ import annotations
 
 import logging
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -26,6 +26,7 @@ from api.security.api_key import require_founder_admin_key
 from dealix.commercial.buyer_outputs import BuyerEvidenceSnapshot, BuyerOutputsEngine
 from dealix.commercial.case_study_generator import CaseStudyGenerator, CaseStudyRequest
 from dealix.commercial.diagnostic_engine import DiagnosticEngine, DiagnosticRequest
+from dealix.commercial.pilot_delivery import PilotDeliveryKit, PilotStartRequest
 from dealix.commercial.proof_builder import ProofBuilder, ProofBuildRequest
 from dealix.commercial.roi_calculator import ROIInput, estimate_roi
 from dealix.commercial.transformation_proposal import (
@@ -39,7 +40,8 @@ log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/commercial", tags=["commercial"])
 _require_admin = require_founder_admin_key
 
-_LAUNCH_AUTHORITY = "revenue_command_pilot_30d"
+_LAUNCH_AUTHORITY = "customer_specific_governed_pilot"
+_LEGACY_LAUNCH_AUTHORITY_ALIASES = ("revenue_command_pilot_30d",)
 _EXTERNAL_SEND_ALLOWED = False
 _LIVE_CHARGE_ALLOWED = False
 _PUBLIC_FIXED_PRICE = False
@@ -63,6 +65,8 @@ class GovernedPilotStartRequest(BaseModel):
     sector: str = "b2b_services"
     pain_points: list[str] = Field(default_factory=list)
     start_date: date
+    approved_duration_days: int = Field(..., ge=1)
+    approved_duration_ref: str = Field(..., min_length=1)
     approved_scope_ref: str = Field(..., min_length=1)
     baseline_source_ref: str = Field(..., min_length=1)
     approved_data_boundary_ref: str = Field(..., min_length=1)
@@ -95,6 +99,8 @@ def _commercial_authority() -> dict[str, Any]:
         "live_charge_allowed": _LIVE_CHARGE_ALLOWED,
         "automatic_upsell": False,
         "price_authority": _PRICE_AUTHORITY,
+        "legacy_launch_authority_aliases": list(_LEGACY_LAUNCH_AUTHORITY_ALIASES),
+        "legacy_aliases_authoritative": False,
     }
 
 
@@ -112,7 +118,7 @@ async def commercial_status(_: None = Depends(_require_admin)) -> dict[str, Any]
         "components": {
             "diagnostic": "internal_governed",
             "warm_intro": "draft_only_real_context_required",
-            "pilot_delivery": "30_day_start_gated",
+            "pilot_delivery": "customer_specific_duration_start_gated",
             "proof": "source_bound",
             "payment_link": "blocked_no_live_charge",
             "expansion": "manual_post_proof_review",
@@ -212,7 +218,7 @@ async def warm_intro_draft(
 
 
 # ---------------------------------------------------------------------------
-# Pilot — exact 30-day governed plan, no send/charge authority
+# Pilot — customer-specific governed duration, no send/charge authority
 # ---------------------------------------------------------------------------
 
 
@@ -221,34 +227,51 @@ async def pilot_start(
     req: GovernedPilotStartRequest,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    end_date = req.start_date + timedelta(days=29)
-    day_plans = [
-        {"day": day, "draft_messages_ar": [], "external_send_allowed": False}
-        for day in (1, 3, 7, 14, 21, 28, 30)
-    ]
-    plan = {
-        "account_id": req.account_id,
-        "company_name": req.company_name,
-        "launch_authority": _LAUNCH_AUTHORITY,
-        "start_date": req.start_date.isoformat(),
-        "end_date": end_date.isoformat(),
-        "price_authority": "customer_specific_quote_after_qualified_discovery",
-        "external_send_allowed": False,
-        "live_charge_allowed": False,
-        "day_plans": day_plans,
-        "proof_cadence": "weekly_and_final",
-        "upsell_script": "STOP / EXPAND / REDESIGN from source-backed proof only",
-        "gate_refs": {
-            "approved_scope_ref": req.approved_scope_ref,
-            "baseline_source_ref": req.baseline_source_ref,
-            "approved_data_boundary_ref": req.approved_data_boundary_ref,
-            "approval_path_ref": req.approval_path_ref,
-            "acceptance_criteria_ref": req.acceptance_criteria_ref,
-            "customer_specific_quote_ref": req.customer_specific_quote_ref,
-            "customer_acceptance_ref": req.customer_acceptance_ref,
-            "start_condition_ref": req.start_condition_ref,
-        },
-    }
+    pilot_req = PilotStartRequest(
+        account_id=req.account_id,
+        company_name=req.company_name,
+        sector=req.sector,
+        pain_points=req.pain_points,
+        start_date=req.start_date.isoformat(),
+        approved_duration_days=req.approved_duration_days,
+        approved_duration_ref=req.approved_duration_ref,
+        approved_scope_ref=req.approved_scope_ref,
+        baseline_source_ref=req.baseline_source_ref,
+        approved_data_boundary_ref=req.approved_data_boundary_ref,
+        approval_path_ref=req.approval_path_ref,
+        acceptance_criteria_ref=req.acceptance_criteria_ref,
+        customer_specific_quote_ref=req.customer_specific_quote_ref,
+        customer_acceptance_ref=req.customer_acceptance_ref,
+        start_condition_ref=req.start_condition_ref,
+    )
+    plan = PilotDeliveryKit().create_pilot_plan(pilot_req).to_dict()
+    if plan["governance_decision"] != "ready_for_manual_approval":
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "code": "PILOT_START_GATE_INCOMPLETE",
+                "missing_start_refs": plan["missing_start_refs"],
+            },
+        )
+    plan.update(
+        {
+            "launch_authority": _LAUNCH_AUTHORITY,
+            "price_authority": "customer_specific_quote_after_qualified_discovery",
+            "legacy_launch_authority_aliases": list(_LEGACY_LAUNCH_AUTHORITY_ALIASES),
+            "legacy_aliases_authoritative": False,
+            "gate_refs": {
+                "approved_duration_ref": req.approved_duration_ref,
+                "approved_scope_ref": req.approved_scope_ref,
+                "baseline_source_ref": req.baseline_source_ref,
+                "approved_data_boundary_ref": req.approved_data_boundary_ref,
+                "approval_path_ref": req.approval_path_ref,
+                "acceptance_criteria_ref": req.acceptance_criteria_ref,
+                "customer_specific_quote_ref": req.customer_specific_quote_ref,
+                "customer_acceptance_ref": req.customer_acceptance_ref,
+                "start_condition_ref": req.start_condition_ref,
+            },
+        }
+    )
     return {
         "status": "plan_prepared_approval_required",
         "external_send_allowed": False,
