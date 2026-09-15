@@ -109,6 +109,7 @@ def main() -> int:
         "0.0.0.0:${DEALIX_SELFHOST_DB_PORT",
         "dealix-postgres-data:/var/lib/postgresql/data",
         "dealix-postgres-canary:/var/lib/postgresql/data",
+        "postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary",
         "docker compose down -v",
         "railway up",
         "railway redeploy",
