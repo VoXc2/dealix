@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from dealix.commercial.portfolio_router import DemandSignal, EntryPackage, PortfolioPackageRouter
+from dealix.commercial.brand_growth_portfolio import ZERO_AUTHORITY, validate_source_signal
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -18,6 +19,7 @@ AUTHORITY = {
     "quote": False,
     "contract": False,
     "external_send": False,
+    "public_publish": False,
     "payment": False,
     "customer_proof": False,
     "execution": False,
@@ -145,6 +147,8 @@ def test_read_only_runner_ranks_research_without_authority(tmp_path: Path) -> No
     assert isinstance(row["priority_score"], (int, float))
     assert row["priority_score_semantics"] == "INTERNAL_RESEARCH_PRIORITY_ONLY_NOT_PURCHASE_PROBABILITY"
     assert not any(row["authority"].values())
+    assert row["authority"] == ZERO_AUTHORITY
+    assert validate_source_signal(row, as_of="2026-08-30T10:02:00+00:00") == []
     assert not any(brief["authority"].values())
     assert brief["external_send_or_spend"] is False
     assert brief["new_scheduler"] is False

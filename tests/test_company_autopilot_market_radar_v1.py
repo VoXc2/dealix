@@ -68,6 +68,7 @@ def test_autopilot_market_radar_produces_read_only_brief_from_handoff(tmp_path: 
                             "quote": False,
                             "contract": False,
                             "external_send": False,
+                            "public_publish": False,
                             "payment": False,
                             "customer_proof": False,
                             "execution": False,

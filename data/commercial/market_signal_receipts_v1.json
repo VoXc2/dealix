@@ -14,7 +14,8 @@
     "payment": false,
     "customer_proof": false,
     "execution": false,
-    "production": false
+    "production": false,
+    "public_publish": false
   },
   "signals": [
     {
@@ -76,7 +77,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -134,7 +136,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -196,7 +199,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -258,7 +262,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -320,7 +325,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -383,7 +389,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -446,7 +453,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -506,7 +514,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -566,7 +575,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -626,7 +636,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -687,7 +698,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -749,7 +761,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -811,7 +824,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -873,7 +887,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -935,7 +950,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     },
     {
@@ -995,7 +1011,8 @@
         "payment": false,
         "customer_proof": false,
         "execution": false,
-        "production": false
+        "production": false,
+        "public_publish": false
       }
     }
   ]
