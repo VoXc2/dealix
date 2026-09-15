@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATES = ROOT / "scripts/ops/runtime_templates/autonomous_company"
 DEFAULT_RUNTIME = Path("/opt/dealix/control/autonomous-company/bin")
-FILES = ("dealix-company-cycle", "dealix-company-dispatch.core-v6")
+FILES = ("dealix-company-cycle", "dealix-company-dispatch.core-v6", "dealix-server-sentinel")
 
 
 def stamp() -> str:

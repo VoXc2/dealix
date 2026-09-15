@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATES = ROOT / "scripts/ops/runtime_templates/autonomous_company"
 DEFAULT_RUNTIME = Path("/opt/dealix/control/autonomous-company/bin")
-FILES = ("dealix-company-cycle", "dealix-company-dispatch.core-v6")
+FILES = ("dealix-company-cycle", "dealix-company-dispatch.core-v6", "dealix-server-sentinel")
 REQUIRED_SCHEDULE = (
     "run_due 1130 45 content_morning content business",
     "run_due 1330 45 delivery_midday delivery business",
@@ -21,6 +21,12 @@ REQUIRED_CYCLE = (
     "  delivery)",
     "ACTIVE_CLIENT_WORKSPACES=",
     "scripts/verify_delivery_os.py",
+)
+REQUIRED_SENTINEL = (
+    "API_RELEASE_PARITY=PASS",
+    "RAILWAY_BIN=${RAILWAY_BIN:-/home/dealix/.local/bin/railway}",
+    "RAILWAY_CLI=READABLE",
+    "SENTINEL_RESULT=PASS_WITH_WARNINGS",
 )
 FORBIDDEN_TRUE = (
     "EMAIL_LIVE_SEND=true",
@@ -62,6 +68,12 @@ def evaluate(runtime: Path) -> tuple[bool, list[str]]:
         for token in FORBIDDEN_TRUE:
             if token in text:
                 errors.append(f"unsafe live flag: {token}")
+    sentinel = runtime / "dealix-server-sentinel"
+    if sentinel.is_file():
+        text = sentinel.read_text(encoding="utf-8")
+        for token in REQUIRED_SENTINEL:
+            if token not in text:
+                errors.append(f"missing sentinel token: {token}")
     return not errors, errors
 def main() -> int:
     parser = argparse.ArgumentParser()

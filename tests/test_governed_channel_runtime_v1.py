@@ -167,3 +167,11 @@ def test_official_social_provider_readiness_is_explicit_and_fail_closed() -> Non
     assert "tweet.write" in x["required_capabilities"]
     assert x["cost_contract"]["spend_default"] is False
     assert x["cost_contract"]["credit_purchase_requires_separate_authority"] is True
+
+    gbp = channels["google_business_profile"]
+    assert {
+        "verified_business_profile", "valid_google_cloud_project",
+        "business_profile_api_access", "oauth2_authorized_account",
+        "authorized_location_access", "local_posts_api_for_automated_posts",
+    } <= set(gbp["required_capabilities"])
+    assert gbp["public_publish_gate"].startswith("EXACT_ACTION_BOUND")

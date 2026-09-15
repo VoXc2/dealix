@@ -266,6 +266,19 @@ def main() -> int:
         x_channel.get("cost_contract", {}).get("spend_default") is False,
         "X paid API use must default deny",
     )
+    gbp = registry_channels.get("google_business_profile", {})
+    require(
+        {
+            "verified_business_profile", "valid_google_cloud_project",
+            "business_profile_api_access", "oauth2_authorized_account",
+            "authorized_location_access", "local_posts_api_for_automated_posts",
+        } <= set(gbp.get("required_capabilities", [])),
+        "Google Business Profile API/OAuth/location capability contract incomplete",
+    )
+    require(
+        str(gbp.get("public_publish_gate", "")).startswith("EXACT_ACTION_BOUND"),
+        "Google Business Profile public post must remain action-bound",
+    )
 
     # Slack is allowed only as a bounded transport into the existing Company
     # Autopilot. The contract must point to source-controlled implementation and

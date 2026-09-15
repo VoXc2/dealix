@@ -66,8 +66,34 @@ def test_content_atom_requires_evidence_and_exact_publish_authority() -> None:
 def test_live_metricool_observation_does_not_invent_provider_connectivity() -> None:
     data = _contract()
     connection = data["metricool_connection"]
-    assert data["version"] == "2026-09-15.1"
+    assert data["version"] == "2026-09-15.2"
     assert connection["provider_networks_observed"] == []
     assert connection["scheduled_posts_observed"] == 0
     assert connection["provider_readiness"] == "PROVIDERS_PENDING"
     assert data["provider_activation_gate"]["current_verdict"] == "HOLD_PROVIDERS_PENDING"
+
+
+
+def test_zero_provider_inventory_is_explicitly_not_runtime_ready() -> None:
+    data = _contract()
+    connection = data["metricool_connection"]
+    assert connection["provider_network_count_observed"] == 0
+    assert connection["runtime_schedule_ready"] is False
+    assert connection["runtime_publish_ready"] is False
+    assert connection["runtime_readiness_reason"] == "zero_provider_networks_observed_no_live_channel_identity_or_permission_proof"
+    assert data["provider_activation_gate"]["zero_provider_network_invariant"].startswith("EMPTY_PROVIDER_NETWORKS")
+
+
+def test_provider_capability_contract_is_provider_specific_and_fail_closed() -> None:
+    data = _contract()
+    providers = data["provider_capability_contract"]
+    linkedin = providers["linkedin_organization"]
+    assert "w_organization_social" in linkedin["required_capabilities"]
+    assert {"ADMINISTRATOR", "DIRECT_SPONSORED_CONTENT_POSTER", "CONTENT_ADMIN"} <= set(linkedin["eligible_page_roles"])
+    assert providers["linkedin_personal"]["automation_allowed"] is False
+    assert providers["tiktok"]["unaudited_client_visibility"] == "PRIVATE_ONLY"
+    assert "approved_video.publish_scope" in providers["tiktok"]["required_capabilities"]
+    assert providers["youtube"]["unverified_project_visibility"] == "PRIVATE_ONLY"
+    assert "oauth_user_authorization" in providers["youtube"]["required_capabilities"]
+    assert "account_specific_publish_permissions_verified_at_activation" in providers["meta_business"]["required_capabilities"]
+    assert "user_context_write_authorization_verified" in providers["x"]["required_capabilities"]

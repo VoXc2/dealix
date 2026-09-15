@@ -1,12 +1,14 @@
-"""Contracts for the OP2 iMini L5 commercial packet (unsent preparation)."""
+"""Contracts for exact-body, unsent OP2 iMini packet preparation."""
 from __future__ import annotations
 
 import importlib.util
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
-PACKET = ROOT / "data" / "commercial" / "op2_l5_imini_packet_v1.json"
 
 
 def _load_module():
@@ -19,44 +21,84 @@ def _load_module():
 
 
 packet_builder = _load_module()
+NOW = datetime(2026, 9, 15, 12, 0, tzinfo=UTC)
 
 
-def _payload() -> dict:
-    return json.loads(PACKET.read_text(encoding="utf-8"))
+def _build(body: str = "Synthetic draft body A") -> dict:
+    return packet_builder.build_packet(
+        body=body,
+        subject="Synthetic iMini reply",
+        message_id="msg-synthetic-001",
+        thread_id="thread-synthetic-001",
+        evidence_refs=["evidence://synthetic/two-way-thread", "evidence://synthetic/offer"],
+        now=NOW,
+    )
 
 
-def test_packet_is_fail_closed_before_approval() -> None:
-    payload = _payload()
-    decision = payload["pre_approval_decision"]
+def test_exact_body_changes_hash_action_and_idempotency() -> None:
+    first = _build("Synthetic draft body A")
+    second = _build("Synthetic draft body B")
+    assert first["content_sha256"] != second["content_sha256"]
+    assert first["action_hash"] != second["action_hash"]
+    assert first["packet"]["action_id"] != second["packet"]["action_id"]
+    assert first["packet"]["idempotency_key"] != second["packet"]["idempotency_key"]
+
+
+def test_packet_binds_message_thread_and_evidence_without_raw_body() -> None:
+    raw = "DO_NOT_PERSIST_SYNTHETIC_BODY_9d1d"
+    result = _build(raw)
+    rendered = json.dumps(result, ensure_ascii=False)
+    assert raw not in rendered
+    assert result["gmail_message_id"] == "msg-synthetic-001"
+    assert result["gmail_thread_id"] == "thread-synthetic-001"
+    refs = set(result["packet"]["claim_evidence_refs"])
+    assert "gmail_message:msg-synthetic-001" in refs
+    assert "gmail_thread:thread-synthetic-001" in refs
+    assert "evidence://synthetic/offer" in refs
+    assert result["body_persisted"] is False
+    assert result["provider_call_executed"] is False
+
+
+def test_packet_is_fail_closed_before_exact_action_authority() -> None:
+    result = _build()
+    decision = result["pre_approval_decision"]
     assert decision["provider_execution_allowed"] is False
     assert decision["approval_valid"] is False
-    assert payload["l5_executed"] == 0
+    assert result["l5_executed"] == 0
+    assert result["content_sha256"] != "0" * 64
 
 
-def test_packet_hash_matches_canonical_recomputation() -> None:
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"body": ""},
+        {"message_id": ""},
+        {"thread_id": ""},
+        {"evidence_refs": []},
+    ],
+)
+def test_missing_exact_runtime_inputs_fail_closed(overrides: dict) -> None:
+    args = {
+        "body": "Synthetic draft body",
+        "subject": "Synthetic iMini reply",
+        "message_id": "msg-synthetic-001",
+        "thread_id": "thread-synthetic-001",
+        "evidence_refs": ["evidence://synthetic/offer"],
+        "now": NOW,
+    }
+    args.update(overrides)
+    with pytest.raises(ValueError):
+        packet_builder.build_packet(**args)
+
+
+def test_canonical_hash_and_integrity_recompute() -> None:
     from dealix.commercial.external_execution_gate import (
         ExternalActionPacket,
         recompute_action_hash,
         recompute_packet_integrity,
     )
 
-    payload = _payload()
-    packet = ExternalActionPacket(**payload["packet"])
-    assert recompute_action_hash(packet) == payload["action_hash"] == packet.action_hash
-    assert recompute_packet_integrity(packet) == packet.packet_integrity_sha256
-
-
-def test_packet_targets_only_the_existing_thread() -> None:
-    payload = _payload()
-    assert payload["relationship_ref"] == "rel-imini-001"
-    assert payload["packet"]["purpose_class"] == "INBOUND_REPLY"
-    assert payload["packet"]["action_class"] == "EMAIL_SEND"
-    assert payload["packet"]["provider"] == "gmail"
-
-
-def test_builder_is_deterministic_in_target_and_class() -> None:
-    rebuilt = packet_builder.build_packet()
-    stored = _payload()
-    assert rebuilt["packet"]["destination"] == stored["packet"]["destination"]
-    assert rebuilt["packet"]["action_class"] == stored["packet"]["action_class"]
-    assert rebuilt["packet"]["purpose_class"] == stored["packet"]["purpose_class"]
+    result = _build()
+    packet = ExternalActionPacket(**result["packet"])
+    assert recompute_action_hash(packet) == result["action_hash"]
+    assert recompute_packet_integrity(packet) == result["packet_integrity_sha256"]

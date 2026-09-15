@@ -1,7 +1,7 @@
 {
   "schema": "dealix.metricool-distribution-adapter.v1",
-  "version": "2026-09-15.1",
-  "observed_at": "2026-09-15T08:18:00+03:00",
+  "version": "2026-09-15.2",
+  "observed_at": "2026-09-15T15:42:04+03:00",
   "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
   "canonical_truth_owner": "DEALIX_COMPANY_MACHINE",
   "purpose": "Bounded social analytics, draft review and distribution rendering for Dealix. Metricool is never CRM, consent authority, opportunity truth, proof truth, economic truth, approval authority or company brain.",
@@ -14,7 +14,11 @@
     "scheduled_posts_observed": 0,
     "analytics_schema_access": "AVAILABLE",
     "review_capability": "UNPROVEN_UNTIL_PLAN_AND_PROVIDER_SUPPORT_ARE_VERIFIED",
-    "observation_method": "connected Metricool control-plane read-only observation"
+    "observation_method": "connected Metricool control-plane read-only observation",
+    "provider_network_count_observed": 0,
+    "runtime_schedule_ready": false,
+    "runtime_publish_ready": false,
+    "runtime_readiness_reason": "zero_provider_networks_observed_no_live_channel_identity_or_permission_proof"
   },
   "supported_distribution_targets": [
     "dealix_linkedin_page",
@@ -140,6 +144,76 @@
       "exact_provider",
       "exact_publication_time_or_window",
       "action_bound_publish_authority"
-    ]
+    ],
+    "zero_provider_network_invariant": "EMPTY_PROVIDER_NETWORKS_MEANS_RUNTIME_SCHEDULE_AND_PUBLISH_NOT_READY"
+  },
+  "provider_capability_contract": {
+    "linkedin_organization": {
+      "mode": "DEALIX_ORGANIZATION_ONLY",
+      "required_capabilities": [
+        "provider_visible_in_metricool",
+        "dealix_organization_identity_verified",
+        "w_organization_social",
+        "eligible_page_role",
+        "current_versioned_api_headers",
+        "action_bound_publish_authority"
+      ],
+      "eligible_page_roles": [
+        "ADMINISTRATOR",
+        "DIRECT_SPONSORED_CONTENT_POSTER",
+        "CONTENT_ADMIN"
+      ],
+      "official_constraint": "LinkedIn Posts API requires organization permission and eligible page role; personal-founder automation remains excluded.",
+      "official_reference": "https://learn.microsoft.com/linkedin/marketing/community-management/shares/posts-api"
+    },
+    "linkedin_personal": {
+      "mode": "HUMAN_ONLY",
+      "automation_allowed": false,
+      "reason": "Dealix policy excludes founder personal LinkedIn automation."
+    },
+    "tiktok": {
+      "required_capabilities": [
+        "provider_visible_in_metricool",
+        "creator_identity_verified",
+        "approved_video.publish_scope",
+        "creator_info_query_before_post",
+        "target_user_authorization_and_explicit_consent",
+        "client_audit_before_public_visibility",
+        "action_bound_publish_authority"
+      ],
+      "unaudited_client_visibility": "PRIVATE_ONLY",
+      "official_reference": "https://developers.tiktok.com/docs/en/content-posting-api-reference-direct-post"
+    },
+    "youtube": {
+      "required_capabilities": [
+        "provider_visible_in_metricool",
+        "channel_identity_verified",
+        "oauth_user_authorization",
+        "api_project_audit_before_public_upload_where_required",
+        "action_bound_publish_authority"
+      ],
+      "unverified_project_visibility": "PRIVATE_ONLY",
+      "official_reference": "https://developers.google.com/youtube/v3/docs/videos/insert"
+    },
+    "meta_business": {
+      "mode": "MANAGED_DEALIX_BRAND_IDENTITY_ONLY",
+      "required_capabilities": [
+        "provider_visible_in_metricool",
+        "managed_brand_identity_verified",
+        "account_specific_publish_permissions_verified_at_activation",
+        "action_bound_publish_authority"
+      ],
+      "fail_closed_rule": "Do not infer a reusable permission set before the connected Facebook or Instagram asset is observed and verified."
+    },
+    "x": {
+      "required_capabilities": [
+        "provider_visible_in_metricool",
+        "dealix_identity_verified",
+        "user_context_write_authorization_verified",
+        "eligible_api_plan_verified",
+        "action_bound_publish_authority"
+      ],
+      "fail_closed_rule": "Do not assert a specific write scope until the connected X application and current provider authorization are verified."
+    }
   }
 }

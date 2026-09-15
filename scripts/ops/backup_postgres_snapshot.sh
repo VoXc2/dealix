@@ -101,8 +101,19 @@ ENTRIES="$(grep -vc '^;' "$TMP_DIR/toc" || true)"
 BYTES="$(stat -c %s "$FINAL")"
 SHA="$(cut -d' ' -f1 "$FINAL.sha256")"
 
-MIGRATION_COUNTS="$(psql_safe -c "select (case when to_regclass('public.operational_event_streams') is null then -1 else (select count(*) from operational_event_streams where stream_id='railway_legacy_20260915') end)||'|'||(case when to_regclass('public.proof_events') is null then -1 else (select count(*) from proof_events where evidence_source='railway_production_backup') end)||'|'||(case when to_regclass('public.conversations') is null then -1 else (select count(*) from conversations where id like 'legacy:%') end)")"
-IFS='|' read -r RAILWAY_ARCHIVED_ROWS RAILWAY_PROOF_ROWS RAILWAY_CONVERSATION_ROWS <<< "$MIGRATION_COUNTS"
+migration_count(){
+  local table="$1" predicate="$2"
+  local exists
+  exists="$(psql_safe -c "select to_regclass('public.${table}') is not null")"
+  if [[ "$exists" == t ]]; then
+    psql_safe -c "select count(*) from public.${table} where ${predicate}"
+  else
+    printf '%s\n' -1
+  fi
+}
+RAILWAY_ARCHIVED_ROWS="$(migration_count operational_event_streams "stream_id='railway_legacy_20260915'")"
+RAILWAY_PROOF_ROWS="$(migration_count proof_events "evidence_source='railway_production_backup'")"
+RAILWAY_CONVERSATION_ROWS="$(migration_count conversations "id like 'legacy:%'")"
 COMPLETED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 RECEIPT="$FINAL.receipt.json"
 python3 - "$RECEIPT" "$ROLE" "$RELEASE_SHA" "$STARTED_AT" "$COMPLETED_AT" \

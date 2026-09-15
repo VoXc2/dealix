@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+export TZ=Asia/Riyadh
+REPO=${DEALIX_REPO:-/opt/dealix/workspace/dealix}
+A=/opt/dealix/control/autonomous-company
+STATE="$A/state/sentinel"
+PROOF="$A/proof/sentinel"
+mkdir -p "$STATE" "$PROOF"
+STAMP=$(date +%Y%m%dT%H%M%S)
+OUT="$PROOF/$STAMP.env"
+CRIT=0
+WARN=0
+emit(){ printf '%s\n' "$1" | tee -a "$OUT"; }
+check_service(){ if systemctl is-active --quiet "$1"; then emit "SERVICE_$1=PASS"; else emit "SERVICE_$1=FAIL"; CRIT=1; fi; }
+check_http(){ local key="$1" url="$2" critical="$3" code; code=$(curl -L -sS -o /dev/null -w '%{http_code}' --max-time 12 "$url" || true); emit "HTTP_${key}=$code"; if [ "$code" != 200 ]; then if [ "$critical" = 1 ]; then CRIT=1; else WARN=1; fi; fi; }
+: > "$OUT"
+emit "TIMESTAMP=$(date -Is)"
+for s in docker ollama tailscaled hermes-dealix dealix-llm-router; do check_service "$s"; done
+check_http OLLAMA http://127.0.0.1:11434/api/tags 1
+check_http N8N http://127.0.0.1:5678/healthz 1
+check_http ROUTER http://127.0.0.1:11999/v1/models 1
+UIDX=$(id -u)
+if XDG_RUNTIME_DIR="/run/user/$UIDX" systemctl --user is-active --quiet openclaw-gateway; then emit OPENCLAW=PASS; else emit OPENCLAW=FAIL; CRIT=1; fi
+HEAD=$(git -C "$REPO" rev-parse HEAD 2>/dev/null || echo unknown)
+ORIGIN=$(git -C "$REPO" rev-parse origin/main 2>/dev/null || echo unknown)
+RAW_DIRTY=$(git -C "$REPO" status --porcelain 2>/dev/null | wc -l)
+DIRTY=$("$A/bin/dealix-source-status" --count)
+emit "SOURCE_HEAD=$HEAD"
+emit "SOURCE_ORIGIN_MAIN=$ORIGIN"
+emit "SOURCE_RUNTIME_VIEW_DIRTY=$RAW_DIRTY"
+emit "SOURCE_UNSANCTIONED_DIRTY=$DIRTY"
+[ "$DIRTY" -eq 0 ] || CRIT=1
+[ "$HEAD" = "$ORIGIN" ] || WARN=1
+DISK=$(df -P / | awk 'NR==2{gsub(/%/,"",$5); print $5}')
+MEM=$(awk '/MemAvailable/{print int($2/1024)}' /proc/meminfo)
+emit "DISK_USED_PCT=$DISK"
+emit "MEM_AVAILABLE_MB=$MEM"
+[ "$DISK" -lt 90 ] || CRIT=1
+[ "$MEM" -gt 1024 ] || CRIT=1
+check_http WEB https://dealix.me/healthz 1
+check_http API https://api.dealix.me/healthz 1
+API_JSON=$(curl -fsS --max-time 12 https://api.dealix.me/healthz 2>/dev/null || true)
+API_SHA=$(python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("git_sha") or "unknown")' <<<"$API_JSON" 2>/dev/null || echo unknown)
+emit "API_RELEASE_SHA=$API_SHA"
+if [ "$API_SHA" = "$HEAD" ]; then emit API_RELEASE_PARITY=PASS; else emit API_RELEASE_PARITY=FAIL; WARN=1; fi
+check_http WWW https://www.dealix.me/ 0
+RAILWAY_BIN=${RAILWAY_BIN:-/home/dealix/.local/bin/railway}
+if [ -x "$RAILWAY_BIN" ]; then
+  if "$RAILWAY_BIN" status --json >/tmp/dealix-railway-status.json 2>/dev/null; then emit RAILWAY_CLI=READABLE; else emit RAILWAY_CLI=UNLINKED_OR_BLOCKED; WARN=1; fi
+elif command -v railway >/dev/null 2>&1; then
+  if railway status --json >/tmp/dealix-railway-status.json 2>/dev/null; then emit RAILWAY_CLI=READABLE; else emit RAILWAY_CLI=UNLINKED_OR_BLOCKED; WARN=1; fi
+else
+  emit RAILWAY_CLI=ABSENT
+  WARN=1
+fi
+emit "SENTINEL_CRITICAL=$CRIT"
+emit "SENTINEL_WARN=$WARN"
+cp "$OUT" "$STATE/latest.env"
+chmod 0600 "$OUT" "$STATE/latest.env"
+if [ "$CRIT" -ne 0 ]; then echo SENTINEL_RESULT=FAIL; exit 1; fi
+if [ "$WARN" -ne 0 ]; then echo SENTINEL_RESULT=PASS_WITH_WARNINGS; exit 0; fi
+echo SENTINEL_RESULT=PASS

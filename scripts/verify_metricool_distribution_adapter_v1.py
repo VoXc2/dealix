@@ -69,6 +69,18 @@ def main() -> int:
     if not providers:
         assert connection["provider_readiness"] == "PROVIDERS_PENDING"
         assert activation["current_verdict"] == "HOLD_PROVIDERS_PENDING"
+        assert connection["provider_network_count_observed"] == 0
+        assert connection["runtime_schedule_ready"] is False
+        assert connection["runtime_publish_ready"] is False
+        assert activation["zero_provider_network_invariant"].startswith("EMPTY_PROVIDER_NETWORKS")
+
+    capability = data["provider_capability_contract"]
+    assert "w_organization_social" in capability["linkedin_organization"]["required_capabilities"]
+    assert capability["linkedin_personal"]["automation_allowed"] is False
+    assert capability["tiktok"]["unaudited_client_visibility"] == "PRIVATE_ONLY"
+    assert capability["youtube"]["unverified_project_visibility"] == "PRIVATE_ONLY"
+    assert "account_specific_publish_permissions_verified_at_activation" in capability["meta_business"]["required_capabilities"]
+    assert "user_context_write_authorization_verified" in capability["x"]["required_capabilities"]
 
     print("METRICOOL_DISTRIBUTION_ADAPTER_V1_PASS")
     return 0

@@ -1,38 +1,42 @@
 #!/usr/bin/env python3
-"""Verify the OP2 L5 commercial packet stays unsent and fail-closed.
-
-Prints: DEALIX_OP2_L5_PACKET_VERDICT=PASS|FAIL
-"""
-
+"""Verify a runtime OP2 iMini packet is exact-body-bound, unsent and fail-closed."""
 from __future__ import annotations
 
+import argparse
 import json
-import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-PACKET_PATH = REPO_ROOT / "data" / "commercial" / "op2_l5_imini_packet_v1.json"
-VERDICT_PASS = "DEALIX_OP2_L5_PACKET_VERDICT=PASS"
-VERDICT_FAIL = "DEALIX_OP2_L5_PACKET_VERDICT=FAIL"
+DEFAULT_PACKET = Path("/opt/dealix/control/receipts/commercial/op2_l5_imini_packet_latest.json")
+PASS = "DEALIX_OP2_L5_PACKET_VERDICT=PASS"
+FAIL = "DEALIX_OP2_L5_PACKET_VERDICT=FAIL"
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--packet", default=str(DEFAULT_PACKET))
+    args = parser.parse_args()
+    packet_path = Path(args.packet).expanduser().resolve()
     errors: list[str] = []
-    if not PACKET_PATH.exists():
-        print(VERDICT_FAIL)
-        print(f"  - missing {PACKET_PATH}")
-        return 1
     try:
-        payload = json.loads(PACKET_PATH.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        print(VERDICT_FAIL)
-        print(f"  - invalid json: {exc}")
+        payload = json.loads(packet_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(FAIL)
+        print(f"  - unreadable runtime packet: {exc}")
         return 1
 
-    if payload.get("schema") != "dealix.op2-l5-commercial-packet.v1":
+    if payload.get("schema") != "dealix.op2-l5-commercial-packet.v2":
         errors.append("unexpected schema")
     if payload.get("l5_executed") != 0:
         errors.append("l5_executed must be 0")
+    if payload.get("body_persisted") is not False:
+        errors.append("body_persisted must be false")
+    if payload.get("provider_call_executed") is not False:
+        errors.append("provider_call_executed must be false")
+    content_hash = str(payload.get("content_sha256") or "")
+    if len(content_hash) != 64 or content_hash == "0" * 64:
+        errors.append("content_sha256 must be an exact non-placeholder SHA-256")
+    if not payload.get("gmail_message_id") or not payload.get("gmail_thread_id"):
+        errors.append("Gmail message/thread identity is required")
 
     decision = payload.get("pre_approval_decision") or {}
     if decision.get("provider_execution_allowed") is not False:
@@ -40,19 +44,20 @@ def main() -> int:
     if decision.get("approval_valid") is not False:
         errors.append("pre-approval approval must be invalid")
 
-    action_hash = str(payload.get("action_hash") or "")
-    if len(action_hash) != 16 or any(ch not in "0123456789abcdef" for ch in action_hash):
-        errors.append("action_hash must be a 16-char lowercase hex digest")
-
     packet = payload.get("packet") or {}
+    action_hash = str(payload.get("action_hash") or "")
     if packet.get("action_hash") != action_hash:
         errors.append("packet.action_hash must match top-level action_hash")
     if packet.get("purpose_class") != "INBOUND_REPLY":
-        errors.append("purpose_class must be INBOUND_REPLY (no new outbound)")
+        errors.append("purpose_class must remain INBOUND_REPLY")
+    if packet.get("content_sha256") != content_hash:
+        errors.append("packet content hash must match top-level content hash")
+    if not packet.get("idempotency_key") or packet.get("idempotency_key") == "op2-imini-counter-2026-09-12-a1":
+        errors.append("idempotency must be derived from current exact scope")
 
-    print(VERDICT_PASS if not errors else VERDICT_FAIL)
-    for err in errors:
-        print(f"  - {err}")
+    print(PASS if not errors else FAIL)
+    for error in errors:
+        print(f"  - {error}")
     return 0 if not errors else 1
 
 

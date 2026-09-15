@@ -26,7 +26,8 @@ def test_autopilot_market_radar_mode_is_syntax_valid_and_fail_closed() -> None:
     assert "market-radar) market_radar ;;" in script
     assert "market_radar_run" in script
     assert "DEALIX_MARKET_RADAR_SIGNALS_FILE" in script
-    assert "MARKET_RADAR_STATE=WAITING_FOR_CANONICAL_SIGNAL_INPUT" in script
+    assert "MARKET_RADAR_INPUT=CANONICAL_SOURCE_MANAGED_RECEIPTS" in script
+    assert "MARKET_RADAR_INPUT=EXPLICIT_SOURCE_BOUND_OVERRIDE" in script
     assert 'market-radar) FLEET_EVENT="heartbeat"' in script
     assert "systemctl enable" not in script
     assert "crontab -e" not in script
@@ -113,7 +114,7 @@ def test_autopilot_market_radar_produces_read_only_brief_from_handoff(tmp_path: 
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "DEALIX_UNIVERSAL_MARKET_RADAR_RUNNER=PASS" in result.stdout
-    assert "MARKET_RADAR_INPUT=SOURCE_BOUND_HANDOFF" in result.stdout
+    assert "MARKET_RADAR_INPUT=EXPLICIT_SOURCE_BOUND_OVERRIDE" in result.stdout
 
     reports = sorted((autopilot_root / "reports").glob("universal-market-radar-*.json"))
     assert len(reports) == 1

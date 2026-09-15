@@ -35,7 +35,10 @@
       "x_api_pricing": "https://docs.x.com/x-api/getting-started/pricing",
       "x_auth_mapping": "https://docs.x.com/fundamentals/authentication/guides/v2-authentication-mapping",
       "facebook_pages_permissions": "https://developers.facebook.com/docs/permissions",
-      "facebook_page_photos": "https://developers.facebook.com/docs/graph-api/reference/page/photos/"
+      "facebook_page_photos": "https://developers.facebook.com/docs/graph-api/reference/page/photos/",
+      "google_business_profile_overview": "https://developers.google.com/my-business/content/overview",
+      "google_business_profile_oauth": "https://developers.google.com/my-business/content/implement-oauth",
+      "google_business_profile_local_posts": "https://developers.google.com/my-business/content/posts-data"
     },
     "runtime_truth": {
       "provider_connected_is_not_publish_authority": true,
@@ -199,11 +202,13 @@
     "google_business_profile": {
       "priority": "B",
       "role": "LOCAL_TRUST_DISCOVERY_REVIEWS_AND_BUSINESS_IDENTITY",
-      "state": "VERIFY_BUSINESS_PROFILE_OWNERSHIP_AND_OFFICIAL_CAPABILITY_BEFORE_AUTOMATION",
-      "owned_publish_mode": "NATIVE_OR_OFFICIAL_GOOGLE_BUSINESS_PROFILE_CAPABILITY",
+      "state": "VERIFIED_PROFILE_API_ACCESS_AND_OAUTH_REQUIRED_FOR_AUTOMATION",
+      "owned_publish_mode": "GOOGLE_BUSINESS_PROFILE_API_LOCAL_POSTS_OR_NATIVE",
       "automation_allowed": ["profile_audit", "review_monitoring", "response_draft", "analytics_if_authorized"],
       "automation_blocked": ["fake_reviews", "unsupported_location_claims", "publish_without_verified_business_access"],
-      "activation_evidence_required": ["verified_business_profile", "correct_dealix_identity", "authorized_account"],
+      "required_capabilities": ["verified_business_profile", "valid_google_cloud_project", "business_profile_api_access", "oauth2_authorized_account", "authorized_location_access", "local_posts_api_for_automated_posts"],
+      "activation_evidence_required": ["verified_business_profile", "correct_dealix_identity", "valid_google_cloud_project", "approved_business_profile_api_access", "oauth2_credential_outside_repo", "authorized_account", "authorized_location_or_location_group", "read_only_profile_canary", "local_posts_capability_canary_before_public_post"],
+      "public_publish_gate": "EXACT_ACTION_BOUND_AUTHORITY_AFTER_PROFILE_API_OAUTH_AND_LOCATION_PROOF",
       "phone_dependency": false
     },
     "email": {

@@ -90,6 +90,8 @@ const nextConfig = {
       { source: "/trust.html", destination: "/safety", permanent: true },
       { source: "/trust-center.html", destination: "/safety", permanent: true },
       { source: "/services.html", destination: "/services", permanent: true },
+      { source: "/case-study.html", destination: "/cases", permanent: true },
+      { source: "/system-status.html", destination: "/status", permanent: true },
       { source: "/agents", destination: "/dealix-os", permanent: true },
       { source: "/ai-team.html", destination: "/dealix-os", permanent: true },
       { source: "/checkout.html", destination: "/pricing", permanent: true },

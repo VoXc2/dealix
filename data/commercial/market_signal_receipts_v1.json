@@ -1,6 +1,6 @@
 {
   "schema": "dealix.market-signal-set.v1",
-  "generated_at": "2026-09-15T10:10:00+00:00",
+  "generated_at": "2026-09-15T12:58:00+00:00",
   "scope": "dealix_company",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
@@ -1309,6 +1309,319 @@
         "founder_minutes": 2
       },
       "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, compliance evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-cst-cloud-maturity-index-sep03",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://www.cst.gov.sa/en/media-center/news/N2026090303",
+      "observed_at": "2026-09-03T00:00:00+03:00",
+      "ingested_at": "2026-09-15T15:10:00+03:00",
+      "provenance_ref": "CST official Cloud Computing Market Maturity Index announcement — 3 September 2026",
+      "fresh_until": "2026-12-03T23:59:59+03:00",
+      "signal_family": "MARKET_STRUCTURE",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ICT",
+      "business_archetype": "RECURRING_SAAS_OR_SERVICES",
+      "evidence_refs": [
+        "https://www.cst.gov.sa/en/media-center/news/N2026090303"
+      ],
+      "facts": [
+        "CST launched the Cloud Computing Market Maturity Index for registered cloud computing service providers in Saudi Arabia.",
+        "The index measures six standards and 33 sub-indicators spanning service breadth, technical capability, customer satisfaction, strategic partnerships, service delivery efficiency, and sales and marketing."
+      ],
+      "inferences": [
+        "The index supports a bounded Cloud Maturity and Service Operations diagnostic hypothesis for cloud providers; it does not prove any named provider has a gap or intends to buy."
+      ],
+      "unknowns": [
+        "No Dealix relationship, consent, company-specific maturity score, budget, active pain or procurement route is established by the index."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "For any named provider, verify company-specific public or first-party evidence before qualification or offer matching."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 3,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric only; not purchase probability, relationship, demand evidence, or customer fact.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-etimad-data-compliance-maturity-2026010243",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://tenders.etimad.sa/Tender/DetailsForVisitor?STenderId=0hoWAp+ARr2MBe3OqIar1w%3D%3D",
+      "observed_at": "2026-09-15T14:54:00+03:00",
+      "ingested_at": "2026-09-15T15:10:00+03:00",
+      "provenance_ref": "Etimad competition 2026010243 / reference 260739009729 — visitor details checked 15 September 2026",
+      "fresh_until": "2026-09-16T14:54:00+03:00",
+      "signal_family": "PROCUREMENT_OR_TENDER",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "REGULATED_INSTITUTION_OR_B2G_SUPPLIER",
+      "evidence_refs": [
+        "https://tenders.etimad.sa/Tender/DetailsForVisitor?STenderId=0hoWAp+ARr2MBe3OqIar1w%3D%3D"
+      ],
+      "facts": [
+        "Etimad lists competition 2026010243, reference 260739009729, for supply and installation of a data compliance and maturity platform license for a Data Management Office.",
+        "The listed government entity is King Abdullah City for Atomic and Renewable Energy; the competition is approved and public.",
+        "The listing shows a three-year contract, tender documents priced at 1500 SAR, separate technical and financial files, an initial guarantee requirement, and a 5% final guarantee.",
+        "At the 15 September 2026 check, the visitor page showed roughly five days and eight hours remaining; the exact closing timestamp must be rechecked live before any decision."
+      ],
+      "inferences": [
+        "This is direct public procurement demand for data-compliance and maturity capability and supports a reusable Free Data Compliance & Maturity Diagnostic.",
+        "The listing does not establish Dealix eligibility, relationship, partner readiness, bid/no-bid outcome or permission to submit."
+      ],
+      "unknowns": [
+        "Exact eligibility, specification fit, required certifications, partner needs, bid economics, document contents, and closing timestamp require fresh portal review."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY",
+        "TENDER_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Recheck exact closing time and full tender requirements before any bid/no-bid recommendation.",
+        "Run capability, eligibility and partner-gap research without purchasing documents or submitting."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 5,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 5,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "D4-style public procurement research signal only; publication does not create relationship, eligibility, consent, award, bid, price or submission authority.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-monshaat-sdaia-ai-week-3900",
+      "source_id": "MONSHAAT_OFFICIAL",
+      "source_ref": "https://www.monshaat.gov.sa/ar/node/502808",
+      "observed_at": "2026-09-02T00:00:00+03:00",
+      "ingested_at": "2026-09-15T15:10:00+03:00",
+      "provenance_ref": "Monsha'at official AI Week wrap-up with SDAIA — page updated 2 September 2026",
+      "fresh_until": "2026-12-02T23:59:59+03:00",
+      "signal_family": "ECOSYSTEM_EVENT",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "FOUNDER_LED_SME",
+      "evidence_refs": [
+        "https://www.monshaat.gov.sa/ar/node/502808"
+      ],
+      "facts": [
+        "Monsha'at reported that AI Week with SDAIA connected entrepreneurs and SMEs with AI applications, solutions, experts and specialized sessions.",
+        "The official page reports participation by more than 40 entities and more than 3900 beneficiaries."
+      ],
+      "inferences": [
+        "The breadth of participation supports continued SME AI-adoption and workflow-readiness research, with a free diagnostic focused on practical operational use cases rather than generic AI claims."
+      ],
+      "unknowns": [
+        "Attendance does not identify a Dealix relationship, consent, buyer problem, budget, buying committee or willingness to pay."
+      ],
+      "risk_class": "LOW",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Prioritize named SMEs only when first-party evidence shows an operational trigger; do not promote event participation into relationship or pipeline."
+      ],
+      "priority_factors": {
+        "economic_pain": 3,
+        "measurable_outcome": 3,
+        "buyer_access": 3,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 2,
+        "integration_complexity": 2,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Ecosystem-density signal only; event participation and beneficiary counts are not buyer intent, relationship, consent, pipeline or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-etimad-refd-ai-chatbot-2610109",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://tenders.etimad.sa/Tender/OpenTenderDetailsReportForVisitor?tenderIdString=Bk6GczajVinm0tY59tPKww%3D%3D",
+      "observed_at": "2026-09-15T15:37:00+03:00",
+      "ingested_at": "2026-09-15T15:58:00+03:00",
+      "provenance_ref": "Etimad visitor listing for Real Estate Development Fund competition 2610109 — checked 15 September 2026",
+      "fresh_until": "2026-09-17T23:59:59+03:00",
+      "signal_family": "PROCUREMENT_OR_TENDER",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "REAL_ESTATE",
+      "business_archetype": "REGULATED_INSTITUTION_OR_B2G_SUPPLIER",
+      "evidence_refs": [
+        "https://tenders.etimad.sa/Tender/OpenTenderDetailsReportForVisitor?tenderIdString=Bk6GczajVinm0tY59tPKww%3D%3D"
+      ],
+      "facts": [
+        "Etimad lists Real Estate Development Fund competition 2610109 to improve its interactive chatbot across channels and platforms.",
+        "The stated purpose is to develop the existing chatbot into an integrated AI platform supporting text, voice and visual interaction, integration with existing systems, and smooth handoff to customer-service employees.",
+        "The public listing shows 17 September 2026 as the last date for receiving offers and electronic opening of offers; the exact cutoff time must be rechecked live before any decision."
+      ],
+      "inferences": [
+        "The scope is a strong research match for Dealix omnichannel customer-experience, governed-agent and human-handoff diagnostic capabilities.",
+        "The tender does not establish Dealix eligibility, a buyer relationship, consent, partner readiness, bid viability, award likelihood or permission to submit."
+      ],
+      "unknowns": [
+        "Full specifications, eligibility, required certifications, integration constraints, evaluation criteria, bid economics and exact closing time require fresh portal and tender-document review."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY",
+        "TENDER_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Run a no-spend capability and partner-gap assessment against the public scope before any bid/no-bid recommendation.",
+        "Recheck the exact closing time and current tender status before treating the 17 September date as actionable."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 5,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 5,
+        "distribution_density": 4,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Public-procurement research priority only; a published competition is not a Dealix relationship, consent, eligibility finding, pipeline stage, quote, bid authority, award, payment or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-etimad-imam-turki-data-office-rag-agents",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://tenders.etimad.sa/Tender/OpenTenderDetailsReportForVisitor?tenderIdString=agTf49N5VLl1QZBRAQk5dw%3D%3D",
+      "observed_at": "2026-09-15T15:37:00+03:00",
+      "ingested_at": "2026-09-15T15:58:00+03:00",
+      "provenance_ref": "Etimad visitor listing for Imam Turki bin Abdullah Royal Nature Reserve data-office operation competition — checked 15 September 2026",
+      "fresh_until": "2026-09-16T23:59:59+03:00",
+      "signal_family": "PROCUREMENT_OR_TENDER",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "ENVIRONMENTAL_SERVICES",
+      "business_archetype": "REGULATED_INSTITUTION_OR_B2G_SUPPLIER",
+      "evidence_refs": [
+        "https://tenders.etimad.sa/Tender/OpenTenderDetailsReportForVisitor?tenderIdString=agTf49N5VLl1QZBRAQk5dw%3D%3D"
+      ],
+      "facts": [
+        "Etimad lists a competition to operate the Data Management Office for the Imam Turki bin Abdullah Royal Nature Reserve Development Authority.",
+        "The public scope includes data governance and management, a central data warehouse, data-governance/management/quality tools, RAG and AI Agents to support decision-making and automate knowledge work, plus NDMO and National Data Index maturity objectives.",
+        "The public listing shows 16 September 2026 as the last date for receiving offers and opening offers; the exact cutoff time must be rechecked live before any decision."
+      ],
+      "inferences": [
+        "The scope is a high-density research pattern for a Saudi Data Office + Governed AI Execution diagnostic and for partner-led delivery capability mapping.",
+        "The tender does not establish Dealix eligibility, relationship, consent, procurement readiness, bid viability, award likelihood or permission to submit."
+      ],
+      "unknowns": [
+        "Competition number, full specifications, eligibility, certifications, incumbent context, partner requirements, bid economics and exact closing time require fresh portal/document review."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY",
+        "TENDER_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Run a capability/eligibility/partner-gap assessment using public evidence only; do not purchase documents or submit.",
+        "Recheck the exact closing time and current tender status before any bid/no-bid decision."
+      ],
+      "priority_factors": {
+        "economic_pain": 5,
+        "measurable_outcome": 5,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 5,
+        "distribution_density": 4,
+        "regulatory_friction": 5,
+        "integration_complexity": 5,
+        "founder_minutes": 4
+      },
+      "priority_basis": "Public-procurement research priority only; RAG/AI-agent scope is not evidence of Dealix relationship, consent, eligibility, pipeline, quote, bid authority, award, payment or revenue.",
       "authority": {
         "relationship": false,
         "consent": false,

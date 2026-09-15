@@ -25,6 +25,10 @@ def test_templates_include_content_and_delivery_cycles() -> None:
     assert "scripts/dealix_content_factory_daily.py" in cycle
     assert "scripts/verify_delivery_os.py" in cycle
     assert "PUBLIC_PUBLISH=false" in cycle
+    sentinel = (TEMPLATES / "dealix-server-sentinel").read_text()
+    assert "RAILWAY_BIN=${RAILWAY_BIN:-/home/dealix/.local/bin/railway}" in sentinel
+    assert "API_RELEASE_PARITY=PASS" in sentinel
+    assert "SENTINEL_RESULT=PASS_WITH_WARNINGS" in sentinel
 
 
 def test_verifier_detects_exact_runtime_and_drift(tmp_path: Path) -> None:
