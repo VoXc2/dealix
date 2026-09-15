@@ -6,7 +6,8 @@ Responsibility (planning only, never a scheduler):
     READ canonical 44-arm registry + execution playbooks + evidence ledger
     -> SCORE every arm with an explainable prioritization heuristic
     -> CLASSIFY DEEP / LIGHT / HOLD
-    -> SELECT the <=DEEP_WIP_MAX deep wedges that real evidence can justify
+    -> SELECT the <=portfolio deep-WIP heuristic wedges that real evidence can justify
+       (economic focus only; runtime capacity belongs to ResourceGovernor / Session Factory)
     -> EMIT Top3, hold/light, next safe action, evidence refs, job/model class,
        cost / risk / founder-minutes / proof-gap
     -> HAND OFF executable work to the *existing* Hermes session factory queue.
@@ -14,8 +15,12 @@ Responsibility (planning only, never a scheduler):
 Hard laws enforced here:
 
 * The canonical arm registry and execution playbooks are the only taxonomies.
-* Exactly five permanent agents; ACTIVE_DEEP stays ARM-001/002/003 at
-  ``DEEP_WIP_MAX=3`` unless real customer/economic evidence exists.
+* Canonical agent authority is the Omega V3 Agentic Holding registry. The five
+  historical owner aliases remain compatibility executors only, never fleet-size
+  authority. ``deep_wip_max=3`` is an economic portfolio-focus heuristic, not a
+  technical worker ceiling; runtime capacity belongs to ResourceGovernor / Session Factory.
+* The initial ACTIVE_DEEP portfolio remains ARM-001/002/003 until attributable
+  customer/economic evidence justifies a bounded replacement.
 * Research alone can only rank LIGHT or HOLD — it never promotes to DEEP.
 * Scores are a prioritization heuristic, not a forecast; no ROI, pipeline,
   revenue or amount is ever invented.
@@ -125,6 +130,20 @@ def session_factory() -> Any:
     return module
 
 
+def agentic_holding_receipt() -> dict[str, Any]:
+    """Return the canonical Omega V3 logical-agent architecture receipt.
+
+    This receipt describes logical authority only. It deliberately does not mint
+    process/concurrency capacity; live worker capacity remains a ResourceGovernor
+    and Session Factory decision.
+    """
+    if str(REPO_ROOT) not in sys.path:
+        sys.path.insert(0, str(REPO_ROOT))
+    from dealix.agentic_holding.runtime import build_current_registry
+
+    return build_current_registry().receipt()
+
+
 # --------------------------------------------------------------------------
 # Small deterministic helpers
 # --------------------------------------------------------------------------
@@ -183,7 +202,12 @@ def load_playbooks(path: Path | None = None) -> dict[str, Any]:
 
 
 def contract_failures(registry: dict[str, Any], playbooks: dict[str, Any]) -> list[str]:
-    """Structural invariants the controller refuses to plan against."""
+    """Structural invariants the controller refuses to plan against.
+
+    The old five owner aliases and Top-3 deep focus are compatibility/planning
+    metadata. Validating those fields does not grant them runtime architecture or
+    concurrency authority.
+    """
     failures: list[str] = []
     arms = registry.get("arms")
     playbook_rows = playbooks.get("playbooks")
@@ -197,16 +221,16 @@ def contract_failures(registry: dict[str, Any], playbooks: dict[str, Any]) -> li
     if ids != expected:
         failures.append("ARM_IDS")
     if registry.get("deep_wip_max") != 3:
-        failures.append("DEEP_WIP_MAX")
+        failures.append("PORTFOLIO_DEEP_WIP_MAX")
     agents = registry.get("permanent_agents")
     if not isinstance(agents, list) or len(agents) != 5 or len(set(agents)) != 5:
-        failures.append("PERMANENT_AGENTS")
+        failures.append("LEGACY_EXECUTOR_ALIASES")
     if playbooks.get("schema_version") != 1:
         failures.append("PLAYBOOKS_SCHEMA")
     if playbooks.get("registry") != "config/company/dealix_arm_registry.json":
         failures.append("PLAYBOOKS_REGISTRY_LINK")
     if playbooks.get("deep_wip_max") != registry.get("deep_wip_max"):
-        failures.append("PLAYBOOKS_DEEP_WIP")
+        failures.append("PLAYBOOKS_PORTFOLIO_DEEP_WIP")
     playbook_ids = (
         {str(row.get("arm_id")) for row in playbook_rows if isinstance(row, dict)}
         if isinstance(playbook_rows, list)
@@ -220,7 +244,7 @@ def contract_failures(registry: dict[str, Any], playbooks: dict[str, Any]) -> li
         if isinstance(arm, dict) and arm.get("state") == "ACTIVE_DEEP"
     }
     if deep != {"ARM-001", "ARM-002", "ARM-003"}:
-        failures.append("ACTIVE_DEEP_001_002_003")
+        failures.append("INITIAL_DEEP_PORTFOLIO")
     return failures
 
 
@@ -734,14 +758,37 @@ def plan_portfolio(
     registry_source = registry_path or REGISTRY_PATH
     playbooks_source = playbooks_path or PLAYBOOKS_PATH
     evidence_source = evidence_path or DEFAULT_EVIDENCE_PATH
+    legacy_aliases = list(registry.get("permanent_agents") or [])
+    portfolio_limit = int(registry.get("deep_wip_max") or 3)
+    holding = agentic_holding_receipt()
     plan = {
         "schema": SCHEMA,
         "generated_at": generated_at or now_iso(),
         "overall": "BLOCKED" if tripwire_list else "PLAN_READY",
         "score_semantics": SCORE_SEMANTICS,
         "north_star": registry.get("north_star"),
-        "permanent_agents": registry.get("permanent_agents"),
-        "deep_wip_max": registry.get("deep_wip_max"),
+        # Backward-compatible fields only. They no longer describe runtime fleet
+        # size or technical concurrency. Consumers should read agent_authority.
+        "permanent_agents": legacy_aliases,
+        "deep_wip_max": portfolio_limit,
+        "agent_authority": {
+            "canonical_architecture": holding.get("architecture"),
+            "logical_agents": holding.get("logical_agents"),
+            "group_roles": holding.get("group_roles"),
+            "sector_agents": holding.get("sector_agents"),
+            "arm_agents": holding.get("arm_agents"),
+            "specialist_agents": holding.get("specialist_agents"),
+            "sector_companies": holding.get("sector_companies"),
+            "distinct_arms": holding.get("distinct_arms"),
+            "arm_pods": holding.get("arm_pods"),
+            "unmapped_arms": holding.get("unmapped_arms"),
+            "orphan_failures": holding.get("orphan_failures"),
+            "legacy_executor_aliases": legacy_aliases,
+            "portfolio_deep_wip_max": portfolio_limit,
+            "runtime_capacity_authority": "ResourceGovernor + Session Factory live governor",
+            "fixed_five_runtime_authority": False,
+            "fixed_three_runtime_worker_ceiling": False,
+        },
         "counts": counts,
         "evidence_tier_counts": tier_counts,
         "deep_wedge_ids": deep_ids_list,
@@ -800,11 +847,16 @@ def write_plan(plan: dict[str, Any], path: Path) -> Path:
 
 def render_summary(plan: dict[str, Any]) -> str:
     counts = plan.get("counts") or {}
+    authority = plan.get("agent_authority") or {}
     lines = [
         f"HERMES_ARM_PORTFOLIO={plan.get('overall')}",
         f"SCHEMA={plan.get('schema')}",
         f"SCORE_SEMANTICS={plan.get('score_semantics')}",
-        f"ARMS={len(plan.get('records') or [])} PERMANENT_AGENTS={len(plan.get('permanent_agents') or [])} DEEP_WIP={plan.get('deep_wip_max')}",
+        f"ARMS={len(plan.get('records') or [])} "
+        f"LEGACY_EXECUTOR_ALIASES={len(authority.get('legacy_executor_aliases') or [])} "
+        f"PORTFOLIO_DEEP_WIP={authority.get('portfolio_deep_wip_max')} "
+        f"HOLDING_LOGICAL_AGENTS={authority.get('logical_agents')} "
+        f"HOLDING_SECTOR_COMPANIES={authority.get('sector_companies')}",
         f"DEEP={counts.get(CLASS_DEEP, 0)} LIGHT={counts.get(CLASS_LIGHT, 0)} HOLD={counts.get(CLASS_HOLD, 0)}",
         f"DEEP_WEDGES={','.join(plan.get('deep_wedge_ids') or []) or 'none'}",
         "EVIDENCE_TIERS="
