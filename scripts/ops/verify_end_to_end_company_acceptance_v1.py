@@ -146,6 +146,33 @@ def verify() -> list[str]:
     _error(errors, contract.get("fixed_five_authority") is False, "fixed_five_authority")
     _error(errors, contract.get("runtime_capacity_authority") == RUNTIME_CAPACITY_AUTHORITY, "runtime_capacity_authority")
     _error(errors, contract.get("agent_owner_field_semantics") == LEGACY_ALIAS_SEMANTICS, "agent_owner_semantics")
+    _error(
+        errors,
+        contract.get("canonical_agents_semantics") == "LEGACY_EXECUTOR_ALIASES_ONLY_NOT_LOGICAL_FLEET_AUTHORITY",
+        "canonical_agents_nested_semantics",
+    )
+    agent_authority = contract.get("agent_authority") or {}
+    _error(errors, agent_authority.get("logical_agent_authority") == LOGICAL_AGENT_AUTHORITY, "nested_logical_agent_authority")
+    _error(errors, agent_authority.get("fixed_five_fleet_authority") is False, "fixed_five_fleet_authority")
+    _error(
+        errors,
+        agent_authority.get("runtime_capacity_authority") == "ResourceGovernor + Session Factory",
+        "nested_runtime_capacity_authority",
+    )
+    _error(
+        errors,
+        agent_authority.get("deep_wip_3_semantics") == "ECONOMIC_FOCUS_HEURISTIC_ONLY_NOT_RUNTIME_CAPACITY",
+        "deep_wip_semantics",
+    )
+    holding_rel = str(agent_authority.get("canonical_contract") or "")
+    _error(errors, bool(holding_rel) and (ROOT / holding_rel).is_file(), "agentic_holding_contract")
+    if holding_rel and (ROOT / holding_rel).is_file():
+        holding = _load(ROOT / holding_rel)
+        _error(errors, holding.get("status") == "CANONICAL", "agentic_holding_status")
+        holding_model = holding.get("agent_model") or {}
+        _error(errors, holding_model.get("logical_agents") == "dynamic_hierarchical_registry", "agentic_holding_logical_agents")
+        _error(errors, holding_model.get("runtime_workers") == "lazy_resource_governed", "agentic_holding_runtime_workers")
+        _error(errors, holding_model.get("logical_agent_count_is_runtime_worker_count") is not True, "agentic_holding_process_count")
     _error(errors, systems == EXPECTED_SYSTEMS, "canonical_systems")
 
     composition = contract.get("composition_only") or {}
@@ -392,6 +419,8 @@ def main() -> int:
     print("fixed_five_authority=FALSE")
     print("logical_agent_authority=AGENTIC_HOLDING_REGISTRY")
     print("runtime_capacity=RESOURCE_GOVERNOR_PLUS_SESSION_FACTORY")
+    print("runtime_capacity_authority=RESOURCE_GOVERNOR_SESSION_FACTORY")
+    print("deep_wip_3=ECONOMIC_FOCUS_ONLY")
     print("runtime_specialist_roles=12")
     print("revenue_factory_specialist_roles=15")
     print("automation_plays=30")
