@@ -8,7 +8,7 @@ const links = [
   { href: "/sectors", label: "القطاعات" },
   { href: "/products", label: "المنتجات" },
   { href: "/dealix-os", label: "Dealix OS" },
-  { href: "/proof-vault", label: "Proof" },
+  { href: "/cases", label: "Proof" },
 ];
 
 export default function Nav() {

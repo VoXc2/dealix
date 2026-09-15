@@ -109,6 +109,9 @@ def test_public_radar_and_internal_proof_vault_do_not_conflict() -> None:
 def test_public_surfaces_do_not_link_to_internal_proof_vault() -> None:
     public_files = [
         ROOT / "apps/web/components/landing/InteractiveHome.tsx",
+        ROOT / "apps/web/components/Nav.tsx",
+        ROOT / "apps/web/components/Footer.tsx",
+        ROOT / "apps/web/app/robots.ts",
         ROOT / "apps/web/app/dealix-os/page.tsx",
         ROOT / "apps/web/app/ar/case-studies/page.tsx",
         ROOT / "apps/web/app/saudi-opportunity-radar/page.tsx",
