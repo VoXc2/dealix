@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Prepare a 100-company research queue for a single day. Default batch size 10.
+Prepare a bounded research-review batch for a single day. Never grants contact authority.
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ def validate_row(row: dict[str, str], idx: int) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Prepare 100-target day")
+    parser = argparse.ArgumentParser(description="Prepare research-review target batch")
     parser.add_argument("--input", default="data/outreach/research_queue.csv")
     parser.add_argument("--output", default=None)
     parser.add_argument("--batch-size", type=int, default=10)
@@ -62,7 +62,10 @@ def main() -> int:
             continue
         if row.get("status", "").lower() in {"contacted", "opted_out", "lost"}:
             continue
-        ready.append(row)
+        candidate = dict(row)
+        candidate["status"] = "research_only"
+        candidate["outbound_authority"] = "false"
+        ready.append(candidate)
         if len(ready) >= args.batch_size:
             break
 
@@ -72,12 +75,13 @@ def main() -> int:
             print(f"  {issue}")
 
     if not ready:
-        print("❌ No ready-to-contact targets found")
+        print("❌ No verified-public research targets found")
         return 1
 
-    out_path = REPO_ROOT / args.output if args.output else REPO_ROOT / "data" / "outreach" / f"ready_batch_{today_str()}.csv"
+    out_path = REPO_ROOT / args.output if args.output else REPO_ROOT / "data" / "outreach" / f"research_batch_{today_str()}.csv"
     write_csv(out_path, ready, list(ready[0].keys()))
-    print(f"✅ Prepared {len(ready)} ready-to-contact targets → {out_path}")
+    print(f"✅ Prepared {len(ready)} research-review targets → {out_path}")
+    print("OUTBOUND_AUTHORITY=false")
     return 0
 
 

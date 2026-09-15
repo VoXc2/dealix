@@ -19,6 +19,24 @@ from scripts.revenue._lib import (
 )
 
 
+def is_outbound_authorized(row: dict[str, str]) -> bool:
+    """Legacy queue is fail-closed: public research alone never grants outreach authority."""
+    decision = (row.get("owner_decision") or row.get("status") or "").strip().lower()
+    consent = (row.get("consent_status") or "").strip().lower()
+    proof = (row.get("consent_proof_url") or "").strip()
+    human = (row.get("human_approved") or "").strip().lower() in {"1", "true", "yes"}
+    live_gate = (row.get("live_gate") or "").strip().lower() in {"1", "true", "yes"}
+    email = normalize_email(row.get("email", ""))
+    return (
+        decision in {"approved_to_send", "founder_approved"}
+        and consent == "opted_in"
+        and proof.startswith(("http://", "https://"))
+        and human
+        and live_gate
+        and bool(email)
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build batch outreach queue")
     parser.add_argument("--input", default="data/outreach/ready_batch_2026-06-15.csv")
@@ -40,6 +58,9 @@ def main() -> int:
     queue: list[dict[str, str]] = []
     skipped: list[str] = []
     for row in rows:
+        if not is_outbound_authorized(row):
+            skipped.append(f"{row.get('company')} (no target-level consent/approval authority)")
+            continue
         email = normalize_email(row.get("email", ""))
         history = contact_history.get(email, [])
         if len(history) >= args.max_followups + 1:
@@ -62,7 +83,7 @@ def main() -> int:
     out_path = REPO_ROOT / "data" / "outreach" / f"batch_queue_{today_str()}.csv"
     if queue:
         write_csv(out_path, queue, list(queue[0].keys()))
-    print(f"✅ Queued {len(queue)} companies for outreach → {out_path}")
+    print(f"✅ Queued {len(queue)} consent-gated companies for review → {out_path}")
     if skipped:
         print(f"⚠️ Skipped {len(skipped)} companies:")
         for s in skipped[:10]:
