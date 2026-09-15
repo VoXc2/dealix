@@ -70,6 +70,8 @@ def test_pg18_canary_host_auth_requires_runtime_password() -> None:
     runner = (ROOT / "scripts/ops/deploy_selfhosted_canary.sh").read_text(encoding="utf-8")
     assert "POSTGRES_HOST_AUTH_METHOD: trust" not in compose
     assert "POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}" in compose
+    assert "DATABASE_URL: ${DEALIX_DATABASE_URL:?set DEALIX_DATABASE_URL}" in compose
+    assert "postgresql+asyncpg://dealix_canary@postgres:5432/dealix_canary" not in compose
     assert "POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256" in compose
     assert 'DEALIX_CANARY_POSTGRES_PASSWORD:?set DEALIX_CANARY_POSTGRES_PASSWORD' in runner
     assert 'export POSTGRES_PASSWORD="$DEALIX_CANARY_POSTGRES_PASSWORD"' in runner

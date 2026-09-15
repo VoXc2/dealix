@@ -31,10 +31,12 @@ for key in POSTGRES_USER POSTGRES_DB POSTGRES_PASSWORD DEALIX_DATABASE_URL; do
   [[ -n "$value" ]] || hold "missing $key"
   case "$value" in *CHANGE_ME*|*change-me*|*REPLACE*) hold "placeholder $key" ;; esac
 done
-python3 - "$DEALIX_DATABASE_URL" "$POSTGRES_USER" "$POSTGRES_DB" <<'PY'
-import sys
+python3 - <<'PY'
+import os
 from urllib.parse import unquote, urlparse
-url, expected_user, expected_db = sys.argv[1:]
+url = os.environ["DEALIX_DATABASE_URL"]
+expected_user = os.environ["POSTGRES_USER"]
+expected_db = os.environ["POSTGRES_DB"]
 u = urlparse(url.replace("postgresql+asyncpg://", "postgresql://", 1))
 host = (u.hostname or "").lower()
 if host != "postgres":
@@ -66,6 +68,12 @@ fi
 
 [[ "${DEALIX_STAGE_PRODUCTION:-}" == YES ]] || hold "$MODE requires DEALIX_STAGE_PRODUCTION=YES"
 [[ "$CONFIRM_SHA" == "$EXPECTED_SHA" ]] || hold "CONFIRM_SHA must equal exact release SHA"
+if [[ "$MODE" == --stage ]]; then
+  ACTION_ID="dealix-production-stage-v1:${EXPECTED_SHA}"
+else
+  ACTION_ID="dealix-public-cutover-v1:${EXPECTED_SHA}"
+fi
+[[ "${DEALIX_L5_APPROVAL_ACTION:-}" == "$ACTION_ID" ]] || hold "exact action-bound approval required: DEALIX_L5_APPROVAL_ACTION=$ACTION_ID"
 DATA_RECEIPT="${DEALIX_DATA_MIGRATION_RECEIPT:-}"
 [[ -n "$DATA_RECEIPT" && -f "$DATA_RECEIPT" ]] || hold "production data migration receipt required"
 mapfile -t MIGRATION < <(python3 - "$DATA_RECEIPT" "$EXPECTED_SHA" <<'PY'
