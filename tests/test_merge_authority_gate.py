@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import pytest
 
@@ -141,3 +142,12 @@ def test_future_dated_latest_authority_is_blocked() -> None:
     current["comments"][0]["created_at"] = (NOW + timedelta(minutes=5)).isoformat()
     with pytest.raises(GateError, match="timestamped in the future"):
         verify_snapshot(current, {ACTOR})
+
+
+def test_workflow_does_not_poison_merged_head_on_closed_pr_comments() -> None:
+    workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/merge-authority-gate.yml").read_text(encoding="utf-8")
+    assert "github.event_name == 'pull_request'" in workflow
+    assert "github.event_name == 'issue_comment'" in workflow
+    assert "github.event.issue.pull_request" in workflow
+    assert "github.event.issue.state == 'open'" in workflow
+    assert "needs: [check-pr-state]" not in workflow
