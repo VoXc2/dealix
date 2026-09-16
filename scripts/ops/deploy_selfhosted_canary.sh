@@ -80,8 +80,14 @@ if [[ "$USE_LOCAL_DB" == "1" ]]; then
     fi
     sleep 2
   done
-  docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
-    pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null
+  if ! docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
+    pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" >/dev/null; then
+    echo "FAIL: canary postgres readiness timeout project=$COMPOSE_PROJECT_NAME" >&2
+    docker compose -f "$COMPOSE_FILE" --profile local-db ps postgres >&2 || true
+    docker compose -f "$COMPOSE_FILE" --profile local-db logs --no-color --tail=120 postgres >&2 || true
+    exit 66
+  fi
+  echo "CANARY_POSTGRES_READINESS=PASS"
 
   if ! docker compose -f "$COMPOSE_FILE" --profile local-db exec -T postgres \
     psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \

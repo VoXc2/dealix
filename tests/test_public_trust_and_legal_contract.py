@@ -55,35 +55,23 @@ def test_privacy_notice_does_not_claim_closed_pdpl_or_residency_posture() -> Non
         assert stale_claim not in privacy, stale_claim
 
 
-def test_trust_center_distinguishes_enforced_gates_from_open_work() -> None:
+def test_retired_static_trust_surface_defers_to_canonical_safety_page() -> None:
     trust = _read("trust-center.html")
-    for gate in (
-        "NO_LIVE_SEND",
-        "NO_LIVE_CHARGE",
-        "NO_COLD_WHATSAPP",
-        "NO_LINKEDIN_AUTOMATION",
-        "NO_SCRAPING",
-        "NO_FAKE_PROOF",
-        "NO_FAKE_REVENUE",
-        "NO_UNAPPROVED_TESTIMONIAL",
-    ):
-        assert gate in trust, gate
     for required in (
-        "ما هو مثبت وممنوع، وما يزال مفتوحًا",
-        "Production frontend ownership",
-        "Real customer-sensitive data",
-        "Live payment / invoicing",
-        "Compliance / certification claims",
-        "Missing evidence → Draft / Block / Unknown",
+        "DEALIX_RETIRED_PUBLIC_SURFACE",
+        'name="robots" content="noindex,nofollow"',
+        'rel="canonical" href="https://dealix.me/safety"',
+        'http-equiv="refresh" content="0; url=/safety"',
+        'href="/safety"',
     ):
         assert required in trust, required
-    assert "لا يدّعي PDPL certification" in trust
-    assert "SOC 2" in trust  # only inside an explicit non-claim sentence
-    assert "Saudi data residency" in trust  # only inside an explicit non-claim sentence
-    assert "لا تُفتح أبداً" not in trust
-    assert "كل بوّابة هي قاعدة برمجيّة محظورة" not in trust
-    assert "فاتورة Moyasar" not in trust
-    assert "فاتورة ZATCA" not in trust
+    for stale_authority in (
+        "NO_LIVE_SEND",
+        "NO_LIVE_CHARGE",
+        "Production frontend ownership",
+        "Saudi data residency",
+    ):
+        assert stale_authority not in trust, stale_authority
 
 
 def test_current_public_notices_share_one_product_start_path() -> None:

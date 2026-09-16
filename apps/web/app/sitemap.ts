@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/book", priority: 0.98, changeFrequency: "weekly" },
     { path: "/saudi-opportunity-radar", priority: 0.9, changeFrequency: "weekly" },
     { path: "/safety", priority: 0.82, changeFrequency: "monthly" },
+    { path: "/legal", priority: 0.84, changeFrequency: "monthly" },
     { path: "/cases", priority: 0.68, changeFrequency: "weekly" },
     { path: "/pricing", priority: 0.7, changeFrequency: "monthly" },
   ];
