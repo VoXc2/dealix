@@ -57,9 +57,9 @@ def main():
             "discovery_calls_target": 1,
             "proposal_target": 1,
             "links": {
-                "demo": "https://web-production-380c3.up.railway.app/ar/demo",
-                "revenue_os": "https://web-production-380c3.up.railway.app/revenue-os",
-                "zatca": "https://web-production-380c3.up.railway.app/ar/zatca-readiness",
+                "demo": "https://dealix.me/",
+                "revenue_os": "https://dealix.me/dealix-os",
+                "zatca": "https://dealix.me/services",
             },
             "do_not_do": ["no auto-send", "no scraping", "no spam", "no ROI claims without baseline"],
         },
@@ -78,9 +78,9 @@ Targets:
 - 0 auto-send
 
 Links:
-- Demo: https://web-production-380c3.up.railway.app/ar/demo
-- Revenue OS: https://web-production-380c3.up.railway.app/revenue-os
-- ZATCA: https://web-production-380c3.up.railway.app/ar/zatca-readiness
+- Demo: https://dealix.me/
+- Revenue OS: https://dealix.me/dealix-os
+- ZATCA: https://dealix.me/services
 
 Rule: AI drafts. Founder approves. Human sends.
 """)

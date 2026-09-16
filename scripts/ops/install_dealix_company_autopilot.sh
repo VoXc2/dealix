@@ -120,7 +120,7 @@ Group=dealix
 WorkingDirectory=/opt/dealix/workspace/dealix
 Environment="HOME=/home/dealix"
 Environment="TZ=Asia/Riyadh"
-Environment="PATH=/home/dealix/.local/bin:/home/dealix/.railway/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=/home/dealix/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Environment="DEALIX_EXTERNAL_OUTREACH_ENABLED=false"
 Environment="EXTERNAL_OUTREACH_ENABLED=false"
 Environment="AUTO_SEND_ENABLED=false"

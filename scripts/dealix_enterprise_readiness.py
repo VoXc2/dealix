@@ -7,9 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 URLS = {
     "api_health": "https://api.dealix.me/healthz",
-    "web_demo": "https://web-production-380c3.up.railway.app/ar/demo",
-    "web_revenue": "https://web-production-380c3.up.railway.app/revenue-os",
-    "web_zatca": "https://web-production-380c3.up.railway.app/ar/zatca-readiness",
+    "web_demo": "https://dealix.me/",
+    "web_revenue": "https://dealix.me/dealix-os",
+    "web_zatca": "https://dealix.me/services",
 }
 
 FILES = [

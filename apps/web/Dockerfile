@@ -25,9 +25,7 @@ ENV HOSTNAME=0.0.0.0
 # Immutable source identity for /healthz release parity (exact SHA, not HTTP 200).
 # Pass via build-arg from CI: docker build --build-arg GIT_SHA=$(git rev-parse HEAD) ...
 ARG GIT_SHA=unknown
-ARG RAILWAY_GIT_COMMIT_SHA=""
 ENV GIT_SHA=${GIT_SHA}
-ENV RAILWAY_GIT_COMMIT_SHA=${RAILWAY_GIT_COMMIT_SHA}
 
 RUN groupadd --system --gid 1001 nodejs \
   && useradd --system --uid 1001 --gid nodejs nextjs

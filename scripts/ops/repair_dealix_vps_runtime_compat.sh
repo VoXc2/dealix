@@ -20,7 +20,7 @@ PROOF="$PROOF_DIR/proof.log"
 PROMPT_DIR="/opt/dealix/executive-prompts"
 HERMES_PROMPT=""
 OLLAMA_UNLOAD_ARMED=0
-SERVICE_PATH="$VENV/bin:/home/${RUN_USER}/.local/bin:/home/${RUN_USER}/.railway/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+SERVICE_PATH="$VENV/bin:/home/${RUN_USER}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 HERMES_PATH="/home/${RUN_USER}/.local/bin:/home/${RUN_USER}/.hermes/bin:$VENV/bin:/usr/local/bin:/usr/bin:/bin"
 
 section() {

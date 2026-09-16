@@ -15,9 +15,9 @@ REPORTS = ROOT / "reports/company_os/control"
 
 URLS = {
     "api_health": "https://api.dealix.me/healthz",
-    "web_demo": "https://web-production-380c3.up.railway.app/ar/demo",
-    "revenue_os": "https://web-production-380c3.up.railway.app/revenue-os",
-    "zatca": "https://web-production-380c3.up.railway.app/ar/zatca-readiness",
+    "web_demo": "https://dealix.me/",
+    "revenue_os": "https://dealix.me/dealix-os",
+    "zatca": "https://dealix.me/services",
 }
 
 ASSETS = [

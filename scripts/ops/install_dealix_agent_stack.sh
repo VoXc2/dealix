@@ -74,16 +74,8 @@ printf '%-22s %s\n' "issue-bridge" "$(systemctl is-active dealix-vps-issue-bridg
 printf '%-22s %s\n' "company-heartbeat" "$(systemctl is-active dealix-company-heartbeat.timer 2>/dev/null || true)"
 docker ps --filter name=dealix-n8n --format 'n8n={{.Status}} {{.Ports}}' 2>/dev/null || true
 
-log "===== RAILWAY LOCAL CONTEXT ====="
-if sudo -iu "$RUN_USER" bash -lc 'export PATH="$HOME/.railway/bin:$PATH"; railway whoami' >/dev/null 2>&1; then
-  if ! sudo -iu "$RUN_USER" bash -lc 'export PATH="$HOME/.railway/bin:$PATH"; cd /opt/dealix/workspace/dealix; railway status' >/dev/null 2>&1; then
-    log "Railway is authenticated but this checkout is not linked; attempting local-only project link to Dealix."
-    sudo -iu "$RUN_USER" bash -lc 'export PATH="$HOME/.railway/bin:$PATH"; cd /opt/dealix/workspace/dealix; railway link --project Dealix' || true
-  fi
-  sudo -iu "$RUN_USER" bash -lc 'export PATH="$HOME/.railway/bin:$PATH"; cd /opt/dealix/workspace/dealix; railway status' || true
-else
-  log "Railway authentication missing; no production mutation attempted."
-fi
+log "===== SELF-HOST RUNTIME CONTEXT ====="
+log "Railway CLI linking is retired; canonical production authority is the Dealix self-host release plane."
 
 log "===== OPENCLAW INSTALL ====="
 if [[ ! -x "$OPENCLAW_BIN" ]]; then

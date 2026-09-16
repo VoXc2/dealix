@@ -112,7 +112,7 @@ Group=${RUNNER_USER}
 WorkingDirectory=${CONTROL_ROOT}
 Environment="HOME=/home/${RUNNER_USER}"
 Environment="XDG_CACHE_HOME=${CACHE_DIR}"
-Environment="PATH=/home/${RUNNER_USER}/.local/bin:/home/${RUNNER_USER}/.railway/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=/home/${RUNNER_USER}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Environment="DEALIX_LOCAL_MODEL=${SAFE_LOCAL_MODEL}"
 # Local-only OpenAI-compatible fallback for safe internal model work such as
 # Sales Arena. The credential is a non-secret loopback placeholder and never
@@ -170,7 +170,7 @@ if [[ -e "$STATE_FILE" || -L "$STATE_FILE" ]]; then
 else
   sudo -iu "$RUNNER_USER" env \
     XDG_CACHE_HOME="$CACHE_DIR" \
-    PATH="/home/${RUNNER_USER}/.local/bin:/home/${RUNNER_USER}/.railway/bin:/usr/local/bin:/usr/bin:/bin" \
+    PATH="/home/${RUNNER_USER}/.local/bin:/usr/local/bin:/usr/bin:/bin" \
     python3 "$BRIDGE" --bootstrap
   STATE_ACTION="bootstrapped"
 fi

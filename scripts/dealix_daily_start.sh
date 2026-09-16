@@ -17,12 +17,13 @@ echo "PR status"
 gh pr status || true
 
 echo ""
-echo "Latest workflow runs"
-gh run list --limit 10 || true
+echo "Source/runtime release truth"
+python3 scripts/ops/verify_selfhost_only_runtime.py || true
+python3 scripts/ops/verify_selfhosted_production_plane.py || true
 
 echo ""
-echo "Production smoke via Railway variables"
-railway run python scripts/check_openapi_contract.py || true
+echo "Production smoke via canonical API"
+python3 scripts/check_openapi_contract.py || true
 
 echo ""
 echo "CEO Command Center"

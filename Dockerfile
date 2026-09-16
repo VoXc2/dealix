@@ -49,13 +49,11 @@ FROM python:3.12-slim-bookworm AS runtime
 # Surface the deployed commit on /health. Pass via build-arg from CI:
 #   docker build --build-arg GIT_SHA=$(git rev-parse HEAD) ...
 ARG GIT_SHA=unknown
-ARG RAILWAY_GIT_COMMIT_SHA=""
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
     APP_ENV=production \
-    GIT_SHA=${GIT_SHA} \
-    RAILWAY_GIT_COMMIT_SHA=${RAILWAY_GIT_COMMIT_SHA}
+    GIT_SHA=${GIT_SHA}
 
 # Runtime-only system deps
 RUN apt-get update && apt-get install -y --no-install-recommends \

@@ -15,9 +15,9 @@ payload = {
         "proposal": 1
     },
     "links": {
-        "demo": "https://web-production-380c3.up.railway.app/ar/demo",
-        "revenue_os": "https://web-production-380c3.up.railway.app/revenue-os",
-        "zatca": "https://web-production-380c3.up.railway.app/ar/zatca-readiness"
+        "demo": "https://dealix.me/",
+        "revenue_os": "https://dealix.me/dealix-os",
+        "zatca": "https://dealix.me/services"
     },
     "guardrails": [
         "no auto-send",
