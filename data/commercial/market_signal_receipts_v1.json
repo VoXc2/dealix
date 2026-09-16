@@ -1,6 +1,6 @@
 {
   "schema": "dealix.market-signal-set.v1",
-  "generated_at": "2026-09-15T12:58:00+00:00",
+  "generated_at": "2026-09-15T15:12:32+00:00",
   "scope": "dealix_company",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
@@ -1622,6 +1622,69 @@
         "founder_minutes": 4
       },
       "priority_basis": "Public-procurement research priority only; RAG/AI-agent scope is not evidence of Dealix relationship, consent, eligibility, pipeline, quote, bid authority, award, payment or revenue.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-zatca-phase2-workshop-sep16",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://zatca.gov.sa/en/MediaCenter/Events/Pages/Details.aspx?item=718",
+      "observed_at": "2026-09-15T18:05:00+03:00",
+      "ingested_at": "2026-09-15T18:12:32+03:00",
+      "provenance_ref": "ZATCA official E-Invoicing Phase Two (Integration Phase) online Arabic workshop page — checked 15 September 2026",
+      "fresh_until": "2026-09-16T14:00:00+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "REGULATED_INSTITUTION_OR_B2G_SUPPLIER",
+      "evidence_refs": [
+        "https://zatca.gov.sa/en/MediaCenter/Events/Pages/Details.aspx?item=718"
+      ],
+      "facts": [
+        "ZATCA lists an online Arabic workshop on 16 September 2026 from 13:00 to 14:00 Riyadh time.",
+        "The workshop topics are E-Invoicing introduction, Phase Two (Integration Phase) requirements, and the E-Invoicing mechanism."
+      ],
+      "inferences": [
+        "The near-term official workshop is a legitimate why-now signal for a bounded Free FATOORA / E-Invoicing Integration Readiness Diagnostic and evidence-backed educational content.",
+        "The public event does not establish that any named company is in scope for Phase Two, has a compliance gap, has buyer intent, or has consented to contact."
+      ],
+      "unknowns": [
+        "Entity-specific Phase Two applicability requires the company’s own ZATCA notification or other first-party evidence.",
+        "No Dealix relationship, consent, active pain, budget, procurement route, quote authority, or customer proof is established by this event."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "For any named company, verify its own ZATCA Phase Two notification before treating integration readiness as an entity-specific problem.",
+        "After the workshop ends, retain only durable official requirements as background and let this event signal expire from active why-now ranking."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 4,
+        "integration_complexity": 4,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric only; not purchase probability, relationship, demand evidence, compliance finding, or customer fact.",
       "authority": {
         "relationship": false,
         "consent": false,
