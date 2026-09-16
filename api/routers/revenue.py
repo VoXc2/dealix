@@ -128,8 +128,10 @@ async def negotiation_respond(body: dict[str, Any] = Body(...)) -> dict[str, Any
         "objection_type": obj_type,
         "response_ar": response,
         "approval_required": True,
+        "requires_action_bound_approval": True,
+        "external_send_allowed": False,
         "send_status": "queued_for_human_approval",
-        "channel_policy": "human_final_send_only_during_first_30_days",
+        "channel_policy": "action_bound_human_final_send_only",
     }
 
 

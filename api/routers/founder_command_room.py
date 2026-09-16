@@ -38,16 +38,21 @@ ARTICLE_13_TARGET = 3
 
 # Canonical founder launch boundaries. These are review tasks, never standing
 # authorization for an external send, contract, provider/DNS change, merge, or deploy.
-FOUNDER_ACTIONS: list[dict[str, str]] = [
-    {"ar": "تحقق من تطابق SHA العام مع الإصدار المقبول قبل Production Green", "en": "Verify public SHA parity with the accepted release before Production Green"},
-    {"ar": "راجع حزمة موافقة محددة قبل أي إرسال خارجي", "en": "Review an action-bound approval packet before any external send"},
-    {"ar": "راجع تغييرات DNS/provider/contract كلٌ على حدة قبل التنفيذ", "en": "Review DNS/provider/contract mutations separately before execution"},
-    {"ar": "راجع exact-head merge/deploy packet؛ Source Green لا يعني Production Green", "en": "Review the exact-head merge/deploy packet; Source Green is not Production Green"},
+FOUNDER_ACTION_AUTHORITY: dict[str, Any] = {
+    "authority": "review_only",
+    "external_execution_allowed": False,
+    "action_bound_approval_required": True,
+}
+FOUNDER_ACTIONS: list[dict[str, Any]] = [
+    {**FOUNDER_ACTION_AUTHORITY, "ar": "تحقق من تطابق SHA العام مع الإصدار المقبول قبل Production Green", "en": "Verify public SHA parity with the accepted release before Production Green"},
+    {**FOUNDER_ACTION_AUTHORITY, "ar": "راجع حزمة موافقة محددة قبل أي إرسال خارجي", "en": "Review an action-bound approval packet before any external send"},
+    {**FOUNDER_ACTION_AUTHORITY, "ar": "راجع تغييرات DNS/provider/contract كلٌ على حدة قبل التنفيذ", "en": "Review DNS/provider/contract mutations separately before execution"},
+    {**FOUNDER_ACTION_AUTHORITY, "ar": "راجع exact-head merge/deploy packet؛ Source Green لا يعني Production Green", "en": "Review the exact-head merge/deploy packet; Source Green is not Production Green"},
 ]
 
 # Compatibility field name retained for the founder UI, but its authority is the
 # quote-only launch path. It is a state/path ladder, not a public price catalogue.
-OFFER_LADDER: list[dict[str, str]] = [
+OFFER_LADDER: list[dict[str, Any]] = [
     {
         "name": "التشخيص المصغّر المجاني / Free Mini Diagnostic",
         "detail": "دخول مجاني · evidence + problem qualification",
@@ -63,6 +68,8 @@ OFFER_LADDER: list[dict[str, str]] = [
     {
         "name": "Revenue Command Pilot",
         "detail": "مدة ومعايير قبول خاصة بالعميل · governed delivery · quote-only after qualified discovery",
+        "duration_authority": "customer_specific_after_qualified_discovery",
+        "public_fixed_duration_authority": False,
     },
     {
         "name": "دفع مثبت ثم تسليم / Verified Payment → Delivery",
@@ -79,14 +86,14 @@ class LaunchReadiness(BaseModel):
     status: str = Field(description="Overall launch gate status, e.g. PARTIAL / READY")
     paid: int = Field(description="Paid customers so far (from the live war-room summary)")
     article13_target: int = ARTICLE_13_TARGET
-    founder_actions: list[dict[str, str]] = FOUNDER_ACTIONS
+    founder_actions: list[dict[str, Any]] = FOUNDER_ACTIONS
 
 
 class FounderCommandRoomOut(BaseModel):
     generated_at: str
     mode: str = "draft_only"
     launch: LaunchReadiness
-    offer_ladder: list[dict[str, str]] = OFFER_LADDER
+    offer_ladder: list[dict[str, Any]] = OFFER_LADDER
     summary: dict[str, Any] = Field(
         description="Live war-room operating summary (today/revenue/queues/risks/top_targets)",
     )
