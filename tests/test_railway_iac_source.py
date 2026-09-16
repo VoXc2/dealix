@@ -24,3 +24,6 @@ def test_migration_runbook_is_explicitly_non_applying() -> None:
     assert "2026-12-01" in text
     assert "Never run `railway config apply`" in text
     assert "exact action-bound" in text
+    assert "Do not set `checkSuites: false`" in text
+    assert "disable Railway GitHub autodeploy" in text
+    assert "explicit accepted commit SHA" in text

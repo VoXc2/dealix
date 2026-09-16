@@ -34,13 +34,16 @@ def main() -> int:
     ):
         require(text, needle)
     if text.count("checkSuites: true") != 2 or "checkSuites: false" in text:
-        raise SystemExit("RAILWAY_IAC_VERIFY=HOLD release_gate_drift")
+        raise SystemExit("RAILWAY_IAC_VERIFY=HOLD unsafe_autodeploy_without_trusted_gate")
     if re.search(r"(?:sk-|ghp_|Bearer )[A-Za-z0-9._-]{8,}", text):
         raise SystemExit("RAILWAY_IAC_VERIFY=HOLD raw_secret_literal")
 
     readme = README.read_text(encoding="utf-8")
     require(readme, "2026-12-01")
     require(readme, "Never run `railway config apply`")
+    require(readme, "Do not set `checkSuites: false`")
+    require(readme, "disable Railway GitHub autodeploy")
+    require(readme, "explicit accepted commit SHA")
     remaining = (CUTOFF - date.today()).days
     if remaining < 0:
         raise SystemExit("RAILWAY_IAC_VERIFY=HOLD legacy_cutoff_elapsed")
