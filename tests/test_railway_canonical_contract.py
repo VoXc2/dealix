@@ -66,9 +66,8 @@ def test_railway_config_matches_canonical_runtime_contract() -> None:
     assert toml["deploy"]["numReplicas"] == 1
     assert railway_json["deploy"]["numReplicas"] == 1
 
-    assert toml["deploy"]["preDeployCommand"] == railway_json["deploy"][
-        "preDeployCommand"
-    ]
+    assert "preDeployCommand" not in toml["deploy"]
+    assert "preDeployCommand" not in railway_json["deploy"]
     assert "/app/start.sh" in dockerfile
 
 
@@ -88,18 +87,11 @@ def test_health_contract_is_healthz_not_retired_health_alias() -> None:
     assert railway_json["deploy"]["healthcheckPath"] == "/healthz"
 
 
-def test_predeploy_uses_one_bash_command_array() -> None:
+def test_automatic_predeploy_is_disabled_fail_closed() -> None:
     toml = tomllib.loads(_read("railway.toml"))
     railway_json = json.loads(_read("railway.json"))
 
-    for commands in (
-        toml["deploy"]["preDeployCommand"],
-        railway_json["deploy"]["preDeployCommand"],
-    ):
-        assert isinstance(commands, list)
-        assert len(commands) == 1
-        command = commands[0]
-        assert "bash /app/scripts/railway_predeploy.sh" in command
-        assert "then sh /app/scripts/railway_predeploy.sh" not in command
-        assert "[ -f /app/scripts/railway_predeploy.sh ]" in command
-        assert "[ -x /app/scripts/railway_predeploy.sh ]" not in command
+    assert "preDeployCommand" not in toml["deploy"]
+    assert "preDeployCommand" not in railway_json["deploy"]
+    script = _read("scripts/railway_predeploy.sh")
+    assert "MIGRATION_EXECUTION=NOT_EXECUTED" in script

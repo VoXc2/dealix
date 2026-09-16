@@ -10,7 +10,6 @@ export default defineRailway(() => {
     start: "",
     healthcheck: "/healthz",
     healthcheckTimeout: 300,
-    preDeploy: "if [ -f /app/scripts/railway_predeploy.sh ]; then bash /app/scripts/railway_predeploy.sh; else echo 'RAILWAY_PREDEPLOY: no predeploy script'; fi",
     replicas: { "us-west2": 1 },
     deploy: { restartPolicyMaxRetries: 3 },
     domains: ["api.dealix.me"],
