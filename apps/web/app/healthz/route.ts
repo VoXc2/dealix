@@ -4,13 +4,9 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export function GET() {
-  // Immutable release identity first. Self-host injects DEALIX_RELEASE_SHA;
-  // Railway and Vercel expose platform-managed commit SHAs automatically.
-  // Generic/public fallbacks are last because they may be stale or build-time only.
+  // Immutable release identity is injected by the self-hosted release plane.
   const gitSha =
     process.env.DEALIX_RELEASE_SHA?.trim() ||
-    process.env.RAILWAY_GIT_COMMIT_SHA?.trim() ||
-    process.env.VERCEL_GIT_COMMIT_SHA?.trim() ||
     process.env.NEXT_PUBLIC_GIT_SHA?.trim() ||
     process.env.GIT_SHA?.trim() ||
     "unknown";
