@@ -408,6 +408,30 @@ def _opencode_job(**overrides):
     return factory.make_job(**kwargs)
 
 
+
+def test_compose_opencode_task_prompt_preserves_business_goal_with_executor_directive() -> None:
+    job = _opencode_job(
+        business_goal="repair exact current production trust only",
+        executor={"prompt": "use deterministic tests and do not broaden scope"},
+    )
+    prompt = factory.compose_opencode_task_prompt(job)
+    assert "BUSINESS GOAL - AUTHORITATIVE TASK SCOPE" in prompt
+    assert "repair exact current production trust only" in prompt
+    assert "EXECUTOR DIRECTIVE - EXECUTION METHOD / CONSTRAINTS" in prompt
+    assert "use deterministic tests and do not broaden scope" in prompt
+    assert prompt.index("repair exact current production trust only") < prompt.index(
+        "use deterministic tests and do not broaden scope"
+    )
+
+
+def test_compose_opencode_task_prompt_passes_precomposed_scope_without_duplication() -> None:
+    job = _opencode_job(
+        business_goal="authoritative scope",
+        executor={"prompt": "BOUND MASTER + TASK", "prompt_scope_composed": True},
+    )
+    assert factory.compose_opencode_task_prompt(job) == "BOUND MASTER + TASK"
+
+
 def test_opencode_fails_closed_without_permission_policy(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setenv("DEALIX_OPENCODE_PERMISSION_POLICY", str(tmp_path / "missing.json"))
     monkeypatch.setattr(factory, "resolve_opencode_binary", lambda: "/usr/bin/true")
@@ -1160,7 +1184,15 @@ def test_daemon_executes_bounded_session_with_pinned_model(tmp_path: Path, monke
         "providerID": "opencode",
         "modelID": "muse-spark-1.3-contributor-free",
     }
-    assert prompt_bodies[0]["parts"] == [{"type": "text", "text": "Reply with exactly FREE_API_CANARY_OK"}]
+    assert prompt_bodies[0]["parts"] == [{
+        "type": "text",
+        "text": (
+            "BUSINESS GOAL - AUTHORITATIVE TASK SCOPE\n"
+            "daemon canary\n\n"
+            "EXECUTOR DIRECTIVE - EXECUTION METHOD / CONSTRAINTS\n"
+            "Reply with exactly FREE_API_CANARY_OK"
+        ),
+    }]
 
 
 def test_daemon_result_stdout_is_bounded_and_redacted(tmp_path: Path, monkeypatch) -> None:
@@ -2078,3 +2110,111 @@ def test_daemon_existing_guards_stay_green(tmp_path: Path, monkeypatch) -> None:
     assert result["ok"] is False
     assert result["returncode"] == 79
     assert "model-authority-unproven" in result["stderr"]
+
+
+def test_master_prompt_binding_for_modifying_opencode_is_path_sha_fail_closed(tmp_path: Path, monkeypatch) -> None:
+    config_dir = tmp_path / "config" / "company"
+    config_dir.mkdir(parents=True)
+    source = tmp_path / "prompt.md"
+    runtime = tmp_path / "runtime-prompt.md"
+    content = "# DEALIX\nBOOTSTRAP\nLIVE TRUTH WINS\n"
+    source.write_text(content, encoding="utf-8")
+    runtime.write_text(content, encoding="utf-8")
+    binding = {
+        "prompt_ref": "prompt.md",
+        "runtime_prompt_path": str(runtime),
+        "prompt_env": "DEALIX_TEST_MASTER_PROMPT",
+        "prompt_sha_env": "DEALIX_TEST_MASTER_PROMPT_SHA256",
+        "required_prompt_markers": ["BOOTSTRAP", "LIVE TRUTH WINS"],
+    }
+    (config_dir / "dealix_master_prompt_binding_v1.json").write_text(
+        json.dumps(binding), encoding="utf-8"
+    )
+    monkeypatch.delenv("DEALIX_TEST_MASTER_PROMPT", raising=False)
+    monkeypatch.delenv("DEALIX_TEST_MASTER_PROMPT_SHA256", raising=False)
+    job = _opencode_job(modifying=True, executor={"prompt": "implement bounded patch"})
+    effective, hold = factory.bind_master_prompt_to_opencode_job(job, repo_root=tmp_path)
+    assert hold is None
+    assert effective["MASTER_PROMPT_BINDING"]["mode"] == "PATH_SHA256_FAIL_CLOSED"
+    assert effective["MASTER_PROMPT_BINDING"]["path"] == str(runtime)
+    prompt = effective["EXECUTOR"]["prompt"]
+    assert str(runtime) in prompt
+    assert effective["MASTER_PROMPT_BINDING"]["sha256"] in prompt
+    assert "BUSINESS GOAL - AUTHORITATIVE TASK SCOPE" in prompt
+    assert "control-path canary" in prompt
+    assert "EXECUTOR DIRECTIVE - EXECUTION METHOD / CONSTRAINTS" in prompt
+    assert prompt.endswith("implement bounded patch")
+    assert effective["EXECUTOR"]["prompt_scope_composed"] is True
+
+
+def test_master_prompt_binding_rejects_source_runtime_drift(tmp_path: Path, monkeypatch) -> None:
+    config_dir = tmp_path / "config" / "company"
+    config_dir.mkdir(parents=True)
+    source = tmp_path / "prompt.md"
+    runtime = tmp_path / "runtime-prompt.md"
+    source.write_text("BOOTSTRAP\n", encoding="utf-8")
+    runtime.write_text("BOOTSTRAP\nDRIFT\n", encoding="utf-8")
+    binding = {
+        "prompt_ref": "prompt.md",
+        "runtime_prompt_path": str(runtime),
+        "prompt_env": "DEALIX_TEST_MASTER_PROMPT",
+        "prompt_sha_env": "DEALIX_TEST_MASTER_PROMPT_SHA256",
+        "required_prompt_markers": ["BOOTSTRAP"],
+    }
+    (config_dir / "dealix_master_prompt_binding_v1.json").write_text(
+        json.dumps(binding), encoding="utf-8"
+    )
+    monkeypatch.delenv("DEALIX_TEST_MASTER_PROMPT", raising=False)
+    monkeypatch.delenv("DEALIX_TEST_MASTER_PROMPT_SHA256", raising=False)
+    effective, hold = factory.bind_master_prompt_to_opencode_job(
+        _opencode_job(modifying=True), repo_root=tmp_path
+    )
+    assert effective["MODIFYING"] is True
+    assert hold is not None
+    assert hold["returncode"] == 78
+    assert "SHA256 mismatch" in hold["stderr"]
+
+
+def test_execute_opencode_passes_bound_modifying_prompt_to_daemon(tmp_path: Path, monkeypatch) -> None:
+    job = _daemon_job(modifying=True)
+    bound = dict(job)
+    bound_executor = dict(job["EXECUTOR"])
+    bound_executor["prompt"] = "BOUND MASTER PATH+SHA\n--- TASK ---\noriginal"
+    bound["EXECUTOR"] = bound_executor
+    bound["MASTER_PROMPT_BINDING"] = {
+        "path": "/opt/dealix/control/master.md",
+        "sha256": "a" * 64,
+        "mode": "PATH_SHA256_FAIL_CLOSED",
+    }
+    monkeypatch.setattr(factory, "bind_master_prompt_to_opencode_job", lambda _job: (bound, None))
+    monkeypatch.setattr(
+        factory, "_resolve_opencode_model",
+        lambda _job: ("opencode/muse-spark-1.3-contributor-free", None),
+    )
+    captured: dict[str, object] = {}
+
+    def _daemon(effective_job, *_args, **_kwargs):
+        captured["prompt"] = effective_job["EXECUTOR"]["prompt"]
+        return {"ok": True, "returncode": 0, "stdout": "ok", "stderr": "", "via": "daemon"}
+
+    monkeypatch.setattr(factory, "execute_opencode_daemon", _daemon)
+    result = factory.execute_opencode(job, tmp_path, db_dir=tmp_path / "oc")
+    assert result["ok"] is True
+    assert captured["prompt"] == bound_executor["prompt"]
+    assert result["master_prompt_bound"] is True
+    assert result["master_prompt_sha256"] == "a" * 64
+
+
+def test_execute_opencode_holds_before_model_when_master_binding_unproven(tmp_path: Path, monkeypatch) -> None:
+    hold = factory._master_prompt_binding_hold("test mismatch")
+    monkeypatch.setattr(
+        factory, "bind_master_prompt_to_opencode_job", lambda _job: (_job, hold)
+    )
+    monkeypatch.setattr(
+        factory, "_resolve_opencode_model",
+        lambda _job: (_ for _ in ()).throw(AssertionError("model resolution must not run")),
+    )
+    result = factory.execute_opencode(_daemon_job(modifying=True), tmp_path)
+    assert result["ok"] is False
+    assert result["returncode"] == 78
+    assert result["master_prompt_bound"] is False

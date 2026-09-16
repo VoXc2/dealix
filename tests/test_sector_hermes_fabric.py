@@ -106,3 +106,16 @@ def test_submit_due_jobs_persists_logical_agent_identity(tmp_path: Path, monkeyp
     assert all(job.get("LOGICAL_AGENT_LAYER") == "sector" for job in jobs)
     assert all(job.get("LOGICAL_AGENT_SECTOR") for job in jobs)
     assert all(job.get("OWNER_AGENT") in fabric_mod.LEGACY_EXECUTOR_ALIASES for job in jobs)
+
+
+def test_local_ai_jobs_use_internal_sensitivity_and_full_factory_timeout(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.delenv(fabric_mod.FACTORY_SCRIPT_ENV, raising=False)
+    fabric = fabric_mod.build_fabric()
+    result = fabric_mod.submit_due_jobs(fabric, tmp_path / "fabric", tmp_path / "factory", None)
+    assert result["submitted_count"] > 0
+    jobs = [json.loads(path.read_text(encoding="utf-8")) for path in (tmp_path / "factory" / "jobs").glob("*.json")]
+    local_jobs = [job for job in jobs if job.get("JOB_CLASS") == "LOCAL_AI"]
+    assert local_jobs
+    assert all(job.get("DATA_SENSITIVITY") == "INTERNAL" for job in local_jobs)
+    assert all(job.get("EXECUTOR", {}).get("timeout_seconds") == 120 for job in local_jobs)
+    assert all(job.get("EXECUTOR", {}).get("num_predict") == 160 for job in local_jobs)

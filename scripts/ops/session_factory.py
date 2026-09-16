@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import fcntl
+import hashlib
 import json
 import math
 import os
@@ -1432,6 +1433,30 @@ def _daemon_session_status(base: str, session_id: str, dir_query: str) -> str | 
     return state if state in {"busy", "running", "retry", "idle"} else None
 
 
+
+def compose_opencode_task_prompt(job: dict[str, Any]) -> str:
+    """Preserve authoritative business scope when an executor directive exists.
+
+    ``BUSINESS_GOAL`` is the job's bounded task authority. ``EXECUTOR.prompt``
+    is an execution directive, not a replacement task. A previously composed
+    prompt (for example the master-constitution binding) is passed through
+    unchanged so the goal is not duplicated.
+    """
+    executor = job.get("EXECUTOR") if isinstance(job.get("EXECUTOR"), dict) else {}
+    executor_prompt = str(executor.get("prompt") or "").strip()
+    if executor.get("prompt_scope_composed") and executor_prompt:
+        return executor_prompt
+    business_goal = str(job.get("BUSINESS_GOAL") or "").strip()
+    if business_goal and executor_prompt:
+        return (
+            "BUSINESS GOAL - AUTHORITATIVE TASK SCOPE\n"
+            f"{business_goal}\n\n"
+            "EXECUTOR DIRECTIVE - EXECUTION METHOD / CONSTRAINTS\n"
+            f"{executor_prompt}"
+        )
+    return business_goal or executor_prompt
+
+
 def execute_opencode_daemon(
     job: dict[str, Any],
     cwd: Path,
@@ -1496,7 +1521,7 @@ def execute_opencode_daemon(
             "session_id": None,
         }
 
-    prompt = str((job.get("EXECUTOR") or {}).get("prompt") or job.get("BUSINESS_GOAL", ""))
+    prompt = compose_opencode_task_prompt(job)
     status, body = _daemon_request(
         base,
         "POST",
@@ -1731,7 +1756,7 @@ def execute_opencode_cli(
             "duration_s": 0,
         }
 
-    prompt = job.get("EXECUTOR", {}).get("prompt") or job.get("BUSINESS_GOAL", "")
+    prompt = compose_opencode_task_prompt(job)
     # Raw JSON events are the stable non-interactive CLI contract. The default
     # formatted renderer is intended for terminal output and has previously
     # stalled under captured/non-TTY execution on this host.
@@ -1762,6 +1787,103 @@ def execute_opencode_cli(
     )
 
 
+
+def _master_prompt_binding_hold(reason: str) -> dict[str, Any]:
+    """Return a fail-closed result when the company constitution is unproven."""
+    return {
+        "ok": False,
+        "returncode": 78,
+        "stdout": "",
+        "stderr": f"master-prompt-binding-unproven: HOLD ({reason})",
+        "duration_s": 0,
+        "master_prompt_bound": False,
+    }
+
+
+def bind_master_prompt_to_opencode_job(
+    job: dict[str, Any], repo_root: pathlib.Path | str | None = None
+) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Bind modifying OpenCode jobs to the verified Dealix master prompt.
+
+    The full constitution is not duplicated into the queue. Every modifying
+    OpenCode job receives an immutable runtime path plus SHA-256 prefix. The
+    source-controlled prompt and installed runtime prompt must both exist,
+    match byte-for-byte, and contain the binding's required markers. Drift
+    fails closed before a model session is launched. Read-only jobs preserve
+    compatibility and may run without this material-write guard.
+    """
+    if not job.get("MODIFYING"):
+        return job, None
+
+    root = pathlib.Path(repo_root or REPO_ROOT)
+    override = os.environ.get("DEALIX_MASTER_PROMPT_BINDING_FILE", "").strip()
+    binding_path = pathlib.Path(override) if override else root / "config/company/dealix_master_prompt_binding_v1.json"
+    try:
+        binding = json.loads(binding_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
+        return job, _master_prompt_binding_hold(f"binding unreadable: {type(exc).__name__}")
+    if not isinstance(binding, dict):
+        return job, _master_prompt_binding_hold("binding shape invalid")
+
+    prompt_ref = str(binding.get("prompt_ref") or "").strip()
+    runtime_default = str(binding.get("runtime_prompt_path") or "").strip()
+    prompt_env = str(binding.get("prompt_env") or "DEALIX_COMPANY_MASTER_PROMPT").strip()
+    prompt_sha_env = str(binding.get("prompt_sha_env") or "DEALIX_COMPANY_MASTER_PROMPT_SHA256").strip()
+    if not prompt_ref or not runtime_default:
+        return job, _master_prompt_binding_hold("prompt_ref/runtime_prompt_path missing")
+
+    source_prompt = (root / prompt_ref).resolve()
+    runtime_prompt = pathlib.Path(os.environ.get(prompt_env, "").strip() or runtime_default)
+    if not source_prompt.is_file():
+        return job, _master_prompt_binding_hold("source prompt missing")
+    if not runtime_prompt.is_file():
+        return job, _master_prompt_binding_hold("installed runtime prompt missing")
+
+    try:
+        source_bytes = source_prompt.read_bytes()
+        runtime_bytes = runtime_prompt.read_bytes()
+    except OSError as exc:
+        return job, _master_prompt_binding_hold(f"prompt unreadable: {type(exc).__name__}")
+    source_sha = hashlib.sha256(source_bytes).hexdigest()
+    runtime_sha = hashlib.sha256(runtime_bytes).hexdigest()
+    if source_sha != runtime_sha:
+        return job, _master_prompt_binding_hold("source/runtime prompt SHA256 mismatch")
+
+    expected_env_sha = os.environ.get(prompt_sha_env, "").strip()
+    if expected_env_sha and expected_env_sha != source_sha:
+        return job, _master_prompt_binding_hold("prompt SHA256 environment mismatch")
+
+    try:
+        prompt_text = source_bytes.decode("utf-8")
+    except UnicodeDecodeError:
+        return job, _master_prompt_binding_hold("source prompt is not UTF-8")
+    missing = [str(x) for x in binding.get("required_prompt_markers", []) if str(x) not in prompt_text]
+    if missing:
+        return job, _master_prompt_binding_hold("required prompt markers missing")
+
+    executor = job.get("EXECUTOR") if isinstance(job.get("EXECUTOR"), dict) else {}
+    task_prompt = compose_opencode_task_prompt(job)
+    prefix = (
+        "DEALIX MASTER EXECUTION CONSTITUTION - REQUIRED BEFORE THIS TASK\n"
+        f"Read this file in full before substantive action: {runtime_prompt}\n"
+        f"Verify sha256={source_sha}. If the file is missing or the hash differs, stop with HOLD.\n"
+        "Treat it as the current founder Master Execution Prompt. LIVE TRUTH and current repository contracts win on conflict. "
+        "Do not create a parallel Company Machine. Preserve exact action-bound L5 fail-closed rules.\n"
+        "--- TASK ---\n"
+    )
+    effective = dict(job)
+    effective_executor = dict(executor)
+    effective_executor["prompt"] = prefix + task_prompt
+    effective_executor["prompt_scope_composed"] = True
+    effective["EXECUTOR"] = effective_executor
+    effective["MASTER_PROMPT_BINDING"] = {
+        "path": str(runtime_prompt),
+        "sha256": source_sha,
+        "source": str(source_prompt),
+        "mode": "PATH_SHA256_FAIL_CLOSED",
+    }
+    return effective, None
+
 def execute_opencode(
     job: dict[str, Any], cwd: Path, *, db_dir: Path | None = None, allow_cli_fallback: bool | None = None
 ) -> dict[str, Any]:
@@ -1774,10 +1896,14 @@ def execute_opencode(
     from disabling the company while preserving model, permission, and
     worktree isolation.
     """
-    model, hold = _resolve_opencode_model(job)
+    effective_job, binding_hold = bind_master_prompt_to_opencode_job(job)
+    if binding_hold is not None:
+        return binding_hold
+    binding_meta = effective_job.get("MASTER_PROMPT_BINDING") if isinstance(effective_job.get("MASTER_PROMPT_BINDING"), dict) else None
+    model, hold = _resolve_opencode_model(effective_job)
     if hold is not None:
         return hold
-    executor = job.get("EXECUTOR") if isinstance(job.get("EXECUTOR"), dict) else {}
+    executor = effective_job.get("EXECUTOR") if isinstance(effective_job.get("EXECUTOR"), dict) else {}
     try:
         total_budget_s = int(job.get("TIME_BUDGET") or 600)
     except (TypeError, ValueError):
@@ -1809,8 +1935,12 @@ def execute_opencode(
 
     orchestrator_started = now_epoch()
     daemon = execute_opencode_daemon(
-        job, cwd, model=model, timeout_s=daemon_budget_s, idle_timeout_s=idle_timeout_s
+        effective_job, cwd, model=model, timeout_s=daemon_budget_s, idle_timeout_s=idle_timeout_s
     )
+    if binding_meta:
+        daemon["master_prompt_bound"] = True
+        daemon["master_prompt_sha256"] = str(binding_meta.get("sha256") or "")
+        daemon["master_prompt_path"] = str(binding_meta.get("path") or "")
     # OpenCode 1.18.x can leave a healthy loopback daemon session running
     # without a terminal assistant message until the bounded deadline. The
     # daemon executor aborts that session before returning 124, so a same-model
@@ -1822,8 +1952,8 @@ def execute_opencode(
     )
     if not daemon.get("daemon_unavailable") and not daemon_timed_out_after_abort:
         return daemon
-    if job.get("MODIFYING"):
-        isolation = verify_modifying_cli_worktree(job, cwd)
+    if effective_job.get("MODIFYING"):
+        isolation = verify_modifying_cli_worktree(effective_job, cwd)
         if not isolation.get("ok"):
             guarded = dict(daemon)
             guarded["fallback_denied"] = "modifying-worktree-isolation"
@@ -1850,8 +1980,12 @@ def execute_opencode(
             guarded["remaining_budget_s"] = remaining_budget_s
             return guarded
         cli = execute_opencode_cli(
-            job, cwd, db_dir=db_dir, model=model, timeout_s=remaining_budget_s
+            effective_job, cwd, db_dir=db_dir, model=model, timeout_s=remaining_budget_s
         )
+        if binding_meta:
+            cli["master_prompt_bound"] = True
+            cli["master_prompt_sha256"] = str(binding_meta.get("sha256") or "")
+            cli["master_prompt_path"] = str(binding_meta.get("path") or "")
         cli["total_budget_s"] = total_budget_s
         cli["daemon_budget_s"] = daemon_budget_s
         cli["remaining_budget_s"] = remaining_budget_s

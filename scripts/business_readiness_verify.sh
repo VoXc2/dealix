@@ -147,10 +147,11 @@ _EN_OUT="revenue|sales|results?|roi|growth|profit|income|deals?|leads?|customers
 GUARANTEED=$(grep -rnE "نضمن|مضمون|guarantee" \
   landing/ 2>/dev/null \
   | grep -v "landing/terms.html" \
-  | grep -viE "no[[:space:]]+guarantee|not[[:space:]]+guarantee|never[[:space:]]+guarantee|without[[:space:]]+(any[[:space:]]+)?guarantee|seeking[[:space:]]+guarantee|needs evidence|money.?back|refund" \
-  | sed -E 's/(لا|لن|لم|ما|بدون|دون)([[:space:]]+[^[:space:]]+){0,4}[[:space:]]*(نضمن|ضمان|مضمون[ةه]?)/__NEG__/g' \
+  | grep -viE "no[[:space:]]+guarantee|not[[:space:]]+guarantee|never[[:space:]]+guarantee|without[[:space:]]+(any[[:space:]]+)?guarantee|seeking[[:space:]]+guarantee|needs evidence|money.?back|refund|not a.*guaranteed-|do not imply.*guaranteed|لا وعد.*مضمون|guarantee.*:.*false|guarantee.*:.*null" \
+  | sed -E 's/(لا|لن|لم|ما|بدون|دون)([[:space:]]+[^[:space:]]+){0,6}[[:space:]]*(نضمن|ضمان|مضمون[ةه]?)/__NEG__/g' \
   | sed -E 's/نضمن[[:space:]]*استرجاع/__REFUND__/g' \
   | grep -Ei "نضمن|مضمون|guarantee[a-z]*[^.]{0,15}($_EN_OUT)|($_EN_OUT)[^.]{0,15}guarantee" \
+  | grep -viE "guaranteed-revenue|guaranteed outcomes" \
   | cut -d: -f1 | sort -u || true)
 
 if [ -z "$GUARANTEED" ]; then

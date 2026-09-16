@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BINDING = ROOT / "config" / "company" / "dealix_master_prompt_binding_v1.json"
-PROMPT = ROOT / "prompts" / "company" / "DEALIX_OMEGA_FOUNDER_COMMAND_ROOM_MASTER_PROMPT.md"
+PROMPT = ROOT / "prompts" / "company" / "DEALIX_AUTONOMOUS_COMPANY_MASTER_EXECUTION_PROMPT_2026_09_16.md"
 VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_master_prompt_binding_v1.py"
 RUNNER = ROOT / "scripts" / "commercial" / "run_dealix_master_company_cycle_v1.py"
 INSTALLER = ROOT / "scripts" / "ops" / "install_dealix_omega_master_company_v1.sh"
@@ -13,9 +13,12 @@ INSTALLER = ROOT / "scripts" / "ops" / "install_dealix_omega_master_company_v1.s
 
 def test_binding_points_to_one_canonical_prompt_and_scheduler() -> None:
     data = json.loads(BINDING.read_text(encoding="utf-8"))
-    assert data["prompt_ref"] == "prompts/company/DEALIX_OMEGA_FOUNDER_COMMAND_ROOM_MASTER_PROMPT.md"
+    assert data["prompt_ref"] == "prompts/company/DEALIX_AUTONOMOUS_COMPANY_MASTER_EXECUTION_PROMPT_2026_09_16.md"
     assert data["mode"] == "AGENT_FIRST_FOUNDER_EXCEPTION_ONLY"
     assert data["deep_wip_max"] == 3
+    # The five permanent agents are logical business roles / compatibility aliases,
+    # not runtime fleet-size authority. Agentic Holding registry + ResourceGovernor
+    # are the runtime authority.
     assert len(data["permanent_agents"]) == 5
     assert data["scheduler_created"] is False
     assert data["canonical_scheduler_reused"] is True
@@ -23,24 +26,24 @@ def test_binding_points_to_one_canonical_prompt_and_scheduler() -> None:
     assert data["l5_exact_action_bound"] is True
 
 
-def test_master_prompt_contains_company_law_and_truth_firewall() -> None:
+def test_master_prompt_contains_required_markers() -> None:
     text = PROMPT.read_text(encoding="utf-8")
-    for marker in (
-        "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
-        "ONE-COMPANY LAW",
-        "PERMANENT AGENT ROSTER — EXACTLY FIVE",
-        "PRODUCTION TRUST LAW",
-        "FOUNDER DELEGATION SESSIONS",
-        "OMNICHANNEL OPERATING MODEL",
-        "CONTINUOUS COMPANY LOOP",
-        "research == relationship",
-        "public contact == consent",
-        "draft == sent",
-        "quote == invoice",
-        "invoice == payment",
-        "merge == deployed",
-    ):
-        assert marker in text
+    required_markers = [
+        "BOOTSTRAP",
+        "LIVE TRUTH WINS",
+        "ONE COMPANY LAW",
+        "OPENCODE — DEFAULT DEVELOPMENT ENGINE",
+        "ResourceGovernor",
+        "PRODUCTION TRUST — P0",
+        "COMMERCIAL TRUTH",
+        "MEASUREMENT_NOT_PROVEN",
+        "NEVER STOP RULE",
+        "FIRST ACTION ON EVERY NEW CHAT",
+        "لا تعتبر Merge = Deploy",
+        "لا تعتبر HTTP 200 = Production Green",
+    ]
+    for marker in required_markers:
+        assert marker in text, f"Required marker missing: {marker}"
 
 
 def test_runtime_entrypoint_forces_material_effects_off() -> None:

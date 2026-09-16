@@ -197,6 +197,7 @@ def main() -> int:
         },
         "permanent_agents": binding["permanent_agents"],
         "permanent_agent_count": len(binding["permanent_agents"]),
+        "permanent_agents_note": "Logical business roles / compatibility aliases only. Agentic Holding registry + ResourceGovernor remain runtime fleet-size authority.",
         "governed_arm_count": binding["expected_arm_count"],
         "deep_wip_max": binding["deep_wip_max"],
         "command_room_run_id": command_room_run_id,
@@ -218,7 +219,7 @@ def main() -> int:
     print(f"MASTER_PROMPT_BOUND={str(prompt_binding_verified).lower()}")
     print(f"REPOSITORY_HEAD_STABLE={str(head_stable).lower()}")
     print("META_CONTROL_BOUND=true")
-    print("PERMANENT_AGENTS=5")
+    print("PERMANENT_AGENTS=5 (logical business roles / compatibility aliases)")
     print("ARMS_TOTAL=44")
     print("UNIVERSAL_L5=false")
     print("MATERIAL_EXTERNAL_EFFECTS=DISABLED_BY_ENTRYPOINT")

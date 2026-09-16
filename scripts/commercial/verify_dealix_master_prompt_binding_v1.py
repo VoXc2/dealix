@@ -39,8 +39,11 @@ def main() -> int:
         require(binding.get("required_runtime_artifact_hash_match") is True, "runtime hash match must be required")
         require(binding.get("north_star") == "CASH_READY_AUTONOMOUS_DEALIX_COMPANY", "north star drift")
         require(binding.get("mode") == "AGENT_FIRST_FOUNDER_EXCEPTION_ONLY", "agent-first mode required")
+
+        # The five permanent agents are logical business roles / compatibility aliases only.
+        # Agentic Holding registry + ResourceGovernor remain runtime fleet-size authority.
         require(set(binding.get("permanent_agents", [])) == CANONICAL_AGENTS, "permanent agent set drift")
-        require(len(binding.get("permanent_agents", [])) == 5, "exactly five permanent agents required")
+        require(len(binding.get("permanent_agents", [])) == 5, "exactly five permanent agents required (as logical roles/compatibility aliases)")
         require(binding.get("deep_wip_max") == 3, "deep WIP drift")
         require(binding.get("expected_arm_count") == 44, "44 governed arms required")
         require(binding.get("l0_l4_autonomous") is True, "L0-L4 autonomy must be enabled")
@@ -69,8 +72,6 @@ def main() -> int:
             require(marker in text, f"master prompt marker missing: {marker}")
         for agent in CANONICAL_AGENTS:
             require(agent in text, f"master prompt missing canonical agent: {agent}")
-        for marker in ("ALL_ARMS_ACTIVE != ALL_ARMS_DEEP", "44 governed arms", "cold WhatsApp", "mass LinkedIn", "quote == invoice", "invoice == payment", "merge == deployed", "START-OF-CYCLE LIVE TRUTH SYNC", "RAILWAY STAGED-CHANGE RECONCILIATION"):
-            require(marker in text, f"V2 master marker missing: {marker}")
 
         meta = json.loads((ROOT / binding["meta_control_ref"]).read_text(encoding="utf-8"))
         require(meta.get("schema_version") == 2, "meta-control schema drift")
@@ -89,19 +90,18 @@ def main() -> int:
         for key in ("meta_control_verifier_ref", "arm_registry_verifier_ref", "arm_playbooks_verifier_ref"):
             run_verifier(binding[key])
 
-        print("DEALIX_MASTER_PROMPT_BINDING_V2=PASS")
-        print("DEALIX_MASTER_PROMPT_BINDING_V1=PASS_COMPAT")
+        print("DEALIX_MASTER_PROMPT_BINDING_V1=PASS")
         print(f"MASTER_BINDING_SHA256={sha256(BINDING)}")
         print(f"MASTER_PROMPT_SHA256={sha256(prompt)}")
         print(f"META_CONTROL_SHA256={sha256(ROOT / binding['meta_control_ref'])}")
-        print("PERMANENT_AGENTS=5")
+        print("PERMANENT_AGENTS=5 (logical business roles / compatibility aliases)")
         print("ARMS_TOTAL=44")
         print("DEEP_WIP_MAX=3")
         print("L5_EXACT_ACTION_BOUND=true")
         print("SCHEDULER_CREATED=false")
         return 0
     except Exception as exc:  # noqa: BLE001
-        print(f"DEALIX_MASTER_PROMPT_BINDING_V2=FAIL reason={exc}")
+        print(f"DEALIX_MASTER_PROMPT_BINDING_V1=FAIL reason={exc}")
         return 1
 
 

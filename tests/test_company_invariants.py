@@ -40,8 +40,27 @@ def test_inv003_no_verified_payment_without_evidence():
     # Quote should not be verified cash
     fos.add_record(FinancialRecord(record_id="q1", state=FinancialState.QUOTE_VALUE, amount_sar=10000, probability=0.5))
     assert fos.verified_cash() == 0
-    # Verified payment should be counted
-    fos.add_record(FinancialRecord(record_id="p1", state=FinancialState.PAYMENT_VERIFIED, amount_sar=5000, probability=1.0, verified_at="2026-09-11T00:00:00Z"))
+    # PAYMENT_VERIFIED without an evidence reference must fail closed.
+    try:
+        fos.add_record(FinancialRecord(
+            record_id="p-missing-proof",
+            state=FinancialState.PAYMENT_VERIFIED,
+            amount_sar=5000,
+            probability=1.0,
+            verified_at="2026-09-11T00:00:00Z",
+        ))
+        assert False, "PAYMENT_VERIFIED without evidence_ref should have raised"
+    except ValueError:
+        pass
+    # Evidence-backed verified payment should be counted.
+    fos.add_record(FinancialRecord(
+        record_id="p1",
+        state=FinancialState.PAYMENT_VERIFIED,
+        amount_sar=5000,
+        probability=1.0,
+        verified_at="2026-09-11T00:00:00Z",
+        evidence_ref="bank-ref-1",
+    ))
     assert fos.verified_cash() == 5000
     # Quote with verified_at should be rejected
     try:

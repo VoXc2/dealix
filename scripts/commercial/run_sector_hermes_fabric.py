@@ -342,7 +342,7 @@ def submit_due_jobs(fabric: dict[str, Any], state_dir: Path, factory_state: Path
             authority_level="L2",
             economic_reason="Use governed low-cost intelligence on only the Top-3 research sectors",
             data_sensitivity="INTERNAL",
-            executor={"prompt": prompt, "timeout_seconds": 60, "num_predict": 160},
+            executor={"prompt": prompt, "timeout_seconds": 120, "num_predict": 160},
             acceptance={"criteria": "bounded local sector analysis returned"},
             context_refs=(f"sector:{sector_id}:local_ai", f"route_hash:{cell['route_hash']}"),
             next_action="attach analysis to free-diagnostic preparation; do not send externally",

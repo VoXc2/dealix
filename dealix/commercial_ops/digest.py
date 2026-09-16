@@ -97,12 +97,21 @@ def build_commercial_digest(
     value_plan = build_value_plan_snapshot(motion_top_n=5)
     market_intel = build_market_intel_digest_block()
 
+    war_room_items = ((war_room_file.get("targets") or {}).get("items") or [])
+    today_evidence_count = int(evidence.get("today_total") or 0)
     today_focus = [
-        "Control Tower: أفضل شريحة (وكالة P0) · رسالة · Proof · اعتراض · توقف funnel",
-        "War Room: أعلى 10 أهداف + 5 متابعات",
-        "10 لمسات موافَق عليها · 1 شريك · 1 حدث أدلة",
-        "منشور LinkedIn: مسودة جاهزة — راجع SOAEN ثم انشر يدوياً",
-        "مركز الموافقات قبل أي إرسال خارجي",
+        "Control Tower: رتّب الأدلة والإشارات المؤهلة داخلياً؛ البحث لا يساوي علاقة أو Pipeline",
+        (
+            f"War Room: {len(war_room_items)} صفوف داخلية للترتيب فقط — "
+            "لا تثبت علاقة أو موافقة أو فرصة تجارية"
+        ),
+        f"أحداث الأدلة الموثقة اليوم: {today_evidence_count}",
+        (
+            "منشور LinkedIn: مسودة داخلية موجودة — النشر يدوي/موافقة مطلوبة"
+            if linkedin_draft
+            else "منشور LinkedIn: لا توجد مسودة حالية مثبتة"
+        ),
+        "الإجراءات الخارجية: send/publish/payment تبقى محكومة بالموافقة ولا تُستنتج من هذا الموجز",
     ]
     pow = market_intel.get("pillar_of_week")
     if pow and pow.get("topic_ar"):

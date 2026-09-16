@@ -1,0 +1,767 @@
+# Company Constitution Registry — single Company Machine authority map
+# Reuses existing authorities; does not create new domain systems.
+# States: IMPLEMENTED, PARTIAL, HOLD_EXTERNAL, NOT_PROVEN, NOT_APPLICABLE
+schema: dealix.company_constitution_registry.v1
+schema_version: 1
+effective_date: "2026-09-16"
+constitution: config/company/dealix_operating_constitution.json
+control_kernel: config/company/dealix_control_kernel_v2.json
+omega: config/company/dealix_omega_master_v3.json
+arm_registry: config/company/dealix_arm_registry.json
+commercial_truth: config/company/commercial_truth_authority.json
+domains:
+  COMMAND:
+    primary_authority: dealix/agentic_holding/runtime.py
+    authority_paths:
+      - config/company/dealix_operating_constitution.json
+      - config/company/dealix_control_kernel_v2.json
+      - config/company/dealix_omega_master_v3.json
+      - dealix/agentic_holding/runtime.py
+      - dealix/agentic_holding/governance.py
+      - dealix/commercial/president_command.py
+    evidence_inputs:
+      - config/company/dealix_operating_constitution.json
+      - config/company/dealix_control_kernel_v2.json
+      - dealix/agentic_holding/runtime.py
+    verifier_paths:
+      - dealix/agentic_holding/runtime.py
+      - dealix/agentic_holding/governance.py
+      - dealix/commercial/president_command.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - trace_id
+      - authority_level
+      - decision
+      - evidence_refs
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/company/DEALIX_CONSTITUTION.md
+      - docs/company/DEALIX_SOVEREIGN_OPERATING_MODEL.md
+    action_bound_l5_gate: true
+  STRATEGY:
+    primary_authority: dealix/commercial/sector_company_factory.py
+    authority_paths:
+      - config/company/dealix_operating_constitution.json
+      - config/company/dealix_control_kernel_v2.json
+      - config/company/dealix_omega_master_v3.json
+      - dealix/commercial/sector_company_factory.py
+      - docs/company/DEALIX_GRAND_STRATEGY.md
+    evidence_inputs:
+      - config/company/dealix_operating_constitution.json
+      - docs/company/DEALIX_GRAND_STRATEGY.md
+      - docs/company/DEALIX_HOLDING_OS.md
+    verifier_paths:
+      - dealix/commercial/sector_company_factory.py
+      - dealix/commercial/arm_registry.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - decision_id
+      - evidence
+      - confidence
+      - owner
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/company/DEALIX_GRAND_STRATEGY.md
+      - docs/company/DEALIX_HOLDING_OS.md
+    action_bound_l5_gate: false
+  REVENUE:
+    primary_authority: dealix/commercial/financial_os.py
+    authority_paths:
+      - dealix/commercial/financial_os.py
+      - dealix/commercial/economic_cell.py
+      - dealix/commercial/economic_cell_registry.py
+      - dealix/commercial/economic_dispatcher.py
+      - dealix/revenue_lab/engine.py
+      - api/routers/finance_os.py
+    evidence_inputs:
+      - dealix/commercial/financial_os.py
+      - dealix/commercial/economic_cell.py
+    verifier_paths:
+      - dealix/commercial/financial_os.py
+      - api/routers/finance_os.py
+      - dealix/revenue_lab/engine.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - trace_id
+      - from_state
+      - to_state
+      - evidence
+      - authority
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/company/REVENUE_ARCHITECTURE.md
+      - docs/company/FINANCIAL_MODEL.md
+    action_bound_l5_gate: true
+  MARKETING:
+    primary_authority: dealix/company_os/marketing_loop.py
+    authority_paths:
+      - dealix/company_os/marketing_loop.py
+      - dealix/commercial/content_factory.py
+      - dealix/commercial/channel_registry.py
+      - dealix/company_os/campaign_planner.py
+    evidence_inputs:
+      - dealix/company_os/marketing_loop.py
+      - dealix/commercial/content_factory.py
+    verifier_paths:
+      - dealix/company_os/marketing_loop.py
+      - dealix/commercial/content_factory.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - draft
+      - governance_decision
+      - approval_ref
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/GO_TO_MARKET_DOCTRINE_AR.md
+    action_bound_l5_gate: true
+  BRAND:
+    primary_authority: config/company/dealix_brand_architecture_v1.json
+    authority_paths:
+      - config/company/dealix_brand_architecture_v1.json
+      - brand
+      - docs/company/BRAND_VOICE.md
+    evidence_inputs:
+      - config/company/dealix_brand_architecture_v1.json
+      - docs/company/BRAND_VOICE.md
+    verifier_paths:
+      - config/company/dealix_brand_architecture_v1.json
+      - docs/company/BRAND_VOICE.md
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - brand_asset
+      - approval_ref
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/BRAND_VOICE.md
+      - docs/company/DEALIX_CORPORATE_BRAND_GTM_V1.md
+    action_bound_l5_gate: false
+  DISTRIBUTION:
+    primary_authority: auto_client_acquisition/distribution_os/catalog.py
+    authority_paths:
+      - auto_client_acquisition/distribution_os/catalog.py
+      - auto_client_acquisition/distribution_os/draft_factory.py
+      - auto_client_acquisition/distribution_os/draft_quality.py
+      - api/routers/distribution.py
+    evidence_inputs:
+      - auto_client_acquisition/distribution_os/catalog.py
+      - auto_client_acquisition/distribution_os/draft_factory.py
+    verifier_paths:
+      - auto_client_acquisition/distribution_os/draft_quality.py
+      - auto_client_acquisition/distribution_os/metrics.py
+      - api/routers/distribution.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - governance_decision
+      - draft
+      - quality_score
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/distribution/REVENUE_EXECUTION_OS_BUILD_AR.md
+    action_bound_l5_gate: true
+  CLIENT:
+    primary_authority: dealix/commercial/relationship_graph.py
+    authority_paths:
+      - dealix/commercial/relationship_graph.py
+      - dealix/commercial/consent_registry.py
+      - auto_client_acquisition/distribution_os/prospect.py
+      - docs/company/CLIENT_ONBOARDING_PLAYBOOK_AR.md
+    evidence_inputs:
+      - dealix/commercial/relationship_graph.py
+      - dealix/commercial/consent_registry.py
+    verifier_paths:
+      - dealix/commercial/relationship_graph.py
+      - dealix/commercial/consent_registry.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - consent_state
+      - relationship_state
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/CLIENT_ONBOARDING_PLAYBOOK_AR.md
+      - docs/company/CLIENT_CAPABILITY_SCORE.md
+    action_bound_l5_gate: true
+  CUSTOMER_SUCCESS:
+    primary_authority: api/routers/customer_success.py
+    authority_paths:
+      - api/routers/customer_success.py
+      - api/routers/customer_success_os.py
+      - api/routers/customer_health_scoring.py
+      - dealix/commercial/customer_health.py
+    evidence_inputs:
+      - api/routers/customer_success.py
+      - dealix/commercial/customer_health.py
+    verifier_paths:
+      - api/routers/customer_success.py
+      - api/routers/customer_health_scoring.py
+      - dealix/commercial/customer_health.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - health_score
+      - evidence_refs
+      - owner
+    state: PARTIAL
+    evidence_refs:
+      - docs/CUSTOMER_SUCCESS_PLAYBOOK.md
+    action_bound_l5_gate: false
+  SUPPORT:
+    primary_authority: api/routers/support_os.py
+    authority_paths:
+      - api/routers/support_os.py
+      - api/routers/support_journey.py
+      - api/routers/support_webhook.py
+    evidence_inputs:
+      - api/routers/support_os.py
+      - api/routers/support_journey.py
+    verifier_paths:
+      - api/routers/support_os.py
+      - api/routers/support_journey.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - ticket_id
+      - evidence_refs
+      - governance_decision
+    state: PARTIAL
+    evidence_refs:
+      - docs/CUSTOMER_SUCCESS_SOP.md
+    action_bound_l5_gate: false
+  DELIVERY:
+    primary_authority: dealix/commercial/delivery_kit.py
+    authority_paths:
+      - dealix/commercial/delivery_kit.py
+      - dealix/commercial/pilot_delivery.py
+      - api/routers/delivery_os.py
+      - api/routers/delivery_factory.py
+    evidence_inputs:
+      - dealix/commercial/delivery_kit.py
+      - dealix/commercial/pilot_delivery.py
+    verifier_paths:
+      - dealix/commercial/delivery_kit.py
+      - api/routers/delivery_os.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - delivery_stage
+      - proof_pack
+      - acceptance
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/DELIVERY_PLAYBOOK_AR.md
+      - docs/company/DELIVERY_CAPACITY_MODEL.md
+    action_bound_l5_gate: false
+  PRODUCT:
+    primary_authority: dealix/commercial/saas_foundation.py
+    authority_paths:
+      - dealix/commercial/saas_foundation.py
+      - dealix/commercial/saas_onboarding.py
+      - docs/company/SERVICE_CATALOG.md
+    evidence_inputs:
+      - dealix/commercial/saas_foundation.py
+      - docs/company/SERVICE_CATALOG.md
+    verifier_paths:
+      - dealix/commercial/saas_foundation.py
+      - docs/company/SERVICE_CATALOG.md
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - capability_state
+      - sellability_score
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/SERVICE_CATALOG.md
+      - docs/company/SERVICE_READINESS_BOARD.md
+    action_bound_l5_gate: false
+  ENGINEERING:
+    primary_authority: scripts/ops/session_factory.py
+    authority_paths:
+      - dealix/agentic_holding/runtime.py
+      - dealix/agentic_holding/governance.py
+      - dealix/commercial/scheduler_inventory.py
+      - dealix/commercial/arm_registry.py
+    evidence_inputs:
+      - dealix/agentic_holding/runtime.py
+      - dealix/commercial/arm_registry.py
+    verifier_paths:
+      - dealix/agentic_holding/runtime.py
+      - dealix/commercial/scheduler_inventory.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - exact_base
+      - worktree
+      - verifier_identity
+      - acceptance_criteria
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/company/DEALIX_SOVEREIGN_EXECUTION_ARCHITECTURE.md
+    action_bound_l5_gate: false
+  PLATFORM:
+    primary_authority: dealix/platform_security/readiness.py
+    authority_paths:
+      - dealix/platform_security/readiness.py
+      - api/routers/health.py
+      - docker-compose.yml
+    evidence_inputs:
+      - dealix/platform_security/readiness.py
+      - api/routers/health.py
+    verifier_paths:
+      - dealix/platform_security/readiness.py
+      - api/routers/health.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - health_verdict
+      - evidence_refs
+      - timestamp
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/ops/RAILWAY_PRODUCTION_SETTINGS_AR.md
+    action_bound_l5_gate: false
+  AI:
+    primary_authority: dealix/commercial/agent_work_packets.py
+    authority_paths:
+      - dealix/commercial/agent_work_packets.py
+      - dealix/commercial/web_research_adapter.py
+      - dealix/llm
+      - dealix/ai_copilot
+    evidence_inputs:
+      - dealix/commercial/agent_work_packets.py
+      - dealix/commercial/web_research_adapter.py
+    verifier_paths:
+      - dealix/commercial/agent_work_packets.py
+      - dealix/commercial/web_research_adapter.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - model_tool_policy
+      - cost_authority
+      - evidence_refs
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/ai/AI_MODEL_ROUTER_PLAN.md
+      - docs/company/AI_CAPABILITY_FACTORY.md
+    action_bound_l5_gate: false
+  DATA:
+    primary_authority: dealix/commercial/modern_data_pipeline.py
+    authority_paths:
+      - dealix/commercial/modern_data_pipeline.py
+      - dealix/commercial/official_source_watch.py
+      - data/templates
+    evidence_inputs:
+      - dealix/commercial/modern_data_pipeline.py
+      - dealix/commercial/official_source_watch.py
+    verifier_paths:
+      - dealix/commercial/modern_data_pipeline.py
+      - dealix/commercial/official_source_watch.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - source
+      - provenance
+      - retention_ref
+    state: PARTIAL
+    evidence_refs:
+      - docs/DATA_MAP.md
+    action_bound_l5_gate: false
+  SECURITY:
+    primary_authority: dealix/trust/policy.py
+    authority_paths:
+      - dealix/trust/policy.py
+      - dealix/trust/audit.py
+      - dealix/trust/tool_verification.py
+      - dealix/platform_security/readiness.py
+      - dealix/governance/approvals.py
+      - security
+    evidence_inputs:
+      - dealix/trust/policy.py
+      - dealix/platform_security/readiness.py
+    verifier_paths:
+      - dealix/trust/policy.py
+      - dealix/trust/tool_verification.py
+      - dealix/platform_security/readiness.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - policy_decision_id
+      - audit_event
+      - authority_source
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/SECURITY_RUNBOOK.md
+      - docs/company/SECURITY_PRIVACY_TRUST_MODEL_AR.md
+    action_bound_l5_gate: true
+  PRIVACY:
+    primary_authority: dealix/privacy/minimum_data.py
+    authority_paths:
+      - dealix/privacy/minimum_data.py
+      - dealix/commercial/consent_registry.py
+      - dealix/trust/policy.py
+    evidence_inputs:
+      - dealix/privacy/minimum_data.py
+      - dealix/commercial/consent_registry.py
+    verifier_paths:
+      - dealix/privacy/minimum_data.py
+      - dealix/commercial/consent_registry.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - purpose
+      - consent_state
+      - retention
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/SECURITY_PRIVACY_TRUST_MODEL_AR.md
+      - docs/compliance/CLIENT_DATA_HANDLING_POLICY_AR.md
+    action_bound_l5_gate: true
+  FINANCE:
+    primary_authority: dealix/commercial_finance.py
+    authority_paths:
+      - dealix/commercial/financial_os.py
+      - dealix/commercial/economic_dispatcher.py
+      - dealix/commercial/roi_calculator.py
+      - api/routers/finance_os.py
+    evidence_inputs:
+      - dealix/commercial/financial_os.py
+      - dealix/commercial/roi_calculator.py
+    verifier_paths:
+      - dealix/commercial/financial_os.py
+      - api/routers/finance_os.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - economic_value
+      - evidence_refs
+      - authority
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/FINANCIAL_MODEL.md
+      - docs/company/UNIT_ECONOMICS.md
+    action_bound_l5_gate: false
+  TAX:
+    primary_authority: dealix/commercial/zatca_invoice.py
+    authority_paths:
+      - dealix/commercial/zatca_invoice.py
+      - dealix/compliance/vat_engine.py
+      - api/routers/compliance_product.py
+    evidence_inputs:
+      - dealix/commercial/zatca_invoice.py
+      - dealix/compliance/vat_engine.py
+    verifier_paths:
+      - dealix/commercial/zatca_invoice.py
+      - dealix/compliance/vat_engine.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - invoice_id
+      - zatca_status
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/compliance/ZATCA_READINESS_GUIDE_AR.md
+    action_bound_l5_gate: true
+  LEGAL:
+    primary_authority: dealix/governance/approvals.py
+    authority_paths:
+      - dealix/governance/approvals.py
+      - dealix/trust/approval.py
+      - docs/LEGAL_ENGAGEMENT.md
+      - docs/governance/APPROVAL_POLICY.md
+    evidence_inputs:
+      - dealix/governance/approvals.py
+      - dealix/trust/approval.py
+    verifier_paths:
+      - dealix/governance/approvals.py
+      - dealix/trust/approval.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - approval_packet
+      - authority
+      - evidence_refs
+    state: HOLD_EXTERNAL
+    evidence_refs:
+      - docs/LEGAL_ENGAGEMENT.md
+      - docs/DPA_DEALIX_FULL.md
+    action_bound_l5_gate: true
+  PEOPLE:
+    primary_authority: docs/company/CAPACITY_MODEL.md
+    authority_paths:
+      - docs/company/CAPACITY_MODEL.md
+      - docs/company/HIRING_TRIGGERS.md
+      - dealix/company_os/capability_evaluation.py
+    evidence_inputs:
+      - docs/company/CAPACITY_MODEL.md
+      - dealix/company_os/capability_evaluation.py
+    verifier_paths:
+      - docs/company/CAPACITY_MODEL.md
+      - dealix/company_os/capability_evaluation.py
+    autonomy_ceiling: L2
+    receipt_requirements:
+      - evaluation
+      - evidence_refs
+      - owner
+    state: NOT_PROVEN
+    evidence_refs:
+      - docs/company/CAPACITY_MODEL.md
+      - docs/company/HIRING_TRIGGERS.md
+    action_bound_l5_gate: false
+  PROCUREMENT:
+    primary_authority: docs/22_enterprise_rollout/PROCUREMENT_READINESS.md
+    authority_paths:
+      - dealix/commercial/sector_company_factory.py
+      - docs/22_enterprise_rollout/PROCUREMENT_READINESS.md
+      - dealix/commercial/saudi_market_radar.py
+    evidence_inputs:
+      - dealix/commercial/saudi_market_radar.py
+      - dealix/commercial/sector_company_factory.py
+    verifier_paths:
+      - dealix/commercial/saudi_market_radar.py
+      - dealix/commercial/sector_company_factory.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - tender_ref
+      - eligibility
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/SUPPLIER_MASTER_LIST.md
+    action_bound_l5_gate: true
+  PARTNER:
+    primary_authority: dealix/commercial/partner_economy.py
+    authority_paths:
+      - dealix/commercial/partner_economy.py
+      - dealix/commercial/sector_company_blueprint.py
+      - api/routers/ecosystem.py
+    evidence_inputs:
+      - dealix/commercial/partner_economy.py
+      - api/routers/ecosystem.py
+    verifier_paths:
+      - dealix/commercial/partner_economy.py
+      - api/routers/ecosystem.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - partner_id
+      - evidence_refs
+      - governance_decision
+    state: PARTIAL
+    evidence_refs:
+      - docs/AGENCY_PARTNER_PROGRAM.md
+    action_bound_l5_gate: true
+  B2G:
+    primary_authority: dealix/commercial/saudi_market_radar.py
+    authority_paths:
+      - dealix/commercial/saudi_market_radar.py
+      - dealix/commercial/official_source_watch.py
+      - docs/b2g
+    evidence_inputs:
+      - dealix/commercial/saudi_market_radar.py
+      - dealix/commercial/official_source_watch.py
+    verifier_paths:
+      - dealix/commercial/saudi_market_radar.py
+      - dealix/commercial/official_source_watch.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - signal_id
+      - evidence_refs
+      - authority
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/SAUDI_MARKET_POSITIONING_AR.md
+    action_bound_l5_gate: true
+  GOVERNANCE:
+    primary_authority: auto_client_acquisition/orchestrator/operating_company_contract.py
+    authority_paths:
+      - config/company/dealix_operating_constitution.json
+      - config/company/dealix_control_kernel_v2.json
+      - dealix/governance/approvals.py
+      - dealix/trust/approval.py
+      - dealix/trust/policy.py
+      - dealix/agentic_holding/governance.py
+    evidence_inputs:
+      - dealix/governance/approvals.py
+      - dealix/trust/policy.py
+      - config/company/dealix_operating_constitution.json
+    verifier_paths:
+      - dealix/governance/approvals.py
+      - dealix/trust/approval.py
+      - dealix/agentic_holding/governance.py
+    autonomy_ceiling: L4
+    receipt_requirements:
+      - policy_decision_id
+      - approval_packet
+      - audit_event
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/governance/APPROVAL_POLICY.md
+      - docs/company/DEALIX_PERMANENT_OPERATING_CONSTITUTION.md
+    action_bound_l5_gate: true
+  PROOF:
+    primary_authority: dealix/commercial/proof_builder.py
+    authority_paths:
+      - dealix/commercial/proof_builder.py
+      - dealix/commercial/proof_asset_factory.py
+      - api/routers/proof_ledger.py
+      - api/routers/proof_pack_governed.py
+    evidence_inputs:
+      - dealix/commercial/proof_builder.py
+      - dealix/commercial/proof_asset_factory.py
+    verifier_paths:
+      - dealix/commercial/proof_builder.py
+      - api/routers/proof_ledger.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - proof_pack
+      - customer_acceptance
+      - evidence_refs
+    state: IMPLEMENTED
+    evidence_refs:
+      - docs/company/PROOF_LEDGER_PLAYBOOK_AR.md
+      - docs/company/VALUE_REALIZATION_SYSTEM.md
+    action_bound_l5_gate: false
+  RISK:
+    primary_authority: docs/company/RISK_REGISTER.md
+    authority_paths:
+      - docs/company/RISK_REGISTER.md
+      - docs/company/INTERNAL_CONTROLS.md
+      - dealix/governance/runtime_switches.py
+      - api/routers/governance_risk_dashboard.py
+    evidence_inputs:
+      - docs/company/RISK_REGISTER.md
+      - dealix/governance/runtime_switches.py
+    verifier_paths:
+      - docs/company/RISK_REGISTER.md
+      - api/routers/governance_risk_dashboard.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - risk_id
+      - mitigation
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/RISK_REGISTER.md
+      - docs/company/INTERNAL_CONTROLS.md
+    action_bound_l5_gate: false
+  CONTINUITY:
+    primary_authority: dealix/reliability/retry.py
+    authority_paths:
+      - dealix/reliability/retry.py
+      - dealix/reliability/dlq.py
+      - dealix/reliability/idempotency.py
+      - observability
+    evidence_inputs:
+      - dealix/reliability/retry.py
+      - dealix/reliability/dlq.py
+    verifier_paths:
+      - dealix/reliability/retry.py
+      - dealix/reliability/idempotency.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - continuity_check
+      - evidence_refs
+      - owner
+    state: PARTIAL
+    evidence_refs:
+      - docs/SLO.md
+      - docs/ON_CALL.md
+    action_bound_l5_gate: false
+  QUALITY:
+    primary_authority: docs/company/QUALITY_GATES_BY_SERVICE.md
+    authority_paths:
+      - docs/company/QUALITY_GATES_BY_SERVICE.md
+      - docs/company/SERVICE_READINESS_GATE.md
+      - dealix/commercial/delivery_kit.py
+      - api/routers/delivery_os.py
+    evidence_inputs:
+      - docs/company/QUALITY_GATES_BY_SERVICE.md
+      - docs/company/SERVICE_READINESS_GATE.md
+    verifier_paths:
+      - docs/company/QUALITY_GATES_BY_SERVICE.md
+      - api/routers/delivery_os.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - qa_score
+      - gate_verdict
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/QUALITY_GATES_BY_SERVICE.md
+      - docs/company/SERVICE_READINESS_GATE.md
+    action_bound_l5_gate: false
+  KNOWLEDGE:
+    primary_authority: dealix/knowledge_vault/exporter.py
+    authority_paths:
+      - dealix/knowledge_vault/exporter.py
+      - dealix/company_brain/policy.py
+      - dealix/commercial/company_brain_sprint.py
+    evidence_inputs:
+      - dealix/knowledge_vault/exporter.py
+      - dealix/company_brain/policy.py
+    verifier_paths:
+      - dealix/knowledge_vault/exporter.py
+      - dealix/company_brain/policy.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - source_attribution
+      - provenance
+      - evidence_refs
+    state: PARTIAL
+    evidence_refs:
+      - docs/knowledge/DEALIX_KNOWLEDGE_GRAPH.md
+      - docs/knowledge/OBSIDIAN_KNOWLEDGE_VAULT_BRIDGE_AR.md
+    action_bound_l5_gate: false
+  ACADEMY:
+    primary_authority: docs/company/DEALIX_SOVEREIGN_OPERATING_MODEL.md
+    authority_paths:
+      - docs/company/DEALIX_SOVEREIGN_OPERATING_MODEL.md
+      - docs/academy
+    evidence_inputs:
+      - docs/company/DEALIX_SOVEREIGN_OPERATING_MODEL.md
+    verifier_paths:
+      - docs/company/DEALIX_SOVEREIGN_OPERATING_MODEL.md
+    autonomy_ceiling: L2
+    receipt_requirements:
+      - curriculum
+      - evidence_refs
+      - owner
+    state: NOT_PROVEN
+    evidence_refs:
+      - docs/academy
+    action_bound_l5_gate: false
+  LEARNING:
+    primary_authority: learning_flywheel/performance_tracker.py
+    authority_paths:
+      - learning_flywheel/performance_tracker.py
+      - learning_flywheel/ab_testing.py
+      - learning_flywheel/behavior_adapter.py
+      - dealix/commercial/proof_builder.py
+    evidence_inputs:
+      - learning_flywheel/performance_tracker.py
+      - learning_flywheel/ab_testing.py
+    verifier_paths:
+      - learning_flywheel/performance_tracker.py
+      - learning_flywheel/ab_testing.py
+    autonomy_ceiling: L3
+    receipt_requirements:
+      - learning_event
+      - evidence_refs
+      - outcome
+    state: PARTIAL
+    evidence_refs:
+      - docs/company/CLOSED_LOOP_EXECUTION.md
+    action_bound_l5_gate: false
+  VENTURE:
+    primary_authority: config/company/dealix_portfolio_candidate_contract.json
+    authority_paths:
+      - config/company/dealix_portfolio_candidate_contract.json
+      - config/company/dealix_arm_registry.json
+      - dealix/commercial/portfolio_bets.py
+    evidence_inputs:
+      - config/company/dealix_portfolio_candidate_contract.json
+      - dealix/commercial/portfolio_bets.py
+    verifier_paths:
+      - config/company/dealix_portfolio_candidate_contract.json
+      - dealix/commercial/portfolio_bets.py
+    autonomy_ceiling: L2
+    receipt_requirements:
+      - venture_id
+      - evidence_refs
+      - governance_decision
+    state: NOT_APPLICABLE
+    evidence_refs:
+      - docs/company/DEALIX_SOVEREIGN_OPERATING_MODEL.md
+    action_bound_l5_gate: true

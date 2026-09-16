@@ -17,6 +17,19 @@ def test_build_commercial_digest_shape() -> None:
     assert digest["today_focus_ar"]
 
 
+
+def test_digest_focus_never_fabricates_approvals_partners_or_evidence_counts() -> None:
+    digest = build_commercial_digest(skip_no_build=True)
+    focus = "\n".join(digest["today_focus_ar"])
+    assert "10 لمسات موافَق عليها" not in focus
+    assert "1 شريك" not in focus
+    assert "1 حدث أدلة" not in focus
+    assert "لا تثبت علاقة أو موافقة أو فرصة تجارية" in focus
+    assert "send/publish/payment" in focus
+    expected = f"أحداث الأدلة الموثقة اليوم: {int(digest['evidence'].get('today_total') or 0)}"
+    assert expected in focus
+
+
 def test_render_digest_markdown_contains_sections() -> None:
     digest = build_commercial_digest(skip_no_build=True)
     md = render_digest_markdown(digest)

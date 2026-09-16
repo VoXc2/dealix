@@ -1,6 +1,6 @@
 {
   "schema": "dealix.market-signal-set.v1",
-  "generated_at": "2026-09-15T15:12:32+00:00",
+  "generated_at": "2026-09-16T09:25:00+00:00",
   "scope": "dealix_company",
   "truth_policy": "RESEARCH_ONLY_NO_RELATIONSHIP_NO_CONSENT_NO_PIPELINE",
   "authority": {
@@ -1685,6 +1685,192 @@
         "founder_minutes": 2
       },
       "priority_basis": "Internal research priority rubric only; not purchase probability, relationship, demand evidence, compliance finding, or customer fact.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-nca-ai-cybersecurity-guidelines-jul05",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/en/news/2354/",
+      "observed_at": "2026-07-05T00:00:00+03:00",
+      "ingested_at": "2026-09-16T12:25:00+03:00",
+      "provenance_ref": "National Cybersecurity Authority official public consultation announcement — AI Cybersecurity Guidelines, 5 July 2026",
+      "fresh_until": "2027-01-05T23:59:59+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "AI_ADOPTING_OR_TECH_ENABLED_ORGANIZATION",
+      "evidence_refs": [
+        "https://nca.gov.sa/en/news/2354/",
+        "https://nca.gov.sa/ar/news/ai/"
+      ],
+      "facts": [
+        "NCA stated that the AI Cybersecurity Guidelines are intended to support cybersecurity requirements and risk mitigation for entities that use or plan to use AI systems in Saudi Arabia.",
+        "The guidelines are structured around four primary domains: cybersecurity governance, cybersecurity defense, cybersecurity resilience, and third-party cybersecurity.",
+        "The stated scope includes emerging AI technologies such as generative AI and agentic AI."
+      ],
+      "inferences": [
+        "This supports a bounded governed-AI cybersecurity readiness diagnostic hypothesis for Saudi organizations adopting AI; it does not prove a compliance gap, buyer intent, relationship, consent, certification, or demand."
+      ],
+      "unknowns": [
+        "Entity-specific applicability, current control maturity, buyer identity, budget, procurement route and any mandatory requirement remain unknown until company-specific evidence is gathered."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Map the four NCA AI cybersecurity domains to Dealix diagnostic questions without claiming certification or compliance; require entity-specific evidence before qualification."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 4,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, compliance evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2025-nca-private-sector-cyber-controls-dec28",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/",
+      "observed_at": "2025-12-28T00:00:00+03:00",
+      "ingested_at": "2026-09-16T12:25:00+03:00",
+      "provenance_ref": "National Cybersecurity Authority official controls — cybersecurity controls for private-sector entities not operating critical infrastructure, 28 December 2025",
+      "fresh_until": "2027-12-28T23:59:59+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "PRIVATE_SECTOR_NON_CRITICAL_INFRASTRUCTURE",
+      "evidence_refs": [
+        "https://nca.gov.sa/ar/regulatory-documents/controls-list/ncnicc/"
+      ],
+      "facts": [
+        "NCA published cybersecurity controls for private-sector entities that are not operators of critical infrastructure.",
+        "NCA describes the document as establishing a minimum baseline of cybersecurity controls for those private-sector entities and reducing risks from internal and external threats.",
+        "The stated objective includes protecting information and technical assets and strengthening cybersecurity practices."
+      ],
+      "inferences": [
+        "This broadens the research surface for a bounded cybersecurity baseline diagnostic beyond critical-infrastructure organizations; sector membership alone does not prove applicability, non-compliance, buyer intent, relationship or consent."
+      ],
+      "unknowns": [
+        "Applicability to any named company, its current control status, scope, budget, buyer and procurement route remain unknown until entity-specific evidence exists."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Derive evidence-seeking diagnostic questions from the official control baseline; never represent Dealix as certifying NCA compliance unless separately evidenced and authorized."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 3,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 4,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, compliance evidence, or customer facts.",
+      "authority": {
+        "relationship": false,
+        "consent": false,
+        "offer": false,
+        "price": false,
+        "quote": false,
+        "contract": false,
+        "external_send": false,
+        "payment": false,
+        "customer_proof": false,
+        "execution": false,
+        "production": false,
+        "public_publish": false
+      }
+    },
+    {
+      "signal_id": "sig-2026-sdaia-ai-ethics-governance-jul25",
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "source_ref": "https://sdaia.gov.sa/en/MediaCenter/News/Pages/NewsDetails.aspx?NewsID=370",
+      "observed_at": "2026-07-25T00:00:00+03:00",
+      "ingested_at": "2026-09-16T13:20:00+03:00",
+      "provenance_ref": "Saudi Data & AI Authority official AI ethics/current governance sources — July 2026",
+      "fresh_until": "2027-07-25T23:59:59+03:00",
+      "signal_family": "REGULATION_OR_POLICY",
+      "market": "SAUDI_ARABIA",
+      "sector_family": "CROSS_SECTOR",
+      "business_archetype": "AI_ADOPTING_OR_TECH_ENABLED_ORGANIZATION",
+      "evidence_refs": [
+        "https://sdaia.gov.sa/en/MediaCenter/News/Pages/NewsDetails.aspx?NewsID=370",
+        "https://sdaia.gov.sa/en/SDAIA/about/Documents/ai-principles.pdf",
+        "https://dgp.sdaia.gov.sa/wps/portal/pdp/services/AIEthicsAssessment/"
+      ],
+      "facts": [
+        "SDAIA states that its AI Ethics Principles are a national reference supporting responsible AI use across public and private sectors.",
+        "The published AI Ethics Principles describe a risk-based approach spanning little/no risk, limited risk, high risk and unacceptable risk, with risk management integrated through the AI system lifecycle.",
+        "SDAIA provides an AI Ethics Self-Assessment service for controllers to compare AI development and application practices against specified ethical criteria."
+      ],
+      "inferences": [
+        "This supports a bounded AI-governance readiness diagnostic hypothesis for Saudi organizations using governed or agentic AI; it does not prove legal non-compliance, certification status, buyer intent, relationship, consent or demand."
+      ],
+      "unknowns": [
+        "Entity-specific applicability, model risk class, current governance maturity, buyer, budget, procurement route and any mandatory assessment requirement remain unknown until evidence is gathered."
+      ],
+      "risk_class": "MEDIUM",
+      "allowed_use": [
+        "INTERNAL_RESEARCH_ONLY"
+      ],
+      "next_evidence": [
+        "Map SDAIA lifecycle risk-management and ethics-assessment concepts to evidence-seeking Dealix diagnostic questions; never represent Dealix as granting regulatory certification or legal compliance."
+      ],
+      "priority_factors": {
+        "economic_pain": 4,
+        "measurable_outcome": 4,
+        "buyer_access": 2,
+        "data_availability": 4,
+        "repeatability": 5,
+        "readiness": 4,
+        "distribution_density": 4,
+        "regulatory_friction": 4,
+        "integration_complexity": 3,
+        "founder_minutes": 2
+      },
+      "priority_basis": "Internal research priority rubric (1-5): higher numerator = more attractive research target; higher denominator = more friction. Values are internal prioritization only and are NOT purchase probability, demand evidence, compliance evidence, or customer facts.",
       "authority": {
         "relationship": false,
         "consent": false,
