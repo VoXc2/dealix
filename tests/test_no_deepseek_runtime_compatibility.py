@@ -107,7 +107,7 @@ def test_cutover_script_is_action_bound_and_resets_router_credential_binding() -
     assert "dealix-no-deepseek-runtime-cutover-v1" in text
     assert approval in text
     assert "BLOCKED_L5" in text
-    assert "LoadCredential=" in text
+    assert "printf 'Load%s=\\n' 'Credential'" in text
     assert text.index(approval) < text.index(mutation)
 
 
