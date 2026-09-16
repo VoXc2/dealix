@@ -17,14 +17,17 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.5
+        env:
+          RELEASE_REF: ${{ github.ref_name }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
+          envs: RELEASE_REF
           script: |
             cd /root/dealix || cd /root/ai-company-saudi
             git fetch --all --tags
-            git checkout ${{ github.ref_name }}
+            git checkout -- "$RELEASE_REF"
             docker compose pull
             docker compose up -d --build
             sleep 10
