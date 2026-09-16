@@ -109,10 +109,14 @@ def test_monshaat_jadeer_receipt_reaches_official_watch_without_opportunity_prom
     )
 
     block = build_official_source_watch_digest_block(datetime(2026, 9, 15, 5, 0, tzinfo=UTC))
-    jadeer = [signal for signal in block["signals"] if signal["source_authority"] == "MONSHAAT"]
+    jadeer = [
+        signal
+        for signal in block["signals"]
+        if signal["canonical_ref"] == "sig-2026-monshaat-jadeer-supplier-readiness"
+    ]
     assert len(jadeer) == 1
     signal = jadeer[0]
-    assert signal["canonical_ref"] == "sig-2026-monshaat-jadeer-supplier-readiness"
+    assert signal["source_authority"] == "MONSHAAT"
     assert signal["relationship_state"] == "RESEARCH_ONLY"
     assert signal["consent_state"] == "NOT_PROVEN"
     assert signal["counts_as_pipeline"] is False

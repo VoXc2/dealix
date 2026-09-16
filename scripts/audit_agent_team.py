@@ -56,6 +56,12 @@ RECOMMENDED_DOCS: tuple[str, ...] = (
 
 CLAUDE_AGENT_DIR = ".claude/agents"
 CODEX_AGENT_DIR = ".codex/agents"
+# Host-specific reviewed-execution workers are bounded specialists, not
+# compatibility/company-agent aliases and not permanent-agent authority.
+CODEX_PLATFORM_SPECIALISTS: tuple[str, ...] = (
+    "dealix-fresh-reviewer",
+    "improve-executor",
+)
 REQUIRED_CLAUDE_FRONTMATTER: tuple[str, ...] = ("name", "description", "tools")
 MIN_DOCTRINE_GUARD_TESTS = 5
 
@@ -254,7 +260,16 @@ def build_report(*, require_dynamic_registry: bool = False) -> dict[str, Any]:
             warnings.append(f"Missing recommended doc: {doc}")
 
     claude_agents = _agent_names(CLAUDE_AGENT_DIR, "*.md")
-    codex_agents = _agent_names(CODEX_AGENT_DIR, "*.toml")
+    codex_agents_all = _agent_names(CODEX_AGENT_DIR, "*.toml")
+    codex_platform_specialists = sorted(
+        set(codex_agents_all).intersection(CODEX_PLATFORM_SPECIALISTS)
+    )
+    codex_agents = sorted(
+        set(codex_agents_all).difference(CODEX_PLATFORM_SPECIALISTS)
+    )
+    # Compatibility parity compares mirrored company/staff aliases only.
+    # Codex-only fresh-review/improvement workers are explicitly bounded host
+    # specialists and must not be misclassified as company-agent fleet drift.
     claude_only = sorted(set(claude_agents) - set(codex_agents))
     codex_only = sorted(set(codex_agents) - set(claude_agents))
     parity_in_sync = not claude_only and not codex_only
@@ -302,6 +317,11 @@ def build_report(*, require_dynamic_registry: bool = False) -> dict[str, Any]:
             "claude_only": claude_only,
             "codex_only": codex_only,
         },
+        "platform_specific_specialists": {
+            "codex": codex_platform_specialists,
+            "declared_codex": list(CODEX_PLATFORM_SPECIALISTS),
+            "authority": "bounded_host_specialists_not_permanent_company_agents",
+        },
         "agent_frontmatter": frontmatter,
         "required_docs": required_docs,
         "recommended_docs": recommended_docs,
@@ -331,10 +351,11 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Dynamic runtime receipt proven: {registry['runtime_receipt_proven']}",
         "",
         "## Compatibility surfaces",
-        f"- Claude files: {len(compat['claude'])}",
-        f"- Codex files: {len(compat['codex'])}",
+        f"- Claude compatibility files: {len(compat['claude'])}",
+        f"- Codex compatibility files: {len(compat['codex'])}",
         f"- File parity: {'in sync' if compat['in_sync'] else 'out of sync'}",
-        "- These counts are compatibility hygiene, not logical-fleet architecture.",
+        f"- Codex bounded platform specialists: {len(report['platform_specific_specialists']['codex'])}",
+        "- Compatibility counts and bounded host specialists are not logical-fleet architecture or permanent-agent authority.",
         "",
         "## Gaps",
     ]

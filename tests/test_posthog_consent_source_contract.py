@@ -47,3 +47,25 @@ def test_consent_storage_failures_fail_closed_without_initializing_analytics() -
     assert "window.localStorage.setItem" in src
     assert "return false;" in src
     assert 'value === "granted" && !persisted ? "denied" : value' in src
+
+
+
+def test_consent_choice_is_reachable_and_reversible_after_initial_decision() -> None:
+    src = PROVIDER.read_text(encoding="utf-8")
+    assert "const [preferencesOpen, setPreferencesOpen] = useState(false)" in src
+    assert 'aria-label="Analytics privacy preferences"' in src
+    assert "setPreferencesOpen(true)" in src
+    assert 'consent !== "loading" && !preferencesOpen' in src
+    assert "Decline / Revoke" in src
+    assert "سحب الموافقة" in src
+
+
+def test_runtime_consent_override_blocks_capture_immediately_on_revoke() -> None:
+    src = PROVIDER.read_text(encoding="utf-8")
+    assert "let runtimeConsentOverride: AnalyticsConsent | null = null" in src
+    assert 'if (runtimeConsentOverride !== null) return runtimeConsentOverride === "granted"' in src
+    assert "runtimeConsentOverride = effectiveConsent" in src
+    assert 'if (effectiveConsent === "denied")' in src
+    denied_block = src.split('if (effectiveConsent === "denied")', 1)[1]
+    assert "posthog.opt_out_capturing()" in denied_block
+    assert "posthog.reset()" in denied_block

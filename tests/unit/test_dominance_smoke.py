@@ -27,14 +27,15 @@ def test_offer_route_has_required_keys():
         assert not missing, f"{sec} missing: {missing}"
 
 
-def test_default_offer_pilot_499():
-    assert "499" in DEFAULT_OFFER["primary_offer"]
+def test_default_offer_is_customer_specific_not_fixed_price():
+    assert "customer_specific" in DEFAULT_OFFER["primary_offer"]
+    assert DEFAULT_OFFER["pricing_tier"] == "Customer-specific quote"
 
 
 def test_marketing_agency_partnership_route():
     cfg = OFFER_ROUTES["marketing_agency"]
     assert "partner" in cfg["primary_offer"].lower() or "MRR" in cfg["primary_offer"]
-    assert "Partnership" in cfg["pricing_tier"]
+    assert cfg["pricing_tier"] == "Partnership" or "Customer-specific" in cfg["pricing_tier"]
 
 
 def test_tomorrow_recommendation_handles_empty_data():

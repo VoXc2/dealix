@@ -22,7 +22,11 @@ from dealix.commercial.proof_builder import (
 )
 from dealix.commercial.upsell_engine import UpsellEngine
 from dealix.commercial.warm_intro_generator import WarmIntroGenerator, WarmIntroRequest
-from dealix.payments.payment_link import SERVICE_TIERS, PaymentLinkRequest
+from dealix.payments.payment_link import (
+    LEGACY_FIXED_PRICE_TIER_KEYS,
+    SERVICE_TIERS,
+    PaymentLinkRequest,
+)
 
 # ── DiagnosticEngine ────────────────────────────────────────────────────────
 
@@ -217,7 +221,8 @@ def test_upsell_tier_escalates_with_l3():
         proof_level="L3",
         monthly_revenue_sar=200_000,
     )
-    assert result.recommended_tier == "executive_5k_25k"
+    assert result.recommended_tier == "executive_ai_partner"
+    assert result.price_authority == "customer_specific_quote_after_review"
 
 
 def test_upsell_reason_bilingual():
@@ -272,13 +277,10 @@ def test_case_study_generates_with_consent_and_quote():
 
 # ── Payment link ────────────────────────────────────────────────────────────
 
-def test_service_tiers_defined():
-    assert "sprint_499" in SERVICE_TIERS
-    assert SERVICE_TIERS["sprint_499"]["amount_sar"] == 499
-
-
-def test_service_tiers_has_managed_ops():
-    assert "managed_ops_2999" in SERVICE_TIERS
+def test_service_tiers_are_retired_from_current_price_authority():
+    assert SERVICE_TIERS == {}
+    assert "sprint_499" in LEGACY_FIXED_PRICE_TIER_KEYS
+    assert "managed_ops_2999" in LEGACY_FIXED_PRICE_TIER_KEYS
 
 
 def test_payment_link_request_validates():

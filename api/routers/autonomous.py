@@ -511,24 +511,24 @@ async def company_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "decision_makers": ["CEO", "Founder", "Head of Growth", "Sales Director"],
     }
     channel_plan = {
-        "primary": "WhatsApp + email + form",
-        "secondary": ["LinkedIn manual", "SMS warm only"],
-        "auto_send_allowed": ["form", "email", "whatsapp_inbound", "sms_inbound"],
-        "human_required": ["linkedin", "investor", "high_value_enterprise"],
+        "primary": "inbound / opt-in channels + forms",
+        "secondary": ["LinkedIn manual", "SMS opt-in only"],
+        "auto_send_allowed": [],
+        "draft_allowed": ["form_followup", "email", "whatsapp_inbound", "sms_optin"],
+        "human_required": ["all_external_send", "linkedin", "investor", "high_value_enterprise"],
     }
     offer_ladder = {
-        "free_audit": "20-min audit",
-        "pilot": "1 SAR × 7 days",
-        "starter": "999 SAR/mo",
-        "growth": "2,999 SAR/mo",
-        "scale": "7,999 SAR/mo",
-        "agency_partner": "Setup 3-15K + 20-30% MRR",
+        "entry": "Free diagnostic",
+        "discovery": "Qualified discovery",
+        "pilot": "Customer-specific scope, duration, acceptance criteria, and quote",
+        "expansion": "Proof-gated customer-specific expansion",
+        "agency_partner": "Customer-specific approved partner agreement",
     }
     automation_policy = {
-        "default": "auto_inbound + human_approval_outbound",
+        "default": "internal_draft_only_external_action_approval_required",
         "linkedin": "human_final_send_only",
         "whatsapp_cold": "blocked",
-        "email_cold": "low_volume_with_optout",
+        "email_cold": "blocked",
     }
 
     rec_id = _new_id("co")
@@ -601,9 +601,11 @@ async def channel_policy(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     risk = str(body.get("risk_level") or "LOW").upper()
     value = float(body.get("lead_value_sar") or 0)
 
-    auto_send = True
-    human_required = False
-    risk_reason = []
+    # Fail closed: this endpoint may recommend channels and prepare drafts,
+    # but it never mints external send authority.
+    auto_send = False
+    human_required = True
+    risk_reason = ["All external sends require action-bound approval"]
 
     if channel == "linkedin":
         auto_send = False
@@ -632,8 +634,8 @@ async def channel_policy(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "channel": channel,
         "auto_send_allowed": auto_send,
         "human_approval_required": human_required,
-        "risk_reasons": risk_reason or ["LOW risk — proceed"],
-        "recommended_action": "AUTO_SEND" if auto_send else "QUEUE_FOR_HUMAN",
+        "risk_reasons": risk_reason,
+        "recommended_action": "QUEUE_FOR_HUMAN",
     }
 
 
@@ -654,7 +656,7 @@ async def queue_outreach(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             lead_id=body.get("lead_id") or None,
             channel=channel,
             message=message[:5000],
-            approval_required=bool(body.get("approval_required", channel == "linkedin")),
+            approval_required=True,
             status="queued",
             risk_reason=body.get("risk_reason") or None,
         )
@@ -689,48 +691,24 @@ async def manual_payment_request(
     body: dict[str, Any] = Body(...),
     user: Any = Depends(get_current_user),
 ) -> dict[str, Any]:
-    """Mark deal as payment_requested + create matching task."""
-    deal_id = str(body.get("deal_id") or "").strip()
-    if not deal_id:
-        raise HTTPException(status_code=400, detail="deal_id_required")
-    tenant_id = _tenant_scope(request, user, body.get("tenant_id"))
-    method = body.get("method") or "bank_transfer"
+    """Legacy compatibility shim; never mutates payment/deal state.
 
-    async with async_session_factory()() as session:
-        result = await session.execute(
-            select(DealRecord).where(
-                DealRecord.id == deal_id,
-                DealRecord.tenant_id == tenant_id,
-            )
-        )
-        deal = result.scalar_one_or_none()
-        if not deal:
-            raise HTTPException(status_code=404, detail="deal_not_found")
-        deal.stage = "payment_requested"
-        # Schedule check-in task in 3 days
-        task = TaskRecord(
-            id=_new_id("task"),
-            tenant_id=tenant_id,
-            deal_id=deal_id,
-            lead_id=deal.lead_id,
-            task_type="payment_check",
-            due_at=_utcnow() + timedelta(days=3),
-            status="pending",
-            owner="auto",
-            notes=f"Check payment proof for deal {deal_id} (method: {method})",
-        )
-        session.add(task)
-        await session.commit()
-    return {
-        "deal_id": deal_id,
-        "status": "payment_requested",
-        "method": method,
-        "follow_up_task_id": task.id,
-        "instruction": (
-            "Send invoice to customer via WhatsApp/email with bank IBAN or STC Pay number. "
-            "Use template in docs/ops/MANUAL_PAYMENT_SOP.md."
-        ),
-    }
+    Canonical invoice/payment preparation lives under `/api/v1/payment-ops/*`.
+    Creating an intent is not permission to send it externally and is never
+    payment or revenue.
+    """
+    del request, body, user
+    raise HTTPException(
+        status_code=410,
+        detail={
+            "code": "LEGACY_PAYMENT_REQUEST_QUARANTINED",
+            "canonical_path": "POST /api/v1/payment-ops/invoice-intent",
+            "external_send_allowed": False,
+            "payment_execution_allowed": False,
+            "mutation_applied": False,
+            "truth": "payment_request != payment != revenue",
+        },
+    )
 
 
 @router.post("/payments/mark-paid")
@@ -739,60 +717,27 @@ async def mark_paid(
     body: dict[str, Any] = Body(...),
     user: Any = Depends(get_current_user),
 ) -> dict[str, Any]:
-    """Mark deal as paid + auto-create customer onboarding."""
-    deal_id = str(body.get("deal_id") or "").strip()
-    amount = float(body.get("amount") or 0)
-    if not deal_id:
-        raise HTTPException(status_code=400, detail="deal_id_required")
-    tenant_id = _tenant_scope(request, user, body.get("tenant_id"))
+    """Legacy compatibility shim; body assertions can never mint payment.
 
-    async with async_session_factory()() as session:
-        result = await session.execute(
-            select(DealRecord).where(
-                DealRecord.id == deal_id,
-                DealRecord.tenant_id == tenant_id,
-            )
-        )
-        deal = result.scalar_one_or_none()
-        if not deal:
-            raise HTTPException(status_code=404, detail="deal_not_found")
-        deal.stage = "paid"
-        if amount:
-            deal.amount = amount
-
-        # Auto-create customer
-        cust = CustomerRecord(
-            id=_new_id("cust"),
-            deal_id=deal_id,
-            plan=str(body.get("plan") or "pilot"),
-            onboarding_status="kickoff_pending",
-            pilot_start_at=_utcnow(),
-            pilot_end_at=_utcnow() + timedelta(days=7),
-            success_metric=body.get("success_metric") or None,
-        )
-        session.add(cust)
-
-        # Schedule onboarding kickoff task
-        task = TaskRecord(
-            id=_new_id("task"),
-            tenant_id=tenant_id,
-            deal_id=deal_id,
-            lead_id=deal.lead_id,
-            task_type="onboarding_kickoff",
-            due_at=_utcnow() + timedelta(hours=4),
-            status="pending",
-            owner="sami",
-            notes=f"Kickoff call within 4 hours for paid deal {deal_id}. Use FIRST_CUSTOMER_DELIVERY_TEMPLATE.md",
-        )
-        session.add(task)
-        await session.commit()
-    return {
-        "deal_id": deal_id,
-        "status": "paid",
-        "customer_id": cust.id,
-        "onboarding_task_id": task.id,
-        "celebration": "🎉 First revenue! Open docs/sales-kit/dealix_case_study_template.md within 48h.",
-    }
+    The canonical path is Payment Ops: create/identify the payment record,
+    attach an evidence reference, then confirm it through the founder-admin
+    gated confirmation transition. Delivery remains a separate transition.
+    """
+    del request, body, user
+    raise HTTPException(
+        status_code=410,
+        detail={
+            "code": "BODY_ONLY_PAYMENT_STATE_FORBIDDEN",
+            "canonical_path": [
+                "POST /api/v1/payment-ops/manual-evidence",
+                "POST /api/v1/payment-ops/confirm",
+            ],
+            "verified_payment_requires_evidence": True,
+            "delivery_requires_payment_confirmed": True,
+            "mutation_applied": False,
+            "truth": "invoice != payment; payment evidence + confirmation required",
+        },
+    )
 
 
 # ── Customer onboarding ─────────────────────────────────────────
@@ -830,13 +775,9 @@ async def partner_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail="company_name_required")
 
     pid = _new_id("partner")
-    # Default commission terms by type
-    commission = {
-        "REFERRAL":       "10% MRR × 12 months",
-        "AGENCY":         "Setup 3,000-15,000 SAR + 20-30% MRR (lifetime)",
-        "IMPLEMENTATION": "Setup fee + service hours + 20% MRR",
-        "STRATEGIC":      "Co-selling / bundle / white-label option (Scale tier)",
-    }.get(ptype, "Custom — TBD")
+    # Partner economics are never inferred from partner type. Any concrete
+    # commission/setup/share requires a partner-specific approved agreement.
+    commission = str(body.get("commission_terms") or "customer_specific_agreement_required")
 
     async with async_session_factory()() as session:
         rec = PartnerRecord(

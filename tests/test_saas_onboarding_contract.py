@@ -92,7 +92,10 @@ def test_quote_first_runtime_has_one_canonical_onboarding_router() -> None:
     main = _source(MAIN_PATH)
     customers_domain = _source(CUSTOMERS_DOMAIN_PATH)
 
-    assert "app.include_router(onboarding_router.router)" in main
+    assert "_LAUNCH_RETIRED_ONBOARDING_PATHS" in main
+    assert '"/api/v1/onboarding/plans"' in main
+    assert '"/api/v1/onboarding/signup"' in main
+    assert "app.include_router(_launch_onboarding_router)" in main
     assert "customer_onboarding_router" not in main
     assert "_LEGACY_SELF_SERVE_ONBOARDING_PATHS" not in customers_domain
     assert "onboarding.router =" not in customers_domain

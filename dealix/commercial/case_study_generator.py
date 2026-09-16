@@ -136,7 +136,7 @@ class CaseStudyGenerator:
 
 التحدي: {req.challenge_ar or '[يُكمَل لاحقاً]'}
 
-ما فعلناه في 7 أيام:
+ما نفذناه ضمن النطاق والمدة المتفق عليهما:
 {req.approach_ar or '[يُكمَل لاحقاً]'}
 
 النتيجة:
@@ -155,7 +155,7 @@ class CaseStudyGenerator:
 
 Challenge: {req.challenge_en or '[to be completed]'}
 
-What we did in 7 days:
+What we delivered within the agreed scope and duration:
 {req.approach_en or '[to be completed]'}
 
 Result:

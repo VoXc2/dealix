@@ -2047,6 +2047,31 @@ def run_job(
     if preclaimed:
         lease = read_lease(root, job["JOB_ID"])
         acquired = bool(lease and not lease_expired(lease))
+    elif job.get("MODIFYING"):
+        # Direct ``run`` calls must use the same atomic deep-capacity admission
+        # boundary as ``tick``. Otherwise separate run processes can each see
+        # stale availability and collectively exceed max_concurrent_deep.
+        # Hold the global lock only for governor -> claim -> lease; executor
+        # work remains fully outside the critical section.
+        with admission_lock(root):
+            governor = governor_state(root)
+            if int(governor["deep_wip_available"]) <= 0:
+                reason = "DEEP_CAPACITY_UNAVAILABLE"
+                save_job(root, job)
+                write_queue_snapshot(root)
+                append_ledger(
+                    root,
+                    {"event": "job_admission_deferred", "JOB_ID": job["JOB_ID"], "reason": reason},
+                )
+                return {"ok": False, "status": job.get("STATUS"), "reason": reason, "job": job}
+            transition(job, "CLAIMED", reason=f"atomically claimed by {owner}")
+            acquired, lease = acquire_lease(
+                root,
+                job,
+                owner=owner,
+                ttl_seconds=int(job.get("TIME_BUDGET") or 600) + 300,
+                reclaim_expired=recover_expired,
+            )
     else:
         transition(job, "CLAIMED", reason=f"claimed by {owner}")
         acquired, lease = acquire_lease(

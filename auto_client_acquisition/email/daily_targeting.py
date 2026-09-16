@@ -76,7 +76,7 @@ class DailyTargetingResult:
 # ── Sector-specific message angle map ─────────────────────────────
 ANGLE_MAP: dict[str, str] = {
     "real_estate_developer": (
-        "كل lead عقاري متأخر دقيقة = احتمال خسارة العميل لمنافس. Dealix يرد خلال 45 ثانية بالعربي الخليجي، "
+        "كل lead عقاري متأخر دقيقة = احتمال خسارة العميل لمنافس. Dealix يساعد على تنظيم الاستجابة بالعربي الخليجي وقياسها من baseline حقيقي، "
         "يأخذ الميزانية + الموقع + الموعد، ويسلم العميل المؤهل لمندوبكم."
     ),
     "construction": (
@@ -94,24 +94,24 @@ ANGLE_MAP: dict[str, str] = {
         "يجمع الوزن + الوجهة + التاريخ، ويفتح ticket في نظامكم."
     ),
     "restaurant": (
-        "Dealix يرد على استفسارات التموين + الحجوزات + الفرنشايز بالعربي خلال 45 ثانية، ويفرز الجاد منها للإدارة."
+        "Dealix يساعد على تنظيم استفسارات التموين + الحجوزات + الفرنشايز بالعربي وفرزها للإدارة ضمن workflow قابل للقياس."
     ),
     "saas": (
         "Dealix هو AI sales rep بالعربي الخليجي يتكامل مع HubSpot/Salesforce/Zoho. "
-        "إذا تبيعون SaaS داخل السعودية، نضمن الرد على inbound leads خلال 45 ثانية."
+        "إذا تبيعون SaaS داخل السعودية، نقدر نراجع workflow الرد على inbound leads ونبني baseline وهدفًا خاصًا بالحالة بدون ضمان نتيجة."
     ),
     "marketing_agency": (
         "Dealix هو AI sales rep بالعربي يتكامل مع HubSpot/Salesforce/Zoho. كشركة تسويق سعودية، لكم خياران: "
-        "تستخدمونه لعملائكم (resell) → 25% MRR شهرياً، أو تشترون لعملاء وكالتكم. كلاهما revenue share."
+        "يمكن استخدامه ضمن نموذج resell أو تنفيذ مشترك؛ الاقتصاديات والحقوق تحدد باتفاق خاص ومعتمد، ولا توجد revenue share افتراضية."
     ),
 }
 
 
 def angle_for(sector: str | None) -> str:
     if not sector:
-        return "Dealix يرد على inbound leads بالعربي الخليجي خلال 45 ثانية."
+        return "Dealix يساعد على تنظيم inbound leads بالعربي الخليجي وقياس زمن الاستجابة من baseline موثق."
     return ANGLE_MAP.get(sector.lower(),
-                        "Dealix يرد على inbound leads بالعربي الخليجي خلال 45 ثانية.")
+                        "Dealix يساعد على تنظيم inbound leads بالعربي الخليجي وقياس زمن الاستجابة من baseline موثق.")
 
 
 def opener_for(priority: str) -> str:
@@ -125,7 +125,7 @@ def render_email_template(account: dict[str, Any], priority: str) -> dict[str, s
     opener = opener_for(priority)
     cta = (
         "نبدأ بتشخيص مختصر ومحدود. بعد discovery نجهّز نطاق Revenue Command Pilot "
-        "لمدة 30 يومًا وquote موثقًا للمراجعة. تناسبكم 20 دقيقة هذا الأسبوع؟"
+        "بمدة ومعايير قبول خاصة بالعميل وquote موثقًا للمراجعة. تناسبكم 20 دقيقة هذا الأسبوع؟"
     )
     body = (
         f"{opener} {company}،\n\n"

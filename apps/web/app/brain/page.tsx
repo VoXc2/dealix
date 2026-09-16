@@ -192,7 +192,7 @@ export default function BrainDashboardPage() {
             href="/products/company-brain-os"
             className="rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-white/40"
           >
-            ابدأ سباق 7 أيام
+            تعرّف على Company Brain OS
           </Link>
         </section>
 

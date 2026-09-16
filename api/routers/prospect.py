@@ -550,16 +550,16 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "opt_out":              "تمام، تم إيقاف الرسائل. شكراً لوقتك.",
         "interested":           f"هلا! شكراً على اهتمامك. خلني أحجز معك 20 دقيقة demo بدون أي التزام — تقدر تختار موعدك هنا: {CAL}",
         "wants_demo":           f"ممتاز، نسوي demo. 20 دقيقة، اختار موعد: {CAL}",
-        "price":                f"Starter 999/شهر، Growth 2,999، Scale 7,999. في pilot بريال × 7 أيام بدون التزام. 20 دقيقة demo أفصّل الباقة المناسبة: {CAL}",
-        "send_details":         f"تفاصيل سريعة: Dealix = AI sales rep بالعربي الخليجي، يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demos. الأفضل نشوفه معاً في 20 دقيقة على سيناريو شركتكم: {CAL}\nأو تصفح: https://dealix.me",
+        "price":                f"السعر والنطاق والمدة يحددون بعد discovery للحالة نفسها؛ لا توجد باقات عامة ثابتة. 20 دقيقة تكفي لمراجعة الملاءمة: {CAL}",
+        "send_details":         f"تفاصيل سريعة: Dealix ينظم workflow التعامل مع inbound leads بالعربي مع موافقات وProof واضح، بدون وعد بزمن استجابة أو نتيجة. الأفضل نراجعه على سيناريو شركتكم في 20 دقيقة: {CAL}\nأو تصفح: https://dealix.me",
         "later":                "تمام. متى الوقت المناسب يحتمل يكون؟ سأرجع في نفس اليوم بالظبط.",
-        "not_relevant":         "أحترم ذلك. سؤال أخير: هل تعرف شخص/شركة سعودية قد تستفيد من AI sales rep بالعربي؟ 10% من MRR لـ 12 شهر لكل referral. شكراً على وقتك.",
-        "budget_objection":     "أفهم. عرضنا pilot بريال واحد × 7 أيام — قابل للاسترداد 100% — هدفه يثبت ROI قبل أي التزام. مناسب؟",
+        "not_relevant":         "أحترم ذلك، وشكراً لوقتك. إذا رغبت لاحقاً في مناقشة شراكة أو إحالة، الشروط تُحدد باتفاق خاص ومعتمد ولا توجد عمولة افتراضية.",
+        "budget_objection":     "أتفهم. نبدأ بتشخيص مجاني ثم discovery؛ إذا ثبتت الملاءمة نجهّز quote ونطاقًا ومدة خاصة بكم، بدون وعد ROI أو التزام قبل الاعتماد.",
         "already_has_crm":      "Dealix ما يستبدل CRM — يشتغل كطبقة أولى فوقه. يرد بالعربي، يؤهّل، ويسلّم الـ CRM قائمة leads جاهزة. تكامل مباشر HubSpot/Salesforce/Zoho/webhook. 20 دقيقة demo: " + CAL,
         "arabic_concern":       f"نقطة مهمة. Dealix خليجي حقيقي، ما يكتب 'حضرتك' و'تعطفكم'. 20 دقيقة demo تختبره بنفسك على سيناريو شركتكم: {CAL}",
-        "privacy_concern":      f"مصمم PDPL-compliant: بياناتكم في سيرفرات السعودية، opt-out في كل email، audit log كامل. 20 دقيقة نناقش compliance + demo: {CAL}",
-        "partnership_interest": "ممتاز. 3 tiers:\n- Referral: 10% MRR × 12 شهر\n- Agency: setup 3-15K + 20-30% MRR\n- White-label (Scale)\n20 دقيقة partner call: https://dealix.me/partners.html",
-        "referral_opportunity": "شكراً! 10% من MRR × 12 شهر لأي عميل يجي عبرك. ممكن تخبرني بمعلومات الشركة والشخص؟",
+        "privacy_concern":      f"نتعامل مع الخصوصية كمسار حوكمة: purpose/data boundary/retention/approvals تُراجع حسب الحالة، ولا ندّعي امتثالاً شاملاً من هذه الرسالة. 20 دقيقة نراجع المتطلبات: {CAL}",
+        "partnership_interest": "ممتاز. نراجع نموذج الشراكة المناسب ثم نوثق النطاق والاقتصاديات والحقوق لكل حالة باتفاق معتمد؛ لا توجد عمولة أو setup افتراضي. 20 دقيقة partner call: https://dealix.me/partners.html",
+        "referral_opportunity": "شكراً. أي إحالة تحتاج سياق علاقة وموافقة مناسبة، وشروطها التجارية تُحدد باتفاق خاص قبل أي التزام. ممكن تشارك فقط المعلومات المسموح لكم مشاركتها؟",
     }
     response_ar = responses.get(classification, responses["interested"])
 

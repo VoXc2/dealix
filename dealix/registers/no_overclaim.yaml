@@ -194,7 +194,7 @@ claims:
       - tests/test_service_catalog.py
 
   - id: first_launch_checkout_fail_closed
-    claim: "Public pricing and checkout remain disabled. The founder has not yet approved a public first-launch price. The 30-day Revenue Command Pilot is quote-only after discovery, and the 1 SAR smoke plan is impossible in Production."
+    claim: "Public pricing and checkout remain disabled. The founder has not yet approved a public first-launch price. The Revenue Command Pilot uses customer-specific duration and is quote-only after discovery, and the 1 SAR smoke plan is impossible in Production."
     status: Production
     last_reviewed: "2026-07-27"
     evidence:

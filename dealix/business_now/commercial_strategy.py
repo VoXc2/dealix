@@ -310,7 +310,7 @@ def _next_best_actions(focus: dict[str, Any]) -> list[dict[str, Any]]:
             {
                 "priority": 1,
                 "action_ar": (
-                    "نفّذ Revenue Command Pilot لمدة 30 يوماً لعميل واحد فقط "
+                    "نفّذ Revenue Command Pilot بمدة ومعايير قبول خاصة بالعميل لعميل واحد فقط "
                     "بعد قبول العرض المخصص وإثبات الدفع"
                 ),
                 "href": "/clients",
@@ -378,7 +378,7 @@ def resolve_focus(
         return {
             "primary_offer_id": "revenue_command_pilot_30d",
             "stage": "pilot_execution",
-            "rationale_ar": "بايلوتات جاهزة للقالب — ركّز على Revenue Command Pilot لمدة 30 يوماً + PILOT_EXECUTION_RUNBOOK",
+            "rationale_ar": "بايلوتات جاهزة للقالب — ركّز على Revenue Command Pilot بمدة ومعايير قبول خاصة بالعميل + PILOT_EXECUTION_RUNBOOK",
         }
     return {
         "primary_offer_id": "free_mini_diagnostic",

@@ -142,7 +142,7 @@ def build_cycle(*, run_date: date | None = None) -> dict[str, Any]:
         },
         {
             "id": "strategy_one_offer",
-            "decision": "Approve one 30-day Revenue Command Pilot and one successor motion",
+            "decision": "Approve one customer-specific Revenue Command Pilot and one successor motion",
             "status": offer_gate["status"],
             "owner": "founder",
             "evidence_gate": "issue_917_catalog_reconciliation",

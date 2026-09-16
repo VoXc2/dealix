@@ -249,7 +249,7 @@ def recommend_offer(score: ReadinessScore, answers: list[AssessmentAnswer]) -> d
         if score.follow_up_maturity < 55 and lead_present:
             rationale = [
                 "عندكم leads لكن المتابعة تتسرّب.",
-                "الخطوة التالية جلسة discovery لتحديد baseline ونطاق Pilot لمدة 30 يومًا.",
+                "الخطوة التالية جلسة discovery لتحديد baseline ونطاق Pilot بمدة خاصة بالعميل.",
                 "السعر والنطاق لا يُحددان هنا؛ يصدران في customer-specific quote موثق بعد discovery.",
             ]
         elif score.automation_readiness < 50:
@@ -296,7 +296,7 @@ def _next_action_ar(offer_id: str) -> str:
     if offer_id == "free_mini_diagnostic":
         return "ابدأ التشخيص المجاني (24 ساعة)."
     if offer_id == "revenue_command_pilot_30d":
-        return "احجز جلسة discovery لتوثيق نطاق Pilot لمدة 30 يومًا والـquote."
+        return "احجز جلسة discovery لتوثيق نطاق Pilot بمدة خاصة بالعميل والـquote."
     return "احجز مكالمة 10 دقائق لتأكيد النطاق."
 
 

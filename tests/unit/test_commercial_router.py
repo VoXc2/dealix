@@ -157,6 +157,8 @@ async def test_commercial_pilot_start_requires_named_governed_scope():
                 "account_id": "test-001",
                 "company_name": "Pilot Co",
                 "start_date": date.today().isoformat(),
+                "approved_duration_days": 21,
+                "approved_duration_ref": "duration:test-001",
                 "approved_scope_ref": "scope:test-001",
                 "baseline_source_ref": "baseline:test-001",
                 "approved_data_boundary_ref": "data-boundary:test-001",
@@ -173,7 +175,7 @@ async def test_commercial_pilot_start_requires_named_governed_scope():
     assert data["external_send_allowed"] is False
     assert data["live_charge_allowed"] is False
     assert len(data["plan"]["day_plans"]) == 7
-    assert data["plan"]["proof_cadence"] == "weekly_and_final"
+    assert data["plan"]["proof_cadence"] == "approved_duration_proportional_and_final"
 
 
 @pytest.mark.asyncio

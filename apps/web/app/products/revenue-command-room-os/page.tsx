@@ -74,10 +74,10 @@ export default function RevenueCommandRoomOSPage() {
         <section className="mt-8 grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <p className="text-xs uppercase tracking-widest text-amber-300/80">
-              مدة التسليم
+              نطاق ومدة التنفيذ
             </p>
             <p className="mt-2 text-sm text-white/80">
-              7 أيام للتشغيل الأول · مراجعة أسبوعية · توسعة عند تحقق الشروط
+              النطاق والمدة ومعايير القبول ووتيرة المراجعة تُحدد بعد التشخيص المجاني وQualified Discovery
             </p>
           </div>
           <div className="rounded-2xl border border-amber-300/20 bg-amber-300/5 p-6">
@@ -108,7 +108,7 @@ export default function RevenueCommandRoomOSPage() {
             href="/delivery-os"
             className="rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-white/40"
           >
-            ابدأ سباق 7 أيام
+            شاهد نموذج التسليم
           </Link>
         </section>
       </div>

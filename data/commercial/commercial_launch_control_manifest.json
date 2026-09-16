@@ -19,28 +19,24 @@
   ],
   "commercial_sprint_packages": [
     {
-      "name": "AI Revenue Diagnostic",
-      "price_range_sar": "0-1500",
-      "duration": "1-3 days",
-      "goal": "turn a company pain into a scoped sprint"
+      "name": "Free Execution Diagnostic",
+      "commercial_terms": "Free diagnostic. Scope and timing are confirmed from the customer context.",
+      "goal": "turn a verified company pain into a scoped discovery path"
     },
     {
-      "name": "7-Day Revenue Command Room Sprint",
-      "price_range_sar": "5000-12000",
-      "duration": "7 days",
-      "goal": "build the first revenue command room and daily queue"
+      "name": "Revenue Command Pilot",
+      "commercial_terms": "Customer-specific quote, duration and acceptance criteria after qualified discovery.",
+      "goal": "build the first governed revenue command workflow and daily queue"
     },
     {
-      "name": "14-Day Company Brain Sprint",
-      "price_range_sar": "15000-35000",
-      "duration": "14 days",
-      "goal": "build decision desk, risk radar, and board memo workflow"
+      "name": "AI Company OS Setup",
+      "commercial_terms": "Customer-specific quote, duration and acceptance criteria after qualified discovery.",
+      "goal": "build a governed decision desk, risk radar and operating workflow"
     },
     {
-      "name": "Monthly Managed OS",
-      "price_range_sar": "3000-25000 monthly",
-      "duration": "monthly",
-      "goal": "operate and improve the client system with proof packs"
+      "name": "Revenue Command Room Retainer",
+      "commercial_terms": "Customer-specific scope, cadence and quote after qualified discovery and pilot evidence.",
+      "goal": "operate and improve the client system with source-backed proof packs"
     }
   ],
   "daily_launch_outputs": [
@@ -66,5 +62,11 @@
     "Run Startup OS Release Gate",
     "Run apps/web verifier",
     "Resolve conflicts and only then merge PR 788"
-  ]
+  ],
+  "public_commercial_authority": {
+    "all_diagnostics_free": true,
+    "public_fixed_price": false,
+    "public_fixed_duration": false,
+    "quote_authority": "customer_specific_after_qualified_discovery"
+  }
 }

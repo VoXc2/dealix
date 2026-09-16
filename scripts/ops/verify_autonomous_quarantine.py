@@ -20,8 +20,8 @@ DOMAIN_INIT = ROOT / "api/routers/domains/agents/__init__.py"
 LEGACY_ROUTER = ROOT / "api/routers/autonomous.py"
 LEGACY_MODULE = "api.routers.autonomous"
 HIGH_RISK_LEGACY_PATHS = (
-    "/companies/intake", "/outreach/queue", "/payments/mark-paid",
-    "/customers/onboard", "/partners/intake",
+    "/companies/intake", "/outreach/queue", "/payments/manual-request",
+    "/payments/mark-paid", "/customers/onboard", "/partners/intake",
 )
 SAFE_FLAGS = (
     "DEALIX_EXTERNAL_SEND", "DEALIX_EMAIL_LIVE_SEND", "DEALIX_WHATSAPP_OUTBOUND",

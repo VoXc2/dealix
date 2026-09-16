@@ -41,7 +41,7 @@ export default function CommercialLaunchPage() {
           <ul>
             {data.commercial_sprint_packages.map((pkg) => (
               <li key={pkg.name}>
-                <strong>{pkg.name}</strong> — {pkg.price_range_sar} SAR · {pkg.duration}
+                <strong>{pkg.name}</strong> — {pkg.commercial_terms}
               </li>
             ))}
           </ul>

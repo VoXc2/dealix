@@ -98,7 +98,8 @@ async def test_mark_paid_cannot_touch_another_tenants_deal(engine):
             json={"deal_id": VICTIM_DEAL, "amount": 999999},
         )
 
-    assert response.status_code == 404
+    assert response.status_code == 410
+    assert response.json()["detail"]["mutation_applied"] is False
 
     async with engine() as session:
         deal = await session.get(DealRecord, VICTIM_DEAL)
@@ -107,17 +108,19 @@ async def test_mark_paid_cannot_touch_another_tenants_deal(engine):
 
 
 @pytest.mark.asyncio
-async def test_mark_paid_serves_the_owning_tenant(engine):
+async def test_mark_paid_is_quarantined_even_for_owning_tenant(engine):
     async with _client(_User(VICTIM_TENANT)) as client:
         response = await client.post(
             "/api/v1/payments/mark-paid", json={"deal_id": VICTIM_DEAL}
         )
 
-    assert response.status_code == 200
+    assert response.status_code == 410
+    assert response.json()["detail"]["code"] == "BODY_ONLY_PAYMENT_STATE_FORBIDDEN"
 
     async with engine() as session:
         deal = await session.get(DealRecord, VICTIM_DEAL)
-        assert deal.stage == "paid"
+        assert deal.stage == "payment_requested"
+        assert deal.amount == 1000.0
 
 
 @pytest.mark.asyncio
@@ -141,7 +144,12 @@ async def test_payment_request_cannot_touch_another_tenants_deal(engine):
             "/api/v1/payments/manual-request", json={"deal_id": VICTIM_DEAL}
         )
 
-    assert response.status_code == 404
+    assert response.status_code == 410
+    assert response.json()["detail"]["code"] == "LEGACY_PAYMENT_REQUEST_QUARANTINED"
+
+    async with engine() as session:
+        deal = await session.get(DealRecord, VICTIM_DEAL)
+        assert deal.stage == "payment_requested"
 
 
 @pytest.mark.asyncio
@@ -152,7 +160,8 @@ async def test_declaring_the_victim_tenant_does_not_widen_access(engine):
             json={"deal_id": VICTIM_DEAL, "tenant_id": VICTIM_TENANT},
         )
 
-    assert response.status_code == 403
+    assert response.status_code == 410
+    assert response.json()["detail"]["mutation_applied"] is False
 
 
 @pytest.mark.asyncio

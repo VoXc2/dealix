@@ -437,22 +437,20 @@ class CustomerHealthEngine:
         )
 
     def _recommend_upsell(self, inp: HealthInput, score: float) -> tuple[str, str]:
-        ltv = inp.lifetime_value_sar
-        if ltv < 1500:
+        if score < 85:
             return (
-                "ترقية إلى Agency Proof Pack (1,500 ر.س) — توثيق النتائج الكاملة",
-                "Upgrade to Agency Proof Pack (1,500 SAR) — document full outcomes",
+                "راجع نطاق Managed Ops أساسي بناءً على Proof؛ السعر والمدة بعرض خاص بالعميل.",
+                "Review a core Managed Ops scope from Proof; price and duration require a customer-specific quote.",
             )
-        elif ltv < 5000:
+        if inp.proof_level_achieved in ("L3", "L4"):
             return (
-                "انضم إلى Managed Ops Retainer (2,999 ر.س/شهر) — تشغيل مُدار مستمر",
-                "Join Managed Ops Retainer (2,999 SAR/mo) — continuous managed operations",
+                "راجع نطاق Executive AI مخصص فقط لما دعمه Proof واعتمده العميل؛ لا توسع تلقائي.",
+                "Review a custom Executive AI scope only for proof-backed, customer-approved work; no automatic expansion.",
             )
-        else:
-            return (
-                "Custom AI Project (5,000–25,000 ر.س) — تطوير ذكاء اصطناعي مخصص لعملياتك",
-                "Custom AI Project (5,000–25,000 SAR) — bespoke AI for your operations",
-            )
+        return (
+            "راجع نطاق Managed Ops موسع بنطاق ومدة وسعر خاصين بالعميل.",
+            "Review an expanded Managed Ops scope with customer-specific scope, duration, and price.",
+        )
 
     def _build_action_items(
         self, inp: HealthInput, dims: list[HealthDimension], score: float,

@@ -337,3 +337,55 @@ def test_daily_ops_executes_growth_portfolio_step_fail_closed() -> None:
     assert "if step_growth_portfolio_runtime() != 0:" in source
     assert "DEALIX_MARKET_RADAR_SNAPSHOT" in source
     assert "no synthetic radar input" in source
+
+
+
+def test_runner_consumes_canonical_ranked_research_signals_without_authority_promotion(tmp_path: Path) -> None:
+    payload = {
+        "admitted_signal_count": 1,
+        "ranked_research_signals": [source_signal("radar-1")],
+        "as_of": "2026-08-30T00:00:00+00:00",
+    }
+    input_path = tmp_path / "canonical-radar.json"
+    output_path = tmp_path / "canonical-output.json"
+    input_path.write_text(json.dumps(payload), encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, "scripts/commercial/run_brand_growth_portfolio_v2.py", "--input", str(input_path), "--out", str(output_path)],
+        cwd=ROOT, text=True, capture_output=True, check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    output = json.loads(output_path.read_text(encoding="utf-8"))
+    assert output["signal_input_mode"] == "CANONICAL_RANKED_RESEARCH_SIGNALS"
+    assert output["admitted_signal_count"] == 1
+    assert output["summary"]["draft_content_opportunities"] == 1
+    assert output["adapted_signal_semantics"] == "RESEARCH_ONLY_CONTENT_OR_DIAGNOSTIC_HYPOTHESIS_ONLY"
+    assert output["authority"] == AUTHORITY
+    assert output["external_send_or_spend"] is False
+    assert all(item["authority"] == AUTHORITY for item in output["content_opportunities"])
+
+
+def test_runner_preserves_native_signals_input_mode(tmp_path: Path) -> None:
+    payload = {"signals": [source_signal()], "as_of": "2026-08-30T00:00:00+00:00"}
+    input_path = tmp_path / "native.json"
+    output_path = tmp_path / "native-output.json"
+    input_path.write_text(json.dumps(payload), encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, "scripts/commercial/run_brand_growth_portfolio_v2.py", "--input", str(input_path), "--out", str(output_path)],
+        cwd=ROOT, text=True, capture_output=True, check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    output = json.loads(output_path.read_text(encoding="utf-8"))
+    assert output["signal_input_mode"] == "NATIVE_SIGNALS"
+    assert output["admitted_signal_count"] == 1
+
+
+def test_runner_fails_closed_when_upstream_declares_admitted_signals_without_collection(tmp_path: Path) -> None:
+    input_path = tmp_path / "broken-radar.json"
+    input_path.write_text(json.dumps({"admitted_signal_count": 2, "ranked_research_signals": []}), encoding="utf-8")
+    result = subprocess.run(
+        [sys.executable, "scripts/commercial/run_brand_growth_portfolio_v2.py", "--input", str(input_path)],
+        cwd=ROOT, text=True, capture_output=True, check=False,
+    )
+    assert result.returncode == 2
+    assert "DEALIX_BRAND_GROWTH_PORTFOLIO_RUN=FAIL" in result.stdout
+    assert "admitted signals declared" in result.stdout

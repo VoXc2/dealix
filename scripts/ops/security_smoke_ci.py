@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.lib.repo_scan import is_pruned_dir
+from scripts.lib.repo_scan import git_path_state, is_pruned_dir
 from scripts.lib.repo_scan import iter_candidate_files as _iter_files
 
 SKIP_DIR_NAMES = {
@@ -143,7 +143,12 @@ def scan(root: Path = ROOT) -> tuple[list[str], list[str]]:
         rel = relpath(path, root)
 
         if path.name.startswith(".env") and not is_allowed_env_example(path):
-            failures.append(f"Do not commit local env file: {rel}")
+            state = git_path_state(root, path)
+            if state == "ignored_untracked":
+                warnings.append(f"Ignored local env residue excluded from source scan: {rel}")
+            else:
+                failures.append(f"Do not commit local env file: {rel}")
+            # Do not read local runtime env contents; this gate validates repository source.
             continue
 
         if not is_text_candidate(path):

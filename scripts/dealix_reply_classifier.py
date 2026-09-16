@@ -46,8 +46,8 @@ RESPONSES = {
         "BOOK_DEMO", "reply_status=demo_requested",
     ),
     "price": (
-        "3 باقات: Starter 999/شهر، Growth 2,999، Scale 7,999. الاختيار يعتمد على حجم leads عندكم. "
-        "في pilot بريال واحد لمدة 7 أيام — تجرّب قبل القرار. 20 دقيقة demo وأفصّل الباقة المناسبة:\n📅 " + CALENDLY,
+        "السعر والنطاق والمدة تُحدد بعد discovery للحالة نفسها؛ لا توجد باقات عامة ثابتة. "
+        "نبدأ بتشخيص مجاني؛ وبعد discovery نجهّز Pilot بنطاق ومدة ومعايير قبول خاصة بالحالة. 20 دقيقة demo لمراجعة الملاءمة:\n📅 " + CALENDLY,
         "BOOK_DEMO", "reply_status=pricing_inquiry",
     ),
     "send_details": (
@@ -65,7 +65,7 @@ RESPONSES = {
         "STOP_CONTACT", "reply_status=not_interested",
     ),
     "budget_objection": (
-        "صح، شهر Starter 999 صعب بدون إثبات. عرضنا الـ pilot بريال واحد لمدة 7 أيام — يدوي، "
+        "صحيح، لا نطلب قرارًا تجاريًا قبل evidence. نبدأ بتشخيص مجاني ثم discovery ثم quote خاص بالعميل — "
         "قابل للاسترداد، هدفه يثبت ROI قبل أي التزام. مناسب؟",
         "ROUTE_TO_MANUAL_PAYMENT", "reply_status=budget_objection",
     ),
@@ -75,7 +75,7 @@ RESPONSES = {
         "PREPARE_DEMO_FLOW", "reply_status=trust_objection",
     ),
     "already_has_crm": (
-        "CRM عندكم يخزّن leads. Dealix يرد عليهم خلال 45 ثانية بالعربي قبل ما ينسون اسم شركتكم. "
+        "CRM عندكم يخزّن leads. Dealix يساعد على تنظيم الرد العربي وقياس زمن الاستجابة من baseline موثق. "
         "هم يشتغلون مع بعض. تكامل مع HubSpot/Salesforce/Zoho/أي webhook.",
         "BOOK_DEMO", "reply_status=crm_concern",
     ),
@@ -85,7 +85,7 @@ RESPONSES = {
         "PREPARE_DEMO_FLOW", "reply_status=ai_quality_concern",
     ),
     "privacy_concern": (
-        "مصمم PDPL-compliant: بياناتكم في سيرفرات السعودية، opt-out في كل email، audit log كامل، "
+        "الخصوصية تُدار عبر purpose/data boundary/retention/approvals حسب الحالة؛ لا ندّعي امتثالاً شاملاً من الرسالة، "
         "processor agreement جاهز. أرسل compliance sheet للقانوني؟",
         "PREPARE_DEMO_FLOW", "reply_status=privacy_concern",
     ),
@@ -101,8 +101,8 @@ RESPONSES = {
     ),
     "partnership_interest": (
         "ممتاز. 3 tiers:\n"
-        "- Referral: 10% MRR × 12 شهر (بدون setup)\n"
-        "- Agency: setup 3-15K + 20-30% MRR دائم\n"
+        "- Referral: شروط خاصة باتفاق معتمد\n"
+        "- Agency: نطاق واقتصاديات خاصة باتفاق معتمد\n"
         "- White-label (Scale): منتج باسمكم\n"
         "20 دقيقة partner call نحدد الأنسب؟\n🤝 https://dealix.me/partners.html",
         "PREPARE_PARTNER_PITCH", "opportunity_type=AGENCY_PARTNER",
@@ -114,7 +114,7 @@ RESPONSES = {
     ),
     "timing_objection": (
         "أفهمك. سؤال: هل عندكم كل شهر شركات جايبة leads كثيرة وتتأخرون بالرد؟ إذا نعم، كل يوم تأخير = leads تذبل. "
-        "الـ pilot بريال 7 أيام — إذا شفت أثر، نكمل. إذا ما شفت، نوقف.",
+        "التشخيص مجاني، وبعد discovery يمكن اعتماد Pilot خاص بالحالة؛ القرار بعدها Stop / Expand / Redesign من الأدلة.",
         "ROUTE_TO_MANUAL_PAYMENT", "reply_status=timing_objection",
     ),
 }

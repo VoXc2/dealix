@@ -122,7 +122,7 @@ class PaymentEventProcessor:
                 company_name=event.customer_name,
                 contact_name=event.metadata.get("contact_name", event.customer_name),
                 contact_phone=event.metadata.get("contact_phone", ""),
-                service_tier=event.service_tier or "sprint_499",
+                service_tier=event.service_tier or "customer_specific_service",
             )
             return record.onboarding_id
         except Exception as exc:
@@ -131,13 +131,13 @@ class PaymentEventProcessor:
 
     def _build_founder_alert(self, event: PaymentEvent) -> str:
         tier_names = {
-            "sprint_499": "499 SAR Sprint",
-            "data_pack_1500": "1,500 SAR Data Pack",
-            "managed_ops_2999": "2,999 SAR Managed Ops",
-            "managed_ops_4999": "4,999 SAR Managed Ops",
-            "custom_ai_15000": "15,000 SAR Custom AI",
+            "sprint_499": "Legacy sprint identifier (retired pricing)",
+            "data_pack_1500": "Legacy data-pack identifier (retired pricing)",
+            "managed_ops_2999": "Legacy managed-ops identifier (retired pricing)",
+            "managed_ops_4999": "Legacy managed-ops identifier (retired pricing)",
+            "custom_ai_15000": "Legacy custom-AI identifier (retired pricing)",
         }
-        tier_label = tier_names.get(event.service_tier, f"{event.amount_sar} SAR")
+        tier_label = tier_names.get(event.service_tier, "Customer-specific approved service")
 
         return f"""🎉 دفعة جديدة مؤكدة!
 

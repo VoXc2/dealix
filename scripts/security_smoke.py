@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.lib.repo_scan import iter_candidate_files
+from scripts.lib.repo_scan import git_path_state, iter_candidate_files
 
 IGNORED_DIRS = {
     ".git",
@@ -88,8 +88,8 @@ ALLOWED_ENV_EXAMPLE_SUFFIXES = (
 )
 
 
-def rel(path: Path) -> str:
-    return path.relative_to(ROOT).as_posix()
+def rel(path: Path, root: Path = ROOT) -> str:
+    return path.relative_to(root).as_posix()
 
 
 def iter_text_files(root: Path = ROOT) -> list[Path]:
@@ -122,24 +122,28 @@ def is_placeholder_line(line: str) -> bool:
     return any(marker.lower() in lowered for marker in ALLOWED_PLACEHOLDER_MARKERS)
 
 
-def is_safe_fixture_path(path: Path) -> bool:
-    path_rel = rel(path)
+def is_safe_fixture_path(path: Path, root: Path = ROOT) -> bool:
+    path_rel = rel(path, root)
     return path_rel.startswith(SAFE_FIXTURE_PREFIXES)
 
 
-def main() -> int:
+def scan(root: Path = ROOT) -> tuple[list[str], list[str]]:
+    """Return repository-source failures and non-blocking hygiene warnings."""
     errors: list[str] = []
     warnings: list[str] = []
 
-    forbidden_env_files = [
-        path
-        for path in ROOT.glob(".env*")
-        if not is_allowed_env_template(path) and path.is_file()
-    ]
-    for path in forbidden_env_files:
-        errors.append(f"Do not commit local env file: {rel(path)}")
+    for path in iter_text_files(root):
+        if path.name.startswith(".env") and not is_allowed_env_template(path):
+            state = git_path_state(root, path)
+            if state == "ignored_untracked":
+                warnings.append(
+                    f"Ignored local env residue excluded from source scan: {rel(path, root)}"
+                )
+            else:
+                errors.append(f"Do not commit local env file: {rel(path, root)}")
+            # Never inspect local runtime env contents in a repository smoke gate.
+            continue
 
-    for path in iter_text_files():
         text = read_text(path)
         if not text:
             continue
@@ -149,13 +153,19 @@ def main() -> int:
             for pattern in LIVE_TOKEN_PATTERNS:
                 if not pattern.search(line):
                     continue
-                location = f"{rel(path)}:{line_no}"
-                if is_safe_fixture_path(path):
+                location = f"{rel(path, root)}:{line_no}"
+                if is_safe_fixture_path(path, root):
                     warnings.append(f"Synthetic fixture token ignored in {location}")
                     continue
                 errors.append(
                     f"Potential live secret in {location}: matches {pattern.pattern}"
                 )
+
+    return errors, warnings
+
+
+def main() -> int:
+    errors, warnings = scan(ROOT)
 
     if errors:
         print("Repository security smoke check failed:\n", file=sys.stderr)

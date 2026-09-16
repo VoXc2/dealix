@@ -85,104 +85,104 @@ def _utcnow() -> datetime:
 # ── Sector → Offer routing table (canonical lives in intelligence/offers.py) ─
 _LEGACY_OFFER_ROUTES: dict[str, dict[str, Any]] = {
     "real_estate_developer": {
-        "primary_offer": "pilot_499_lead_qualification_plus_viewing_booking",
+        "primary_offer": "pilot_customer_specific_lead_qualification_plus_viewing_booking",
         "value_prop": "تأهيل lead العقار + حجز معاينة بدلاً منكم",
         "headline_pain": "كل lead عقاري متأخر دقيقة = احتمال خسارة العميل لمنافس",
         "kpi": "Arabic-replied leads × demos booked × pipeline added",
-        "best_channel": "phone_task_then_email", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task_then_email", "pricing_tier": "Customer-specific quote",
     },
     "real_estate": {
-        "primary_offer": "pilot_499_lead_qualification_plus_viewing_booking",
+        "primary_offer": "pilot_customer_specific_lead_qualification_plus_viewing_booking",
         "value_prop": "نأهل العميل ونحجز موعد المعاينة قبل ما يبرد",
         "headline_pain": "العمولة الواحدة في العقار = ربح أسبوع. لا تخسرونها لتأخر الرد",
         "kpi": "qualified leads × viewings booked",
-        "best_channel": "phone_task_then_email", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task_then_email", "pricing_tier": "Customer-specific quote",
     },
     "construction": {
-        "primary_offer": "pilot_999_quote_request_qualification",
+        "primary_offer": "pilot_customer_specific_quote_request_qualification",
         "value_prop": "نفرز RFQs ونجمع المواصفات قبل تسعير المشروع",
         "headline_pain": "RFQ تتوزع بين قنوات متعددة بدون فرز موحد",
         "kpi": "RFQs qualified × pricing-engineer time saved",
-        "best_channel": "phone_task", "pricing_tier": "Pilot 999",
+        "best_channel": "phone_task", "pricing_tier": "Customer-specific quote",
     },
     "hospitality": {
-        "primary_offer": "pilot_999_booking_inquiry_assistant",
+        "primary_offer": "pilot_customer_specific_booking_inquiry_assistant",
         "value_prop": "نرد فوراً على استفسارات MICE/قاعات/إفطار-سحور ونحجز معاينات",
         "headline_pain": "استفسارات بأي ساعة + موظف غير متاح = حجز ضائع",
         "kpi": "MICE inquiries × site visits booked",
-        "best_channel": "phone_task_or_email", "pricing_tier": "Pilot 999",
+        "best_channel": "phone_task_or_email", "pricing_tier": "Customer-specific quote",
     },
     "events": {
-        "primary_offer": "pilot_499_event_inquiry_with_viewing_booking",
+        "primary_offer": "pilot_customer_specific_event_inquiry_with_viewing_booking",
         "value_prop": "نرد على lead الفعالية فوراً ونجمع التاريخ + العدد + الباقة",
         "headline_pain": "كل lead = موسم — خسارته = 5K-100K ريال",
         "kpi": "inquiries × site visits booked",
-        "best_channel": "phone_task", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task", "pricing_tier": "Customer-specific quote",
     },
     "food_beverage": {
-        "primary_offer": "pilot_499_catering_franchise_inquiry_routing",
+        "primary_offer": "pilot_customer_specific_catering_franchise_inquiry_routing",
         "value_prop": "نفرز التموين/الفرنشايز عن طلبات الطعام العادية",
         "headline_pain": "تموين شركة = إيراد شهر، يضيع بين رسائل واتساب",
         "kpi": "catering leads qualified × management calls scheduled",
-        "best_channel": "phone_task", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task", "pricing_tier": "Customer-specific quote",
     },
     "restaurant": {
-        "primary_offer": "pilot_499_catering_franchise_inquiry_routing",
+        "primary_offer": "pilot_customer_specific_catering_franchise_inquiry_routing",
         "value_prop": "نفرز التموين/الفرنشايز عن طلبات الطعام العادية",
         "headline_pain": "تموين شركة = إيراد شهر، يضيع بين رسائل واتساب",
         "kpi": "catering leads qualified × management calls scheduled",
-        "best_channel": "phone_task", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task", "pricing_tier": "Customer-specific quote",
     },
     "logistics": {
-        "primary_offer": "pilot_999_RFQ_response_under_60_seconds",
+        "primary_offer": "pilot_customer_specific_RFQ_response_under_60_seconds",
         "value_prop": "نرد على RFQ شحن خلال دقيقة بالعربي",
         "headline_pain": "10 دقائق فرق في الرد = خسارة عقد لمنافس",
         "kpi": "RFQs answered <60s × dispatch tickets opened",
-        "best_channel": "phone_or_email", "pricing_tier": "Pilot 999",
+        "best_channel": "phone_or_email", "pricing_tier": "Customer-specific quote",
     },
     "saas": {
-        "primary_offer": "pilot_999_saudi_arabic_inbound_response_layer",
+        "primary_offer": "pilot_customer_specific_saudi_arabic_inbound_response_layer",
         "value_prop": "AI sales rep بالعربي الخليجي يكمل CRMكم",
         "headline_pain": "Saudi inbound leads باللغة العربية، الفريق يرد بالإنجليزية/ترجمة",
         "kpi": "Arabic-lead-to-demo conversion uplift",
-        "best_channel": "linkedin_manual_then_email", "pricing_tier": "Pilot 999",
+        "best_channel": "linkedin_manual_then_email", "pricing_tier": "Customer-specific quote",
     },
     "marketing_agency": {
-        "primary_offer": "agency_partner_25pct_mrr",
-        "value_prop": "Dealix شريك resell — أنتم تبيعونه، نحن نبنيه، 25% MRR",
+        "primary_offer": "agency_partner_customer_specific",
+        "value_prop": "Dealix يمكن أن يعمل كشريك تنفيذ/توزيع؛ الاقتصاديات والحقوق تُحدد باتفاق خاص ومعتمد",
         "headline_pain": "العملاء يطلبون AI sales rep بالعربي والوكالة بدون حل جاهز",
         "kpi": "agency clients signed × MRR share",
         "best_channel": "linkedin_manual_then_call", "pricing_tier": "Partnership",
     },
     "training_center": {
-        "primary_offer": "pilot_499_course_inquiry_enrollment_assistant",
+        "primary_offer": "pilot_customer_specific_course_inquiry_enrollment_assistant",
         "value_prop": "نرد على استفسار البرامج + نجمع التفاصيل + نوجه للتسجيل",
         "headline_pain": "موسم تسجيل = استفسارات كثيرة، الرد البطيء = طالب راح لمنافس",
         "kpi": "inquiries qualified × enrollments started",
-        "best_channel": "phone_task_then_email", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task_then_email", "pricing_tier": "Customer-specific quote",
     },
     "dental_clinic": {
-        "primary_offer": "pilot_499_appointment_qualification",
+        "primary_offer": "pilot_customer_specific_appointment_qualification",
         "value_prop": "نأخذ تفاصيل المريض + نقيم الحالة قبل الحجز",
         "headline_pain": "مكالمات استقبال غير مدربة = جدول مزدحم بمواعيد منخفضة الجدية",
         "kpi": "high-intent appointments × no-show rate reduction",
-        "best_channel": "phone_task", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task", "pricing_tier": "Customer-specific quote",
     },
     "medical_clinic": {
-        "primary_offer": "pilot_499_appointment_qualification",
+        "primary_offer": "pilot_customer_specific_appointment_qualification",
         "value_prop": "نأخذ تفاصيل المريض + نقيم الحالة قبل الحجز",
         "headline_pain": "مكالمات استقبال غير مدربة = جدول مزدحم بمواعيد منخفضة الجدية",
         "kpi": "high-intent appointments × no-show rate reduction",
-        "best_channel": "phone_task", "pricing_tier": "Pilot 499",
+        "best_channel": "phone_task", "pricing_tier": "Customer-specific quote",
     },
 }
 
 _LEGACY_DEFAULT_OFFER = {
-    "primary_offer": "pilot_499_managed",
-    "value_prop": "Dealix يرد على inbound leads بالعربي الخليجي خلال 45 ثانية",
+    "primary_offer": "pilot_customer_specific_managed",
+    "value_prop": "Dealix يساعد على تنظيم inbound leads بالعربي الخليجي وقياس زمن الاستجابة من baseline موثق",
     "headline_pain": "سرعة الرد على العميل = ميزة تنافسية مباشرة",
     "kpi": "qualified leads × demos booked",
-    "best_channel": "phone_or_email", "pricing_tier": "Pilot 499",
+    "best_channel": "phone_or_email", "pricing_tier": "Customer-specific quote",
 }
 
 
@@ -458,19 +458,19 @@ async def customer_proof_pack(customer_id: str) -> dict[str, Any]:
     case_study_template = (
         f"## Case Study — {cust.company_id or 'العميل'}\n\n"
         f"**القطاع:** [حدد]\n"
-        f"**المدة:** Pilot 7 أيام ({cust.pilot_start_at or '—'} → {cust.pilot_end_at or '—'})\n\n"
+        f"**المدة:** المدة المعتمدة للحالة ({cust.pilot_start_at or '—'} → {cust.pilot_end_at or '—'})\n\n"
         f"### قبل Dealix\n"
         f"- وقت الرد على lead: [X دقائق/ساعات]\n"
         f"- معدل التحويل من inquiry → demo: [X%]\n"
         f"- leads مهملة شهرياً: [X]\n\n"
-        f"### بعد Dealix (7 أيام)\n"
-        f"- وقت الرد: 45 ثانية\n"
+        f"### بعد Dealix (بعد المدة المعتمدة)\n"
+        f"- وقت الرد: [قيمة موثقة من المصدر]\n"
         f"- demos محجوزة: [X]\n"
         f"- leads جادة معالجة: [X]\n\n"
         f"### اقتباس العميل\n"
         f"> [Sami: agree on quote with customer post-pilot]\n\n"
         f"### النتيجة\n"
-        f"العميل أكمل إلى Starter بـ 999 SAR/شهر.\n"
+        f"قرار العميل التالي: [Stop / Expand / Redesign — يوثق فقط بعد موافقة العميل].\n"
     )
 
     testimonial_request = (
@@ -482,8 +482,8 @@ async def customer_proof_pack(customer_id: str) -> dict[str, Any]:
 
     referral_ask = (
         "بناءً على نتيجة Pilot، تعرفون شركة سعودية ثانية تواجه نفس "
-        "المشكلة (تأخر الرد على leads العربية)؟ نعطي 10% من اشتراكها "
-        "السنوي لكل إحالة جدية."
+        "المشكلة (تأخر الرد على leads العربية)؟ إذا كانت هناك إحالة بموافقة مناسبة، "
+        "نراجع شروطها باتفاق خاص قبل أي التزام تجاري."
     )
 
     return {
@@ -528,8 +528,8 @@ async def partners_revenue_machine_run(body: dict[str, Any] = Body(default={})) 
             msg_ar = (
                 f"أهلاً [اسم المسؤول]،\n\n"
                 f"لاحظت أن {acc.company_name} يخدم عملاء في السوق السعودي.\n\n"
-                f"Dealix شريك resell — أنتم تبيعونه لعملائكم، 25% MRR شهرياً.\n"
-                f"3 عملاء وكالة = ~600-1500 ريال شهرياً passive recurring.\n\n"
+                f"Dealix يمكن أن يعمل معكم كشريك تنفيذ/توزيع؛ الاقتصاديات والحقوق تحدد باتفاق خاص ومعتمد.\n"
+                f"لا نفترض عمولة أو دخلًا متكررًا قبل اتفاق موثق.\n\n"
                 f"رابط شامل: https://dealix.me/partners.html\n\n"
                 f"تناسبكم 20 دقيقة هذا الأسبوع نوضح؟\n\nسامي"
             )

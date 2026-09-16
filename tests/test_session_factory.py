@@ -811,6 +811,55 @@ def test_parallel_ticks_cannot_over_admit_modifying_jobs(tmp_path: Path, monkeyp
     assert active[0]["MODIFYING"] is True
 
 
+def test_parallel_direct_runs_cannot_over_admit_and_reuse_capacity(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("DEALIX_DEEP_WIP_CEILING", "1")
+    monkeypatch.setattr(factory, "verify_live_base_matches", lambda *_args, **_kwargs: {"ok": True})
+    monkeypatch.setattr(factory, "verify_worktree_base_matches", lambda *_args, **_kwargs: {"ok": True})
+    monkeypatch.setattr(factory, "cleanup_worktree", lambda *_args, **_kwargs: {"ok": True, "reason": "test"})
+
+    markers = [tmp_path / "direct-0", tmp_path / "direct-1"]
+    jobs = []
+    for index, marker in enumerate(markers):
+        work = tmp_path / f"work-{index}"
+        work.mkdir()
+        code = f"from pathlib import Path; import time; Path({str(marker)!r}).write_text('ran'); time.sleep(1.0)"
+        job = _deterministic_job(
+            modifying=True,
+            business_goal=f"direct admission {index}",
+            executor={"argv": ["python3", "-c", code]},
+        )
+        job["WORKTREE"] = str(work)
+        factory.submit_job(tmp_path, job)
+        jobs.append(job)
+
+    def _direct(job_id: str) -> None:
+        factory.run_job(tmp_path, factory.load_job(tmp_path, job_id), repo_root=ROOT)
+
+    ctx = multiprocessing.get_context("fork")
+    first = ctx.Process(target=_direct, args=(jobs[0]["JOB_ID"],))
+    second = ctx.Process(target=_direct, args=(jobs[1]["JOB_ID"],))
+    first.start()
+    deadline = time.time() + 2
+    while not markers[0].exists() and time.time() < deadline:
+        time.sleep(0.02)
+    assert markers[0].exists()
+
+    second.start()
+    second.join(timeout=2)
+    assert second.exitcode == 0
+    assert not markers[1].exists()
+    deferred = factory.load_job(tmp_path, jobs[1]["JOB_ID"])
+    assert deferred["STATUS"] == "READY"
+    assert factory.read_lease(tmp_path, jobs[1]["JOB_ID"]) is None
+
+    first.join(timeout=3)
+    assert first.exitcode == 0
+    assert factory.load_job(tmp_path, jobs[0]["JOB_ID"])["STATUS"] == "SUCCEEDED"
+    resumed = factory.run_job(tmp_path, factory.load_job(tmp_path, jobs[1]["JOB_ID"]), repo_root=ROOT)
+    assert resumed["status"] == "SUCCEEDED"
+    assert markers[1].exists()
+
+
 def test_execute_opencode_rejects_stale_nonfree_selected_model(tmp_path: Path, monkeypatch) -> None:
     _stub_opencode_env(tmp_path, monkeypatch, selected_text="opencode/paid-evil\n")
     launched = _never_launch(monkeypatch)

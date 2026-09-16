@@ -449,7 +449,22 @@ def create_app() -> FastAPI:
 
     app.include_router(customer_health_scoring_router.router)
     app.include_router(market_intelligence_router.router)
-    app.include_router(onboarding_router.router)
+    # Launch runtime keeps the canonical onboarding implementation but does not
+    # mount the retired self-serve plan catalog or public tenant-creation paths.
+    # Wizard + invitation flows remain on the same canonical router.
+    from fastapi import APIRouter as _LaunchAPIRouter
+
+    _LAUNCH_RETIRED_ONBOARDING_PATHS = {
+        "/api/v1/onboarding/plans",
+        "/api/v1/onboarding/signup",
+    }
+    _launch_onboarding_router = _LaunchAPIRouter()
+    _launch_onboarding_router.routes.extend(
+        route
+        for route in onboarding_router.router.routes
+        if getattr(route, "path", "") not in _LAUNCH_RETIRED_ONBOARDING_PATHS
+    )
+    app.include_router(_launch_onboarding_router)
     app.include_router(solutions_router.router, prefix="/api/v1")
     app.include_router(ceo_brief_router.router)
     app.include_router(intelligence_health_router.router)

@@ -226,7 +226,7 @@ class RevenueLabEngine:
                     expected_objections=objections,
                     response_principles=(
                         "Separate sourced facts, hypotheses, and unknowns.",
-                        "After qualified discovery, prepare a customer-specific 30-day pilot rather than a guarantee or fixed public offer.",
+                        "After qualified discovery, prepare a customer-specific pilot with customer-specific duration rather than a guarantee or fixed public offer.",
                         "Do not replace the customer's current system by default.",
                         "Escalate pricing, legal, privacy, and production commitments.",
                     ),

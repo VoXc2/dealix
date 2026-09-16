@@ -151,9 +151,9 @@ class BuyerDecisionPlan:
 _BUYER_FRAMES: dict[BuyerRole, dict[str, Any]] = {
     BuyerRole.ECONOMIC_BUYER: {
         "decision_question_ar": "هل يستحق الخلل التشغيلي تجربة محدودة بقرار توقف أو توسع واضح؟",
-        "value_frame_ar": ("قرار تنفيذي مبني على خط أساس ودليل خلال 30 يوماً، لا مشروع تحول مفتوح."),
+        "value_frame_ar": ("قرار تنفيذي مبني على خط أساس ودليل خلال المدة المعتمدة، لا مشروع تحول مفتوح."),
         "questions_ar": (
-            "ما القرار الذي تريدون أن يصبح أسهل بعد 30 يوماً؟",
+            "ما القرار الذي تريدون أن يصبح أسهل بعد المدة المعتمدة؟",
             "من يملك قرار التوسع أو الإيقاف بعد ظهور الدليل؟",
         ),
         "proof_required": "executive_before_after_baseline_and_decision_log",
@@ -287,7 +287,7 @@ _OBJECTION_PLAYBOOK: dict[str, dict[str, Any]] = {
     },
     "timing": {
         "response_ar": (
-            "نخفض مخاطرة الوقت بتجربة 30 يوماً لعملية واحدة، بمعايير دخول وخروج وقرار "
+            "نخفض مخاطرة الوقت بتجربة بمدة خاصة بالعميل لعملية واحدة، بمعايير دخول وخروج وقرار "
             "أسبوعي؛ لا نبدأ تحولاً مفتوحاً."
         ),
         "diagnostic_question_ar": "ما الموعد الذي يجعل قراراً موثقاً مفيداً لكم فعلياً؟",
@@ -450,7 +450,7 @@ def build_buyer_decision_plan(context: BuyerDecisionContext) -> BuyerDecisionPla
                 "id": "approve_first_launch_offer_and_price",
                 "owner": "founder",
                 "question_ar": (
-                    "هل تعتمد عرض Revenue Command Pilot لمدة 30 يوماً ونطاقه وسعره "
+                    "هل تعتمد عرض Revenue Command Pilot بمدة ومعايير قبول خاصة بالعميل ونطاقه وسعره "
                     "بعد مراجعة خمس محادثات مؤهلة وتوحيد الكتالوج؟"
                 ),
                 "blocks": ("public_price", "commercial_proposal", "checkout"),
@@ -506,7 +506,7 @@ def build_buyer_decision_plan(context: BuyerDecisionContext) -> BuyerDecisionPla
         mode="internal_draft_only",
         persuasion_thesis_ar=(
             f"مع {context.account_name} لا نبيع وعوداً عامة؛ نربط هدف «{context.objective}» "
-            "بخط أساس وتدخل واحد ودليل وقرار توسع أو توقف خلال 30 يوماً."
+            "بخط أساس وتدخل واحد ودليل وقرار توسع أو توقف خلال المدة المعتمدة."
         ),
         offer_architecture={
             "recommended_motion": "revenue_command_pilot_30d",

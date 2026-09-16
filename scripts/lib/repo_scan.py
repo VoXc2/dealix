@@ -22,6 +22,7 @@ scans workflow files for hardcoded credentials).
 from __future__ import annotations
 
 import os
+import subprocess
 from collections.abc import Iterable, Iterator
 from pathlib import Path
 
@@ -89,3 +90,41 @@ def iter_candidate_files(
         dirnames[:] = kept
         for name in sorted(filenames):
             yield current / name
+
+def git_path_state(root: Path, path: Path) -> str:
+    """Classify one path without reading its contents.
+
+    Returns ``tracked``, ``ignored_untracked``, ``untracked`` or ``not_git``.
+    Security gates can therefore fail on source-control risk without treating a
+    deliberately ignored local secret file as if it were committed source.
+    """
+
+    try:
+        rel = path.relative_to(root).as_posix()
+    except ValueError:
+        return "not_git"
+
+    quiet = {"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "check": False}
+    try:
+        probe = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--is-inside-work-tree"],
+            timeout=2,
+            **quiet,
+        )
+        if probe.returncode != 0:
+            return "not_git"
+        tracked = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "--error-unmatch", "--", rel],
+            timeout=2,
+            **quiet,
+        )
+        if tracked.returncode == 0:
+            return "tracked"
+        ignored = subprocess.run(
+            ["git", "-C", str(root), "check-ignore", "-q", "--", rel],
+            timeout=2,
+            **quiet,
+        )
+        return "ignored_untracked" if ignored.returncode == 0 else "untracked"
+    except (OSError, subprocess.TimeoutExpired):
+        return "not_git"

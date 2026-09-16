@@ -28,15 +28,18 @@ def test_router_keeps_models_used_after_dashboard_imported() -> None:
         )
 
 
-def test_payment_request_task_is_tenant_owned() -> None:
+def test_legacy_payment_request_has_no_side_effect_task() -> None:
     block = _function_block("manual_payment_request")
-    assert "tenant_id = _tenant_scope(" in block
-    constructor = block.split("task = TaskRecord(", 1)[1]
-    assert "tenant_id=tenant_id" in constructor
+    assert "LEGACY_PAYMENT_REQUEST_QUARANTINED" in block
+    assert '"mutation_applied": False' in block
+    assert "TaskRecord(" not in block
+    assert "session.commit" not in block
 
 
-def test_mark_paid_onboarding_task_is_tenant_owned() -> None:
+def test_legacy_mark_paid_cannot_create_onboarding_side_effects() -> None:
     block = _function_block("mark_paid")
-    assert "tenant_id = _tenant_scope(" in block
-    constructor = block.split("task = TaskRecord(", 1)[1]
-    assert "tenant_id=tenant_id" in constructor
+    assert "BODY_ONLY_PAYMENT_STATE_FORBIDDEN" in block
+    assert '"verified_payment_requires_evidence": True' in block
+    assert "CustomerRecord(" not in block
+    assert "TaskRecord(" not in block
+    assert "session.commit" not in block

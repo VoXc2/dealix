@@ -99,10 +99,10 @@ Allowed by default for this worker:
 
 Never autonomously:
 
-- send customer-facing messages or cold outreach;
+- perform customer send, customer-facing messages, or cold outreach;
 - publish public content/customer proof;
 - invent price/discount/contract/legal commitments;
-- execute payments/refunds/spend;
+- execute payment/refund/spend;
 - mutate production, DNS, secrets, or destructive databases;
 - expose local AI/OpenClaw/n8n publicly;
 - weaken consent, approval, proof, security, or truth gates;

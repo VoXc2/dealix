@@ -23,7 +23,9 @@ def test_predeploy_does_not_execute_capacity_check_or_upgrade() -> None:
     assert "alembic upgrade head" not in PREDEPLOY
     assert "persistent Railway variables are not action-bound L5 authority" in PREDEPLOY
     assert "ACTION_HASH" in PREDEPLOY
-    assert "exit 75" in PREDEPLOY
+    assert "MIGRATION_EXECUTION=NOT_EXECUTED" in PREDEPLOY
+    assert "exit 75" not in PREDEPLOY
+    assert "exit 0" in PREDEPLOY
 
 
 

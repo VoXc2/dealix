@@ -6,10 +6,8 @@ Eligibility rules:
   - satisfaction_score >= 7
   - measurable_result_achieved is True
 
-Recommended tier is determined by proof level and satisfaction:
-  - L3-L4 + satisfaction >= 9  → scale_4999
-  - L2-L3 + satisfaction >= 8  → growth_3999
-  - Otherwise eligible         → starter_2999
+Recommended tier IDs are legacy compatibility labels only; they do not carry price authority.
+Any expansion requires a customer-specific approved scope, duration, and quote.
 """
 
 from __future__ import annotations
@@ -76,22 +74,16 @@ _MIN_SATISFACTION: float = 7.0
 
 _TIER_PITCHES: dict[RetainerTier, tuple[str, str]] = {
     "starter_2999": (
-        "انضم إلى باقة Starter بـ 2,999 ريال/شهر واحصل على دعم عمليات منتظم، "
-        "ومراجعة شهرية للعملاء المحتملين، وتقارير أداء موثَّقة.",
-        "Join the Starter plan at 2,999 SAR/month for regular operations support, "
-        "monthly pipeline reviews, and documented performance reports.",
+        "راجع نطاق Managed Ops أساسي مبنيًا على Proof؛ السعر والمدة والشروط تحدد بعرض خاص بالعميل.",
+        "Review a Proof-backed core Managed Ops scope; price, duration, and terms require a customer-specific quote.",
     ),
     "growth_3999": (
-        "ارتقِ إلى باقة Growth بـ 3,999 ريال/شهر لتحصل على إدارة كاملة للعملاء المحتملين، "
-        "وسِجل قيمة شهري، ومراجعة استراتيجية كل أسبوعين.",
-        "Upgrade to the Growth plan at 3,999 SAR/month for full pipeline management, "
-        "a monthly value ledger, and bi-weekly strategy reviews.",
+        "راجع نطاق Managed Ops موسعًا فقط لما دعمه Proof واعتمده العميل؛ لا سعر أو مدة تلقائية.",
+        "Review an expanded Managed Ops scope only for proof-backed, customer-approved work; no automatic price or duration.",
     ),
     "scale_4999": (
-        "انضم إلى باقة Scale بـ 4,999 ريال/شهر وادفع نمو مؤسستك عبر عمليات ذكاء اصطناعي "
-        "مُدارة بالكامل، وتقارير مجلس الإدارة، وتكامل مع أنظمة CRM.",
-        "Join the Scale plan at 4,999 SAR/month to power your growth with fully managed "
-        "AI operations, board-ready reports, and CRM system integration.",
+        "راجع نطاق Executive AI مخصصًا وفق الأدلة والقدرة والموافقات؛ الاقتصاديات بعرض خاص بالعميل.",
+        "Review a custom Executive AI scope based on evidence, capacity, and approvals; economics require a customer-specific quote.",
     ),
 }
 

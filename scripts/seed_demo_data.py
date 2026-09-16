@@ -276,7 +276,7 @@ async def main() -> int:
                 profile_search_query=f'"{acc[1]}" {acc[3]} site:linkedin.com',
                 company_context=f"Saudi {acc[4]} in {acc[3]}",
                 reason_for_outreach="signal: high inbound + WhatsApp present",
-                message_ar=f"أهلاً [اسم المسؤول]، نقترح Pilot 499 ريال على {acc[1]}.",
+                message_ar=f"أهلاً [اسم المسؤول]، نقترح تشخيصًا مجانيًا ثم Pilot خاصًا بالعميل على {acc[1]}.",
                 followup_day_3="متابعة سريعة — هل أعرض على فريقكم؟",
                 followup_day_7="آخر متابعة. لو لاحقاً يناسب، أنا هنا.",
                 status="draft",

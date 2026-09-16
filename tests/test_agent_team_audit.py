@@ -18,14 +18,21 @@ def test_agent_team_audit_passes() -> None:
 
 def test_claude_codex_registry_parity() -> None:
     report = build_report()
-    parity = report["registry_parity"]
+    parity = report["compatibility_agent_files"]
     assert parity["in_sync"], (
         f"claude_only={parity['claude_only']} codex_only={parity['codex_only']}"
     )
-    # The five canonical sub-agents must all be present.
+    # The five company-agent aliases remain mirrored compatibility surfaces;
+    # logical-fleet authority lives in Agentic Holding, not this file count.
     for name in ("dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"):
-        assert name in report["claude_agents"]
-        assert name in report["codex_agents"]
+        assert name in parity["claude"]
+        assert name in parity["codex"]
+
+    specialists = report["platform_specific_specialists"]
+    assert specialists["codex"] == ["dealix-fresh-reviewer", "improve-executor"]
+    assert specialists["codex"] == specialists["declared_codex"]
+    assert specialists["authority"] == "bounded_host_specialists_not_permanent_company_agents"
+    assert not set(specialists["codex"]).intersection(parity["codex"])
 
 
 def test_every_claude_agent_has_identity() -> None:
@@ -48,7 +55,7 @@ def test_doctrine_guard_tests_present() -> None:
 def test_render_markdown_contains_verdict() -> None:
     report = build_report()
     md = render_markdown(report)
-    assert "Dealix Agent Team Audit" in md
+    assert "Dealix Agent Governance Audit" in md
     assert "Verdict" in md
 
 

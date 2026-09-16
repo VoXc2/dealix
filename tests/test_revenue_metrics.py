@@ -37,11 +37,13 @@ async def test_dashboard_zero_state_honest(async_client, monkeypatch):
     )
     body = res.json()
     assert body["customers"]["active"] >= 0
-    assert body["mrr"]["sar"] >= 0
-    # Interpretation honestly points to v4 §15 truth
+    assert body["verified_cash"]["total_sar"] >= 0
+    assert body["mrr"]["sar"] is None
+    assert body["mrr"]["status"] == "UNVERIFIED_RECURRING_CONTRACT_AUTHORITY"
+    # Interpretation must not infer recurring revenue from plan labels.
     interp = body["interpretation"]
-    if body["customers"]["active"] == 0:
-        assert "pre-revenue" in interp["headline"].lower() or "first customer" in interp["next_action"].lower()
+    if body["verified_cash"]["total_sar"] == 0:
+        assert "no verified paid cash" in interp["headline"].lower()
 
 
 @pytest.mark.asyncio

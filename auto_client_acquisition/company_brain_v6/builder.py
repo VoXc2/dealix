@@ -18,7 +18,7 @@ _OFFER_TEMPLATES: dict[str, str] = {
     "local_services": "Local services for KSA customers.",
     "ecommerce_b2c": "Direct-to-consumer ecommerce in KSA.",
     "real_estate": "Real-estate offerings tuned for KSA buyers.",
-    "healthcare_clinic": "Clinic services with PDPL-compliant intake.",
+    "healthcare_clinic": "Clinic services with governed, PDPL-aware intake requirements.",
     "enterprise": "Enterprise solutions with executive review cadence.",
 }
 

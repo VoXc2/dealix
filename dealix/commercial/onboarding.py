@@ -83,7 +83,7 @@ class OnboardingRecord(BaseModel):
     company_name: str
     contact_name: str
     contact_phone: str
-    service_tier: str  # sprint_499 | data_pack_1500 | managed_ops_2999 | etc
+    service_tier: str  # current: customer_specific_service; legacy identifiers remain readable
     payment_confirmed_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     current_stage: str = "WELCOME"
     steps: list[OnboardingStep] = Field(default_factory=list)
@@ -237,11 +237,11 @@ class OnboardingOrchestrator:
 
     def _build_welcome_ar(self, contact_name: str, company_name: str, tier: str) -> str:
         tier_names = {
-            "sprint_499": "برنامج التحول الأسبوعي",
-            "data_pack_1500": "حزمة البيانات",
-            "managed_ops_2999": "Managed Ops الأساسي",
-            "managed_ops_4999": "Managed Ops المتقدم",
-            "custom_ai_15000": "مشروع AI المخصص",
+            "sprint_499": "معرّف Sprint تاريخي — التسعير متقاعد",
+            "data_pack_1500": "معرّف Data Pack تاريخي — التسعير متقاعد",
+            "managed_ops_2999": "معرّف Managed Ops تاريخي — التسعير متقاعد",
+            "managed_ops_4999": "معرّف Managed Ops تاريخي — التسعير متقاعد",
+            "custom_ai_15000": "معرّف Custom AI تاريخي — التسعير متقاعد",
         }
         tier_name = tier_names.get(tier, "برنامج Dealix")
         return f"""مرحباً {contact_name}،
@@ -262,11 +262,11 @@ class OnboardingOrchestrator:
 
     def _build_welcome_en(self, contact_name: str, company_name: str, tier: str) -> str:
         tier_names = {
-            "sprint_499": "Weekly Transformation Sprint",
-            "data_pack_1500": "Data Intelligence Pack",
-            "managed_ops_2999": "Managed Ops Basic",
-            "managed_ops_4999": "Managed Ops Advanced",
-            "custom_ai_15000": "Custom AI Project",
+            "sprint_499": "Legacy sprint identifier — retired pricing",
+            "data_pack_1500": "Legacy data-pack identifier — retired pricing",
+            "managed_ops_2999": "Legacy managed-ops identifier — retired pricing",
+            "managed_ops_4999": "Legacy managed-ops identifier — retired pricing",
+            "custom_ai_15000": "Legacy custom-AI identifier — retired pricing",
         }
         tier_name = tier_names.get(tier, "Dealix Program")
         return f"""Hi {contact_name},

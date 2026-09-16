@@ -110,7 +110,7 @@ RESPONSE_TEMPLATES: dict[str, dict[str, Any]] = {
     },
     "ask_price": {
         "ar": "السعر يحدد بعد discovery وفهم الحالة والمتطلبات. بعدها نجهّز نطاق "
-              "Revenue Command Pilot لمدة 30 يومًا وquote موثقًا للمراجعة. "
+              "Revenue Command Pilot بمدة ومعايير قبول خاصة بالعميل وquote موثقًا للمراجعة. "
               "تبغوا نوضح بمكالمة 20 دقيقة؟",
         "auto_send_allowed": False,
         "next_action": "send_pricing_then_offer_call", "deal_stage": "pricing_sent",
@@ -118,7 +118,7 @@ RESPONSE_TEMPLATES: dict[str, dict[str, Any]] = {
     },
     "ask_details": {
         "ar": "Dealix يستقبل leads من website / WhatsApp / inbound email، "
-              "يرد بالعربي خلال 45 ثانية، يأخذ التفاصيل (الميزانية + الموقع + الموعد)، "
+              "ينظم الرد العربي وجمع التفاصيل (الميزانية + الموقع + الموعد) ضمن workflow قابل للقياس، "
               "ويسلم العميل المؤهل لمندوبكم. تبغوا أرسل لكم demo جاهز أم نتقابل 20 دقيقة؟",
         "auto_send_allowed": False,
         "next_action": "send_explainer_then_demo_ask", "deal_stage": "info_sent",
@@ -156,7 +156,7 @@ RESPONSE_TEMPLATES: dict[str, dict[str, Any]] = {
         "followup_days": 3,
     },
     "partnership": {
-        "ar": "ممتاز — لكم مسارين: (1) تستخدمون Dealix لعملائكم وتحصلون 25% MRR شهرياً، "
+        "ar": "ممتاز — نراجع نموذج الشراكة المناسب ونوثق الاقتصاديات والحقوق باتفاق خاص؛ لا توجد نسبة MRR افتراضية، "
               "أو (2) تشترون لوكالتكم. كلاهما revenue share. رابط نظرة عامة: "
               "https://dealix.me/partners.html — تبغوا 20 دقيقة نوضح؟",
         "auto_send_allowed": False,
@@ -164,7 +164,7 @@ RESPONSE_TEMPLATES: dict[str, dict[str, Any]] = {
         "followup_days": 2,
     },
     "not_now": {
-        "ar": "متفهم. سأتابع معكم بعد 30 يوماً. لو احتجتم شيء قبل ذلك، أنا هنا. "
+        "ar": "متفهم. سأتابع معكم بعد المدة المعتمدة. لو احتجتم شيء قبل ذلك، أنا هنا. "
               "(لإلغاء الاستلام: ردّ بـ STOP)",
         "auto_send_allowed": True,  # safe deferral
         "next_action": "schedule_30day_followup", "deal_stage": "nurture",

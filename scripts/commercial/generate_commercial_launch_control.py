@@ -34,7 +34,7 @@ def markdown(payload: dict) -> str:
         lines.append(f"- {product}")
     lines += ["", "## Sprint packages", ""]
     for package in payload["commercial_sprint_packages"]:
-        lines.append(f"- {package['name']} — {package['price_range_sar']} — {package['goal']}")
+        lines.append(f"- {package['name']} — {package['commercial_terms']} — {package['goal']}")
     lines += ["", "## Operating reports", ""]
     for report in payload["operating_reports"]:
         lines.append(f"- {report['status']}: `{report['path']}`")
@@ -52,6 +52,27 @@ def markdown(payload: dict) -> str:
 
 def report_status(path: Path) -> dict[str, str]:
     return {"path": str(path.relative_to(ROOT)), "status": "PASS" if path.exists() else "MISSING"}
+
+
+def governed_public_packages(raw: object) -> list[dict[str, str]]:
+    """Fail closed if a launch manifest tries to reintroduce fixed public terms."""
+    if not isinstance(raw, list):
+        raise ValueError("commercial_sprint_packages must be a list")
+    packages: list[dict[str, str]] = []
+    forbidden = {"price_range_sar", "price_sar", "duration", "duration_days"}
+    for item in raw:
+        if not isinstance(item, dict):
+            raise ValueError("commercial_sprint_packages entries must be objects")
+        leaked = forbidden.intersection(item)
+        if leaked:
+            raise ValueError(f"fixed public commercial authority is forbidden: {sorted(leaked)}")
+        name = str(item.get("name") or "").strip()
+        terms = str(item.get("commercial_terms") or "").strip()
+        goal = str(item.get("goal") or "").strip()
+        if not name or not terms or not goal:
+            raise ValueError("commercial package requires name, commercial_terms and goal")
+        packages.append({"name": name, "commercial_terms": terms, "goal": goal})
+    return packages
 
 
 def main() -> int:
@@ -81,7 +102,8 @@ def main() -> int:
         "release_mode": manifest.get("release_mode", "founder_led_commercial_launch"),
         "verdict": verdict,
         "launch_products": manifest.get("launch_products", []),
-        "commercial_sprint_packages": manifest.get("commercial_sprint_packages", []),
+        "commercial_sprint_packages": governed_public_packages(manifest.get("commercial_sprint_packages", [])),
+        "public_commercial_authority": manifest.get("public_commercial_authority", {}),
         "operating_reports": reports,
         "targets_loaded": startup.get("targets_loaded", 0),
         "packs_generated": startup.get("packs_generated", 0),
@@ -102,8 +124,16 @@ def main() -> int:
     (OUT / "latest.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "latest.md").write_text(markdown(payload), encoding="utf-8")
     WEB.parent.mkdir(parents=True, exist_ok=True)
+    web_payload = {
+        key: payload[key]
+        for key in (
+            "generated_at", "company", "release_name", "release_mode", "verdict",
+            "launch_products", "commercial_sprint_packages", "public_commercial_authority",
+            "targets_loaded", "packs_generated",
+        )
+    }
     WEB.write_text(
-        "export const commercialLaunchControlSnapshot = " + json.dumps(payload, ensure_ascii=False, indent=2) + " as const;\n",
+        "export const commercialLaunchControlSnapshot = " + json.dumps(web_payload, ensure_ascii=False, indent=2) + " as const;\n",
         encoding="utf-8",
     )
     print(f"COMMERCIAL_LAUNCH_CONTROL={payload['verdict']}")

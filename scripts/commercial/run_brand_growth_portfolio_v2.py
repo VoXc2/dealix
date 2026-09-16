@@ -57,6 +57,46 @@ def _load(path: Path) -> dict[str, Any]:
     return value
 
 
+def _signal_input(payload: dict[str, Any]) -> tuple[list[Any], str]:
+    """Resolve native or canonical Radar collections without authority promotion."""
+    native = payload.get("signals")
+    ranked = payload.get("ranked_research_signals")
+    admitted_hint = payload.get("admitted_signal_count", 0)
+    if not isinstance(admitted_hint, int) or isinstance(admitted_hint, bool) or admitted_hint < 0:
+        raise ValueError("admitted_signal_count must be a non-negative integer")
+
+    if native is not None:
+        if not isinstance(native, list):
+            raise ValueError("signals must be a list")
+        if native:
+            return native, "NATIVE_SIGNALS"
+        if ranked is None:
+            if admitted_hint > 0:
+                raise ValueError("admitted signals declared but no supported non-empty signal collection exists")
+            return native, "NATIVE_SIGNALS"
+
+    if ranked is not None:
+        if not isinstance(ranked, list):
+            raise ValueError("ranked_research_signals must be a list")
+        if admitted_hint > 0 and not ranked:
+            raise ValueError("admitted signals declared but ranked_research_signals is empty")
+        adapted: list[Any] = []
+        for item in ranked:
+            if not isinstance(item, dict):
+                adapted.append(item)
+                continue
+            signal = dict(item)
+            signal["research_semantics"] = "RESEARCH_ONLY"
+            signal["downstream_semantics"] = "CONTENT_OR_DIAGNOSTIC_HYPOTHESIS_ONLY"
+            signal["adapter_source"] = "ranked_research_signals"
+            adapted.append(signal)
+        return adapted, "CANONICAL_RANKED_RESEARCH_SIGNALS"
+
+    if admitted_hint > 0:
+        raise ValueError("admitted signals declared but no supported signal collection exists")
+    return [], "EMPTY"
+
+
 def _content_request(signal: dict[str, Any]) -> dict[str, Any]:
     sector = _text(signal.get("sector_family"))
     archetype = _text(signal.get("business_archetype"))
@@ -83,9 +123,7 @@ def _content_request(signal: dict[str, Any]) -> dict[str, Any]:
 def compile_portfolio(payload: dict[str, Any]) -> dict[str, Any]:
     generated_at = _generated_at(payload)
     as_of = _text(payload.get("as_of")) or None
-    raw_signals = payload.get("signals", [])
-    if not isinstance(raw_signals, list):
-        raise ValueError("signals must be a list")
+    raw_signals, signal_input_mode = _signal_input(payload)
 
     admitted: list[dict[str, Any]] = []
     rejected_signals: list[dict[str, Any]] = []
@@ -225,6 +263,12 @@ def compile_portfolio(payload: dict[str, Any]) -> dict[str, Any]:
         "generated_at": generated_at,
         "status": "PARTIAL_FAIL_CLOSED" if has_blocked else "PASS",
         "mode": "READ_ONLY_INTERNAL_DRAFT",
+        "signal_input_mode": signal_input_mode,
+        "adapted_signal_semantics": (
+            "RESEARCH_ONLY_CONTENT_OR_DIAGNOSTIC_HYPOTHESIS_ONLY"
+            if signal_input_mode == "CANONICAL_RANKED_RESEARCH_SIGNALS"
+            else "NATIVE_INPUT_PRESERVED"
+        ),
         "admitted_signal_count": len(admitted),
         "rejected_signal_count": len(rejected_signals),
         "rejected_signals": rejected_signals,

@@ -86,14 +86,15 @@ def test_task_queries_are_tenant_filtered_and_creates_are_stamped() -> None:
     assert "TaskRecord.tenant_id == tenant_id" in list_block
 
 
-def test_payment_side_effect_tasks_preserve_tenant_ownership() -> None:
-    """Every task created from a tenant-scoped payment route stays in that tenant."""
+def test_legacy_payment_routes_are_authenticated_and_side_effect_free() -> None:
+    """Quarantined payment compatibility routes authenticate but never mutate tenant state."""
     for name in ("manual_payment_request", "mark_paid"):
         block = _function_block(name)
         assert "Depends(get_current_user)" in block, f"{name} must require authenticated user"
-        assert "tenant_id = _tenant_scope(" in block, f"{name} must resolve tenant scope"
-        assert "TaskRecord(" in block, f"{name} must create the expected follow-up task"
-        assert "tenant_id=tenant_id" in block, f"{name} task must inherit tenant ownership"
+        assert '"mutation_applied": False' in block
+        assert "TaskRecord(" not in block
+        assert "CustomerRecord(" not in block
+        assert "session.commit" not in block
 
 
 def test_runtime_model_imports_cover_downstream_autonomous_routes() -> None:

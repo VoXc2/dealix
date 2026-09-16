@@ -120,7 +120,7 @@ NEXT_ACTION_BY_TYPE = {
 
 MESSAGE_ANGLES = {
     "DIRECT_CUSTOMER": (
-        "AI sales rep بالعربي يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demo — "
+        "AI sales workflow بالعربي ينظم الرد والتأهيل وحجز demo ضمن baseline وهدف خاص بالحالة — "
         "يركب فوق CRM الحالي ويسلّم sequence جاهزة للـ SDR."
     ),
     "AGENCY_PARTNER": (
@@ -417,17 +417,17 @@ def generate_messages(
     def linkedin_direct() -> str:
         hook = ""
         if "WhatsApp" in sig_evid:
-            hook = f"لاحظت إن {company} تستخدم WhatsApp كقناة مبيعات رئيسية — Dealix يضاعف الاستجابة بردود عربية خلال 45 ثانية، يؤهّل، ويحجز demo قبل ما يبرد."
+            hook = f"لاحظت إن {company} تستخدم WhatsApp كقناة مبيعات رئيسية — Dealix يساعد على تنظيم الاستجابة العربية والتأهيل وحجز demo مع baseline وProof، بدون وعد زمني أو نتيجة."
         elif "CRM" in sig_name:
             hook = f"لاحظت إن {company} تستخدم {sig_evid} — Dealix يركب فوقه: يرد بالعربي، يؤهّل BANT، ويسلّم سجل جاهز داخل نفس الـ CRM."
         elif "booking" in sig_name:
             hook = f"لاحظت {sig_evid} عند {company} — Dealix يسبقه: يرد، يؤهّل، ويحجز slot في نفس الأداة."
         elif "paid ads" in sig_name or "ads" in sig_name:
-            hook = f"{company} تدير حملات مدفوعة. المشكلة الشائعة بعد click: lead يدخل funnel، الرد بطيء، CPA يرتفع. Dealix يرد بالعربي خلال 45 ثانية."
+            hook = f"{company} تدير حملات مدفوعة. المشكلة الشائعة بعد click: lead يدخل funnel، الرد بطيء، CPA يرتفع. Dealix يساعد على تنظيم الاستجابة بالعربي وقياسها من baseline موثق."
         elif "Salla" in sig_evid or "Zid" in sig_evid or "ecom_mena" in sig_name:
             hook = f"{company} على منصة {sig_evid} — Dealix يرد على استفسارات المتجر بالعربي، يؤكد الطلب، ويسلّم للـ agent فقط عند negotiation."
         else:
-            hook = "Dealix = AI sales rep بالعربي يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demo — فوق CRM الحالي."
+            hook = "Dealix = AI sales workflow بالعربي ينظم الرد والتأهيل وحجز demo ضمن baseline وهدف خاص بالحالة — فوق CRM الحالي."
         return (
             f"{name} مرحباً،\n\n{hook}\n\n"
             f"20 دقيقة demo نشوف مناسبته لـ {company}؟\n"
@@ -441,7 +441,7 @@ def generate_messages(
             f"{company} تقدّم خدمات تسويق/CRM/automation لعملاء B2B. Dealix يضاعف قيمة خدمتك:\n"
             f"- AI sales rep بالعربي فوق عملاء {company}\n"
             f"- setup 3-15K ريال + 20-30% من MRR كل عميل دائم\n"
-            f"- 3-5 عملاء = 1,500-3,750 ريال شهري إضافي بدون tech build\n\n"
+            f"- الاقتصاديات تعتمد على اتفاقات العملاء الفعلية ولا تُستنتج من عدد عملاء افتراضي\n\n"
             f"20 دقيقة partner meeting هذا الأسبوع؟\n"
             f"🤝 {partners_url}\n📅 {calendly_url}\n\nسامي"
         )

@@ -235,7 +235,8 @@ class CommercialBridge:
                 "company_name": company_name,
                 "error": str(exc),
                 "is_eligible": eligible,
-                "recommended_tier": "managed_ops_2999" if eligible else "",
+                "recommended_tier": "managed_ops_review" if eligible else "",
+                "price_authority": "customer_specific_quote_after_review",
                 "reason_en": f"{'Eligible' if eligible else 'Not yet eligible'} based on {proof_event_count} proof events",
                 "approval_status": "approval_required",
             }

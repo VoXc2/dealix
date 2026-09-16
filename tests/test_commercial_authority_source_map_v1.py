@@ -45,7 +45,7 @@ def test_business_now_pilot_action_uses_canonical_paid_motion() -> None:
 
     assert "Sprint 499" not in primary
     assert "Revenue Command Pilot" in primary
-    assert "30 يوماً" in primary
+    assert "بمدة ومعايير قبول خاصة بالعميل" in primary
     assert "إثبات الدفع" in primary
 
 

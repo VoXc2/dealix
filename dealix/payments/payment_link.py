@@ -15,45 +15,21 @@ from pydantic import BaseModel, Field
 
 _LIVE_MODE = os.getenv("MOYASAR_LIVE_MODE", "0").strip() in ("1", "true", "yes")
 
-# Service tiers with prices in SAR
-SERVICE_TIERS: dict[str, dict[str, Any]] = {
-    "sprint_499": {
-        "name_ar": "برنامج الأسبوع المكثف",
-        "name_en": "Intensive Week Sprint",
-        "amount_sar": 499,
-        "amount_halalas": 49900,
-    },
-    "data_pack_1500": {
-        "name_ar": "حزمة البيانات",
-        "name_en": "Data Intelligence Pack",
-        "amount_sar": 1500,
-        "amount_halalas": 150000,
-    },
-    "managed_ops_2999": {
-        "name_ar": "Managed Ops الأساسي",
-        "name_en": "Managed Ops Basic",
-        "amount_sar": 2999,
-        "amount_halalas": 299900,
-    },
-    "managed_ops_4999": {
-        "name_ar": "Managed Ops المتقدم",
-        "name_en": "Managed Ops Advanced",
-        "amount_sar": 4999,
-        "amount_halalas": 499900,
-    },
-    "custom_ai_15000": {
-        "name_ar": "Executive AI Partner",
-        "name_en": "Executive AI Partner",
-        "amount_sar": 15000,
-        "amount_halalas": 1500000,
-    },
-}
+# Historical fixed-price tier identifiers are retained only to reject stale
+# requests explicitly. Current payment authority comes from an approved named-
+# customer invoice amount, never from a public/service tier.
+LEGACY_FIXED_PRICE_TIER_KEYS = frozenset({
+    "sprint_499", "data_pack_1500", "managed_ops_2999",
+    "managed_ops_4999", "custom_ai_15000",
+})
+SERVICE_TIERS: dict[str, dict[str, Any]] = {}
+
 
 
 class PaymentLinkRequest(BaseModel):
     service_tier: str | None = Field(
         None,
-        description="Key from SERVICE_TIERS; leave blank for custom invoice amounts",
+        description="Historical metadata only; current links require an approved customer-specific invoice amount",
     )
     amount_sar: float | None = Field(None, description="Amount in SAR for custom invoices")
     amount_halalas: int | None = Field(None, description="Amount in halalas for custom invoices")
@@ -93,40 +69,31 @@ async def create_payment_link(req: PaymentLinkRequest) -> PaymentLinkResponse:
     Raises PaymentLinkError if the tier is unknown or Moyasar call fails.
     In sandbox mode (default), returns a placeholder URL with invoice_id prefixed 'sandbox_'.
     """
-    tier = SERVICE_TIERS.get(req.service_tier) if req.service_tier else None
-    if req.service_tier and tier is None:
+    if req.service_tier:
+        if req.service_tier in LEGACY_FIXED_PRICE_TIER_KEYS:
+            raise PaymentLinkError(
+                "Legacy fixed-price tier is retired; use the approved named-customer invoice amount."
+            )
         raise PaymentLinkError(
-            f"Unknown service tier: {req.service_tier}. "
-            f"Valid tiers: {list(SERVICE_TIERS)}"
+            "Service tiers do not carry current pricing authority; use an approved named-customer invoice amount."
         )
 
-    if tier:
-        description = (
-            f"Dealix — {tier['name_ar']} / {tier['name_en']}"
-            f" — {req.customer_name}"
-            + (f" — {req.notes}" if req.notes else "")
+    if req.amount_halalas is None and req.amount_sar is None:
+        raise PaymentLinkError(
+            "Customer-specific payment links require amount_sar or amount_halalas from an approved invoice."
         )
-        amount_sar = tier["amount_sar"]
-        amount_halalas = tier["amount_halalas"]
-        service_name_ar = tier["name_ar"]
-        service_name_en = tier["name_en"]
+    if req.amount_halalas is not None:
+        amount_halalas = req.amount_halalas
+        amount_sar = req.amount_sar if req.amount_sar is not None else (amount_halalas / 100)
     else:
-        if req.amount_halalas is None and req.amount_sar is None:
-            raise PaymentLinkError(
-                "Custom payment links require amount_sar or amount_halalas."
-            )
-        if req.amount_halalas is not None:
-            amount_halalas = req.amount_halalas
-            amount_sar = req.amount_sar if req.amount_sar is not None else (amount_halalas / 100)
-        else:
-            assert req.amount_sar is not None
-            amount_halalas = int(req.amount_sar * 100)
-            amount_sar = req.amount_sar
-        description = req.description or f"Dealix Invoice — {req.customer_name}"
-        if req.notes:
-            description += f" — {req.notes}"
-        service_name_ar = "فاتورة Dealix"
-        service_name_en = "Dealix Invoice"
+        assert req.amount_sar is not None
+        amount_halalas = int(req.amount_sar * 100)
+        amount_sar = req.amount_sar
+    description = req.description or f"Dealix Invoice — {req.customer_name}"
+    if req.notes:
+        description += f" — {req.notes}"
+    service_name_ar = "فاتورة Dealix مخصصة للعميل"
+    service_name_en = "Customer-Specific Dealix Invoice"
 
     expires_at = (datetime.now(UTC) + timedelta(days=7)).isoformat()
 

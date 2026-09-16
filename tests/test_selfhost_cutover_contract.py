@@ -129,8 +129,11 @@ def test_backup_and_quiescence_are_receipt_bound() -> None:
         "database_changed_during_backup_capture",
         "dealix.railway-source-backup-receipt.v1",
         "dealix.selfhost-backup-receipt.v1",
+        "information_schema.columns",
+        "required_column",
     ):
         assert needle in backup
+    assert "migration_count proof_events evidence_source" in backup
     assert "RAILWAY_QUIESCENCE=PASS" in quiet
     assert "source receipt outside 30-minute cutover window" in quiet
     assert "dealix.railway-quiescence-receipt.v1" in quiet

@@ -38,22 +38,9 @@ router = APIRouter(
 )
 
 
-# ── Constants matching pricing.py ─────────────────────────────────
-
-PLAN_MRR_HALALAS = {
-    "starter": 99_900,    # 999 SAR
-    "growth": 299_900,    # 2,999 SAR
-    "scale": 799_900,     # 7,999 SAR
-    "pilot": 0,           # not recurring
-    "pilot_managed": 0,   # one-off, not MRR
-    "pilot_1sar": 0,      # test
-}
-
-
-def _to_mrr_halalas(plan: str | None) -> int:
-    if plan is None:
-        return 0
-    return PLAN_MRR_HALALAS.get(plan, 0)
+# PaymentRecord proves captured/paid cash. It does not encode an approved
+# recurring contract amount/cadence, so plan labels must never mint MRR/ARR.
+RECURRING_METRICS_STATUS = "UNVERIFIED_RECURRING_CONTRACT_AUTHORITY"
 
 
 async def _load_paid_history() -> list[dict[str, Any]]:
@@ -76,6 +63,8 @@ async def _load_paid_history() -> list[dict[str, Any]]:
                     "customer_handle": r.customer_handle,
                     "plan": r.plan,
                     "amount_halalas": r.amount_halalas,
+                    "currency": r.currency,
+                    "last_event_type": r.last_event_type,
                     "created_at": r.created_at,
                 }
                 for r in rows
@@ -86,102 +75,85 @@ async def _load_paid_history() -> list[dict[str, Any]]:
 
 
 def _compute_dashboard(paid: list[dict[str, Any]]) -> dict[str, Any]:
-    """Compute aggregate revenue dashboard from paid history."""
+    """Compute payment truth without inferring recurring revenue from plan labels."""
     now = datetime.now(UTC)
     period_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     prev_period_start = (period_start - timedelta(days=1)).replace(
         day=1, hour=0, minute=0, second=0, microsecond=0,
     )
 
-    # Latest plan per customer (denormalize from history)
-    latest_plan_per_customer: dict[str, str | None] = {}
     first_seen_per_customer: dict[str, datetime] = {}
     last_seen_per_customer: dict[str, datetime] = {}
+    latest_plan_per_customer: dict[str, str | None] = {}
+    verified_cash_total = 0
+    verified_cash_current = 0
+    verified_cash_previous = 0
+
     for row in paid:
-        h = row["customer_handle"]
-        if not h:
+        # PaymentRecord.status == paid was already enforced by the query. Only
+        # SAR amounts are aggregated into the SAR cash truth.
+        if str(row.get("currency") or "SAR").upper() == "SAR":
+            amount = max(0, int(row.get("amount_halalas") or 0))
+            verified_cash_total += amount
+            created = row.get("created_at")
+            if isinstance(created, datetime):
+                if created >= period_start:
+                    verified_cash_current += amount
+                elif prev_period_start <= created < period_start:
+                    verified_cash_previous += amount
+
+        h = row.get("customer_handle")
+        created = row.get("created_at")
+        if not h or not isinstance(created, datetime):
             continue
-        if h not in first_seen_per_customer or row["created_at"] < first_seen_per_customer[h]:
-            first_seen_per_customer[h] = row["created_at"]
-        if h not in last_seen_per_customer or row["created_at"] > last_seen_per_customer[h]:
-            last_seen_per_customer[h] = row["created_at"]
-            latest_plan_per_customer[h] = row["plan"]
+        if h not in first_seen_per_customer or created < first_seen_per_customer[h]:
+            first_seen_per_customer[h] = created
+        if h not in last_seen_per_customer or created > last_seen_per_customer[h]:
+            last_seen_per_customer[h] = created
+            latest_plan_per_customer[h] = row.get("plan")
 
-    # MRR — sum of recurring plan amounts for customers active in this period
-    mrr_halalas = 0
-    for h, last_seen in last_seen_per_customer.items():
-        if last_seen >= period_start - timedelta(days=35):  # generous window for grace
-            mrr_halalas += _to_mrr_halalas(latest_plan_per_customer.get(h))
-
-    prev_mrr_halalas = 0
-    for h, last_seen in last_seen_per_customer.items():
-        if prev_period_start <= last_seen < period_start:
-            prev_mrr_halalas += _to_mrr_halalas(latest_plan_per_customer.get(h))
-
-    arr_halalas = mrr_halalas * 12
-
-    # Customer count
-    active_customers = sum(
-        1 for h, last_seen in last_seen_per_customer.items()
+    recent_paid_customers = sum(
+        1 for last_seen in last_seen_per_customer.values()
         if last_seen >= period_start - timedelta(days=35)
     )
     total_customers_ever = len(first_seen_per_customer)
 
-    # ARPA
-    arpa_halalas = mrr_halalas // active_customers if active_customers else 0
-
-    # Gross churn (this period)
-    customers_at_period_start = sum(
-        1 for h, first_seen in first_seen_per_customer.items()
-        if first_seen < period_start
-    )
-    customers_lost = sum(
-        1 for h, last_seen in last_seen_per_customer.items()
-        if (first_seen_per_customer[h] < period_start
-            and last_seen < period_start - timedelta(days=35))
-    )
-    churn_pct = round(
-        (customers_lost / customers_at_period_start) * 100, 2
-    ) if customers_at_period_start else 0.0
-
-    # NRR = (start MRR + expansion - churn - contraction) / start MRR
-    nrr_pct = round(
-        (mrr_halalas / prev_mrr_halalas) * 100, 1
-    ) if prev_mrr_halalas else 0.0
-
-    # Plan distribution
+    # Plan is retained as historical classification only. It cannot carry
+    # current price, contract, MRR, ARR, NRR, or churn authority.
     plan_distribution: dict[str, int] = defaultdict(int)
     for h in last_seen_per_customer:
-        plan = latest_plan_per_customer.get(h) or "unknown"
-        plan_distribution[plan] += 1
+        plan_distribution[latest_plan_per_customer.get(h) or "unknown"] += 1
 
     return {
-        "period": {
-            "month": now.strftime("%Y-%m"),
-            "computed_at": now.isoformat(),
+        "period": {"month": now.strftime("%Y-%m"), "computed_at": now.isoformat()},
+        "verified_cash": {
+            "total_halalas": verified_cash_total,
+            "total_sar": verified_cash_total / 100,
+            "current_month_sar": verified_cash_current / 100,
+            "previous_month_sar": verified_cash_previous / 100,
+            "basis": "status=paid PaymentRecord amounts; payment != invoice != quote",
         },
         "mrr": {
-            "halalas": mrr_halalas,
-            "sar": mrr_halalas // 100,
-            "previous_month_sar": prev_mrr_halalas // 100,
-            "change_sar": (mrr_halalas - prev_mrr_halalas) // 100,
+            "halalas": None,
+            "sar": None,
+            "previous_month_sar": None,
+            "change_sar": None,
+            "status": RECURRING_METRICS_STATUS,
+            "basis": "PaymentRecord has no approved recurring contract amount/cadence",
         },
-        "arr": {
-            "halalas": arr_halalas,
-            "sar": arr_halalas // 100,
-        },
+        "arr": {"halalas": None, "sar": None, "status": RECURRING_METRICS_STATUS},
         "customers": {
-            "active": active_customers,
+            "active": recent_paid_customers,
             "total_ever": total_customers_ever,
-            "lost_this_month": customers_lost,
+            "lost_this_month": None,
+            "basis": "recent paid activity; not subscription-status authority",
         },
-        "arpa": {
-            "halalas": arpa_halalas,
-            "sar": arpa_halalas // 100,
-        },
-        "churn_pct_monthly": churn_pct,
-        "nrr_pct": nrr_pct,
+        "arpa": {"halalas": None, "sar": None, "status": RECURRING_METRICS_STATUS},
+        "churn_pct_monthly": None,
+        "nrr_pct": None,
+        "recurring_metrics_status": RECURRING_METRICS_STATUS,
         "plan_distribution": dict(plan_distribution),
+        "plan_distribution_authority": "classification_only_no_price_or_revenue_authority",
         "benchmarks": {
             "saas_unicorn_nrr": "≥ 120%",
             "saas_healthy_nrr": "100-110%",
@@ -190,36 +162,23 @@ def _compute_dashboard(paid: list[dict[str, Any]]) -> dict[str, Any]:
             "saas_healthy_monthly_churn": "≤ 3%",
             "saas_danger_monthly_churn": "> 8%",
         },
-        "interpretation": _interpret(nrr_pct, churn_pct, active_customers),
+        "interpretation": _interpret(verified_cash_total, recent_paid_customers),
     }
 
 
-def _interpret(nrr_pct: float, churn_pct: float, active: int) -> dict[str, str]:
-    """Honest interpretation of the numbers so the founder/investor knows
-    what story the data tells. No hopium."""
-    if active == 0:
+def _interpret(verified_cash_halalas: int, recent_paid_customers: int) -> dict[str, str]:
+    """Interpret only evidence the PaymentRecord schema can actually prove."""
+    if verified_cash_halalas <= 0:
         return {
-            "headline": "Pre-revenue — metrics will compute once first customer pays",
-            "next_action": "Send 5 WhatsApp DMs (v4 §15) — single unblock",
-        }
-    if active < 5:
-        return {
-            "headline": f"Early validation phase ({active} customer(s))",
-            "next_action": "Focus on customer-success retention, not new acquisition",
-        }
-    if nrr_pct >= 100 and churn_pct <= 5:
-        return {
-            "headline": "Healthy SaaS trajectory — ready for pre-seed conversations",
-            "next_action": "Prepare investor 1-pager (W10.1) + revenue chart screenshot",
-        }
-    if nrr_pct < 90 or churn_pct > 8:
-        return {
-            "headline": "WARNING: retention concern — investigate before scaling",
-            "next_action": "Pause acquisition spend; double down on customer success",
+            "headline": "No verified paid cash in PaymentRecord",
+            "next_action": "Advance qualified discovery and customer-specific close; do not infer revenue from CRM or plan labels",
         }
     return {
-        "headline": "Steady growth — keep current motion",
-        "next_action": "Optimize MRR per acquisition channel before scaling spend",
+        "headline": (
+            f"Verified paid cash exists across {recent_paid_customers} recent paid customer(s); "
+            "recurring MRR/ARR are not proven by PaymentRecord"
+        ),
+        "next_action": "Add explicit recurring-contract/cadence evidence before reporting MRR, ARR, NRR, churn, or ARPA",
     }
 
 
@@ -293,6 +252,7 @@ async def cohort_analysis(
         "cohort_month": cohort_month,
         "cohort_size": len(cohort_members),
         "retention_curve": retention_curve,
+        "basis": "payment_activity_proxy_not_subscription_retention",
     }
 
 

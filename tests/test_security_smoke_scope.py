@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -115,6 +116,52 @@ def test_env_example_files_remain_allowed(scanner, tmp_path: Path) -> None:
     failures, _ = scanner.scan(tmp_path)
 
     assert failures == []
+
+
+def test_gitignored_untracked_env_is_environment_hygiene_not_source_failure(scanner, tmp_path: Path) -> None:
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    _write(tmp_path / ".gitignore", ".env.*\n")
+    _write(tmp_path / ".env.prod", "APP_SECRET_KEY=local-only\n")
+
+    failures, warnings = scanner.scan(tmp_path)
+
+    assert failures == []
+    assert any("Ignored local env residue" in item for item in warnings), warnings
+
+
+def test_force_tracked_ignored_env_remains_source_failure(scanner, tmp_path: Path) -> None:
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    _write(tmp_path / ".gitignore", ".env.*\n")
+    _write(tmp_path / ".env.prod", "APP_SECRET_KEY=synthetic-local\n")
+    subprocess.run(["git", "-C", str(tmp_path), "add", ".gitignore"], check=True)
+    subprocess.run(["git", "-C", str(tmp_path), "add", "-f", ".env.prod"], check=True)
+
+    failures, _ = scanner.scan(tmp_path)
+
+    assert any("Do not commit local env file: .env.prod" in item for item in failures), failures
+
+
+def test_standalone_gate_gitignored_env_is_warning_not_source_failure(standalone_gate, tmp_path: Path) -> None:
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    _write(tmp_path / ".gitignore", ".env.*\n")
+    _write(tmp_path / ".env.prod", "APP_SECRET_KEY=local-only\n")
+
+    failures, warnings = standalone_gate.scan(tmp_path)
+
+    assert failures == []
+    assert any("Ignored local env residue" in item for item in warnings), warnings
+
+
+def test_standalone_gate_force_tracked_env_still_fails(standalone_gate, tmp_path: Path) -> None:
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    _write(tmp_path / ".gitignore", ".env.*\n")
+    _write(tmp_path / ".env.prod", "APP_SECRET_KEY=synthetic-local\n")
+    subprocess.run(["git", "-C", str(tmp_path), "add", ".gitignore"], check=True)
+    subprocess.run(["git", "-C", str(tmp_path), "add", "-f", ".env.prod"], check=True)
+
+    failures, _ = standalone_gate.scan(tmp_path)
+
+    assert any("Do not commit local env file: .env.prod" in item for item in failures), failures
 
 
 def test_repo_scan_passes_on_current_tree(scanner) -> None:

@@ -62,8 +62,8 @@ class ConciergeKnowledge(BaseModel):
     freshness: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
 
 PUBLIC_ALLOWLIST: list[ConciergeKnowledge] = [
-    ConciergeKnowledge(knowledge_id="k1", locale="ar", sector="government_b2g", title="Dealix تشخيص 7 أيام", body="تشخيص محكوم بالأدلة — Proof Pack في 7 أيام، لا إرسال خارجي دون موافقة، PDPL أصيل.", proof_ref="proof_ledger"),
-    ConciergeKnowledge(knowledge_id="k2", locale="en", sector="technology_saas_si", title="Dealix 7-Day Diagnostic", body="Evidence-governed diagnostic — Proof Pack in 7 days, approval-first, PDPL native.", proof_ref="proof_ledger"),
+    ConciergeKnowledge(knowledge_id="k1", locale="ar", sector="government_b2g", title="Dealix تشخيص تنفيذي مجاني", body="تشخيص مجاني ومحكوم بالأدلة؛ أي تدخل مدفوع له نطاق ومدة خاصان بالعميل بعد qualified discovery، ولا إرسال خارجي دون موافقة.", proof_ref="proof_ledger"),
+    ConciergeKnowledge(knowledge_id="k2", locale="en", sector="technology_saas_si", title="Dealix Free Execution Diagnostic", body="Free evidence-governed diagnostic; any paid intervention gets customer-specific scope and duration after qualified discovery, with approval-first execution.", proof_ref="proof_ledger"),
     ConciergeKnowledge(knowledge_id="k3", locale="ar", title="ZATCA Wave 25", body="إشارة سوقية للفوترة الإلكترونية — تشخيص جاهزية، لا شهادة رسمية.", proof_ref="zatca_official"),
     ConciergeKnowledge(knowledge_id="k4", locale="en", title="PDPL Governance", body="Dealix never sends cold WhatsApp or scraped outreach. Consent before any external send.", proof_ref="pdpl_policy"),
     ConciergeKnowledge(knowledge_id="k5", locale="ar", title="Approval-First", body="كل إرسال يمر عبر Approval Center. AI يقترح، الإنسان يوافق.", proof_ref="approval_center"),

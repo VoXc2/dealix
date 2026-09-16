@@ -72,14 +72,14 @@ async def score_lead_body(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 NEGOTIATION_TEMPLATES_AR = {
     "price_objection": (
         "السعر يحدد بعد جلسة الاكتشاف وفهم الحالة والمتطلبات. بعدها نجهّز "
-        "نطاق Revenue Command Pilot لمدة 30 يومًا وquote موثقًا للمراجعة."
+        "نطاق Revenue Command Pilot بمدة ومعايير قبول خاصة بالعميل وquote موثقًا للمراجعة."
     ),
     "feature_missing": (
         "هذي ميزة في طريقها ضمن خطة Q3. الآن نقدر نعمل workaround يدوي خلال "
         "الـ pilot — تناسبكم نسلمه كذا ونضيف الميزة لاحقاً؟"
     ),
     "timing_objection": (
-        "متفهم. نبدأ بجلسة اكتشاف محدودة، ثم نحدد توقيت Pilot لمدة 30 يومًا "
+        "متفهم. نبدأ بجلسة اكتشاف محدودة، ثم نحدد مدة Pilot ومعايير القبول "
         "بما يناسب فريقكم وبعد اعتماد النطاق."
     ),
     "trust_objection": (

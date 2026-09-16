@@ -473,4 +473,20 @@ def _install_auth_invite_compatibility() -> None:
     )
 
 
+def _quarantine_retired_self_serve_routes() -> None:
+    """Keep retired public self-serve plan/signup routes out of launch runtime.
+
+    The implementation remains source-available for a future explicitly approved
+    SaaS launch, but environment state alone cannot remount commercial authority.
+    """
+
+    retired = {"/api/v1/onboarding/plans", "/api/v1/onboarding/signup"}
+    router.routes = [
+        route_item
+        for route_item in router.routes
+        if getattr(route_item, "path", None) not in retired
+    ]
+
+
+_quarantine_retired_self_serve_routes()
 _install_auth_invite_compatibility()

@@ -6,7 +6,7 @@ Output (CompanyBrief):
     pain_hypothesis      — what likely hurts this company
     dealix_fit           — why Dealix specifically helps
     expected_gain        — conservative qualitative hint (no guarantees)
-    best_offer           — one of: pilot_499 / pilot_999 / pilot_1500 / partnership
+    best_offer           — one of: revenue_command_pilot / partnership_review
     best_channel         — email / phone_task / linkedin_manual
     best_first_sentence  — Khaliji opener tailored to sector
     objection_risks      — likely 1-2 objections to prep for
@@ -52,11 +52,11 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
     "real_estate_developer": {
         "brief": "مطور عقاري سعودي يستقبل leads من الإعلانات + الموقع + WhatsApp.",
         "pain": "leads متعددة في وقت قصير — تأخر الرد دقيقة واحدة قد يخسر العميل لمنافس.",
-        "fit": "Dealix يرد بالعربي خلال 45 ثانية، يأخذ الميزانية + الموقع + موعد المعاينة، ويحجز للمندوب الجاهز.",
+        "fit": "Dealix يساعد على تنظيم الرد العربي وجمع الميزانية + الموقع + موعد المعاينة وتسليمها للمندوب ضمن workflow قابل للقياس.",
         "gain": "غالباً 5-15 lead دافئ إضافي شهرياً عند تحسين زمن الرد بـ 80%.",
         "objections": ["budget_for_pilot", "concern_about_arabic_quality", "already_uses_simple_chat_widget"],
         "first_sentence": "كل lead عقاري متأخر دقيقة = احتمال خسارة العميل لمنافس.",
-        "best_offer": "pilot_499", "best_channel": "phone_task",
+        "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
     },
     "real_estate": {
         "brief": "مكتب عقار سعودي للوساطة العقارية.",
@@ -65,7 +65,7 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
         "gain": "غالباً تحسين conversion ratio على inbound من 5% إلى 12%.",
         "objections": ["small_team_concern", "trust_in_AI"],
         "first_sentence": "العمولة الواحدة في العقار = ربح أسبوع. لا تخسرونها بسبب وقت الرد.",
-        "best_offer": "pilot_499", "best_channel": "phone_task",
+        "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
     },
     "construction": {
         "brief": "شركة مقاولات سعودية تستقبل طلبات تسعير من شركات وأفراد.",
@@ -74,7 +74,7 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
         "gain": "غالباً تقليل RFQ المهملة بنسبة 30-50%، وتحسين معدل تحويل التسعير لعقد.",
         "objections": ["large_project_complexity", "needs_human_engineer_review"],
         "first_sentence": "بدل ما تضيع طلبات تسعير المشاريع بين قنوات متعددة، نجمعها في مكان واحد.",
-        "best_offer": "pilot_999", "best_channel": "phone_task",
+        "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
     },
     "hospitality": {
         "brief": "فندق سعودي يستقبل حجوزات + استفسارات MICE/قاعات/إفطار-سحور.",
@@ -83,7 +83,7 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
         "gain": "غالباً استرجاع 10-20% من حجوزات MICE المهملة عبر الرد الفوري.",
         "objections": ["existing_PMS_system", "concern_about_pricing_quotes"],
         "first_sentence": "حجوزات MICE + قاعات = leads تحتاج رد فوري بأي ساعة.",
-        "best_offer": "pilot_999", "best_channel": "phone_task",
+        "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
     },
     "events": {
         "brief": "قاعة حفلات / مزود تأجير معدات حفلات سعودي.",
@@ -92,7 +92,7 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
         "gain": "غالباً زيادة حجز المعاينات بـ 30%+ عبر السرعة.",
         "objections": ["seasonality_concern", "small_team"],
         "first_sentence": "كل lead لقاعة حفل = موسم. لا تخسرونه لتأخر الرد.",
-        "best_offer": "pilot_499", "best_channel": "phone_task",
+        "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
     },
     "logistics": {
         "brief": "شركة شحن/نقل سعودية تستقبل RFQ شحنات يومياً.",
@@ -101,7 +101,7 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
         "gain": "غالباً تحسين فوز RFQ بنسبة 15-25% عبر السرعة.",
         "objections": ["complex_pricing_models", "needs_dispatcher_review"],
         "first_sentence": "RFQ شحن: 10 دقائق فرق = خسارة عقد.",
-        "best_offer": "pilot_999", "best_channel": "phone_task",
+        "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
     },
     "restaurant": {
         "brief": "مطعم/كافيه سعودي يستقبل استفسارات تموين + حجوزات + فرنشايز.",
@@ -110,7 +110,7 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
         "gain": "غالباً 3-7 leads جادة شهرياً للتموين كانت تضيع.",
         "objections": ["small_business_budget", "concern_about_complexity"],
         "first_sentence": "تموين شركة كبيرة = إيراد شهر كامل. لا تخسروه بسبب رد متأخر.",
-        "best_offer": "pilot_499", "best_channel": "phone_task",
+        "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
     },
     "saas": {
         "brief": "شركة SaaS سعودية تبيع للسوق المحلي.",
@@ -119,15 +119,15 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
         "gain": "غالباً تحسين Arabic-lead-to-demo بـ 40%+.",
         "objections": ["already_has_AI_tool", "build_vs_buy"],
         "first_sentence": "إذا تبيعون SaaS داخل السعودية، الرد العربي السريع = ميزة تنافسية.",
-        "best_offer": "pilot_999", "best_channel": "linkedin_manual",
+        "best_offer": "revenue_command_pilot", "best_channel": "linkedin_manual",
     },
     "marketing_agency": {
         "brief": "وكالة تسويق سعودية تخدم عملاء B2B/B2C.",
         "pain": "العملاء يطلبون من الوكالة \"AI sales rep بالعربي\" — الوكالة بدون حل جاهز.",
-        "fit": "Dealix شريك resell — الوكالة تبيعه لعملائها وتحصل 25% MRR شهرياً.",
+        "fit": "Dealix يمكن أن يعمل كشريك resell/تنفيذ؛ الاقتصاديات والحقوق تحدد باتفاق خاص ومعتمد.",
         "gain": "غالباً 5-15 عميل وكالة × 25% = 5K-15K ريال passive recurring شهرياً.",
         "objections": ["white_label_requirement", "control_over_messaging"],
-        "first_sentence": "Dealix شريك resell — أنتم تبيعونه، نحن نبنيه، 25% MRR لكم لمدى العلاقة.",
+        "first_sentence": "Dealix يمكن أن يعمل كشريك resell/تنفيذ؛ أنتم تديرون العلاقة ونوثق الاقتصاديات والحقوق باتفاق خاص قبل أي التزام.",
         "best_offer": "partnership", "best_channel": "linkedin_manual",
     },
 }
@@ -136,11 +136,11 @@ SECTOR_BRIEFS: dict[str, dict[str, Any]] = {
 DEFAULT_BRIEF = {
     "brief": "شركة سعودية في قطاع B2B.",
     "pain": "غالباً تستقبل استفسارات لكن الرد قد يتأخر أو يضيع بين القنوات.",
-    "fit": "Dealix يرد على inbound leads بالعربي الخليجي خلال 45 ثانية ويفرزها للمبيعات.",
+    "fit": "Dealix يساعد على تنظيم inbound leads بالعربي الخليجي وفرزها للمبيعات مع baseline وProof.",
     "gain": "غالباً تحسين conversion ratio على inbound — نقيس بدقة خلال 7 أيام.",
     "objections": ["unsure_fit"],
     "first_sentence": "سرعة الرد على العميل = ميزة تنافسية مباشرة.",
-    "best_offer": "pilot_499", "best_channel": "phone_task",
+    "best_offer": "revenue_command_pilot", "best_channel": "phone_task",
 }
 
 
