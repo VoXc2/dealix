@@ -44,7 +44,7 @@ from db.fresh_schema import build_fresh_schema_metadata
 
 ACK_ENV = "DEALIX_ALLOW_FRESH_DB_BOOTSTRAP"
 ALEMBIC_VERSION_LENGTH = 255
-_ALLOWED_EXTENSIONS = frozenset({"pgcrypto"})
+_ALLOWED_EXTENSIONS = frozenset({"pgcrypto", "vector"})
 _ALLOWED_SSL_MODES = frozenset(
     {"disable", "allow", "prefer", "require", "verify-ca", "verify-full"}
 )
@@ -127,6 +127,8 @@ def _ensure_extensions(connection, extensions: set[str]) -> None:
         )
     if "pgcrypto" in extensions:
         connection.execute(text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
+    if "vector" in extensions:
+        connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
 
 
 def _ensure_wide_alembic_version_table(connection) -> None:
