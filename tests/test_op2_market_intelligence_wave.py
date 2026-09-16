@@ -49,7 +49,9 @@ def test_wave_passes_all_fail_closed_checks() -> None:
 
 def test_authority_and_allowed_use_are_research_only() -> None:
     runner = verifier._load_runner()
-    for signal in _wave()["signals"]:
+    payload = _wave()
+    assert payload["authority"] == runner.AUTHORITY
+    for signal in payload["signals"]:
         assert signal["authority"] == runner.AUTHORITY
         assert signal["allowed_use"] == ["INTERNAL_RESEARCH_ONLY"]
 
