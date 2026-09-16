@@ -1,22 +1,33 @@
 import json
 from pathlib import Path
+
 from scripts.ops.verify_production_release_authority import main
-ROOT=Path(__file__).resolve().parents[1]
+
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def test_release_authority_contract_fails_closed_by_default():
-    c=json.loads((ROOT/'dealix/config/production_release_authority.json').read_text())
-    assert c['production_green'] is False
-    assert c['release_mode']=='manual_exact_sha'
-    assert c['github_actions_release_authority'] is False
-    assert c['third_party_commit_status_release_authority'] is False
-    assert c['provider_mutation_authority']=='exact_action_bound_l5'
+    c = json.loads((ROOT / "dealix/config/production_release_authority.json").read_text())
+    assert c["production_green"] is False
+    assert c["release_mode"] == "manual_exact_sha"
+    assert c["canonical_acceptance_plane"] == "vps_exact_head"
+    assert c["github_actions_release_authority"] is False
+    assert c["third_party_commit_status_release_authority"] is False
+    assert c["selfhost_release_target"] == "canonical_vps_only"
+    assert c["provider_mutation_authority"] == "exact_action_bound_l5"
 
-def test_provider_source_contract_is_exact_sha_and_watch_complete():
-    assert main()==0
+
+def test_selfhost_source_contract_is_exact_sha_and_provider_independent():
+    assert main() == 0
 
 
-def test_railway_runtime_images_receive_immutable_provider_sha():
-    for rel in ('Dockerfile', 'apps/web/Dockerfile'):
-        source=(ROOT/rel).read_text(encoding='utf-8')
-        assert 'ARG RAILWAY_GIT_COMMIT_SHA=\"\"' in source
-        assert 'RAILWAY_GIT_COMMIT_SHA=${RAILWAY_GIT_COMMIT_SHA}' in source
+def test_legacy_provider_configs_are_not_release_authority():
+    assert not (ROOT / "railway.json").exists()
+    assert not (ROOT / ".github/workflows").exists()
+
+
+def test_selfhost_release_requires_public_exact_sha_parity():
+    source = (ROOT / "scripts/ops/selfhost_release.sh").read_text(encoding="utf-8")
+    assert "public exact-SHA mismatch" in source
+    assert "public_exact_sha=PASS" in source
+    assert "payload.get(\"git_sha\")" in source

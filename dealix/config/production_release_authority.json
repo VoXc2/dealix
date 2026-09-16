@@ -5,11 +5,10 @@
   "canonical_acceptance_plane": "vps_exact_head",
   "github_actions_release_authority": false,
   "third_party_commit_status_release_authority": false,
-  "railway_github_autodeploy_target": "disabled_before_manual_release",
   "required_evidence": [
     "accepted_source_sha",
-    "web_provider_deployment_sha_matches_accepted",
-    "api_provider_deployment_sha_matches_accepted",
+    "selfhost_web_runtime_sha_matches_accepted",
+    "selfhost_api_runtime_sha_matches_accepted",
     "public_web_health_and_routes",
     "public_api_health_and_version",
     "tls_and_domain_routing",
@@ -19,8 +18,9 @@
   "prohibited_inference": [
     "http_200_alone",
     "github_status_success_alone",
-    "railway_build_success_without_exact_sha",
-    "source_green_without_provider_parity"
+    "legacy_provider_status_as_release_authority",
+    "source_green_without_selfhost_runtime_parity"
   ],
-  "provider_mutation_authority": "exact_action_bound_l5"
+  "provider_mutation_authority": "exact_action_bound_l5",
+  "selfhost_release_target": "canonical_vps_only"
 }
