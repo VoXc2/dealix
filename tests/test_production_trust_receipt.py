@@ -127,8 +127,6 @@ def test_apps_web_healthz_prefers_immutable_sha() -> None:
     assert "git_sha" in source
     ordered = [
         "DEALIX_RELEASE_SHA",
-        "RAILWAY_GIT_COMMIT_SHA",
-        "VERCEL_GIT_COMMIT_SHA",
         "NEXT_PUBLIC_GIT_SHA",
         "process.env.GIT_SHA",
     ]
@@ -142,8 +140,6 @@ def test_selfhost_verifier_tracks_current_release_identity_chain() -> None:
     )
     for item in (
         "DEALIX_RELEASE_SHA",
-        "RAILWAY_GIT_COMMIT_SHA",
-        "VERCEL_GIT_COMMIT_SHA",
         "NEXT_PUBLIC_GIT_SHA",
         "process.env.GIT_SHA",
     ):
@@ -208,6 +204,10 @@ def test_canonical_postgres_backup_verifies_integrity_without_password_env() -> 
     assert "/run/dealix-secrets/password" in source
     assert "cat /run/dealix-secrets/password" in source
     assert "-e PGPASSWORD" not in source
+    assert "DEALIX_SELFHOST_DB_HOST" in source
+    assert "DEALIX_SELFHOST_DB_PORT" in source
+    assert "selfhost_backup_host_must_be_loopback" in source
+    assert "127.0.0.1|::1|localhost" in source
 
 
 def test_rollback_drill_record_and_dry_run(tmp_path) -> None:

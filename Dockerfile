@@ -30,12 +30,16 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY pyproject.toml ./
 COPY requirements.txt* ./
 
-# Install deps and aggressively prune caches/metadata to shrink image
-RUN pip install --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir --prefer-binary -r requirements.txt \
-    && find /opt/venv -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true \
-    && find /opt/venv -type d -name tests -exec rm -rf {} + 2>/dev/null || true \
-    && find /opt/venv -type f -name "*.pyc" -delete 2>/dev/null || true
+# Install dependencies fail-fast, then remove build-only packaging tooling.
+# Keeping pip/setuptools/wheel out of the runtime venv reduces attack surface;
+# the application never installs packages at runtime.
+RUN set -eux; \
+    pip install --upgrade pip setuptools wheel; \
+    pip install --no-cache-dir --prefer-binary -r requirements.txt; \
+    find /opt/venv -type d -name __pycache__ -prune -exec rm -rf {} +; \
+    find /opt/venv -type d -name tests -prune -exec rm -rf {} +; \
+    find /opt/venv -type f -name "*.pyc" -delete; \
+    python -m pip uninstall -y pip setuptools wheel
 
 # ──────────────────────────────────────────────────────────────
 # Stage 2 — Runtime: minimal image
@@ -57,6 +61,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         libffi8 \
+        libpcre2-8-0 \
         tini \
     && rm -rf /var/lib/apt/lists/*
 

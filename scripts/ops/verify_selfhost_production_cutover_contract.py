@@ -23,6 +23,7 @@ files = {
     "legacy_backup": ROOT / "scripts/server_backup.sh",
     "legacy_health": ROOT / "scripts/server_healthcheck.sh",
     "canonical_compose": ROOT / "deploy/selfhost/compose.yml",
+    "caddy": ROOT / "ops/caddy/Caddyfile",
     "backup_runner": ROOT / "scripts/ops/backup_postgres_snapshot.sh",
     "restore": ROOT / "scripts/restore_test.sh",
     "migrate": ROOT / "scripts/ops/migrate_railway_backup_to_selfhost.py",
@@ -61,8 +62,14 @@ required = {
         'profiles: ["public-cutover"]',
         "${DEALIX_PUBLIC_HTTP_BIND:-127.0.0.1:18080}:80",
         "${DEALIX_PUBLIC_HTTPS_BIND:-127.0.0.1:18443}:443",
+        "/opt/dealix/control/secrets/cloudflare-origin:/etc/caddy/origin-tls:ro",
         "image: dealix-api:${DEALIX_IMAGE_TAG:?set exact DEALIX_IMAGE_TAG}",
         "image: dealix-web:${DEALIX_IMAGE_TAG:?set exact DEALIX_IMAGE_TAG}",
+    ],
+    "caddy": [
+        "tls /etc/caddy/origin-tls/dealix.me.crt /etc/caddy/origin-tls/dealix.me.key",
+        "reverse_proxy api:8000",
+        "DEALIX_FRONTEND_UPSTREAM",
     ],
     # Canonical backup runner: custom format + checksum + TOC, secret-file input.
     "backup_runner": [

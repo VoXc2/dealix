@@ -25,3 +25,10 @@ def test_canary_postgres_failure_emits_bounded_diagnostics() -> None:
         "exit 66",
     ):
         assert needle in script
+
+
+def test_canary_postgres_readiness_does_not_reprobe_after_success() -> None:
+    script = (ROOT / "scripts/ops/deploy_selfhosted_canary.sh").read_text(encoding="utf-8")
+    assert 'POSTGRES_READY=1' in script
+    assert 'if [[ "${POSTGRES_READY:-0}" != "1" ]]; then' in script
+    assert script.count("pg_isready -U") == 1

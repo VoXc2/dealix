@@ -52,6 +52,14 @@ PY
 (( ${#PARTS[@]} == 5 )) || fail "database_url_parse_failed" 66
 PGHOST="${PARTS[0]}"; PGPORT="${PARTS[1]}"; PGUSER="${PARTS[2]}"
 PGDATABASE="${PARTS[3]}"; PGSSLMODE="${PARTS[4]}"
+if [[ "$ROLE" == selfhost-target && "$PGHOST" == postgres ]]; then
+  PGHOST="${DEALIX_SELFHOST_DB_HOST:-127.0.0.1}"
+  PGPORT="${DEALIX_SELFHOST_DB_PORT:-15432}"
+  case "$PGHOST" in
+    127.0.0.1|::1|localhost) ;;
+    *) fail "selfhost_backup_host_must_be_loopback" 67 ;;
+  esac
+fi
 export PGHOST PGPORT PGUSER PGDATABASE PGSSLMODE
 HOST_UID="$(id -u)"; HOST_GID="$(id -g)"
 DOCKER_BASE=(

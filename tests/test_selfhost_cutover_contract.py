@@ -80,6 +80,7 @@ def test_single_canonical_graph_contains_safe_public_cutover_profile() -> None:
     assert "${DEALIX_PUBLIC_HTTP_BIND:-127.0.0.1:18080}:80" in compose
     assert "${DEALIX_PUBLIC_HTTPS_BIND:-127.0.0.1:18443}:443" in compose
     assert "../../ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" in compose
+    assert "/opt/dealix/control/secrets/cloudflare-origin:/etc/caddy/origin-tls:ro" in compose
     assert '"80:80"' not in compose
     assert '"443:443"' not in compose
 
@@ -223,3 +224,15 @@ def test_material_selfhost_actions_are_exact_action_bound() -> None:
     assert 'ACTION_ID="dealix-production-stage-v1:${EXPECTED_SHA}"' in cutover
     assert 'ACTION_ID="dealix-public-cutover-v1:${EXPECTED_SHA}"' in cutover
     assert '${DEALIX_L5_APPROVAL_ACTION:-}' in cutover
+
+
+def test_public_ingress_uses_external_origin_tls_material_without_repo_secrets() -> None:
+    caddy = (ROOT / "ops/caddy/Caddyfile").read_text(encoding="utf-8")
+    directive = "tls /etc/caddy/origin-tls/dealix.me.crt /etc/caddy/origin-tls/dealix.me.key"
+    assert caddy.count(directive) == 3
+    assert "BEGIN PRIVATE KEY" not in caddy
+    assert "BEGIN CERTIFICATE" not in caddy
+    compose = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
+    assert "/opt/dealix/control/secrets/cloudflare-origin:/etc/caddy/origin-tls:ro" in compose
+    assert "cloudflare-origin.key" not in compose
+    assert "cloudflare-origin.crt" not in compose

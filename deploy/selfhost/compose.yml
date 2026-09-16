@@ -118,6 +118,7 @@ services:
       DEALIX_FRONTEND_UPSTREAM: web:3000
     volumes:
       - ../../ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - /opt/dealix/control/secrets/cloudflare-origin:/etc/caddy/origin-tls:ro
       - dealix-caddy-data:/data
       - dealix-caddy-config:/config
     depends_on:
