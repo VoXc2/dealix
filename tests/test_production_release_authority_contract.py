@@ -24,3 +24,10 @@ def test_selfhost_source_contract_is_exact_sha_and_provider_independent():
 def test_legacy_provider_configs_are_not_release_authority():
     assert not (ROOT / "railway.json").exists()
     assert not (ROOT / ".github/workflows").exists()
+
+
+def test_selfhost_release_requires_public_exact_sha_parity():
+    source = (ROOT / "scripts/ops/selfhost_release.sh").read_text(encoding="utf-8")
+    assert "public exact-SHA mismatch" in source
+    assert "public_exact_sha=PASS" in source
+    assert "payload.get(\"git_sha\")" in source

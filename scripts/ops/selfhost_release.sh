@@ -58,6 +58,16 @@ api=get("http://127.0.0.1:18000/version"); web=get("http://127.0.0.1:13000/healt
 assert api.get("git_sha")==expected, api
 assert web.get("git_sha")==expected, web
 PY
-curl -fsS https://${DEALIX_DOMAIN:-dealix.me}/healthz >/dev/null
-curl -fsS https://${DEALIX_API_DOMAIN:-api.dealix.me}/version >/dev/null
-log "SELFHOST_RELEASE=PASS sha=$EXPECTED_SHA previous_sha=${PREV_SHA:-unknown} public_ingress=ACTIVE"
+python3 - "$EXPECTED_SHA" "${DEALIX_DOMAIN:-dealix.me}" "${DEALIX_API_DOMAIN:-api.dealix.me}" <<'PY_PUBLIC'
+import json, sys, urllib.request
+expected, web_domain, api_domain = sys.argv[1:4]
+def exact(url):
+    with urllib.request.urlopen(url, timeout=10) as r:
+        payload = json.load(r)
+    actual = payload.get("git_sha")
+    if actual != expected:
+        raise SystemExit(f"public exact-SHA mismatch: {url} expected={expected} actual={actual}")
+exact(f"https://{web_domain}/healthz")
+exact(f"https://{api_domain}/version")
+PY_PUBLIC
+log "SELFHOST_RELEASE=PASS sha=$EXPECTED_SHA previous_sha=${PREV_SHA:-unknown} public_exact_sha=PASS"
