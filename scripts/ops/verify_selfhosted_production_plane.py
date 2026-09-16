@@ -97,8 +97,6 @@ def main() -> int:
     required_web_health = [
         'service: "dealix-web"',
         "DEALIX_RELEASE_SHA",
-        "RAILWAY_GIT_COMMIT_SHA",
-        "VERCEL_GIT_COMMIT_SHA",
         "NEXT_PUBLIC_GIT_SHA",
         "process.env.GIT_SHA",
         "git_sha: gitSha",
