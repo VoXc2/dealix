@@ -13,15 +13,15 @@ ROUTE = (
 )
 
 
-def test_healthz_prefers_immutable_release_identity_sources() -> None:
+def test_healthz_prefers_selfhost_immutable_release_identity_sources() -> None:
     source = ROUTE.read_text(encoding="utf-8")
     ordered = [
         "DEALIX_RELEASE_SHA",
-        "RAILWAY_GIT_COMMIT_SHA",
-        "VERCEL_GIT_COMMIT_SHA",
         "NEXT_PUBLIC_GIT_SHA",
         "GIT_SHA",
     ]
     positions = [source.index(name) for name in ordered]
     assert positions == sorted(positions)
-    assert 'git_sha: gitSha' in source
+    assert "RAILWAY_GIT_COMMIT_SHA" not in source
+    assert "VERCEL_GIT_COMMIT_SHA" not in source
+    assert "git_sha: gitSha" in source
