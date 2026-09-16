@@ -40,25 +40,76 @@ probe() {
   fi
 }
 
-# API health (must serve {"status":"ok"})
-probe "API_HEALTH" "$BASE/health" '"status":"ok"'
-
-# Landing pages — every public route the founder shares with prospects
-for path in "" "launchpad.html" "customer-portal.html" \
-            "executive-command-center.html" "diagnostic-real-estate.html" \
-            "start.html" "proof.html"; do
-  url="$SITE/$path"
-  code=$(curl -sSk -o /dev/null -w "%{http_code}" --max-time 10 "$url")
-  label="${path:-INDEX}"
-  # Normalize label (strip .html, uppercase)
-  label="$(echo "$label" | sed 's/\.html$//' | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
-  if [ "$code" = "200" ]; then
-    results+=("LANDING_${label}=PASS")
+probe_status() {
+  local name="$1"; local url="$2"; local expected_code="$3"
+  local code
+  code=$(curl -sSk -o /dev/null -w "%{http_code}" --max-time 10 "$url" 2>&1 || echo "000")
+  if [ "$code" = "$expected_code" ]; then
+    results+=("$name=PASS ($code)")
   else
-    results+=("LANDING_${label}=FAIL ($code)")
+    results+=("$name=FAIL ($code, expected $expected_code) ($url)")
     ok=false
   fi
+}
+
+# API trust layer — must serve expected payloads
+probe "API_HEALTHZ" "$BASE/healthz" '"status":"ok"'
+probe "API_HEALTH" "$BASE/health" '"status":"ok"'
+probe "API_VERSION" "$BASE/version" '"git_sha"'
+probe "API_META" "$BASE/api/v1/meta" '"surfaces"'
+
+# Canonical public frontend routes (aligned with gtm_public_surfaces.yaml + sitemap.ts)
+# These are the authoritative public routes that prospects and partners land on.
+declare -A PUBLIC_ROUTES=(
+  ["INDEX"]="/"
+  ["EN_HOME"]="/en"
+  ["COMPANY"]="/company"
+  ["SERVICES"]="/services"
+  ["SECTORS"]="/sectors"
+  ["PRODUCTS"]="/products"
+  ["DEALIX_OS"]="/dealix-os"
+  ["BOOK"]="/book"
+  ["SAUDI_RADAR"]="/saudi-opportunity-radar"
+  ["SAFETY"]="/safety"
+  ["CASES"]="/cases"
+  ["PRICING"]="/pricing"
+  ["CLIENT_PORTAL_DEMO"]="/client-portal/demo"
+)
+
+for name in "${!PUBLIC_ROUTES[@]}"; do
+  path="${PUBLIC_ROUTES[$name]}"
+  url="$SITE$path"
+  probe_status "LANDING_${name}" "$url" "200"
 done
+
+# Internal/admin routes must 404 (fail-closed) in production
+# Sample check — not exhaustive; full guard is in middleware.ts
+declare -A INTERNAL_ROUTES=(
+  ["FOUNDER"]="/ops/founder"
+  ["WAR_ROOM"]="/ops/war-room"
+  ["CRM"]="/crm"
+  ["DASHBOARD"]="/dashboard"
+)
+
+for name in "${!INTERNAL_ROUTES[@]}"; do
+  path="${INTERNAL_ROUTES[$name]}"
+  url="$SITE$path"
+  probe_status "INTERNAL_${name}_404" "$url" "404"
+done
+
+# Retired compatibility route must redirect to the canonical public surface.
+pipeline_code=$(curl -sSk -o /dev/null -w "%{http_code}" --max-time 10 "$SITE/pipeline")
+pipeline_location=$(curl -sSkI --max-time 10 "$SITE/pipeline" | tr -d "\r" | awk 'tolower($1)=="location:" {print $2; exit}')
+if [ "$pipeline_code" = "308" ] && [ "$pipeline_location" = "/dealix-os" ]; then
+  results+=("COMPAT_PIPELINE_REDIRECT=PASS (308 -> /dealix-os)")
+else
+  results+=("COMPAT_PIPELINE_REDIRECT=FAIL ($pipeline_code -> ${pipeline_location:-missing})")
+  ok=false
+fi
+
+# Production API documentation is intentionally fail-closed.
+probe_status "API_DOCS_404" "$BASE/docs" "404"
+probe_status "API_OPENAPI_404" "$BASE/openapi.json" "404"
 
 echo
 for r in "${results[@]}"; do printf "  %s\n" "$r"; done

@@ -19,3 +19,11 @@ def test_repository_score_cannot_claim_public_production_readiness() -> None:
     assert "PUBLIC_PRODUCTION_READINESS=NOT_INFERRED" in text
     assert "Railway canonical `apps/web` deployment identity + deployed SHA" in text
     assert "exact-head sovereign Trust/Commercial/E2E acceptance" in text
+
+
+def test_launch_readiness_default_report_stays_outside_repo() -> None:
+    text = SCRIPT.read_text(encoding="utf-8")
+    assert "DEALIX_RUNTIME_REPORTS_ROOT" in text
+    assert "/opt/dealix/control/runtime-reports" in text
+    assert "REPO / \"reports\" / \"launch\" / \"private_launch_readiness.md\"" not in text
+    assert "parser.add_argument(\"--output\"" in text
