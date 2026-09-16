@@ -38,12 +38,14 @@ jobs:
         env:
           DEALIX_API_BASE: ${{ github.event.inputs.api_base }}
           DEALIX_ADMIN_API_KEY: ${{ secrets.DEALIX_ADMIN_API_KEY }}
+          SKIP_FE_BUILD: ${{ github.event.inputs.skip_fe_build }}
         run: |
-          ARGS="--skip-go-live"
-          if [[ "${{ github.event.inputs.skip_fe_build }}" == "true" ]]; then
-            ARGS="$ARGS --skip-fe-build"
+          set -euo pipefail
+          ARGS=(--skip-go-live)
+          if [[ "$SKIP_FE_BUILD" == "true" ]]; then
+            ARGS+=(--skip-fe-build)
           fi
           if [[ -n "${DEALIX_API_BASE}" ]]; then
-            ARGS="$ARGS --api-base=${DEALIX_API_BASE}"
+            ARGS+=("--api-base=${DEALIX_API_BASE}")
           fi
-          bash scripts/official_launch_verify.sh $ARGS
+          bash scripts/official_launch_verify.sh "${ARGS[@]}"
