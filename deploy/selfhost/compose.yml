@@ -51,6 +51,8 @@ services:
       dockerfile: Dockerfile
       args:
         GIT_SHA: ${DEALIX_GIT_SHA:?set exact DEALIX_GIT_SHA}
+        NEXT_PUBLIC_POSTHOG_KEY: ${NEXT_PUBLIC_POSTHOG_KEY:-}
+        NEXT_PUBLIC_POSTHOG_HOST: ${NEXT_PUBLIC_POSTHOG_HOST:-https://us.i.posthog.com}
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: "1"
