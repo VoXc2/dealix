@@ -47,10 +47,11 @@ Only after exact private acceptance and the complete database receipt chain:
 3. Capture the post-migration self-host backup and then a fresh Railway quiescence receipt.
 4. Verify all cutover receipts before any public port is opened.
 5. Under a separate exact L5 public-ingress action, run `--cutover`; only then may the canonical Caddy profile bind `0.0.0.0:80/443`.
-6. DNS/Cloudflare origin mutation remains a separate exact L5 action. The controller deliberately reports `DNS_MUTATION=NOT_EXECUTED`.
-7. After DNS, verify public Web/API full SHA parity, health, critical routes, TLS, observability, and rollback.
-8. Soak on self-host while Railway remains recoverable.
-9. Decommission Railway services and cancel billing only after public parity + data safety + rollback evidence are current. Provider decommission is never implied by source merge or ingress start.
+6. Select an explicit TLS bootstrap strategy. `managed_cert_present` is allowed only when Caddy certificate storage already contains certificate evidence; otherwise use `public_acme_after_dns`, which remains `PENDING_DNS` until the separately-authorized DNS move lets ACME reach this origin. Source preflight reports `ORIGIN_TLS_CERT_STORAGE` and `TLS_BOOTSTRAP_REQUIRED` without reading certificate/key contents.
+7. DNS/origin mutation remains a separate exact L5 action. The controller deliberately reports `DNS_MUTATION=NOT_EXECUTED`.
+8. Immediately after DNS, run `selfhost_public_cutover.sh --verify-public`. It uses strict HTTPS trust (never `-k`) and requires public Web and API to report the exact accepted full SHA. A TLS/SHA failure reports `ROLLBACK_REQUIRED=YES` and the required material action `RESTORE_PREVIOUS_DNS_ORIGIN`; the verifier itself never mutates DNS.
+9. Verify critical routes, observability and rollback, then soak on self-host while Railway remains recoverable.
+10. Decommission Railway services and cancel billing only after public parity + data safety + rollback evidence are current. Provider decommission is never implied by source merge or ingress start.
 
 ## Commands
 
@@ -70,7 +71,7 @@ Source preflight (safe, no public bind):
 DEALIX_EXPECTED_SHA="$(git rev-parse HEAD)" bash scripts/ops/selfhost_public_cutover.sh --preflight
 ```
 
-`--stage` additionally requires `DEALIX_STAGE_PRODUCTION=YES`, `CONFIRM_SHA=<exact accepted SHA>`, and a current production migration receipt whose Alembic head and migrated counts match the live self-host database. `--cutover` additionally requires `DEALIX_PUBLIC_CUTOVER=YES` plus fresh Railway-source, self-host-target, and quiescence receipts; `verify_selfhost_cutover_receipts.py` runs before the controller is allowed to replace the safe loopback defaults with `0.0.0.0:80/443`. Running either material mode remains an exact action-bound L5 operation. The controller never mutates DNS or decommissions Railway, and it reports `PRODUCTION_GREEN=NOT_PROVEN` until public parity is independently proven.
+`--stage` additionally requires `DEALIX_STAGE_PRODUCTION=YES`, `CONFIRM_SHA=<exact accepted SHA>`, and a current production migration receipt whose Alembic head and migrated counts match the live self-host database. `--cutover` additionally requires `DEALIX_PUBLIC_CUTOVER=YES`, an explicit `DEALIX_TLS_BOOTSTRAP_STRATEGY`, plus fresh Railway-source, self-host-target, and quiescence receipts; `verify_selfhost_cutover_receipts.py` runs before the controller is allowed to replace the safe loopback defaults with `0.0.0.0:80/443`. Running either material mode remains an exact action-bound L5 operation. The controller never mutates DNS or decommissions Railway. After the separate DNS action, run read-only `--verify-public`; it requires strict TLS plus exact Web/API SHA parity and emits rollback-required on failure. `PRODUCTION_GREEN=NOT_PROVEN` remains true until the wider production acceptance closes.
 
 ## Definition of done
 

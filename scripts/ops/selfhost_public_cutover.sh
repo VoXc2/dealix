@@ -15,7 +15,7 @@ DB_PORT="${DEALIX_SELFHOST_DB_PORT:-15432}"
 
 log(){ printf '[selfhost-cutover] %s\n' "$*"; }
 hold(){ log "HOLD: $*" >&2; exit 78; }
-[[ "$MODE" == --preflight || "$MODE" == --stage || "$MODE" == --cutover ]] || hold "invalid mode"
+[[ "$MODE" == --preflight || "$MODE" == --stage || "$MODE" == --cutover || "$MODE" == --verify-public ]] || hold "invalid mode"
 [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]] || hold "DEALIX_EXPECTED_SHA must be exact"
 [[ "$(git rev-parse HEAD)" == "$EXPECTED_SHA" ]] || hold "exact-head mismatch"
 [[ -z "$(git status --porcelain --untracked-files=no)" ]] || hold "tracked worktree is dirty"
@@ -60,7 +60,80 @@ COMPOSE=(docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE")
 "${COMPOSE[@]}" --profile production-db --profile public-cutover config >/dev/null
 docker run --rm -v "$ROOT/ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro" \
   caddy:2.11.4-alpine caddy validate --config /etc/caddy/Caddyfile >/dev/null
+
+# TLS bootstrap is part of the single canonical cutover plane. Public
+# certificate material is inspected only for hostname/expiry metadata; private
+# keys are never read. A random or expired .crt must never satisfy readiness.
+PUBLIC_INGRESS_CID="$("${COMPOSE[@]}" --profile public-cutover ps -q public-ingress 2>/dev/null || true)"
+ORIGIN_TLS_CERT_STORAGE="MISSING_OR_UNPROVEN"
+ORIGIN_TLS_REQUIRED_HOSTS=("dealix.me" "www.dealix.me" "api.dealix.me")
+cert_storage_covers_host(){
+  local cid="$1" host="$2" cert_path
+  while IFS= read -r cert_path; do
+    [[ -n "$cert_path" ]] || continue
+    if docker exec "$cid" cat "$cert_path" 2>/dev/null \
+      | openssl x509 -noout -checkend 86400 -checkhost "$host" >/dev/null 2>&1; then
+      return 0
+    fi
+  done < <(docker exec "$cid" sh -lc 'find /data/caddy/certificates -type f -name "*.crt" -print 2>/dev/null' 2>/dev/null || true)
+  return 1
+}
+if [[ -n "$PUBLIC_INGRESS_CID" ]] && docker inspect -f '{{.State.Running}}' "$PUBLIC_INGRESS_CID" 2>/dev/null | grep -qx true; then
+  ORIGIN_TLS_CERT_STORAGE="VALID_HOST_CERTS_PRESENT"
+  for host in "${ORIGIN_TLS_REQUIRED_HOSTS[@]}"; do
+    if ! cert_storage_covers_host "$PUBLIC_INGRESS_CID" "$host"; then
+      ORIGIN_TLS_CERT_STORAGE="MISSING_OR_UNPROVEN"
+      break
+    fi
+  done
+fi
+TLS_BOOTSTRAP_STRATEGY="${DEALIX_TLS_BOOTSTRAP_STRATEGY:-UNSET}"
+case "$TLS_BOOTSTRAP_STRATEGY" in
+  UNSET|managed_cert_present|public_acme_after_dns) ;;
+  *) hold "invalid DEALIX_TLS_BOOTSTRAP_STRATEGY (allowed: managed_cert_present, public_acme_after_dns)" ;;
+esac
+log "ORIGIN_TLS_CERT_STORAGE=$ORIGIN_TLS_CERT_STORAGE"
+log "TLS_BOOTSTRAP_STRATEGY=$TLS_BOOTSTRAP_STRATEGY"
+if [[ "$ORIGIN_TLS_CERT_STORAGE" == VALID_HOST_CERTS_PRESENT ]]; then
+  log "TLS_BOOTSTRAP_REQUIRED=NO"
+else
+  log "TLS_BOOTSTRAP_REQUIRED=YES"
+fi
 log "PREFLIGHT=PASS sha=$EXPECTED_SHA project=$COMPOSE_PROJECT_NAME public_bind=LOOPBACK_DEFAULT"
+
+verify_public_json_sha(){
+  local url="$1" service="$2" body
+  body="$(curl --proto '=https' --tlsv1.2 -fsS --max-time 20 "$url")" || return 1
+  python3 - "$EXPECTED_SHA" "$service" "$body" <<'PY2'
+import json, sys
+expected, service, raw = sys.argv[1:]
+data = json.loads(raw)
+if data.get("status") != "ok" or data.get("service") != service or data.get("git_sha") != expected:
+    raise SystemExit(1)
+PY2
+}
+
+if [[ "$MODE" == --verify-public ]]; then
+  # Strict system trust is intentional: certificate-verification bypass is forbidden.
+  # is the post-DNS proof gate, not a connectivity smoke test.
+  PUBLIC_VERIFY_OK=1
+  verify_public_json_sha "https://dealix.me/healthz" dealix-web || PUBLIC_VERIFY_OK=0
+  verify_public_json_sha "https://api.dealix.me/version" dealix-api || PUBLIC_VERIFY_OK=0
+  if ! curl --proto '=https' --tlsv1.2 -fsSL --max-time 20 -o /dev/null "https://www.dealix.me/"; then
+    PUBLIC_VERIFY_OK=0
+  fi
+  if [[ "$PUBLIC_VERIFY_OK" != 1 ]]; then
+    log "PUBLIC_TLS_EXACT_SHA=FAIL sha=$EXPECTED_SHA"
+    log "ROLLBACK_REQUIRED=YES"
+    log "ROLLBACK_ACTION=RESTORE_PREVIOUS_DNS_ORIGIN"
+    hold "strict public TLS and exact-SHA verification failed"
+  fi
+  log "PUBLIC_TLS_EXACT_SHA=PASS sha=$EXPECTED_SHA"
+  log "ROLLBACK_REQUIRED=NO"
+  log "PRODUCTION_GREEN=NOT_PROVEN"
+  exit 0
+fi
+
 if [[ "$MODE" == --preflight ]]; then
   log "PUBLIC_CUTOVER=NOT_EXECUTED"
   exit 0
@@ -136,6 +209,17 @@ if [[ "$MODE" == --stage ]]; then
 fi
 
 [[ "${DEALIX_PUBLIC_CUTOVER:-}" == YES ]] || hold "DEALIX_PUBLIC_CUTOVER=YES required"
+# Public ingress may be exposed before DNS only when the TLS bootstrap state is
+# explicit.  The controller still never mutates DNS.  With public ACME, Caddy
+# can obtain a certificate only after the separately-authorized DNS move makes
+# the hostname reach this origin, so strict --verify-public is mandatory next.
+if [[ "$TLS_BOOTSTRAP_STRATEGY" == managed_cert_present ]]; then
+  [[ "$ORIGIN_TLS_CERT_STORAGE" == VALID_HOST_CERTS_PRESENT ]] || hold "managed_cert_present requires unexpired hostname-matching certificates for dealix.me/www/api in Caddy storage"
+elif [[ "$TLS_BOOTSTRAP_STRATEGY" == public_acme_after_dns ]]; then
+  log "TLS_BOOTSTRAP_PHASE=PENDING_DNS"
+else
+  hold "cutover requires explicit DEALIX_TLS_BOOTSTRAP_STRATEGY=managed_cert_present|public_acme_after_dns"
+fi
 SOURCE_RECEIPT="${DEALIX_SOURCE_BACKUP_RECEIPT:-}"
 TARGET_RECEIPT="${DEALIX_SELFHOST_BACKUP_RECEIPT:-}"
 QUIET_RECEIPT="${DEALIX_QUIESCENCE_RECEIPT:-}"
@@ -156,5 +240,7 @@ ss -lnt | grep -Eq '(^|[[:space:]]):80([[:space:]]|$)' || hold "public port 80 n
 ss -lnt | grep -Eq '(^|[[:space:]]):443([[:space:]]|$)' || hold "public port 443 not listening"
 log "PUBLIC_INGRESS_STARTED=YES sha=$EXPECTED_SHA http=0.0.0.0:80 https=0.0.0.0:443"
 log "DNS_MUTATION=NOT_EXECUTED"
+log "POST_DNS_PUBLIC_VERIFY=REQUIRED command=selfhost_public_cutover.sh--verify-public"
+log "ROLLBACK_ON_TLS_OR_SHA_FAILURE=RESTORE_PREVIOUS_DNS_ORIGIN"
 log "RAILWAY_DECOMMISSION=NOT_EXECUTED"
 log "PRODUCTION_GREEN=NOT_PROVEN"

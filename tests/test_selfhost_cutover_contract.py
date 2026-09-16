@@ -86,13 +86,50 @@ def test_single_canonical_graph_contains_safe_public_cutover_profile() -> None:
 
 def test_public_cutover_controller_is_explicitly_action_gated() -> None:
     source = (ROOT / "scripts/ops/selfhost_public_cutover.sh").read_text(encoding="utf-8")
-    for needle in ("DEALIX_EXPECTED_SHA", "CONFIRM_SHA", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "DEALIX_L5_APPROVAL_ACTION", "dealix-production-stage-v1:", "dealix-public-cutover-v1:", "0.0.0.0:80", "0.0.0.0:443"):
+    for needle in ("DEALIX_EXPECTED_SHA", "CONFIRM_SHA", "DEALIX_STAGE_PRODUCTION", "DEALIX_PUBLIC_CUTOVER", "DEALIX_L5_APPROVAL_ACTION", "dealix-production-stage-v1:", "dealix-public-cutover-v1:", "--verify-public", "DEALIX_TLS_BOOTSTRAP_STRATEGY", "0.0.0.0:80", "0.0.0.0:443"):
         assert needle in source
     assert "DNS_MUTATION=NOT_EXECUTED" in source
     assert "PRODUCTION_GREEN=NOT_PROVEN" in source
     assert "railway up" not in source
     assert "railway redeploy" not in source
 
+
+
+def test_tls_bootstrap_and_post_dns_verification_are_fail_closed() -> None:
+    source = (ROOT / "scripts/ops/selfhost_public_cutover.sh").read_text(encoding="utf-8")
+    for needle in (
+        "ORIGIN_TLS_CERT_STORAGE=",
+        "VALID_HOST_CERTS_PRESENT",
+        "ORIGIN_TLS_REQUIRED_HOSTS",
+        "openssl x509 -noout -checkend 86400 -checkhost",
+        "TLS_BOOTSTRAP_REQUIRED=",
+        "managed_cert_present",
+        "public_acme_after_dns",
+        "PUBLIC_TLS_EXACT_SHA=PASS",
+        "ROLLBACK_REQUIRED=YES",
+        "ROLLBACK_ACTION=RESTORE_PREVIOUS_DNS_ORIGIN",
+        "POST_DNS_PUBLIC_VERIFY=REQUIRED",
+        "ROLLBACK_ON_TLS_OR_SHA_FAILURE=RESTORE_PREVIOUS_DNS_ORIGIN",
+    ):
+        assert needle in source
+    assert "EVIDENCE_PRESENT" not in source
+    assert 'find /data/caddy/certificates -type f -name "*.crt" -print -quit' not in source
+    assert "--insecure" not in source
+    assert " -k " not in source
+    assert "DNS_MUTATION=NOT_EXECUTED" in source
+    assert source.index("verify_selfhost_cutover_receipts.py") < source.index('DEALIX_PUBLIC_HTTP_BIND="0.0.0.0:80"')
+
+
+def test_public_verifier_is_read_only_and_strict_https() -> None:
+    source = (ROOT / "scripts/ops/selfhost_public_cutover.sh").read_text(encoding="utf-8")
+    verify_block = source[source.index('if [[ "$MODE" == --verify-public ]]'):source.index('if [[ "$MODE" == --preflight ]]')]
+    assert "https://dealix.me/healthz" in verify_block
+    assert "https://api.dealix.me/version" in verify_block
+    assert "https://www.dealix.me/" in verify_block
+    assert "--proto '=https'" in verify_block
+    assert "--tlsv1.2" in verify_block
+    assert "docker compose" not in verify_block
+    assert "DNS_MUTATION" not in verify_block
 
 def test_canonical_database_profile_is_passworded_and_loopback_only() -> None:
     compose = (ROOT / "deploy/selfhost/compose.yml").read_text(encoding="utf-8")
