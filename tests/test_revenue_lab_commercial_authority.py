@@ -34,7 +34,7 @@ def _signal() -> CompanySignal:
     )
 
 
-def test_revenue_lab_uses_current_30_day_quote_only_planning_seed() -> None:
+def test_revenue_lab_uses_internal_planning_seed_without_fixed_customer_duration_authority() -> None:
     bundle = RevenueLabEngine().run([_signal()])
 
     assert len(bundle.proposals) == 1
@@ -51,7 +51,7 @@ def test_revenue_lab_uses_current_30_day_quote_only_planning_seed() -> None:
     assert "26-30" == delivery.phases[-1]["days"]
 
     joined_principles = " ".join(strategy.response_principles).casefold()
-    assert "customer-specific 30-day pilot" in joined_principles
+    assert "customer-specific pilot with customer-specific duration" in joined_principles
     assert "fixed public offer" in joined_principles
 
     joined_assumptions = " ".join(proposal.assumptions).casefold()
