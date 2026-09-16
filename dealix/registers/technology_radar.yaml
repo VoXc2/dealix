@@ -12,7 +12,8 @@
 # ═══════════════════════════════════════════════════════════════════
 
 schema_version: "1.0"
-last_reviewed: "2026-04-21"
+last_reviewed: "2026-09-16"
+research_registry: "dealix/registers/oss_capability_radar_2026_09.json"
 
 # ───────────── Languages & runtime ─────────────
 languages:
@@ -20,8 +21,8 @@ languages:
     version: "3.11 | 3.12"
     status: ADOPT
   typescript:
-    status: ASSESS
-    rationale: "Possible for executive-room frontend"
+    status: ADOPT
+    rationale: "Current Next.js buyer and operating surfaces are TypeScript."
 
 # ───────────── Frameworks ─────────────
 frameworks:
@@ -54,9 +55,9 @@ llm_providers:
     status: ADOPT
     role: "Fast classification with Llama 3.3 70B"
   deepseek:
-    status: ADOPT
-    role: "Code generation and debug"
-    risk_notes: "Verify data residency for enterprise customers"
+    status: HOLD
+    role: "Legacy compatibility only; canonical runtime is NO_DEEPSEEK."
+    risk_notes: "Do not route new Dealix runtime traffic to DeepSeek."
   glm_zai:
     status: ADOPT
     role: "Arabic + bulk tasks"
@@ -80,9 +81,11 @@ trust_plane:
     role: "Identity & SSO"
     phase: "Phase 2"
   hashicorp_vault:
+    status: HOLD
+    role: "Legacy source-available BSL option; not part of strict OSS target."
+  openbao:
     status: TRIAL
-    role: "Secrets management with dynamic creds + rotation + audit"
-    phase: "Phase 2"
+    role: "MPL-2.0 OSS secrets manager candidate; evaluate in isolation before any runtime adoption."
 
 # ───────────── Execution Plane ─────────────
 execution_plane:
@@ -95,28 +98,28 @@ execution_plane:
     role: "Stateful HITL + interrupts"
     phase: "Phase 1 candidate"
   temporal:
-    status: TRIAL
-    role: "Durable, never-fail long workflows"
-    phase: "Phase 2 spike on ONE critical workflow first"
-    note: "Do not adopt broadly until spike validates operational cost"
+    status: HOLD
+    role: "Durable workflow engine candidate only if the canonical scheduler proves a measured durability gap."
+    note: "Do not create a parallel workflow authority."
 
 # ───────────── Data Plane ─────────────
 data_plane:
   postgresql:
-    version: "16"
+    version: "18"
     status: ADOPT
   pgvector:
     version: ">=0.8.2"
     status: ADOPT
     notes: "Track CVEs (e.g. parallel HNSW CVE in Feb 2026); managed as production component"
   redis:
-    version: "7"
-    status: ADOPT
-    role: "Cache, rate limits, queues"
+    status: HOLD
+    role: "Protocol/client compatibility only; do not deepen non-OSI server licensing dependency."
+  valkey:
+    status: ASSESS
+    role: "BSD-3-Clause Redis-compatible server candidate when a cache/queue server is required."
   mongodb:
-    version: "7"
-    status: ADOPT
-    role: "Unstructured documents (optional)"
+    status: HOLD
+    role: "SSPL is not OSI-approved; prefer PostgreSQL JSONB unless a measured Mongo-specific need exists."
   airbyte:
     status: ASSESS
     role: "Connector-based ingestion"
@@ -152,12 +155,12 @@ observability:
   structlog:
     status: ADOPT
   opentelemetry:
-    status: TRIAL
+    status: ADOPT
     role: "Traces + GenAI semantic conventions"
     notes: "Some gen_ai.* conventions still in Development; pin internal naming"
   langfuse:
-    status: ASSESS
-    role: "LLM-specific tracing & eval"
+    status: ADOPT
+    role: "Existing LLM-specific tracing/eval integration; do not add a parallel observability authority without evidence."
 
 # ───────────── CI / SDLC ─────────────
 sdlc:
@@ -189,6 +192,24 @@ sdlc:
     note: "Non-blocking in CI initially"
   pytest:
     status: ADOPT
+  actionlint:
+    status: ADOPT
+  semgrep:
+    status: ADOPT
+  osv_scanner:
+    status: ADOPT
+  trivy:
+    status: ADOPT
+  syft:
+    status: ADOPT
+  cosign:
+    status: ADOPT
+  zizmor:
+    status: ADOPT
+  hadolint:
+    status: ADOPT
+  shellcheck:
+    status: ADOPT
 
 # ───────────── Integrations ─────────────
 integrations:
@@ -215,7 +236,8 @@ integrations:
     rationale: "ToS risk on automation; integration disabled by default"
   n8n:
     status: ADOPT
-    role: "External workflow orchestration via webhook"
+    role: "Existing internal workflow plane via webhook; no parallel scheduler."
+    license_note: "Sustainable Use License is not OSI-open-source; embedding/reselling/client credential hosting requires license review."
 
 # ───────────── Explicitly on HOLD ─────────────
 hold:
