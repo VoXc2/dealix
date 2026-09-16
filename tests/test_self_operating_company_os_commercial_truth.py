@@ -180,3 +180,84 @@ def test_market_signal_content_queue_is_fresh_and_internal_only(tmp_path) -> Non
     assert "public_publish=false" in rendered
     assert "stale-signal" not in rendered
     assert "unsafe-signal" not in rendered
+
+
+def test_awaiting_counterparty_response_fails_closed_zero_approval_queue(tmp_path) -> None:
+    """AWAITING_COUNTERPARTY_RESPONSE with REAL_INTERACTION must produce zero approval queue
+    and preserve evidence-bound state (evidence_refs, latest_outbound_ref, latest_inbound_ref,
+    pilot_fixed_fee_usd, payment_method). No autonomous follow-up, no invoice/payment/revenue/proof claims."""
+    module = load_runner()
+    module.DATA_ROOT = tmp_path
+    target = {
+        "company_name": "iMini",
+        "target_type": "inbound_paid_collaboration_pilot",
+        "segment": "AI creator / marketing collaboration",
+        "source": "gmail://thread/1a089407103f772e",
+        "evidence_refs": [
+            "gmail:message:1a089407103f772e",
+            "gmail:message:1a0a91951861f824"
+        ],
+        "relationship_state": "REAL_INTERACTION",
+        "consent_state": "NONE",
+        "suppression_state": "CLEAR",
+        "commercial_stage": "AWAITING_COUNTERPARTY_RESPONSE",
+        "pain_hypothesis": "Scope, attribution, payment and performance-term clarity for inbound paid collaboration.",
+        "recommended_offer": "Bounded paid collaboration pilot",
+        "why_now": "Inbound paid collaboration with evidence-bound scope and fee; latest outbound sent, awaiting counterparty response.",
+        "current_draft_ref": "",
+        "latest_outbound_ref": "gmail:message:1a0a91951861f824",
+        "latest_inbound_ref": "gmail:message:1a089407103f772e",
+        "pilot_fixed_fee_usd": 80,
+        "payment_method": "PayPal",
+        "fit_score": 70,
+        "urgency_score": 60,
+        "evidence_score": 85,
+        "access_score": 75,
+        "risk_score": 20,
+    }
+    (tmp_path / "targets.json").write_text(json.dumps([target]), encoding="utf-8")
+    cards = module.build_target_cards(50)
+    assert len(cards) == 1
+    card = cards[0]
+    # Evidence-bound state preserved
+    assert card.evidence_refs == [
+        "gmail:message:1a089407103f772e",
+        "gmail:message:1a0a91951861f824"
+    ]
+    assert card.relationship_state == "REAL_INTERACTION"
+    assert card.commercial_stage == "AWAITING_COUNTERPARTY_RESPONSE"
+    assert card.current_draft_ref == ""
+    assert str(getattr(card, "pilot_fixed_fee_usd", "")) == "80"
+    assert card.payment_method == "PayPal"
+    # Next action is wait/no-followup with explicit no-claim language
+    assert "wait for counterparty response" in card.next_action.lower()
+    assert "no autonomous follow-up" in card.next_action.lower()
+    assert "do not claim invoice/payment/revenue/proof" in card.next_action.lower()
+    # Approval status is NOT pending_action_bound_approval (fail closed)
+    assert card.approval_status == "internal_only_not_dispatch_eligible"
+    # Zero approval queue
+    queue = module.build_approval_queue(cards)
+    assert queue == []
+
+
+def test_script_sent_awaiting_reply_alias_is_equally_fail_closed(tmp_path) -> None:
+    module = load_runner()
+    module.DATA_ROOT = tmp_path
+    target = {
+        "company_name": "iMini",
+        "target_type": "inbound_paid_collaboration_pilot",
+        "source": "gmail://thread/example",
+        "evidence_refs": ["gmail:message:sent-script"],
+        "relationship_state": "REAL_INTERACTION",
+        "consent_state": "NONE",
+        "suppression_state": "CLEAR",
+        "commercial_stage": "SCRIPT_SENT_AWAITING_REPLY",
+        "pilot_fixed_fee_usd": 80,
+        "payment_method": "PayPal",
+    }
+    (tmp_path / "targets.json").write_text(json.dumps([target]), encoding="utf-8")
+    cards = module.build_target_cards(50)
+    assert len(cards) == 1
+    assert cards[0].approval_status == "internal_only_not_dispatch_eligible"
+    assert "no autonomous follow-up" in cards[0].next_action.lower()
+    assert module.build_approval_queue(cards) == []

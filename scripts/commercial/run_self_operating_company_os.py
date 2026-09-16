@@ -101,6 +101,7 @@ PURPOSE_CONSENT_STATES = {
     "INBOUND_REQUEST",
 }
 SUPPRESSED_STATES = {"SUPPRESSED", "OPTED_OUT", "WITHDRAWN"}
+AWAITING_RESPONSE_STAGES = {"SCRIPT_SENT_AWAITING_REPLY", "AWAITING_COUNTERPARTY_RESPONSE"}
 
 PLAYBOOKS = [
     {
@@ -334,7 +335,10 @@ def _dispatch_eligible(target: dict[str, Any]) -> bool:
     relationship = str(target.get("relationship_state", "RESEARCH")).upper()
     consent = str(target.get("consent_state", "NONE")).upper()
     suppression = str(target.get("suppression_state", "CLEAR")).upper()
+    stage = str(target.get("commercial_stage", "RESEARCH")).upper()
     if suppression in SUPPRESSED_STATES:
+        return False
+    if stage in AWAITING_RESPONSE_STAGES:
         return False
     return relationship in REAL_RELATIONSHIP_STATES or consent in PURPOSE_CONSENT_STATES
 
@@ -346,6 +350,11 @@ def _next_action(target: dict[str, Any]) -> str:
     target_type = str(target.get("target_type", "")).strip().upper()
 
     if target_type == "INBOUND_PAID_COLLABORATION_PILOT":
+        if stage in AWAITING_RESPONSE_STAGES:
+            return (
+                "wait for counterparty response; no autonomous follow-up; "
+                "do not claim invoice/payment/revenue/proof"
+            )
         return (
             "review the existing inbound collaboration draft against evidence-bound "
             "scope/payment facts; any external reply requires exact action-bound approval"
