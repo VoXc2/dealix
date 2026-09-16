@@ -236,8 +236,8 @@ python3 scripts/ops/verify_selfhost_cutover_receipts.py \
 export DEALIX_PUBLIC_HTTP_BIND="0.0.0.0:80"
 export DEALIX_PUBLIC_HTTPS_BIND="0.0.0.0:443"
 "${COMPOSE[@]}" --profile public-cutover up -d public-ingress
-ss -lnt | grep -Eq '(^|[[:space:]]):80([[:space:]]|$)' || hold "public port 80 not listening"
-ss -lnt | grep -Eq '(^|[[:space:]]):443([[:space:]]|$)' || hold "public port 443 not listening"
+ss -lntH | awk '{print $4}' | grep -Eq '(^|:)(80)$' || hold "public port 80 not listening"
+ss -lntH | awk '{print $4}' | grep -Eq '(^|:)(443)$' || hold "public port 443 not listening"
 log "PUBLIC_INGRESS_STARTED=YES sha=$EXPECTED_SHA http=0.0.0.0:80 https=0.0.0.0:443"
 log "DNS_MUTATION=NOT_EXECUTED"
 log "POST_DNS_PUBLIC_VERIFY=REQUIRED command=selfhost_public_cutover.sh--verify-public"
