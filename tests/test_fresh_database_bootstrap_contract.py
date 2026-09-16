@@ -372,7 +372,7 @@ def test_fresh_schema_never_replays_historical_data_seeds(
 ) -> None:
     _, report = fresh_schema_contract
     assert report.ignored_data_statements >= 1
-    assert report.required_extensions == {"pgcrypto"}
+    assert report.required_extensions == {"pgcrypto", "vector"}
     assert "bulk_insert" in FRESH_SCHEMA
     assert "unsupported raw migration SQL" in FRESH_SCHEMA
 
@@ -478,6 +478,52 @@ def test_fresh_bootstrap_accepts_preinstalled_allowlisted_pgcrypto() -> None:
     finally:
         asyncio.run(cleanup())
 
+
+def test_fresh_bootstrap_installs_required_pgvector() -> None:
+    """A truly empty PG18 target must gain pgvector during fresh bootstrap."""
+    _require_disposable_postgres()
+    target_database = f"dealix_pgvector_{uuid.uuid4().hex[:12]}"
+    admin_dsn = _postgres_dsn("postgres")
+    target_dsn = _postgres_dsn(target_database)
+
+    async def prepare() -> None:
+        admin = await asyncpg.connect(admin_dsn)
+        try:
+            await admin.execute(f'DROP DATABASE IF EXISTS "{target_database}" WITH (FORCE)')
+            await admin.execute(f'CREATE DATABASE "{target_database}"')
+        finally:
+            await admin.close()
+        target = await asyncpg.connect(target_dsn)
+        try:
+            installed = await target.fetchval("SELECT EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'vector')")
+            assert installed is False
+        finally:
+            await target.close()
+
+    async def assert_installed() -> None:
+        target = await asyncpg.connect(target_dsn)
+        try:
+            version = await target.fetchval("SELECT extversion FROM pg_extension WHERE extname = 'vector'")
+            assert version
+        finally:
+            await target.close()
+
+    async def cleanup() -> None:
+        admin = await asyncpg.connect(admin_dsn)
+        try:
+            await admin.execute(f'DROP DATABASE IF EXISTS "{target_database}" WITH (FORCE)')
+        finally:
+            await admin.close()
+
+    asyncio.run(prepare())
+    try:
+        result = _run_bootstrap_cli(target_database)
+        assert result.returncode == 0, result.stdout + "\n" + result.stderr
+        assert "FRESH_DB_BOOTSTRAP=PASS" in result.stdout
+        assert "commercial_seed=none" in result.stdout
+        asyncio.run(assert_installed())
+    finally:
+        asyncio.run(cleanup())
 
 def test_bootstrap_does_not_seed_stale_commercial_pricing() -> None:
     assert "commercial_seed=none" in BOOTSTRAP
