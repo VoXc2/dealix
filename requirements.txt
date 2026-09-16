@@ -61,7 +61,6 @@ google-auth-httplib2>=0.2.0
 google-auth-oauthlib>=1.2.0
 resend>=2.4.0
 slowapi>=0.1.9
-fastmcp>=2.14.0,<3
 opentelemetry-api>=1.42.1
 opentelemetry-sdk>=1.42.1
 opentelemetry-exporter-otlp-proto-http>=1.42.1

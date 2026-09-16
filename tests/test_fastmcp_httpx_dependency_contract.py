@@ -7,10 +7,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_requirements_httpx_floor_matches_fastmcp_contract() -> None:
+def test_api_runtime_keeps_httpx_uvicorn_and_isolates_fastmcp() -> None:
     text = (ROOT / "requirements.txt").read_text(encoding="utf-8")
+    mcp_text = (ROOT / "mcp_server" / "requirements-mcp.txt").read_text(encoding="utf-8")
     assert re.search(r"^httpx>=0\.28\.1,<1$", text, flags=re.MULTILINE)
-    assert re.search(r"^fastmcp>=2\.14\.0,<3$", text, flags=re.MULTILINE)
+    assert not re.search(r"^fastmcp", text, flags=re.MULTILINE)
+    assert re.search(r"^fastmcp>=3\.4\.7,<4$", mcp_text, flags=re.MULTILINE)
     assert re.search(r"^uvicorn\[standard\]>=0\.35\.0,<0\.36$", text, flags=re.MULTILINE)
 
 
