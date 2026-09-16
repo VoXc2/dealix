@@ -81,6 +81,11 @@ RUN printf '#!/bin/sh\nset -e\nexec uvicorn api.main:app --host 0.0.0.0 --port "
 
 USER app
 
+# Runtime writable data directory (revenue_ops_autopilot store writes /app/var).
+# Created at build time with correct ownership so writes succeed without
+# a privileged pre-deploy step.
+RUN mkdir -p /app/var && chown app:app /app/var
+
 # Railway injects $PORT dynamically; default to 8000 for local dev
 ENV PORT=8000
 EXPOSE 8000
