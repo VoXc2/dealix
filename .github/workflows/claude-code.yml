@@ -79,6 +79,9 @@ jobs:
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
 
       # Requires repo secret: ANTHROPIC_API_KEY.
       - name: Run Claude Code

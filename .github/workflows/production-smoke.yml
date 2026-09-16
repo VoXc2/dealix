@@ -33,10 +33,15 @@ jobs:
 
       - name: Select base URL
         shell: bash
+        env:
+          INPUT_BASE_URL: ${{ github.event.inputs.base_url }}
+          PROVIDER_BASE_URL: ${{ secrets.DEALIX_PRODUCTION_BASE_URL }}
         run: |
-          BASE_URL='${{ github.event.inputs.base_url }}'
-          if [ -z "$BASE_URL" ]; then BASE_URL='${{ secrets.DEALIX_PRODUCTION_BASE_URL }}'; fi
+          set -euo pipefail
+          BASE_URL="$INPUT_BASE_URL"
+          if [ -z "$BASE_URL" ]; then BASE_URL="$PROVIDER_BASE_URL"; fi
           if [ -z "$BASE_URL" ]; then BASE_URL='https://api.dealix.me'; fi
+          case "$BASE_URL" in https://*) ;; *) echo "::error::smoke base URL must use https"; exit 2 ;; esac
           echo "DEALIX_SMOKE_BASE_URL=$BASE_URL" >> "$GITHUB_ENV"
 
       - name: Run smoke test
