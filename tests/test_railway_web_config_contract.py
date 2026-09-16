@@ -45,7 +45,7 @@ def test_apps_web_config_has_no_api_predeploy_command() -> None:
 def test_repo_root_config_is_not_the_canonical_web_config() -> None:
     root_config = tomllib.loads(ROOT_CONFIG.read_text(encoding="utf-8"))
     web_config = tomllib.loads(WEB_CONFIG.read_text(encoding="utf-8"))
-    assert "preDeployCommand" in root_config["deploy"]
+    assert "preDeployCommand" not in root_config["deploy"]
     assert "preDeployCommand" not in web_config["deploy"]
     assert _matrix_web()["providerConfigFile"] != "/railway.toml"
 

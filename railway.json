@@ -24,9 +24,6 @@
   },
   "deploy": {
     "startCommand": null,
-    "preDeployCommand": [
-      "if [ -f /app/scripts/railway_predeploy.sh ]; then bash /app/scripts/railway_predeploy.sh; else echo 'RAILWAY_PREDEPLOY: no predeploy script'; fi"
-    ],
     "healthcheckPath": "/healthz",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
