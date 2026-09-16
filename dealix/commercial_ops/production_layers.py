@@ -9,13 +9,9 @@ import urllib.error
 import urllib.request
 from typing import Any
 
-from dealix.commercial_ops.railway_launch import (
-    check_railway_api_env,
-    check_railway_frontend_env,
-)
-from dealix.commercial_ops.railway_production import (
+from dealix.commercial_ops.selfhost_production import (
     DEFAULT_API_BASE,
-    analyze_railway_production,
+    check_repo_selfhost_config,
     probe_get,
     probe_trust_layer,
 )
@@ -113,34 +109,20 @@ def layer_0_dns_healthz(api_base: str) -> dict[str, Any]:
     }
 
 
-def layer_1_railway_p0(*, check_env: bool) -> dict[str, Any]:
-    repo = analyze_railway_production(api_base=False)
-    api_env = check_railway_api_env() if check_env else {"ready_for_api_deploy": None}
-    ready_repo = repo["repo"]["ok"]
-    ready_env = api_env.get("ready_for_api_deploy") if check_env else True
-    if check_env and ready_env is False:
-        ready_env = False
-    elif not check_env:
-        ready_env = True
-    score = (0.5 if ready_repo else 0.0) + (0.5 if ready_env else 0.0)
-    missing = api_env.get("missing_required") or [] if check_env else []
+def layer_1_selfhost_p0(*, check_env: bool) -> dict[str, Any]:
+    repo = check_repo_selfhost_config()
+    required_env = ("DATABASE_URL", "SECRET_KEY")
+    missing = [name for name in required_env if not _set(name)] if check_env else []
+    ready_env = not missing if check_env else True
+    score = (0.5 if repo["ok"] else 0.0) + (0.5 if ready_env else 0.0)
     return {
-        "id": 1,
-        "name": "Railway P0 secrets",
-        "pct": _pct(score),
-        "repo_ok": ready_repo,
-        "api_env_ready": ready_env,
-        "missing_required": missing,
-        "blocker_ar": (
-            ""
-            if score >= 1.0
-            else (
-                f"أكمل متغيرات API: {', '.join(missing)}"
-                if missing
-                else "أصلح railway.toml / Dockerfile في المستودع"
-            )
-        ),
+        "id": 1, "name": "Self-host production contract", "pct": _pct(score),
+        "repo_ok": repo["ok"], "api_env_ready": ready_env, "missing_required": missing,
+        "blocker_ar": "" if score >= 1.0 else (f"أكمل متغيرات API المطلوبة: {', '.join(missing)}" if missing else "أصلح self-host compose/Caddy/release authority في المستودع"),
     }
+
+# Compatibility alias for callers while authority remains self-host only.
+layer_1_railway_p0 = layer_1_selfhost_p0
 
 
 def layer_2_webhooks(*, check_env: bool) -> dict[str, Any]:
@@ -166,7 +148,7 @@ def layer_2_webhooks(*, check_env: bool) -> dict[str, Any]:
         "blocker_ar": (
             ""
             if score >= 0.75
-            else "MOYASAR_WEBHOOK_SECRET + Calendly signing key + HubSpot على Railway API"
+            else "MOYASAR_WEBHOOK_SECRET + Calendly signing key + HubSpot على self-host API"
         ),
     }
 
@@ -197,40 +179,13 @@ def layer_3_paid_launch(*, check_env: bool) -> dict[str, Any]:
 
 
 def layer_4_frontend(frontend_base: str, *, check_env: bool) -> dict[str, Any]:
-    fe_env = check_railway_frontend_env() if check_env else {"ready_for_fe_deploy": None}
     ar = _probe_head(f"{frontend_base.rstrip('/')}/ar")
     root = _probe_head(frontend_base.rstrip("/") or frontend_base)
     server = (ar.get("server") or root.get("server") or "").lower()
     on_github_pages = GITHUB_PAGES_SERVER in server
     ar_ok = ar.get("ok") is True
-    if check_env:
-        env_ok = fe_env.get("ready_for_fe_deploy") is True
-        score = (
-            (1.0 if ar_ok and not on_github_pages else 0.0) * 0.6
-            + (0.4 if env_ok else 0.0)
-        )
-    else:
-        score = 1.0 if ar_ok and not on_github_pages else (0.3 if ar_ok else 0.0)
-    return {
-        "id": 4,
-        "name": "Frontend /ar",
-        "pct": _pct(score),
-        "ar": ar,
-        "root": root,
-        "github_pages": on_github_pages,
-        "fe_env_ready": fe_env.get("ready_for_fe_deploy") if check_env else None,
-        "missing_fe": fe_env.get("missing") or [] if check_env else [],
-        "blocker_ar": (
-            ""
-            if ar_ok and not on_github_pages
-            else (
-                "dealix.me يشير إلى GitHub Pages — انقل DNS إلى Railway Frontend "
-                "(docs/ops/DEALIX_ME_FRONTEND_DNS_RAILWAY_AR.md)"
-                if on_github_pages
-                else "Frontend vars + Redeploy — هدف dealix.me/ar = 200"
-            )
-        ),
-    }
+    score = 1.0 if ar_ok and not on_github_pages else (0.3 if ar_ok else 0.0)
+    return {"id": 4, "name": "Frontend /ar", "pct": _pct(score), "ar": ar, "root": root, "github_pages": on_github_pages, "fe_env_ready": None, "missing_fe": [], "blocker_ar": "" if ar_ok and not on_github_pages else "تحقق من self-host public ingress وDNS؛ الهدف dealix.me/ar = 200"}
 
 
 def layer_5_revenue() -> dict[str, Any]:
@@ -270,7 +225,7 @@ def build_production_layers(
     """Full layer map for founder go-live."""
     layers = [
         layer_0_dns_healthz(api_base),
-        layer_1_railway_p0(check_env=check_env),
+        layer_1_selfhost_p0(check_env=check_env),
         layer_2_webhooks(check_env=check_env),
         layer_3_paid_launch(check_env=check_env),
         layer_4_frontend(frontend_base, check_env=check_env),

@@ -79,8 +79,8 @@ run "git metadata integrity" \
   "$PY" scripts/ops/git_metadata_permission_guard.py --repo "$CANONICAL_REPO"
 run "secret literal scan" \
   "$PY" scripts/ops/verify_secret_literals.py --repo "$ROOT"
-run "Railway API watch contract" \
-  "$PY" scripts/ops/verify_railway_api_watch_contract.py
+run "self-host runtime authority" \
+  "$PY" scripts/ops/verify_selfhost_only_runtime.py
 run "self-improvement truth quarantine" \
   "$PY" scripts/ops/verify_self_improvement_truth_quarantine.py
 run "Voice Front Desk verifier" \

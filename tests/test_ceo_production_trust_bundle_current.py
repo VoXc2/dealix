@@ -18,7 +18,7 @@ def test_ceo_bundle_delegates_green_to_canonical_identity_gate(monkeypatch, caps
         return subprocess.CompletedProcess(
             cmd,
             0,
-            stdout="PRODUCTION_GREEN=TRUE\nRAILWAY_PRODUCTION_IDENTITY_GATE_VERDICT=PASS\n",
+            stdout="PRODUCTION_GREEN=true\nSELFHOST_PUBLIC_RELEASE_IDENTITY=PASS\n",
         )
 
     monkeypatch.setattr(subprocess, "run", fake_run)
@@ -38,10 +38,8 @@ def test_ceo_bundle_delegates_green_to_canonical_identity_gate(monkeypatch, caps
     assert bundle.main() == 0
     output = capsys.readouterr().out
     assert "CEO_PRODUCTION_TRUST_VERDICT=PASS" in output
-    assert "railway_production_identity_gate.py" in " ".join(seen["cmd"])
+    assert "verify_selfhost_public_release_identity.py" in " ".join(seen["cmd"])
     assert "--accepted-sha" in seen["cmd"]
-    assert "--web-provider-receipt" in seen["cmd"]
-    assert "--api-provider-receipt" in seen["cmd"]
 
 
 def test_ceo_bundle_holds_without_provider_identity_evidence(monkeypatch, capsys):
@@ -49,14 +47,14 @@ def test_ceo_bundle_holds_without_provider_identity_evidence(monkeypatch, capsys
         return subprocess.CompletedProcess(
             cmd,
             1,
-            stdout="PRODUCTION_GREEN=FALSE\nRAILWAY_PRODUCTION_IDENTITY_GATE_VERDICT=HOLD\n",
+            stdout="PRODUCTION_GREEN=false\nSELFHOST_PUBLIC_RELEASE_IDENTITY=HOLD\n",
         )
 
     monkeypatch.setattr(subprocess, "run", fake_run)
-    monkeypatch.setattr(sys, "argv", _argv())
+    monkeypatch.setattr(sys, "argv", _argv("--accepted-sha", "a" * 40))
 
     assert bundle.main() == 1
     output = capsys.readouterr().out
     assert "CEO_PRODUCTION_TRUST_VERDICT=HOLD" in output
-    assert "capture fresh read-only Railway web/API provider receipts" in output
+    assert "align public Web/API to the accepted self-host SHA" in output
     assert "DNS dealix.me" not in output

@@ -140,52 +140,16 @@ def test_verifier_entrypoints_bootstrap_repo_root_before_project_imports():
     assert voice.index("sys.path.insert") < voice.index("def main()")
 
 
-def test_railway_api_watch_contract_matches_source_authority():
-    verifier = load_module(
-        "dealix_railway_watch_contract",
-        "scripts/ops/verify_railway_api_watch_contract.py",
-    )
-    assert verifier.main() == 0
+def test_selfhost_source_contract_is_canonical():
+    verifier = load_module("dealix_selfhost_only", "scripts/ops/verify_selfhost_only_runtime.py")
+    assert verifier.ROOT == ROOT
+    assert not (ROOT / "railway.json").exists()
+    assert not (ROOT / "railway.toml").exists()
+    assert (ROOT / "deploy/selfhost/compose.yml").is_file()
 
 
-def test_railway_api_watch_contract_covers_canonical_runtime_trees():
-    railway = json.loads((ROOT / "railway.json").read_text(encoding="utf-8"))
-    matrix = json.loads((ROOT / "dealix/config/railway_services.json").read_text(encoding="utf-8"))
-
-    actual = set(railway["build"]["watchPatterns"])
-    api_authority = next(
-        service
-        for service in matrix["services"]
-        if service.get("role") == "canonical_api" and service.get("productionAuthority") is True
-    )
-    expected = set(api_authority["expectedWatchPatterns"])
-    canonical_runtime_trees = {"/api/**", "/app/**", "/db/**"}
-
-    assert canonical_runtime_trees <= actual
-    assert canonical_runtime_trees <= expected
-
-
-def test_railway_runtime_drift_gate_passes_current_source_contract():
-    verifier = load_module(
-        "dealix_railway_runtime_drift_gate",
-        "scripts/ops/verify_railway_runtime_drift_gate_v1.py",
-    )
-    result = verifier.verify()
-
-    assert result["status"] == "PASS_SOURCE_CONTRACT_ONLY"
-    assert result["start_command"] in (None, "")
-    assert {"/api/**", "/app/**", "/db/**"} <= set(result["watch_patterns"])
-    assert result["provider_parity_proven"] is False
-    assert result["production_green"] is False
-    assert result["l5_executed"] == "NONE"
-
-
-def test_railway_runtime_drift_gate_forbids_relative_start_override():
-    source = (ROOT / "scripts/ops/verify_railway_runtime_drift_gate_v1.py").read_text(
-        encoding="utf-8"
-    )
-    railway = json.loads((ROOT / "railway.json").read_text(encoding="utf-8"))
-
-    assert railway["deploy"].get("startCommand") in (None, "")
-    assert 'FORBIDDEN_START_OVERRIDES = {"./start.sh", "start.sh"}' in source
-    assert 'CMD ["/app/start.sh"]' in (ROOT / "Dockerfile").read_text(encoding="utf-8")
+def test_selfhost_release_authority_is_source_contract_only():
+    authority = json.loads((ROOT / "dealix/config/production_release_authority.json").read_text(encoding="utf-8"))
+    assert authority["selfhost_release_target"] == "canonical_vps_only"
+    assert authority["github_actions_release_authority"] is False
+    assert authority["production_green"] is False

@@ -9,7 +9,7 @@ from typing import Any
 from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT, display_path
 from dealix.commercial_ops.phase_01_close_path import build_phase_01_close_path
 from dealix.commercial_ops.platform_v10_readiness import analyze_platform_v10_readiness
-from dealix.commercial_ops.railway_production import analyze_railway_production
+from dealix.commercial_ops.selfhost_production import analyze_selfhost_production
 
 
 def wave_d_cadence_unify() -> dict[str, Any]:
@@ -30,16 +30,16 @@ def run_founder_master_strategic_os(
     _ = (seed_queue, kwargs)
     phase = build_phase_01_close_path()
     base = False if skip_live else "https://api.dealix.me"
-    railway = analyze_railway_production(api_base=base)
+    selfhost = analyze_selfhost_production(api_base=base)
     v10 = analyze_platform_v10_readiness()
     overall = "WARN"
-    if railway.get("verdict") == "FAIL":
+    if selfhost.get("verdict") == "FAIL":
         overall = "FAIL"
     payload = {
         "verdict": overall,
         "date": datetime.now(UTC).strftime("%Y-%m-%d"),
         "results": {
-            "wave_a": {"verdict": railway.get("verdict")},
+            "wave_a": {"verdict": selfhost.get("verdict")},
             "wave_c": {"verdict": phase.get("verdict"), "blockers_ar": phase.get("blockers_ar")},
             "wave_d": wave_d_cadence_unify(),
             "wave_f": {"verdict": v10.get("verdict"), "blocked": v10.get("blocked_by") is not None},
