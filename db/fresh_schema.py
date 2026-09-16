@@ -17,8 +17,8 @@ fresh-install metadata snapshot with an explicit ownership boundary:
   constraints;
 * historical data-changing statements are never replayed.
 
-The only raw schema statement currently accepted is the idempotent pgcrypto
-extension. Any unsupported migration operation fails closed until this capture
+The only raw schema statements currently accepted are the idempotent pgcrypto and
+vector extensions. Any unsupported migration operation fails closed until this capture
 layer is updated and covered by the PostgreSQL proof.
 """
 
@@ -48,7 +48,12 @@ from db.models import Base
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 _ALLOWED_DML_PREFIXES = ("DELETE ", "INSERT ", "UPDATE ")
-_ALLOWED_EXTENSION_SQL = "CREATE EXTENSION IF NOT EXISTS PGCRYPTO"
+_ALLOWED_EXTENSION_SQLS = frozenset(
+    {
+        "CREATE EXTENSION IF NOT EXISTS PGCRYPTO",
+        "CREATE EXTENSION IF NOT EXISTS VECTOR",
+    }
+)
 
 
 class FreshSchemaCaptureError(RuntimeError):
@@ -404,8 +409,11 @@ class _MigrationMetadataCapture:
         sql = " ".join(str(statement).strip().split())
         upper = sql.upper()
         self.report.captured_operations += 1
-        if upper == _ALLOWED_EXTENSION_SQL:
-            self.report.required_extensions.add("pgcrypto")
+        if upper in _ALLOWED_EXTENSION_SQLS:
+            if "PGCRYPTO" in upper:
+                self.report.required_extensions.add("pgcrypto")
+            elif "VECTOR" in upper:
+                self.report.required_extensions.add("vector")
             return
         if upper.startswith(_ALLOWED_DML_PREFIXES):
             self.report.ignored_data_statements += 1
@@ -474,6 +482,9 @@ def build_fresh_schema_metadata() -> tuple[MetaData, FreshSchemaReport]:
             "captured migration tables missing from metadata: "
             + ", ".join(sorted(missing_migration_tables))
         )
+
+    report.required_extensions.add("vector")
+
     return metadata, report
 
 
