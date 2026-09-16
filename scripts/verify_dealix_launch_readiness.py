@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import tempfile
 from datetime import date
 from pathlib import Path
 
@@ -283,6 +285,7 @@ def main(argv: list[str] | None = None) -> int:
 
     parser = argparse.ArgumentParser(description="Dealix repository private-launch readiness scorer")
     parser.add_argument("--no-write", action="store_true")
+    parser.add_argument("--output", type=Path, help="explicit report output path")
     args = parser.parse_args(argv)
 
     p0, p1, p2, claim_hits, dangerous_automation_hits = build_checks()
@@ -306,10 +309,23 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[{label}] {'PASS' if ok else 'FAIL'} — {name}")
 
     if not args.no_write:
-        out = REPO / "reports" / "launch" / "private_launch_readiness.md"
+        if args.output is not None:
+            out = args.output.expanduser().resolve()
+        else:
+            configured = os.getenv("DEALIX_RUNTIME_REPORTS_ROOT", "").strip()
+            if configured:
+                runtime_root = Path(configured).expanduser().resolve()
+            else:
+                preferred = Path("/opt/dealix/control/runtime-reports")
+                runtime_root = preferred if preferred.parent.exists() else Path(tempfile.gettempdir()) / "dealix-runtime-reports"
+            out = runtime_root / "launch" / "private_launch_readiness.md"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(render_report(score, verdict, p0, p1, p2, p0_blk, p1_blk, p2_imp, next_fixes), encoding="utf-8")
-        print(f"WROTE {out.relative_to(REPO)}")
+        try:
+            shown = out.relative_to(REPO)
+        except ValueError:
+            shown = out
+        print(f"WROTE {shown}")
 
     print(f"LAUNCH_READINESS_SCORE={score}")
     print(f"LAUNCH_VERDICT={verdict}")
