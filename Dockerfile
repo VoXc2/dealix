@@ -30,16 +30,12 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY pyproject.toml ./
 COPY requirements.txt* ./
 
-# Install dependencies fail-fast, then remove build-only packaging tooling.
-# Keeping pip/setuptools/wheel out of the runtime venv reduces attack surface;
-# the application never installs packages at runtime.
-RUN set -eux; \
-    pip install --upgrade pip setuptools wheel; \
-    pip install --no-cache-dir --prefer-binary -r requirements.txt; \
-    find /opt/venv -type d -name __pycache__ -prune -exec rm -rf {} +; \
-    find /opt/venv -type d -name tests -prune -exec rm -rf {} +; \
-    find /opt/venv -type f -name "*.pyc" -delete; \
-    python -m pip uninstall -y pip setuptools wheel
+# Install deps and aggressively prune caches/metadata to shrink image
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir --prefer-binary -r requirements.txt \
+    && find /opt/venv -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true \
+    && find /opt/venv -type d -name tests -exec rm -rf {} + 2>/dev/null || true \
+    && find /opt/venv -type f -name "*.pyc" -delete 2>/dev/null || true
 
 # ──────────────────────────────────────────────────────────────
 # Stage 2 — Runtime: minimal image
@@ -49,17 +45,18 @@ FROM python:3.12-slim-bookworm AS runtime
 # Surface the deployed commit on /health. Pass via build-arg from CI:
 #   docker build --build-arg GIT_SHA=$(git rev-parse HEAD) ...
 ARG GIT_SHA=unknown
+ARG RAILWAY_GIT_COMMIT_SHA=""
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
     APP_ENV=production \
-    GIT_SHA=${GIT_SHA}
+    GIT_SHA=${GIT_SHA} \
+    RAILWAY_GIT_COMMIT_SHA=${RAILWAY_GIT_COMMIT_SHA}
 
 # Runtime-only system deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         libffi8 \
-        libpcre2-8-0 \
         tini \
     && rm -rf /var/lib/apt/lists/*
 
@@ -79,12 +76,10 @@ RUN printf '#!/bin/sh\nset -e\nexec uvicorn api.main:app --host 0.0.0.0 --port "
     && chmod +x /app/start.sh \
     && chown app:app /app/start.sh
 
-USER app
 
 # Runtime writable data directory (revenue_ops_autopilot store writes /app/var).
-# Created at build time with correct ownership so writes succeed without
-# a privileged pre-deploy step.
 RUN mkdir -p /app/var && chown app:app /app/var
+USER app
 
 # Railway injects $PORT dynamically; default to 8000 for local dev
 ENV PORT=8000
