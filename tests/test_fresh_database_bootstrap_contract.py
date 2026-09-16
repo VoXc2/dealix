@@ -525,6 +525,7 @@ def test_fresh_bootstrap_installs_required_pgvector() -> None:
     finally:
         asyncio.run(cleanup())
 
+
 def test_bootstrap_does_not_seed_stale_commercial_pricing() -> None:
     assert "commercial_seed=none" in BOOTSTRAP
     for stale_price in ("199", "599", "1499", "plan_starter", "plan_growth"):
