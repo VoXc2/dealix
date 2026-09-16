@@ -66,22 +66,29 @@ jobs:
         env:
           API_BASE: ${{ secrets.DEALIX_API_BASE }}
           API_KEY: ${{ secrets.DEALIX_API_KEY }}
+          INPUT_GMAIL_DRAFTS: ${{ github.event.inputs.gmail_drafts || '15' }}
+          INPUT_LINKEDIN_DRAFTS: ${{ github.event.inputs.linkedin_drafts || '8' }}
+          INPUT_CALL_SCRIPTS: ${{ github.event.inputs.call_scripts || '5' }}
+          INPUT_CREATE_GMAIL_DRAFTS: ${{ github.event.inputs.create_in_gmail_inbox || 'true' }}
         run: |
-          set -e
+          set -euo pipefail
+          for value in "$INPUT_GMAIL_DRAFTS" "$INPUT_LINKEDIN_DRAFTS" "$INPUT_CALL_SCRIPTS"; do
+            [[ "$value" =~ ^[0-9]+$ ]] || { echo "::error::draft counts must be non-negative integers"; exit 2; }
+          done
+          case "$INPUT_CREATE_GMAIL_DRAFTS" in true|false) ;; *) echo "::error::create_in_gmail_inbox must be true or false"; exit 2 ;; esac
+          jq -n \
+            --argjson gmail_drafts "$INPUT_GMAIL_DRAFTS" \
+            --argjson linkedin_drafts "$INPUT_LINKEDIN_DRAFTS" \
+            --argjson call_scripts "$INPUT_CALL_SCRIPTS" \
+            --argjson create_gmail_drafts "$INPUT_CREATE_GMAIL_DRAFTS" \
+            '{daily_candidates:120,gmail_drafts:$gmail_drafts,linkedin_drafts:$linkedin_drafts,call_scripts:$call_scripts,partner_intros:5,approval_mode:"draft_only",create_gmail_drafts_in_inbox:$create_gmail_drafts}' \
+            > revenue_payload.json
           n=0
-          until [ $n -ge 3 ]; do
+          until [ "$n" -ge 3 ]; do
             curl -fsS -X POST "$API_BASE/api/v1/automation/revenue-machine/run" \
               -H "Content-Type: application/json" \
               -H "Authorization: Bearer $API_KEY" \
-              -d '{
-                "daily_candidates": 120,
-                "gmail_drafts": ${{ github.event.inputs.gmail_drafts || 15 }},
-                "linkedin_drafts": ${{ github.event.inputs.linkedin_drafts || 8 }},
-                "call_scripts": ${{ github.event.inputs.call_scripts || 5 }},
-                "partner_intros": 5,
-                "approval_mode": "draft_only",
-                "create_gmail_drafts_in_inbox": ${{ github.event.inputs.create_in_gmail_inbox || 'true' }}
-              }' -o revenue_run.json && break
+              --data-binary @revenue_payload.json -o revenue_run.json && break
             n=$((n+1)); echo "retry $n / 3"; sleep 30
           done
           echo "produced=$(jq -c .produced revenue_run.json)" >> "$GITHUB_OUTPUT"
