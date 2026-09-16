@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+MISE_BIN="${MISE_BIN:-$HOME/.local/bin/mise}"
+if [[ ! -x "$MISE_BIN" ]]; then
+  echo "mise is required at $MISE_BIN" >&2
+  exit 2
+fi
+exec "$MISE_BIN" -C "$ROOT/tooling/oss" exec -- "$@"

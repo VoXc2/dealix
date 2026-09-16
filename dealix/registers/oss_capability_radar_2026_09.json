@@ -1,0 +1,2222 @@
+{
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-16T08:00:00+03:00",
+  "authority": "research_and_tooling_registry_only",
+  "principles": [
+    "one_company_machine",
+    "reuse_before_add",
+    "install_cli_before_service",
+    "heavy_services_default_off",
+    "production_mutation_separate",
+    "research_not_relationship",
+    "no_secret_values"
+  ],
+  "counts": {
+    "total": 122,
+    "strict_oss": 116,
+    "open_core_mixed": 4,
+    "source_available_non_osi": 2,
+    "review_required": 0,
+    "archived": 0
+  },
+  "items": [
+    {
+      "id": 1,
+      "name": "Docker Engine",
+      "repo": "moby/moby",
+      "url": "https://github.com/moby/moby",
+      "category": "runtime",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Container runtime; keep one container authority.",
+      "github": {
+        "stars": 72101,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:05:13Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 2,
+      "name": "Git",
+      "repo": "git/git",
+      "url": "https://github.com/git/git",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Source control.",
+      "github": {
+        "stars": 63175,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:08:17Z"
+      },
+      "license": "GPL-2.0-only",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 3,
+      "name": "GitHub CLI",
+      "repo": "cli/cli",
+      "url": "https://github.com/cli/cli",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Repository operations and evidence.",
+      "github": {
+        "stars": 46290,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T23:41:57Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 4,
+      "name": "Python",
+      "repo": "python/cpython",
+      "url": "https://github.com/python/cpython",
+      "category": "runtime",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Primary backend runtime.",
+      "github": {
+        "stars": 77187,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:15:47Z"
+      },
+      "license": "PSF-2.0",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 5,
+      "name": "Node.js",
+      "repo": "nodejs/node",
+      "url": "https://github.com/nodejs/node",
+      "category": "runtime",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Web/tooling runtime.",
+      "github": {
+        "stars": 121967,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:15:47Z"
+      },
+      "license": "MIT",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 6,
+      "name": "npm",
+      "repo": "npm/cli",
+      "url": "https://github.com/npm/cli",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Node package manager already in use.",
+      "github": {
+        "stars": 10117,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:27:50Z"
+      },
+      "license": "Artistic-2.0",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 7,
+      "name": "uv",
+      "repo": "astral-sh/uv",
+      "url": "https://github.com/astral-sh/uv",
+      "category": "python_tooling",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Fast Python dependency/tool execution.",
+      "github": {
+        "stars": 89862,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:05:16Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 8,
+      "name": "OpenCode",
+      "repo": "anomalyco/opencode",
+      "url": "https://github.com/anomalyco/opencode",
+      "category": "coding_agents",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Canonical coding-agent execution through Session Factory only.",
+      "github": {
+        "stars": 207721,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:29:52Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 9,
+      "name": "Ollama",
+      "repo": "ollama/ollama",
+      "url": "https://github.com/ollama/ollama",
+      "category": "local_ai",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Local/private inference fallback.",
+      "github": {
+        "stars": 181101,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:30:05Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 10,
+      "name": "n8n",
+      "repo": "n8n-io/n8n",
+      "url": "https://github.com/n8n-io/n8n",
+      "category": "automation",
+      "decision": "EXISTING_LICENSE_EXCEPTION",
+      "install_mode": "existing",
+      "rationale": "Existing internal workflow plane. Sustainable Use License is not OSI OSS; do not embed/resell/host client workflow credentials without license review.",
+      "license_class": "SOURCE_AVAILABLE_NON_OSI",
+      "license_note": "Sustainable Use License; existing dependency, not counted as OSI OSS.",
+      "github": {
+        "stars": 204473,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:29:11Z"
+      },
+      "license": "Sustainable Use License 1.0"
+    },
+    {
+      "id": 11,
+      "name": "cloudflared",
+      "repo": "cloudflare/cloudflared",
+      "url": "https://github.com/cloudflare/cloudflared",
+      "category": "edge",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Tunnel/edge CLI, provider actions remain approval-bound.",
+      "github": {
+        "stars": 15627,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:11:41Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 12,
+      "name": "Tailscale",
+      "repo": "tailscale/tailscale",
+      "url": "https://github.com/tailscale/tailscale",
+      "category": "networking",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Private administration network.",
+      "github": {
+        "stars": 36521,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:07:46Z"
+      },
+      "license": "BSD-3-Clause",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 13,
+      "name": "PostgreSQL",
+      "repo": "postgres/postgres",
+      "url": "https://github.com/postgres/postgres",
+      "category": "data",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Canonical relational store.",
+      "github": {
+        "stars": 22115,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:29:38Z"
+      },
+      "license": "PostgreSQL",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 14,
+      "name": "pgvector",
+      "repo": "pgvector/pgvector",
+      "url": "https://github.com/pgvector/pgvector",
+      "category": "data",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Vector search inside canonical Postgres.",
+      "github": {
+        "stars": 23023,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:41:25Z"
+      },
+      "license": "PostgreSQL",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 15,
+      "name": "Caddy",
+      "repo": "caddyserver/caddy",
+      "url": "https://github.com/caddyserver/caddy",
+      "category": "edge",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Self-host ingress candidate.",
+      "github": {
+        "stars": 75771,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:51:07Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 16,
+      "name": "Sentry Python SDK",
+      "repo": "getsentry/sentry-python",
+      "url": "https://github.com/getsentry/sentry-python",
+      "category": "observability",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Application error telemetry.",
+      "github": {
+        "stars": 2203,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T15:34:14Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 17,
+      "name": "OpenTelemetry Python",
+      "repo": "open-telemetry/opentelemetry-python",
+      "url": "https://github.com/open-telemetry/opentelemetry-python",
+      "category": "observability",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Canonical telemetry API/SDK.",
+      "github": {
+        "stars": 2633,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T09:41:27Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 18,
+      "name": "Langfuse",
+      "repo": "langfuse/langfuse",
+      "url": "https://github.com/langfuse/langfuse",
+      "category": "llm_observability",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Existing LLM trace/eval integration; avoid parallel LLM observability UI by default.",
+      "license_class": "OPEN_CORE_MIXED",
+      "github": {
+        "stars": 34668,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:26:52Z"
+      },
+      "license": "MIT core + enterprise directories"
+    },
+    {
+      "id": 19,
+      "name": "PostHog",
+      "repo": "PostHog/posthog",
+      "url": "https://github.com/PostHog/posthog",
+      "category": "product_analytics",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Product analytics with explicit opt-in controls.",
+      "license_class": "OPEN_CORE_MIXED",
+      "github": {
+        "stars": 39814,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:15:02Z"
+      },
+      "license": "MIT core + enterprise directory"
+    },
+    {
+      "id": 20,
+      "name": "Playwright",
+      "repo": "microsoft/playwright",
+      "url": "https://github.com/microsoft/playwright",
+      "category": "browser_testing",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Buyer journey and browser E2E.",
+      "github": {
+        "stars": 96197,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:27:27Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 21,
+      "name": "Redis",
+      "repo": "redis/redis",
+      "url": "https://github.com/redis/redis",
+      "category": "data",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Cache/rate/queue dependency where already used.",
+      "license_class": "MIXED_WITH_OSI_AGPL_OPTION",
+      "github": {
+        "stars": 76375,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:50:51Z"
+      },
+      "license": "AGPL-3.0 OR RSALv2 OR SSPLv1 (Redis 8+)"
+    },
+    {
+      "id": 22,
+      "name": "FastAPI",
+      "repo": "fastapi/fastapi",
+      "url": "https://github.com/fastapi/fastapi",
+      "category": "api",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "HTTP API framework.",
+      "github": {
+        "stars": 102355,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:20:41Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 23,
+      "name": "Pydantic",
+      "repo": "pydantic/pydantic",
+      "url": "https://github.com/pydantic/pydantic",
+      "category": "contracts",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Typed contracts and validation.",
+      "github": {
+        "stars": 28778,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T02:51:33Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 24,
+      "name": "SQLAlchemy",
+      "repo": "sqlalchemy/sqlalchemy",
+      "url": "https://github.com/sqlalchemy/sqlalchemy",
+      "category": "data",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Persistence layer.",
+      "github": {
+        "stars": 12158,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T21:07:39Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 25,
+      "name": "Alembic",
+      "repo": "sqlalchemy/alembic",
+      "url": "https://github.com/sqlalchemy/alembic",
+      "category": "data",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Schema migration authority.",
+      "github": {
+        "stars": 4397,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T23:33:42Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 26,
+      "name": "pytest",
+      "repo": "pytest-dev/pytest",
+      "url": "https://github.com/pytest-dev/pytest",
+      "category": "testing",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Python test runner.",
+      "github": {
+        "stars": 14505,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T01:26:51Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 27,
+      "name": "Ruff",
+      "repo": "astral-sh/ruff",
+      "url": "https://github.com/astral-sh/ruff",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Fast Python lint/format checks.",
+      "github": {
+        "stars": 49645,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:55:14Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 28,
+      "name": "Black",
+      "repo": "psf/black",
+      "url": "https://github.com/psf/black",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Existing formatter contract until deliberate Ruff-format migration.",
+      "github": {
+        "stars": 41843,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T00:59:37Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 29,
+      "name": "mypy",
+      "repo": "python/mypy",
+      "url": "https://github.com/python/mypy",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Static typing.",
+      "github": {
+        "stars": 20641,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:42:02Z"
+      },
+      "license": "MIT",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 30,
+      "name": "pre-commit",
+      "repo": "pre-commit/pre-commit",
+      "url": "https://github.com/pre-commit/pre-commit",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Local deterministic guard hooks.",
+      "github": {
+        "stars": 15574,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:21:49Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 31,
+      "name": "detect-secrets",
+      "repo": "Yelp/detect-secrets",
+      "url": "https://github.com/Yelp/detect-secrets",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Secrets baseline scanning.",
+      "github": {
+        "stars": 4635,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-14T11:23:18Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 32,
+      "name": "Bandit",
+      "repo": "PyCQA/bandit",
+      "url": "https://github.com/PyCQA/bandit",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Python security lint.",
+      "github": {
+        "stars": 8264,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:55:41Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 33,
+      "name": "mise",
+      "repo": "jdx/mise",
+      "url": "https://github.com/jdx/mise",
+      "category": "toolchain",
+      "decision": "ADOPT",
+      "install_mode": "existing",
+      "rationale": "Pinned dev-tool manager with lockfile/checksums.",
+      "github": {
+        "stars": 33966,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:28:48Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 34,
+      "name": "actionlint",
+      "repo": "rhysd/actionlint",
+      "url": "https://github.com/rhysd/actionlint",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Static and security validation for GitHub workflows.",
+      "github": {
+        "stars": 4226,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T14:37:32Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 35,
+      "name": "age",
+      "repo": "FiloSottile/age",
+      "url": "https://github.com/FiloSottile/age",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Small-file encryption primitive for internal artifacts.",
+      "github": {
+        "stars": 23593,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:18:54Z"
+      },
+      "license": "BSD-3-Clause",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 36,
+      "name": "bat",
+      "repo": "sharkdp/bat",
+      "url": "https://github.com/sharkdp/bat",
+      "category": "developer_ux",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Readable source/log inspection.",
+      "github": {
+        "stars": 60466,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:01:37Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 37,
+      "name": "bottom",
+      "repo": "ClementTsang/bottom",
+      "url": "https://github.com/ClementTsang/bottom",
+      "category": "server_ops",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Interactive process/resource inspection.",
+      "github": {
+        "stars": 14024,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:05:55Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 38,
+      "name": "Checkov",
+      "repo": "bridgecrewio/checkov",
+      "url": "https://github.com/bridgecrewio/checkov",
+      "category": "security",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "IaC policy/security scan; complements, not replaces, repo trust gates.",
+      "github": {
+        "stars": 9002,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T01:07:14Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 39,
+      "name": "Conftest",
+      "repo": "open-policy-agent/conftest",
+      "url": "https://github.com/open-policy-agent/conftest",
+      "category": "policy",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "OPA policy tests for config/artifacts.",
+      "github": {
+        "stars": 3261,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-13T17:39:28Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 40,
+      "name": "Cosign",
+      "repo": "sigstore/cosign",
+      "url": "https://github.com/sigstore/cosign",
+      "category": "supply_chain",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Artifact signing/verification path.",
+      "github": {
+        "stars": 6304,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:44:58Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 41,
+      "name": "CycloneDX CLI",
+      "repo": "CycloneDX/cyclonedx-cli",
+      "url": "https://github.com/CycloneDX/cyclonedx-cli",
+      "category": "supply_chain",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "SBOM transformation/validation.",
+      "github": {
+        "stars": 542,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T07:15:58Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 42,
+      "name": "git-delta",
+      "repo": "dandavison/delta",
+      "url": "https://github.com/dandavison/delta",
+      "category": "developer_ux",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Review ergonomics.",
+      "github": {
+        "stars": 32197,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:00:41Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 43,
+      "name": "direnv",
+      "repo": "direnv/direnv",
+      "url": "https://github.com/direnv/direnv",
+      "category": "developer_ux",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Scoped environment loading; never store secrets in repo.",
+      "github": {
+        "stars": 15447,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T08:41:01Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 44,
+      "name": "DuckDB",
+      "repo": "duckdb/duckdb",
+      "url": "https://github.com/duckdb/duckdb",
+      "category": "analytics",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Local evidence/data analysis without a second service.",
+      "github": {
+        "stars": 41293,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:22:36Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 45,
+      "name": "duf",
+      "repo": "muesli/duf",
+      "url": "https://github.com/muesli/duf",
+      "category": "server_ops",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Disk visibility for VPS pressure.",
+      "github": {
+        "stars": 15300,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T08:15:04Z"
+      },
+      "license": "MIT",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 46,
+      "name": "dust",
+      "repo": "bootandy/dust",
+      "url": "https://github.com/bootandy/dust",
+      "category": "server_ops",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Fast disk hotspot analysis.",
+      "github": {
+        "stars": 12266,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T20:20:28Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 47,
+      "name": "eza",
+      "repo": "eza-community/eza",
+      "url": "https://github.com/eza-community/eza",
+      "category": "developer_ux",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Filesystem inspection UX.",
+      "github": {
+        "stars": 23287,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T00:20:50Z"
+      },
+      "license": "EUPL-1.2",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 48,
+      "name": "fd",
+      "repo": "sharkdp/fd",
+      "url": "https://github.com/sharkdp/fd",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Fast file discovery.",
+      "github": {
+        "stars": 44429,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:19:10Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 49,
+      "name": "fzf",
+      "repo": "junegunn/fzf",
+      "url": "https://github.com/junegunn/fzf",
+      "category": "developer_ux",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Interactive local search.",
+      "github": {
+        "stars": 82999,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:06:30Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 50,
+      "name": "Gitleaks",
+      "repo": "gitleaks/gitleaks",
+      "url": "https://github.com/gitleaks/gitleaks",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Primary git secret scanner.",
+      "github": {
+        "stars": 29337,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:51:26Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 51,
+      "name": "Grype",
+      "repo": "anchore/grype",
+      "url": "https://github.com/anchore/grype",
+      "category": "security",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Independent vulnerability cross-check; Trivy stays primary.",
+      "github": {
+        "stars": 12890,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T02:35:13Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 52,
+      "name": "Hadolint",
+      "repo": "hadolint/hadolint",
+      "url": "https://github.com/hadolint/hadolint",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Dockerfile lint.",
+      "github": {
+        "stars": 12408,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T01:19:30Z"
+      },
+      "license": "GPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 53,
+      "name": "Hurl",
+      "repo": "Orange-OpenSource/hurl",
+      "url": "https://github.com/Orange-OpenSource/hurl",
+      "category": "testing",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Text-based HTTP acceptance tests.",
+      "github": {
+        "stars": 19195,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:19:46Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 54,
+      "name": "Hyperfine",
+      "repo": "sharkdp/hyperfine",
+      "url": "https://github.com/sharkdp/hyperfine",
+      "category": "performance",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Repeatable command benchmarks.",
+      "github": {
+        "stars": 28869,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:35:14Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 55,
+      "name": "just",
+      "repo": "casey/just",
+      "url": "https://github.com/casey/just",
+      "category": "task_runner",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Canonical developer task facade; no service/scheduler role.",
+      "github": {
+        "stars": 35808,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T00:20:57Z"
+      },
+      "license": "CC0-1.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 56,
+      "name": "jq",
+      "repo": "jqlang/jq",
+      "url": "https://github.com/jqlang/jq",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "JSON processing.",
+      "github": {
+        "stars": 35608,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T02:21:14Z"
+      },
+      "license": "MIT",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 57,
+      "name": "k6",
+      "repo": "grafana/k6",
+      "url": "https://github.com/grafana/k6",
+      "category": "performance",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Controlled API/web load testing against canaries.",
+      "github": {
+        "stars": 31497,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:26:38Z"
+      },
+      "license": "AGPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 58,
+      "name": "Lychee",
+      "repo": "lycheeverse/lychee",
+      "url": "https://github.com/lycheeverse/lychee",
+      "category": "web_quality",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Broken-link checking for public surfaces/docs.",
+      "github": {
+        "stars": 3917,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T20:15:21Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 59,
+      "name": "oha",
+      "repo": "hatoo/oha",
+      "url": "https://github.com/hatoo/oha",
+      "category": "performance",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Fast loopback/canary HTTP load smoke.",
+      "github": {
+        "stars": 10547,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T18:07:26Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 60,
+      "name": "OSV-Scanner",
+      "repo": "google/osv-scanner",
+      "url": "https://github.com/google/osv-scanner",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Dependency vulnerability scanning.",
+      "github": {
+        "stars": 11034,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T19:21:31Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 61,
+      "name": "rclone",
+      "repo": "rclone/rclone",
+      "url": "https://github.com/rclone/rclone",
+      "category": "backup",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Portable backup transport; destination authority stays governed.",
+      "github": {
+        "stars": 59775,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:13:06Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 62,
+      "name": "restic",
+      "repo": "restic/restic",
+      "url": "https://github.com/restic/restic",
+      "category": "backup",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Encrypted snapshot backups and restore drills.",
+      "github": {
+        "stars": 36066,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:19:58Z"
+      },
+      "license": "BSD-2-Clause",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 63,
+      "name": "ripgrep",
+      "repo": "BurntSushi/ripgrep",
+      "url": "https://github.com/BurntSushi/ripgrep",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Fast code/evidence search.",
+      "github": {
+        "stars": 68303,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:51:35Z"
+      },
+      "license": "Unlicense",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 64,
+      "name": "Semgrep CE",
+      "repo": "semgrep/semgrep",
+      "url": "https://github.com/semgrep/semgrep",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "uv-tool",
+      "rationale": "SAST and custom policy checks.",
+      "github": {
+        "stars": 16658,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:20:34Z"
+      },
+      "license": "LGPL-2.1",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 65,
+      "name": "ShellCheck",
+      "repo": "koalaman/shellcheck",
+      "url": "https://github.com/koalaman/shellcheck",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Shell correctness/security lint.",
+      "github": {
+        "stars": 40041,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T01:24:41Z"
+      },
+      "license": "GPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 66,
+      "name": "shfmt",
+      "repo": "mvdan/sh",
+      "url": "https://github.com/mvdan/sh",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Shell formatter.",
+      "github": {
+        "stars": 9059,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T19:58:10Z"
+      },
+      "license": "BSD-3-Clause",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 67,
+      "name": "SOPS",
+      "repo": "getsops/sops",
+      "url": "https://github.com/getsops/sops",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Encrypted configuration workflow; no secret values committed.",
+      "github": {
+        "stars": 23136,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:34:00Z"
+      },
+      "license": "MPL-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 68,
+      "name": "Syft",
+      "repo": "anchore/syft",
+      "url": "https://github.com/anchore/syft",
+      "category": "supply_chain",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "SBOM generation.",
+      "github": {
+        "stars": 9567,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:52:00Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 69,
+      "name": "Taplo",
+      "repo": "tamasfe/taplo",
+      "url": "https://github.com/tamasfe/taplo",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "TOML formatting/lint.",
+      "github": {
+        "stars": 2391,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T11:57:59Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 70,
+      "name": "Task",
+      "repo": "go-task/task",
+      "url": "https://github.com/go-task/task",
+      "category": "task_runner",
+      "decision": "ASSESS",
+      "install_mode": "mise",
+      "rationale": "Installed for evaluation only; just remains canonical task facade.",
+      "github": {
+        "stars": 16148,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:43:33Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 71,
+      "name": "tokei",
+      "repo": "XAMPPRocky/tokei",
+      "url": "https://github.com/XAMPPRocky/tokei",
+      "category": "developer_metrics",
+      "decision": "ASSESS",
+      "install_mode": "on-demand",
+      "rationale": "Fast language/LOC inventory.",
+      "github": {
+        "stars": 14910,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T08:58:04Z"
+      },
+      "license": "Apache-2.0 OR MIT",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 72,
+      "name": "Trivy",
+      "repo": "aquasecurity/trivy",
+      "url": "https://github.com/aquasecurity/trivy",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "Primary filesystem/container/IaC vulnerability scanner.",
+      "github": {
+        "stars": 37934,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:06:13Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 73,
+      "name": "TruffleHog",
+      "repo": "trufflesecurity/trufflehog",
+      "url": "https://github.com/trufflesecurity/trufflehog",
+      "category": "security",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Verified-secret cross-check; Gitleaks remains primary.",
+      "github": {
+        "stars": 27943,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:16:09Z"
+      },
+      "license": "AGPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 74,
+      "name": "Vale",
+      "repo": "vale-cli/vale",
+      "url": "https://github.com/vale-cli/vale",
+      "category": "content_quality",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Docs/content style lint, useful for bilingual governance rules.",
+      "github": {
+        "stars": 6109,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:39:44Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 75,
+      "name": "watchexec",
+      "repo": "watchexec/watchexec",
+      "url": "https://github.com/watchexec/watchexec",
+      "category": "developer_ux",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Local change-triggered commands only.",
+      "github": {
+        "stars": 7187,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T21:29:33Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 76,
+      "name": "xh",
+      "repo": "ducaale/xh",
+      "url": "https://github.com/ducaale/xh",
+      "category": "api_dev",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Developer HTTP client.",
+      "github": {
+        "stars": 8075,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:39:29Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 77,
+      "name": "yamllint",
+      "repo": "adrienverge/yamllint",
+      "url": "https://github.com/adrienverge/yamllint",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "uv-tool",
+      "rationale": "YAML validation.",
+      "github": {
+        "stars": 3460,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T19:34:26Z"
+      },
+      "license": "GPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 78,
+      "name": "yq",
+      "repo": "mikefarah/yq",
+      "url": "https://github.com/mikefarah/yq",
+      "category": "sdlc",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "YAML processing.",
+      "github": {
+        "stars": 15964,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T02:52:20Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 79,
+      "name": "zizmor",
+      "repo": "zizmorcore/zizmor",
+      "url": "https://github.com/zizmorcore/zizmor",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "mise",
+      "rationale": "GitHub Actions security analysis.",
+      "github": {
+        "stars": 6518,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T01:11:46Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 80,
+      "name": "zoxide",
+      "repo": "ajeetdsouza/zoxide",
+      "url": "https://github.com/ajeetdsouza/zoxide",
+      "category": "developer_ux",
+      "decision": "TRIAL",
+      "install_mode": "mise",
+      "rationale": "Operator navigation UX.",
+      "github": {
+        "stars": 39491,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:25:38Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 81,
+      "name": "Schemathesis",
+      "repo": "schemathesis/schemathesis",
+      "url": "https://github.com/schemathesis/schemathesis",
+      "category": "api_testing",
+      "decision": "TRIAL",
+      "install_mode": "uv-tool",
+      "rationale": "OpenAPI/GraphQL property/stateful testing on isolated canaries.",
+      "github": {
+        "stars": 3601,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T01:33:31Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 82,
+      "name": "MCP Python SDK v2",
+      "repo": "modelcontextprotocol/python-sdk",
+      "url": "https://github.com/modelcontextprotocol/python-sdk",
+      "category": "agent_protocol",
+      "decision": "TRIAL",
+      "install_mode": "uv-tool",
+      "rationale": "MCP v2 lab only until Dealix adapters migrate explicitly.",
+      "github": {
+        "stars": 24307,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T20:36:50Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 83,
+      "name": "PydanticAI",
+      "repo": "pydantic/pydantic-ai",
+      "url": "https://github.com/pydantic/pydantic-ai",
+      "category": "agent_framework",
+      "decision": "TRIAL",
+      "install_mode": "uvx",
+      "rationale": "Typed agent experiments; do not create a second company runtime.",
+      "github": {
+        "stars": 19972,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:28:16Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 84,
+      "name": "LangGraph",
+      "repo": "langchain-ai/langgraph",
+      "url": "https://github.com/langchain-ai/langgraph",
+      "category": "agent_framework",
+      "decision": "ASSESS",
+      "install_mode": "uvx",
+      "rationale": "Useful durable graph patterns; Company Machine remains authority.",
+      "github": {
+        "stars": 41727,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:26:30Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 85,
+      "name": "DSPy",
+      "repo": "stanfordnlp/dspy",
+      "url": "https://github.com/stanfordnlp/dspy",
+      "category": "llm_optimization",
+      "decision": "ASSESS",
+      "install_mode": "uvx",
+      "rationale": "Offline prompt/program optimization and eval research.",
+      "github": {
+        "stars": 38054,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:41:24Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 86,
+      "name": "LiteLLM",
+      "repo": "BerriAI/litellm",
+      "url": "https://github.com/BerriAI/litellm",
+      "category": "llm_gateway",
+      "decision": "HOLD",
+      "install_mode": "none",
+      "rationale": "Dealix already has a canonical model router; avoid parallel gateway.",
+      "license_class": "OPEN_CORE_MIXED",
+      "github": {
+        "stars": 58840,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:10:41Z"
+      },
+      "license": "MIT core + enterprise directory"
+    },
+    {
+      "id": 87,
+      "name": "promptfoo",
+      "repo": "promptfoo/promptfoo",
+      "url": "https://github.com/promptfoo/promptfoo",
+      "category": "llm_eval",
+      "decision": "TRIAL",
+      "install_mode": "npm",
+      "rationale": "LLM/agent assertions and red-team regression.",
+      "github": {
+        "stars": 25155,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:13:18Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 88,
+      "name": "DeepEval",
+      "repo": "confident-ai/deepeval",
+      "url": "https://github.com/confident-ai/deepeval",
+      "category": "llm_eval",
+      "decision": "ASSESS",
+      "install_mode": "uvx",
+      "rationale": "Pytest-like evals; avoid duplicate eval authority until compared.",
+      "github": {
+        "stars": 18286,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:20:45Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 89,
+      "name": "Ragas",
+      "repo": "vibrantlabsai/ragas",
+      "url": "https://github.com/vibrantlabsai/ragas",
+      "category": "rag_eval",
+      "decision": "ASSESS",
+      "install_mode": "uvx",
+      "rationale": "RAG-specific evals when retrieval workloads justify it.",
+      "github": {
+        "stars": 15746,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:04:01Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 90,
+      "name": "Inspect AI",
+      "repo": "UKGovernmentBEIS/inspect_ai",
+      "url": "https://github.com/UKGovernmentBEIS/inspect_ai",
+      "category": "llm_eval",
+      "decision": "TRIAL",
+      "install_mode": "uvx",
+      "rationale": "Safety/evaluation harness for agent/model testing.",
+      "github": {
+        "stars": 2781,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:41:42Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 91,
+      "name": "Garak",
+      "repo": "NVIDIA/garak",
+      "url": "https://github.com/NVIDIA/garak",
+      "category": "llm_security",
+      "decision": "TRIAL",
+      "install_mode": "uvx",
+      "rationale": "LLM vulnerability probes against isolated test endpoints only.",
+      "github": {
+        "stars": 9261,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:07:49Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 92,
+      "name": "PyRIT",
+      "repo": "microsoft/PyRIT",
+      "url": "https://github.com/microsoft/PyRIT",
+      "category": "llm_security",
+      "decision": "TRIAL",
+      "install_mode": "on-demand",
+      "rationale": "Active Microsoft repository; old Azure/PyRIT was archived and moved here. Isolated red-team use only.",
+      "github": {
+        "stars": 4477,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:04:57Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 93,
+      "name": "Phoenix",
+      "repo": "Arize-ai/phoenix",
+      "url": "https://github.com/Arize-ai/phoenix",
+      "category": "llm_observability",
+      "decision": "HOLD",
+      "install_mode": "none",
+      "rationale": "Overlap with Langfuse/OTel; use only if a measured gap appears.",
+      "license_class": "SOURCE_AVAILABLE_NON_OSI",
+      "license_note": "Elastic License 2.0; keep HOLD and do not count as OSI OSS.",
+      "github": {
+        "stars": 11478,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:52:52Z"
+      },
+      "license": "Elastic License 2.0"
+    },
+    {
+      "id": 94,
+      "name": "Opik",
+      "repo": "comet-ml/opik",
+      "url": "https://github.com/comet-ml/opik",
+      "category": "llm_observability",
+      "decision": "HOLD",
+      "install_mode": "none",
+      "rationale": "Overlap with Langfuse/OTel; no second observability authority.",
+      "github": {
+        "stars": 22050,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:26:35Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 95,
+      "name": "Grafana Alloy",
+      "repo": "grafana/alloy",
+      "url": "https://github.com/grafana/alloy",
+      "category": "observability",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Candidate collector; current OTel collector remains canonical.",
+      "github": {
+        "stars": 3539,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T20:28:41Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 96,
+      "name": "Prometheus",
+      "repo": "prometheus/prometheus",
+      "url": "https://github.com/prometheus/prometheus",
+      "category": "observability",
+      "decision": "ASSESS",
+      "install_mode": "compose_profile",
+      "rationale": "Metrics backend only if current Sentry/OTel evidence is insufficient.",
+      "github": {
+        "stars": 66085,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:02:10Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 97,
+      "name": "Loki",
+      "repo": "grafana/loki",
+      "url": "https://github.com/grafana/loki",
+      "category": "observability",
+      "decision": "ASSESS",
+      "install_mode": "compose_profile",
+      "rationale": "Log backend; pair with Alloy if adopted, not Promtail.",
+      "github": {
+        "stars": 28895,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T02:43:45Z"
+      },
+      "license": "AGPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 98,
+      "name": "Tempo",
+      "repo": "grafana/tempo",
+      "url": "https://github.com/grafana/tempo",
+      "category": "observability",
+      "decision": "ASSESS",
+      "install_mode": "compose_profile",
+      "rationale": "Trace backend when local trace retention is required.",
+      "github": {
+        "stars": 5475,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T21:47:10Z"
+      },
+      "license": "AGPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 99,
+      "name": "Grafana",
+      "repo": "grafana/grafana",
+      "url": "https://github.com/grafana/grafana",
+      "category": "observability",
+      "decision": "ASSESS",
+      "install_mode": "compose_profile",
+      "rationale": "Dashboard UI; do not run until metrics/logs/traces need local UI.",
+      "github": {
+        "stars": 76767,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:30:21Z"
+      },
+      "license": "AGPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 100,
+      "name": "Qdrant",
+      "repo": "qdrant/qdrant",
+      "url": "https://github.com/qdrant/qdrant",
+      "category": "vector_db",
+      "decision": "HOLD",
+      "install_mode": "none",
+      "rationale": "pgvector is already canonical; avoid parallel vector store.",
+      "github": {
+        "stars": 34585,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:05:04Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 101,
+      "name": "Meilisearch",
+      "repo": "meilisearch/meilisearch",
+      "url": "https://github.com/meilisearch/meilisearch",
+      "category": "search",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Possible buyer/docs search, not needed for core runtime today.",
+      "github": {
+        "stars": 59301,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:35:13Z"
+      },
+      "license": "MIT",
+      "license_class": "MANUAL_OSS"
+    },
+    {
+      "id": 102,
+      "name": "MarkItDown",
+      "repo": "microsoft/markitdown",
+      "url": "https://github.com/microsoft/markitdown",
+      "category": "document_processing",
+      "decision": "TRIAL",
+      "install_mode": "uv-tool",
+      "rationale": "Lightweight document-to-Markdown preprocessing.",
+      "github": {
+        "stars": 184513,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:30:38Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 103,
+      "name": "Docling",
+      "repo": "docling-project/docling",
+      "url": "https://github.com/docling-project/docling",
+      "category": "document_processing",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "High-value document parsing but heavier footprint; install on demand.",
+      "github": {
+        "stars": 66470,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:20:11Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 104,
+      "name": "Crawl4AI",
+      "repo": "unclecode/crawl4ai",
+      "url": "https://github.com/unclecode/crawl4ai",
+      "category": "web_intelligence",
+      "decision": "TRIAL",
+      "install_mode": "uvx",
+      "rationale": "Research crawler for permitted public sources; no relationship inference.",
+      "github": {
+        "stars": 83623,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:34:55Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 105,
+      "name": "Firecrawl",
+      "repo": "firecrawl/firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "category": "web_intelligence",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Avoid parallel crawling service unless Crawl4AI fails requirements.",
+      "github": {
+        "stars": 180970,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:30:32Z"
+      },
+      "license": "AGPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 106,
+      "name": "browser-use",
+      "repo": "browser-use/browser-use",
+      "url": "https://github.com/browser-use/browser-use",
+      "category": "browser_automation",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Browser-agent research; Playwright remains canonical deterministic browser layer.",
+      "github": {
+        "stars": 114753,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:31:31Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 107,
+      "name": "Temporal",
+      "repo": "temporalio/temporal",
+      "url": "https://github.com/temporalio/temporal",
+      "category": "workflow_engine",
+      "decision": "HOLD",
+      "install_mode": "none",
+      "rationale": "Company scheduler already exists; adopt only after proven durability gap.",
+      "github": {
+        "stars": 23079,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:24:02Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 108,
+      "name": "Twenty",
+      "repo": "twentyhq/twenty",
+      "url": "https://github.com/twentyhq/twenty",
+      "category": "crm",
+      "decision": "HOLD",
+      "install_mode": "none",
+      "rationale": "HubSpot is current CRM mirror; no second CRM.",
+      "license_class": "OPEN_CORE_MIXED",
+      "github": {
+        "stars": 56853,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:29:14Z"
+      },
+      "license": "AGPL-3.0 core + enterprise-marked files"
+    },
+    {
+      "id": 109,
+      "name": "Vaultwarden",
+      "repo": "dani-garcia/vaultwarden",
+      "url": "https://github.com/dani-garcia/vaultwarden",
+      "category": "secrets_ui",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Possible human secret vault; not a runtime secret authority by default.",
+      "github": {
+        "stars": 67731,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:20:31Z"
+      },
+      "license": "AGPL-3.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 110,
+      "name": "OpenFGA",
+      "repo": "openfga/openfga",
+      "url": "https://github.com/openfga/openfga",
+      "category": "authorization",
+      "decision": "TRIAL",
+      "install_mode": "none",
+      "rationale": "Fine-grained auth candidate for multi-tenant authorization.",
+      "github": {
+        "stars": 5780,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T01:20:36Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 111,
+      "name": "OPA",
+      "repo": "open-policy-agent/opa",
+      "url": "https://github.com/open-policy-agent/opa",
+      "category": "policy",
+      "decision": "TRIAL",
+      "install_mode": "none",
+      "rationale": "Policy engine; Conftest provides immediate file-level use.",
+      "github": {
+        "stars": 12238,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T17:59:45Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 112,
+      "name": "Keycloak",
+      "repo": "keycloak/keycloak",
+      "url": "https://github.com/keycloak/keycloak",
+      "category": "identity",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "SSO candidate only when customer identity requirements justify service cost.",
+      "github": {
+        "stars": 36795,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T02:58:46Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 113,
+      "name": "dbt Core",
+      "repo": "dbt-labs/dbt",
+      "url": "https://github.com/dbt-labs/dbt",
+      "category": "analytics_engineering",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Metrics/data models if analytics warehouse emerges.",
+      "github": {
+        "stars": 13834,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:21:09Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 114,
+      "name": "Great Expectations",
+      "repo": "fivetran/great_expectations",
+      "url": "https://github.com/fivetran/great_expectations",
+      "category": "data_quality",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Data quality checkpoints for customer datasets.",
+      "github": {
+        "stars": 11796,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T05:26:55Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 115,
+      "name": "OpenLineage",
+      "repo": "OpenLineage/OpenLineage",
+      "url": "https://github.com/OpenLineage/OpenLineage",
+      "category": "data_lineage",
+      "decision": "ASSESS",
+      "install_mode": "none",
+      "rationale": "Lineage standard when multi-pipeline data provenance needs it.",
+      "github": {
+        "stars": 2658,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T21:18:53Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 116,
+      "name": "Microsoft Agent Framework",
+      "repo": "microsoft/agent-framework",
+      "url": "https://github.com/microsoft/agent-framework",
+      "category": "agent_framework",
+      "decision": "ASSESS",
+      "install_mode": "on-demand",
+      "rationale": "AutoGen/Semantic Kernel successor; evaluate patterns only, do not replace Company Machine without evidence.",
+      "github": {
+        "stars": 13540,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T04:47:04Z"
+      },
+      "license": "MIT",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 117,
+      "name": "pip-audit",
+      "repo": "pypa/pip-audit",
+      "url": "https://github.com/pypa/pip-audit",
+      "category": "security",
+      "decision": "ADOPT",
+      "install_mode": "uv-tool",
+      "rationale": "Python dependency vulnerability audit for release/security receipts.",
+      "github": {
+        "stars": 1363,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-14T10:30:08Z"
+      },
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 118,
+      "name": "pgcli",
+      "repo": "dbcli/pgcli",
+      "url": "https://github.com/dbcli/pgcli",
+      "category": "data_ops",
+      "decision": "TRIAL",
+      "install_mode": "uv-tool",
+      "rationale": "Human/operator PostgreSQL inspection; no automated production mutation authority.",
+      "github": {
+        "stars": 13388,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-15T18:18:41Z"
+      },
+      "license": "BSD-3-Clause",
+      "license_class": "OSI_SPDX"
+    },
+    {
+      "id": 119,
+      "name": "Node-RED",
+      "repo": "node-red/node-red",
+      "url": "https://github.com/node-red/node-red",
+      "category": "workflow_automation",
+      "decision": "ASSESS",
+      "install_mode": "on-demand",
+      "rationale": "Apache-2.0 OSS workflow escape hatch if n8n licensing becomes incompatible; do not run in parallel by default.",
+      "license": "Apache-2.0",
+      "license_class": "OSI_SPDX",
+      "github": {
+        "stars": 23655,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16T03:58:44Z"
+      }
+    },
+    {
+      "id": 120,
+      "name": "OpenBao",
+      "repo": "openbao/openbao",
+      "url": "https://github.com/openbao/openbao",
+      "category": "secrets_management",
+      "decision": "TRIAL",
+      "install_mode": "on-demand",
+      "rationale": "Open-source secrets manager under Linux Foundation/OpenSSF; preferred OSS candidate over BSL Vault.",
+      "license": "MPL-2.0",
+      "license_class": "OSI_SPDX",
+      "github": {
+        "stars": 7372,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16"
+      }
+    },
+    {
+      "id": 121,
+      "name": "Valkey",
+      "repo": "valkey-io/valkey",
+      "url": "https://github.com/valkey-io/valkey",
+      "category": "data_cache",
+      "decision": "ASSESS",
+      "install_mode": "on-demand",
+      "rationale": "OSS Redis-compatible server candidate; evaluate before deepening Redis server licensing dependency.",
+      "license": "BSD-3-Clause",
+      "license_class": "OSI_SPDX",
+      "github": {
+        "stars": 27208,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16"
+      }
+    },
+    {
+      "id": 122,
+      "name": "OpenTofu",
+      "repo": "opentofu/opentofu",
+      "url": "https://github.com/opentofu/opentofu",
+      "category": "infrastructure_as_code",
+      "decision": "ASSESS",
+      "install_mode": "on-demand",
+      "rationale": "OSS IaC option for future provider-neutral infrastructure; current Railway/source contracts remain authority.",
+      "license": "MPL-2.0",
+      "license_class": "OSI_SPDX",
+      "github": {
+        "stars": 30188,
+        "archived": false,
+        "fork": false,
+        "updated_at": "2026-09-16"
+      }
+    }
+  ]
+}
