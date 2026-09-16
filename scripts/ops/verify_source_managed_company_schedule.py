@@ -24,9 +24,15 @@ REQUIRED_CYCLE = (
 )
 REQUIRED_SENTINEL = (
     "API_RELEASE_PARITY=PASS",
-    "RAILWAY_BIN=${RAILWAY_BIN:-/home/dealix/.local/bin/railway}",
-    "RAILWAY_CLI=READABLE",
+    "SELFHOST_LOCAL_API_SHA=",
+    "SELFHOST_LOCAL_WEB_SHA=",
+    "SELFHOST_RUNTIME_PARITY=PASS",
     "SENTINEL_RESULT=PASS_WITH_WARNINGS",
+)
+FORBIDDEN_SENTINEL = (
+    "RAILWAY_BIN=",
+    "RAILWAY_CLI=",
+    "dealix-railway-status.json",
 )
 FORBIDDEN_TRUE = (
     "EMAIL_LIVE_SEND=true",
@@ -74,6 +80,9 @@ def evaluate(runtime: Path) -> tuple[bool, list[str]]:
         for token in REQUIRED_SENTINEL:
             if token not in text:
                 errors.append(f"missing sentinel token: {token}")
+        for token in FORBIDDEN_SENTINEL:
+            if token in text:
+                errors.append(f"forbidden legacy sentinel token: {token}")
     return not errors, errors
 def main() -> int:
     parser = argparse.ArgumentParser()
