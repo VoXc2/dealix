@@ -36,12 +36,13 @@ router = APIRouter(
 # Paid customers needed to trip the commercial gate (Article 13).
 ARTICLE_13_TARGET = 3
 
-# The 4 pending founder launch actions (docs/WAVE17_FOUNDER_DAY1_LAUNCH_KIT.md).
+# Canonical founder launch boundaries. These are review tasks, never standing
+# authorization for an external send, contract, provider/DNS change, merge, or deploy.
 FOUNDER_ACTIONS: list[dict[str, str]] = [
-    {"ar": "توقيع اتفاقية معالجة البيانات (DPA)", "en": "Sign the Data Processing Agreement (DPA)"},
-    {"ar": "إرسال 5 رسائل واتساب دافئة + تسجيلها", "en": "Send 5 warm-intro WhatsApp messages + log them"},
-    {"ar": "ضبط سجلات DNS (SPF/DKIM/DMARC) على dealix.me", "en": "Set DNS records (SPF/DKIM/DMARC) at dealix.me"},
-    {"ar": "دمج PR الانحدار المعلّق", "en": "Merge the pending regression PR"},
+    {"ar": "تحقق من تطابق SHA العام مع الإصدار المقبول قبل Production Green", "en": "Verify public SHA parity with the accepted release before Production Green"},
+    {"ar": "راجع حزمة موافقة محددة قبل أي إرسال خارجي", "en": "Review an action-bound approval packet before any external send"},
+    {"ar": "راجع تغييرات DNS/provider/contract كلٌ على حدة قبل التنفيذ", "en": "Review DNS/provider/contract mutations separately before execution"},
+    {"ar": "راجع exact-head merge/deploy packet؛ Source Green لا يعني Production Green", "en": "Review the exact-head merge/deploy packet; Source Green is not Production Green"},
 ]
 
 # Compatibility field name retained for the founder UI, but its authority is the
@@ -61,7 +62,7 @@ OFFER_LADDER: list[dict[str, str]] = [
     },
     {
         "name": "Revenue Command Pilot",
-        "detail": "30 يومًا · governed delivery · quote-only",
+        "detail": "مدة ومعايير قبول خاصة بالعميل · governed delivery · quote-only after qualified discovery",
     },
     {
         "name": "دفع مثبت ثم تسليم / Verified Payment → Delivery",
