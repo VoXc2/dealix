@@ -23,7 +23,7 @@ curl -fsS https://api.dealix.me/api/v1/meta
 |---------|----------------|----------|
 | **Builder** | Dockerfile | — |
 | **Start Command** | **فارغ** أو `/app/start.sh` فقط | `./start.sh` أو `uvicorn ...` مباشرة |
-| **Pre-deploy** | `bash /app/scripts/railway_predeploy.sh` (من [`railway.toml`](../../railway.toml)) | `echo "no migration needed"` |
+| **Pre-deploy** | **فارغ / Disabled** | أي أمر تلقائي، بما فيه migration |
 | **Healthcheck Path** | `/healthz` | `/health` فقط |
 | **Healthcheck Timeout** | `300` | — |
 | **Public domain target port** | نفس `PORT` الذي تحقنه Railway (غالبًا **8080** على المنصة؛ التطبيق يقرأ `$PORT` عبر `/app/start.sh`) | منفذ ثابت 8000 في Start Command |
@@ -42,10 +42,10 @@ curl -fsS https://api.dealix.me/api/v1/meta
 
 ## الترحيل (Alembic)
 
-- **config-as-code:** [`railway.toml`](../../railway.toml) يشغّل `bash /app/scripts/railway_predeploy.sh` قبل كل نشر.
-- **افتراضي (آمن):** السكربت يطبع `SKIP` ولا يشغّل ترحيلاً.
+- **config-as-code:** [`railway.toml`](../../railway.toml) و[`railway.json`](../../railway.json) لا يعرّفان `preDeployCommand`؛ automatic pre-deploy معطّل.
+- **افتراضي (آمن):** لا تعمل أي migration داخل deploy. يبقى `scripts/railway_predeploy.sh` أداة fail-closed منفصلة ولا تمنح صلاحية تنفيذ.
 - **Automatic production migration:** disabled fail-closed. `RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1` expresses migration intent only and blocks pre-deploy; DDL requires a separate one-shot executor plus an exact action-bound approval receipt binding environment, revision payload, expiry, idempotency key, and `ACTION_HASH`.
-- **خطأ شائع في UI:** `echo "no migration needed"` — **استبدله** بـ `bash /app/scripts/railway_predeploy.sh` أو اترك الحقل فارغاً ليأخذ `railway.toml`.
+- **واجهة Railway:** اترك Pre-deploy فارغًا. أي migration إنتاجية تحتاج one-shot executor وصلاحية L5 مرتبطة بالفعل.
 - **Legacy bootstrap:** `bash scripts/railway_prod_bootstrap.sh` is fail-closed (exit 75) and performs no migration, seed, or API mutation.
 - **Material bootstrap/seed:** requires a separate one-shot executor with an exact action-bound approval receipt; no legacy script or persistent environment flag grants authority.
 - **Prepare only:** `python scripts/ops/prepare_railway_migration_packet.py ...` يبني حزمة `PENDING_EXACT_L5_AUTHORITY` مرتبطة بـ release SHA + Railway project/environment/service + Alembic head + provider-scoped structured SUCCESS `--backup-receipt` matching Railway project/environment/service + existing repo rollback artifact + expiry + idempotency + `ACTION_HASH`. الباني لا يتصل بقاعدة البيانات ويُبقي `execution_allowed=false`.

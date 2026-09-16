@@ -37,13 +37,13 @@ def test_ui_start_command_drift_hint() -> None:
 def test_ui_predeploy_drift_no_migration_stub() -> None:
     hint = parse_railway_ui_predeploy_drift('echo "no migration needed"')
     assert hint is not None
-    assert "railway_predeploy" in hint
+    assert "امسح Pre-deploy" in hint
 
 
 def test_ui_predeploy_legacy_sh_is_rejected() -> None:
     hint = parse_railway_ui_predeploy_drift("sh /app/scripts/railway_predeploy.sh")
     assert hint is not None
-    assert "bash /app/scripts/railway_predeploy.sh" in hint
+    assert "امسح Pre-deploy" in hint
 
 
 def test_ui_restart_retries_drift_from_uploaded_snapshot() -> None:
@@ -97,8 +97,8 @@ def test_verify_cli_ui_drift_cannot_report_false_pass() -> None:
 
 
 def test_predeploy_predicate_requires_parsed_exact_array_wrapper() -> None:
-    assert _has_canonical_predeploy((ROOT / "railway.toml").read_text(encoding="utf-8"))
-    assert _has_canonical_predeploy((ROOT / "railway.json").read_text(encoding="utf-8"))
+    assert not _has_canonical_predeploy((ROOT / "railway.toml").read_text(encoding="utf-8"))
+    assert not _has_canonical_predeploy((ROOT / "railway.json").read_text(encoding="utf-8"))
 
     deceptive = "sh /app/scripts/railway_predeploy.sh # bash /app/scripts/railway_predeploy.sh"
     assert not _has_canonical_predeploy(
@@ -122,7 +122,7 @@ def test_predeploy_predicate_rejects_legacy_string_schema() -> None:
 def test_ui_predeploy_legacy_sh_is_drift() -> None:
     hint = parse_railway_ui_predeploy_drift("sh /app/scripts/railway_predeploy.sh")
     assert hint is not None
-    assert "bash /app/scripts/railway_predeploy.sh" in hint
+    assert "امسح Pre-deploy" in hint
 
 
 def test_ui_predeploy_comment_smuggling_is_drift() -> None:
@@ -130,11 +130,13 @@ def test_ui_predeploy_comment_smuggling_is_drift() -> None:
         "sh /app/scripts/railway_predeploy.sh # bash /app/scripts/railway_predeploy.sh"
     )
     assert hint is not None
-    assert "bash /app/scripts/railway_predeploy.sh" in hint
+    assert "امسح Pre-deploy" in hint
 
 
-def test_ui_predeploy_canonical_bash_has_no_drift() -> None:
-    assert parse_railway_ui_predeploy_drift("bash /app/scripts/railway_predeploy.sh") is None
+def test_ui_predeploy_former_canonical_bash_is_now_drift() -> None:
+    hint = parse_railway_ui_predeploy_drift("bash /app/scripts/railway_predeploy.sh")
+    assert hint is not None
+    assert "امسح Pre-deploy" in hint
 
 
 def test_github_success_cannot_promote_skipped_railway_deployment() -> None:
