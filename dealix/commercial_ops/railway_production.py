@@ -34,7 +34,7 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8") if path.is_file() else ""
 
 
-CANONICAL_PREDEPLOY = "bash /app/scripts/railway_predeploy.sh"
+CANONICAL_PREDEPLOY = ""
 CANONICAL_PREDEPLOY_MARKER = "/app/scripts/railway_predeploy.sh"
 CANONICAL_PREDEPLOY_COMMAND = (
     "if [ -f /app/scripts/railway_predeploy.sh ]; then "
@@ -76,8 +76,21 @@ def _extract_predeploy_commands(text: str) -> tuple[str, ...] | None:
 
 
 def _has_canonical_predeploy(text: str) -> bool:
-    """Require one exact canonical Bash command in the documented array schema."""
+    """Legacy helper: identify the former exact Bash pre-deploy command."""
     return _extract_predeploy_commands(text) == (CANONICAL_PREDEPLOY_COMMAND,)
+
+
+def _predeploy_key_present(text: str) -> bool:
+    """Return True only when deploy.preDeployCommand exists in valid config."""
+    raw = (text or "").strip()
+    if not raw:
+        return False
+    try:
+        config = json.loads(raw) if raw.startswith("{") else tomllib.loads(raw)
+    except (json.JSONDecodeError, tomllib.TOMLDecodeError):
+        return True
+    deploy = config.get("deploy") if isinstance(config, dict) else None
+    return isinstance(deploy, dict) and "preDeployCommand" in deploy
 
 
 def _evidence_value(value: str | None) -> str | None:
@@ -168,20 +181,16 @@ def check_repo_railway_config() -> dict[str, Any]:
         issues.append("missing railway.toml")
     elif 'healthcheckPath = "/healthz"' not in toml:
         issues.append('railway.toml must set healthcheckPath = "/healthz"')
-    if not _has_canonical_predeploy(toml):
-        issues.append(
-            "railway.toml preDeployCommand must be one canonical Bash command array"
-        )
+    if _predeploy_key_present(toml):
+        issues.append("railway.toml must omit preDeployCommand; migrations are separate L5 actions")
     if "startCommand" in toml and "NO startCommand" not in toml:
         warnings.append("railway.toml should not set startCommand (use Dockerfile CMD)")
 
     jsn = _read(RAILWAY_JSON)
     if jsn and "/healthz" not in jsn:
         issues.append("railway.json healthcheckPath should be /healthz")
-    if jsn and not _has_canonical_predeploy(jsn):
-        issues.append(
-            "railway.json preDeployCommand must be one canonical Bash command array"
-        )
+    if jsn and _predeploy_key_present(jsn):
+        issues.append("railway.json must omit preDeployCommand; migrations are separate L5 actions")
 
     docker = _read(DOCKERFILE)
     if "/app/start.sh" not in docker:
@@ -197,21 +206,8 @@ def check_repo_railway_config() -> dict[str, Any]:
             "RUN_RAILWAY_PRE_DEPLOY_MIGRATE"
         )
 
-    for cfg_name, cfg_text in (("railway.toml", toml), ("railway.json", jsn)):
-        if not cfg_text:
-            continue
-        if "railway_predeploy" not in cfg_text:
-            issues.append(
-                f"{cfg_name} must set preDeployCommand to railway_predeploy.sh"
-            )
-        lowered = cfg_text.lower()
-        for bad in BAD_UI_PREDEPLOY_SNIPPETS:
-            if bad in lowered:
-                issues.append(
-                    f"{cfg_name} must not use echo no-migration stub — "
-                    f"use {CANONICAL_PREDEPLOY}"
-                )
-                break
+    # Automatic Railway pre-deploy is disabled. Keep the fail-closed script in-repo
+    # as a one-shot/recovery primitive; material migrations require separate L5 authority.
 
     if not SETTINGS_DOC.is_file():
         issues.append("missing docs/ops/RAILWAY_PRODUCTION_SETTINGS_AR.md")
@@ -324,19 +320,10 @@ def parse_railway_ui_predeploy_drift(predeploy: str) -> str | None:
     cmd = (predeploy or "").strip()
     if not cmd:
         return None
-    lower = cmd.lower()
-    if cmd in (CANONICAL_PREDEPLOY, CANONICAL_PREDEPLOY_COMMAND):
-        return None
-    for bad in BAD_UI_PREDEPLOY_SNIPPETS:
-        if bad in lower:
-            return (
-                f"استبدل Pre-deploy في Railway UI بـ {CANONICAL_PREDEPLOY} "
-                "(أو اتركه فارغاً ليأخذ railway.toml). "
-                "للترحيل التلقائي: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1"
-            )
-    if "railway_predeploy" in lower:
-        return f"Pre-deploy must invoke Bash exactly: {CANONICAL_PREDEPLOY}"
-    return f"Pre-deploy يجب أن يطابق railway.toml: {CANONICAL_PREDEPLOY}"
+    return (
+        "امسح Pre-deploy في Railway UI؛ العقد الإنتاجي يعطّل automatic pre-deploy. "
+        "أي migration إنتاجية تُنفذ كخطوة one-shot منفصلة بصلاحية L5 مرتبطة بالفعل."
+    )
 
 
 def parse_railway_ui_drift_hint(start_command: str) -> str | None:
