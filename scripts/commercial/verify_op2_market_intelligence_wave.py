@@ -57,6 +57,8 @@ def validate_wave(wave: dict[str, Any], radar_meta: dict[str, Any], playbooks: d
         errors.append(f"schema must be {SCHEMA}")
     if wave.get("lane") != "OP2":
         errors.append("lane must be OP2")
+    if wave.get("authority") != runner.AUTHORITY:
+        errors.append("top-level authority must exactly match all-false radar authority")
 
     signals = wave.get("signals")
     if not isinstance(signals, list):
