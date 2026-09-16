@@ -33,8 +33,11 @@ jobs:
         with:
           python-version: "3.12"
       - name: Run brain command
+        env:
+          DEALIX_BRAIN_COMMAND: ${{ inputs.command }}
+          DEALIX_BRAIN_PRIORITY: ${{ inputs.priority }}
         run: |
-          python scripts/dealix_brain_control.py ask "${{ inputs.command }}" --priority "${{ inputs.priority }}"
+          python scripts/dealix_brain_control.py ask "$DEALIX_BRAIN_COMMAND" --priority "$DEALIX_BRAIN_PRIORITY"
           python scripts/dealix_brain_control.py tick
           python scripts/dealix_brain_control.py doctor || true
       - name: Upload brain response

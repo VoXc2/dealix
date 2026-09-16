@@ -41,10 +41,10 @@ jobs:
         run: |
           if [ -z "$RAILWAY_TOKEN" ]; then
             echo "::warning::RAILWAY_TOKEN not configured - skip frontend deploy"
-            echo "token_present=false" >> $GITHUB_OUTPUT
+            echo "token_present=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          echo "token_present=true" >> $GITHUB_OUTPUT
+          echo "token_present=true" >> "$GITHUB_OUTPUT"
 
       - name: Install Railway CLI
         if: steps.check_token.outputs.token_present == 'true'
@@ -58,9 +58,12 @@ jobs:
         working-directory: apps/web
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          INPUT_SERVICE: ${{ inputs.service }}
+          CONFIG_SERVICE: ${{ vars.RAILWAY_FRONTEND_SERVICE }}
         run: |
           set -euo pipefail
-          SERVICE="${{ inputs.service || vars.RAILWAY_FRONTEND_SERVICE || 'web' }}"
+          SERVICE="${INPUT_SERVICE:-${CONFIG_SERVICE:-web}}"
+          [[ "$SERVICE" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "::error::invalid Railway service name"; exit 2; }
           echo "Deploying frontend service: $SERVICE"
           railway up --service "$SERVICE" --detach --json > /tmp/railway-frontend-up.json
           deployment_id=$(
@@ -161,9 +164,12 @@ jobs:
 
       - name: Smoke /healthz and /ar on dealix.me
         if: steps.railway_deploy.outcome == 'success'
+        env:
+          CONFIG_FRONTEND_BASE: ${{ vars.DEALIX_FRONTEND_BASE }}
         run: |
           set -euo pipefail
-          FE="${{ vars.DEALIX_FRONTEND_BASE || 'https://dealix.me' }}"
+          FE="${CONFIG_FRONTEND_BASE:-https://dealix.me}"
+          case "$FE" in https://*) ;; *) echo "::error::frontend base must use https"; exit 2 ;; esac
           for i in {1..8}; do
             health_code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 15 "$FE/healthz" || echo "000")
             ar_code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 15 "$FE/ar" || echo "000")

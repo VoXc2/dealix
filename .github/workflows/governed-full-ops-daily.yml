@@ -64,10 +64,14 @@ jobs:
 
       - name: Resolve governed pulse mode
         id: pulse
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            MODE="${{ github.event.inputs.mode }}"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            MODE="$INPUT_MODE"
+            case "$MODE" in morning|evening|commercial|full) ;; *) echo "::error::invalid governed pulse mode"; exit 2 ;; esac
           else
             # Six Saudi-day pulses (UTC+3). Keep scheduled execution bounded:
             # 03/07 KSA = morning intelligence; 11/15/19 KSA = commercial;
@@ -89,9 +93,10 @@ jobs:
           DEALIX_API_BASE: ${{ secrets.DEALIX_API_BASE }}
           DEALIX_ADMIN_API_KEY: ${{ secrets.DEALIX_ADMIN_API_KEY }}
           PYTHONIOENCODING: utf-8
+          RESOLVED_MODE: ${{ steps.pulse.outputs.mode }}
         run: |
           set -euo pipefail
-          MODE="${{ steps.pulse.outputs.mode }}"
+          MODE="$RESOLVED_MODE"
           if [ "$MODE" = "full" ]; then
             python3 scripts/run_dealix_complete_autonomous_day.py --weekly
           elif [ "$MODE" = "commercial" ]; then

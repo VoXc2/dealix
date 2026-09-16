@@ -29,6 +29,18 @@ def test_templates_include_content_and_delivery_cycles() -> None:
     assert "RAILWAY_BIN=${RAILWAY_BIN:-/home/dealix/.local/bin/railway}" in sentinel
     assert "API_RELEASE_PARITY=PASS" in sentinel
     assert "SENTINEL_RESULT=PASS_WITH_WARNINGS" in sentinel
+    # Availability stays on /healthz; immutable API identity comes from /version.
+    assert 'check_http API https://api.dealix.me/healthz 1' in sentinel
+    assert 'API_JSON=$(curl -fsS --max-time 12 https://api.dealix.me/version' in sentinel
+
+
+def test_sentinel_uses_version_for_release_identity() -> None:
+    sentinel = (TEMPLATES / "dealix-server-sentinel").read_text()
+    assert 'check_http API https://api.dealix.me/healthz 1' in sentinel
+    assert 'API_JSON=$(curl -fsS --max-time 12 https://api.dealix.me/version' in sentinel
+    assert 'd.get("git_sha")' in sentinel
+    assert 'API_RELEASE_PARITY' in sentinel
+
 
 
 def test_verifier_detects_exact_runtime_and_drift(tmp_path: Path) -> None:

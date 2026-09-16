@@ -274,20 +274,25 @@ def probe_trust_layer(api_base: str, timeout_sec: float = 12.0) -> dict[str, Any
         for p in paths
     }
     healthz = probes.get("healthz") or {}
+    version_probe = probes.get("version") or {}
+    meta_probe = probes.get("api_v1_meta") or {}
     snippet = (healthz.get("snippet") or "").lower()
-    deploy_stale = healthz.get("ok") and "version" not in snippet
-    version_missing = (probes.get("version") or {}).get("status") == 404
-    meta_missing = (probes.get("api_v1_meta") or {}).get("status") == 404
+    healthz_embeds_release_identity = "version" in snippet or "git_sha" in snippet
+    version_endpoint_available = bool(version_probe.get("ok"))
+    deploy_identity_available = healthz_embeds_release_identity or version_endpoint_available
+    deploy_stale = bool(healthz.get("ok") and not deploy_identity_available)
+    version_missing = version_probe.get("status") == 404
+    meta_missing = meta_probe.get("status") == 404
     ok = all(p.get("ok") for p in probes.values() if p.get("probed"))
     return {
         "probes": probes,
         "deploy_stale_hint_ar": (
-            "النشر الحي قديم — /healthz بلا version أو /version غير منشور. "
-            "انتظر CI + Railway deploy."
+            "هوية النشر الحي غير مثبتة — /healthz لا يحمل release identity "
+            "و/version غير متاح، أو /api/v1/meta غير منشور. راجع Railway release evidence."
             if deploy_stale or version_missing or meta_missing
             else ""
         ),
-        "ok": ok and not deploy_stale and not version_missing,
+        "ok": ok and not deploy_stale and not version_missing and not meta_missing,
     }
 
 
