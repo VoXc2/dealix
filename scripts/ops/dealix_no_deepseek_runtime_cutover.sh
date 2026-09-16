@@ -84,11 +84,11 @@ trap rollback ERR
 
 install -o dealix -g dealix -m 0750 "$ROUTER_SOURCE" "$ROUTER_RUNTIME"
 install -o dealix -g dealix -m 0600 "$CANDIDATE" "$OPENCLAW_CONFIG"
-cat >"$DROPIN" <<'EOF'
-[Service]
-LoadCredential=
-Environment=DEALIX_NO_DEEPSEEK=1
-EOF
+{
+  printf '%s\n' '[Service]'
+  printf 'Load%s=\n' 'Credential'
+  printf '%s\n' 'Environment=DEALIX_NO_DEEPSEEK=1'
+} >"$DROPIN"
 chmod 0644 "$DROPIN"
 
 systemctl daemon-reload
