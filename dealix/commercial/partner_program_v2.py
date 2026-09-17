@@ -50,6 +50,7 @@ def _d(value: Decimal | int | float | str) -> Decimal:
 def _money(value: Decimal) -> Decimal:
     return value.quantize(MONEY, rounding=ROUND_HALF_UP)
 
+
 @dataclass(frozen=True)
 class NCCRInputs:
     collected_cash_sar: Decimal
@@ -71,10 +72,21 @@ class NCCRInputs:
 
 
 def calculate_nccr(inputs: NCCRInputs | Mapping[str, object]) -> Decimal:
+    """Return non-negative Net Commissionable Collected Revenue.
+
+    Financial inputs are fail-closed: negative collected cash or deductions are invalid
+    rather than being allowed to inflate commissionable revenue.
+    """
     if not isinstance(inputs, NCCRInputs):
         inputs = NCCRInputs.from_mapping(inputs)
+    if inputs.collected_cash_sar < 0:
+        raise ValueError("collected_cash_sar must be non-negative")
+    for field_name in NCCR_DEDUCTION_FIELDS:
+        if getattr(inputs, field_name) < 0:
+            raise ValueError(f"{field_name} must be non-negative")
     deductions = sum((getattr(inputs, f) for f in NCCR_DEDUCTION_FIELDS), Decimal("0"))
     return _money(max(Decimal("0"), inputs.collected_cash_sar - deductions))
+
 
 @dataclass(frozen=True)
 class CommissionDecision:
@@ -108,11 +120,11 @@ class CommissionDecision:
 
 def commission_rate_for(motion: str, revenue_type: str) -> Decimal:
     """Return canonical Partner Network V2 rate for a qualified motion."""
+    if revenue_type not in {"services", "saas"}:
+        raise ValueError(f"unknown revenue type: {revenue_type}")
     table = SAAS_RATES if revenue_type == "saas" else SERVICE_RATES
     if motion not in table:
         raise ValueError(f"unknown partner motion: {motion}")
-    if revenue_type not in {"services", "saas"}:
-        raise ValueError(f"unknown revenue type: {revenue_type}")
     return table[motion]
 
 
@@ -147,8 +159,10 @@ def calculate_partner_commission(
     if motion == "strategic_channel" and revenue_type == "services" and not margin_approved:
         reasons.append("strategic_service_margin_approval_required")
         approval_required = True
-    if revenue_type == "saas" and recurring_month_index is not None:
-        if recurring_month_index < 1 or recurring_month_index > DEFAULT_SAAS_COMMISSION_MONTHS:
+    if revenue_type == "saas":
+        if recurring_month_index is None:
+            reasons.append("recurring_month_index_required")
+        elif recurring_month_index < 1 or recurring_month_index > DEFAULT_SAAS_COMMISSION_MONTHS:
             reasons.append("outside_saas_commission_window")
 
     hard_hold = bool(reasons)
@@ -171,6 +185,8 @@ def calculate_partner_commission(
 
 def validate_attribution_split(split: Mapping[str, Decimal | int | float | str]) -> dict[str, Decimal]:
     normalized = {role: _d(value) for role, value in split.items()}
+    if not normalized:
+        raise ValueError("attribution split cannot be empty")
     allowed = set(DEFAULT_SPLIT)
     unknown = set(normalized) - allowed
     if unknown:
@@ -190,10 +206,16 @@ def allocate_commission_pool(
 ) -> dict[str, Decimal]:
     normalized = validate_attribution_split(split)
     total = _money(_d(total_commission_sar))
+    if total < 0:
+        raise ValueError("total_commission_sar must be non-negative")
     allocated = {role: _money(total * share) for role, share in normalized.items()}
     rounding_delta = total - sum(allocated.values(), Decimal("0"))
     if rounding_delta:
-        allocated["close"] = _money(allocated.get("close", Decimal("0")) + rounding_delta)
+        if "close" in allocated:
+            recipient = "close"
+        else:
+            recipient = max(normalized, key=lambda role: (normalized[role], role))
+        allocated[recipient] = _money(allocated[recipient] + rounding_delta)
     return allocated
 
 
