@@ -127,6 +127,13 @@ def main() -> None:
         "government_official_or_employee_hold",
         "influence_based_compensation_prohibited",
         "public_claims_require_evidence",
+        "partner_disclosure_required",
+        "approved_asset_required",
+        "guaranteed_income_claims_prohibited",
+        "recruitment_only_commission_prohibited",
+        "downline_override_commission_prohibited",
+        "non_saudi_independent_activity_authorization_required",
+        "possible_employment_relationship_hold",
     )
     missing = [key for key in required_true if compliance.get(key) is not True]
     if missing:
@@ -144,7 +151,14 @@ def main() -> None:
     if "legacy_projection_not_payable" not in engine_text:
         fail("legacy_projection_payment_gate_missing")
     api_text = PARTNER_API.read_text(encoding="utf-8")
-    for key in ("verified_collection_required_for_commission", "deal_value_is_not_commissionable_cash", "legacy_projection_is_not_payable"):
+    for key in (
+        "verified_collection_required_for_commission",
+        "deal_value_is_not_commissionable_cash",
+        "legacy_projection_is_not_payable",
+        "legal_classification_required_for_activation",
+        "tier_upgrade_requires_verified_economic_quality",
+        "referral_count_does_not_auto_upgrade_tier",
+    ):
         if key not in api_text:
             fail(f"portal_hard_gate_missing:{key}")
 

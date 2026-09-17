@@ -56,6 +56,11 @@ class Partner:
     sector_focus: list[str] = field(default_factory=list)
     region: str = "all"
     locale: str = "ar"
+    legal_classification_status: str = "unreviewed"
+    terms_accepted: bool = False
+    certification_passed: bool = False
+    tax_profile_recorded: bool = False
+    policy_version: str = ""
     created_at: datetime = field(default_factory=utcnow)
 
     def to_dict(self) -> dict[str, Any]:
@@ -73,6 +78,11 @@ class Partner:
             "sector_focus": self.sector_focus,
             "region": self.region,
             "locale": self.locale,
+            "legal_classification_status": self.legal_classification_status,
+            "terms_accepted": self.terms_accepted,
+            "certification_passed": self.certification_passed,
+            "tax_profile_recorded": self.tax_profile_recorded,
+            "policy_version": self.policy_version,
             "created_at": self.created_at.isoformat(),
         }
 
@@ -102,12 +112,44 @@ class PartnerRegistry:
         self.log.info("partner_registered", id=partner.id, company=data.company_name_en)
         return partner
 
-    async def approve(self, partner_id: str) -> Partner:
+    async def approve(
+        self,
+        partner_id: str,
+        *,
+        legal_classification_status: str,
+        terms_accepted: bool,
+        certification_passed: bool,
+        tax_profile_recorded: bool,
+        policy_version: str,
+    ) -> Partner:
+        """Activate only after the V3 eligibility gates are explicitly satisfied."""
+        from dealix.commercial.partner_program_v2 import PARTNER_POLICY_VERSION
+
         partner = self._partners.get(partner_id)
         if not partner:
             raise ValueError(f"Partner {partner_id} not found")
+        reasons = []
+        if legal_classification_status != "clear":
+            reasons.append("legal_classification_not_clear")
+        if not terms_accepted:
+            reasons.append("terms_not_accepted")
+        if not certification_passed:
+            reasons.append("certification_not_passed")
+        if not tax_profile_recorded:
+            reasons.append("tax_profile_not_recorded")
+        if policy_version != PARTNER_POLICY_VERSION:
+            reasons.append("policy_version_mismatch")
+        if reasons:
+            partner.status = "hold"
+            raise ValueError("partner_activation_hold:" + ",".join(reasons))
+
+        partner.legal_classification_status = legal_classification_status
+        partner.terms_accepted = terms_accepted
+        partner.certification_passed = certification_passed
+        partner.tax_profile_recorded = tax_profile_recorded
+        partner.policy_version = policy_version
         partner.status = "active"
-        self.log.info("partner_approved", id=partner_id)
+        self.log.info("partner_approved", id=partner_id, policy_version=policy_version)
         return partner
 
     async def get_tier(self, partner_id: str) -> str:
@@ -116,18 +158,26 @@ class PartnerRegistry:
             raise ValueError(f"Partner {partner_id} not found")
         return partner.tier
 
-    async def upgrade_tier(self, partner_id: str) -> Partner:
+    async def upgrade_tier(
+        self,
+        partner_id: str,
+        *,
+        verified_economic_quality: bool = False,
+        compliance_clear: bool = False,
+    ) -> Partner:
         partner = self._partners.get(partner_id)
         if not partner:
             raise ValueError(f"Partner {partner_id} not found")
+        if partner.status != "active":
+            raise ValueError("partner_not_active")
+        if not verified_economic_quality or not compliance_clear:
+            raise ValueError("tier_upgrade_requires_verified_economic_quality_and_compliance")
 
         tier_order = ["bronze", "silver", "gold", "platinum"]
         current_idx = tier_order.index(partner.tier)
-
         if current_idx >= len(tier_order) - 1:
             self.log.info("partner_already_max_tier", id=partner_id, tier=partner.tier)
             return partner
-
         partner.tier = tier_order[current_idx + 1]
         self.log.info("partner_upgraded", id=partner_id, new_tier=partner.tier)
         return partner
@@ -138,14 +188,8 @@ class PartnerRegistry:
             return
         partner.total_referrals += 1
 
-        tier_order = ["bronze", "silver", "gold", "platinum"]
-        current_idx = tier_order.index(partner.tier)
-        min_referrals_map = {"bronze": 0, "silver": 5, "gold": 15, "platinum": 30}
-
-        if current_idx < len(tier_order) - 1:
-            next_tier = tier_order[current_idx + 1]
-            if partner.total_referrals >= min_referrals_map[next_tier]:
-                await self.upgrade_tier(partner_id)
+        # Referral count is informational only. V3 tier progression requires
+        # verified economic quality and a clear compliance record.
 
     async def add_commission(self, partner_id: str, amount_sar: float) -> None:
         partner = self._partners.get(partner_id)

@@ -1,13 +1,13 @@
 # Partner Network V3 — L0–L4 Implementation Backlog
 
 ## P0 — Legal / Truth Foundation
-- [ ] Add `legal_classification` policy + verifier.
-- [ ] Add `no_mlm_downline` invariant and tests.
-- [ ] Add non-Saudi authorization HOLD.
-- [ ] Add employment-misclassification signal HOLD.
-- [ ] Add electronic-ad disclosure/claims lint.
-- [ ] Add VAT/tax-profile status without inventing tax treatment.
-- [ ] Version partner terms and policy acceptance receipts.
+- [x] Add `legal_classification` policy + verifier.
+- [x] Add `no_mlm_downline` invariant and tests.
+- [x] Add non-Saudi authorization HOLD.
+- [x] Add employment-misclassification signal HOLD.
+- [x] Add electronic-ad disclosure/claims lint.
+- [x] Add VAT/tax-profile activation status without inventing tax treatment.
+- [ ] Persist versioned partner-terms acceptance receipt in canonical Company Machine (policy version enforcement is implemented).
 
 ## P0 — Rights Ledger
 - [ ] Deal Registration immutable receipt.
@@ -21,7 +21,7 @@
 - [ ] `/partners` bilingual responsive landing.
 - [ ] opt-in application.
 - [ ] recruiter Candidate Radar with RESEARCH_ONLY status.
-- [ ] micro-certification and activation gate.
+- [ ] Persist micro-certification results; activation gate requiring certification is implemented.
 - [ ] sector/motion routing.
 - [ ] QR/referral-to-program attribution without recruitment commission.
 
@@ -31,7 +31,7 @@
 - [ ] register opportunity.
 - [ ] view protected attribution window.
 - [ ] commission statements.
-- [ ] asset library + approved claims/disclosure.
+- [ ] Build asset-library UI; approved-asset/disclosure enforcement is implemented.
 - [ ] dispute submission.
 
 ## P1 — Growth Factory
@@ -48,7 +48,7 @@
 - [ ] Documenso signing/security spike.
 - [ ] Formbricks intake/certification spike.
 - [ ] Dub attribution spike.
-- [ ] decide ADOPT / INTEGRATE / COPY-PATTERN / REJECT.
+- [ ] decide ADOPT / INTEGRATE / COPY-PATTERN / REJECT after security/license/data-location spikes.
 
 ## Acceptance
 - no second CRM/economic ledger.

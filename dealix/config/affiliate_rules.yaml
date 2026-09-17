@@ -51,6 +51,13 @@ partner_network_v2_compliance:
   pricing_authority: dealix_only
   binding_quote_authority: dealix_only
   public_claims_require_evidence: true
+  partner_disclosure_required: true
+  approved_asset_required: true
+  guaranteed_income_claims_prohibited: true
+  recruitment_only_commission_prohibited: true
+  downline_override_commission_prohibited: true
+  non_saudi_independent_activity_authorization_required: true
+  possible_employment_relationship_hold: true
   payment_truth:
     quote_is_payment: false
     invoice_is_payment: false

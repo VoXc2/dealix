@@ -17,6 +17,7 @@ from dealix.commercial.partner_program_v2 import (
     requires_compliance_hold,
     requires_no_mlm_hold,
     validate_attribution_split,
+    validate_partner_marketing_asset,
 )
 
 
@@ -327,3 +328,40 @@ def test_v3_compliance_hold_covers_claim_legal_employment_and_mlm_risks():
     assert "possible_employment_relationship" in reasons
     assert "mlm_or_downline_commission_prohibited" in reasons
     assert "regulated_relationship_legal_review_required" in reasons
+
+
+def test_partner_marketing_asset_blocks_guaranteed_income_and_missing_disclosure():
+    ok, reasons = validate_partner_marketing_asset(
+        "???? ??? ????? ?? Dealix",
+        channel="linkedin",
+        consent_proven=True,
+        partner_disclosure_present=False,
+        approved_asset=True,
+    )
+    assert ok is False
+    assert "misleading_or_guaranteed_claim" in reasons
+    assert "partner_disclosure_missing" in reasons
+
+
+def test_partner_marketing_asset_blocks_cold_whatsapp():
+    ok, reasons = validate_partner_marketing_asset(
+        "???? ??? ?????? ????? Dealix",
+        channel="whatsapp",
+        consent_proven=False,
+        partner_disclosure_present=True,
+        approved_asset=True,
+    )
+    assert ok is False
+    assert "cold_whatsapp_prohibited" in reasons
+
+
+def test_partner_marketing_asset_allows_approved_opt_in_copy():
+    ok, reasons = validate_partner_marketing_asset(
+        "Apply to the Dealix Partner Network. Participation does not guarantee income.",
+        channel="email",
+        consent_proven=True,
+        partner_disclosure_present=True,
+        approved_asset=True,
+    )
+    assert ok is True
+    assert reasons == ()

@@ -214,6 +214,45 @@ def build_partner_policy_receipt(
     payload["content_sha256"] = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
     return payload
 
+FORBIDDEN_MARKETING_CLAIMS = (
+    "guaranteed income",
+    "guaranteed revenue",
+    "guaranteed roi",
+    "risk-free income",
+    "??? ?????",
+    "??? ?????",
+    "????? ??????",
+    "???? ??",
+    "???? ?????",
+    "?????? ?????? ??????",
+)
+
+
+def validate_partner_marketing_asset(
+    text: str,
+    *,
+    channel: str,
+    consent_proven: bool,
+    partner_disclosure_present: bool,
+    approved_asset: bool,
+) -> tuple[bool, tuple[str, ...]]:
+    """Fail closed for partner promotional copy before any external use."""
+    normalized = " ".join(text.lower().split())
+    reasons: list[str] = []
+    if not approved_asset:
+        reasons.append("asset_not_approved")
+    if not partner_disclosure_present:
+        reasons.append("partner_disclosure_missing")
+    if channel.strip().lower() in {"whatsapp", "whatsapp_business"} and not consent_proven:
+        reasons.append("cold_whatsapp_prohibited")
+    elif not consent_proven:
+        reasons.append("marketing_consent_not_proven")
+    matched = [claim for claim in FORBIDDEN_MARKETING_CLAIMS if claim in normalized]
+    if matched:
+        reasons.append("misleading_or_guaranteed_claim")
+    return not reasons, tuple(reasons)
+
+
 def commission_rate_for(motion: str, revenue_type: str) -> Decimal:
     """Return canonical Partner Network V2 rate for a qualified motion."""
     if revenue_type not in {"services", "saas"}:

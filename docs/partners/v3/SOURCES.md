@@ -39,3 +39,20 @@
 
 ## Important
 External open-source projects are research candidates only. License/security/privacy/authority reviews are required before adoption.
+## 2026 benchmark sources
+- HubSpot Affiliate Program — 30% recurring up to one year, 180-day cookie window, resource center/reporting:
+  https://www.hubspot.com/partners/affiliates
+- HighLevel Affiliate Program — recurring commissions, assets/training; Tier-2 economics are a negative benchmark for Dealix No-MLM:
+  https://affiliate.gohighlevel.com/
+- PartnerStack Activate Partners — onboarding journeys, resource portal, training and reporting:
+  https://partnerstack.com/platform/activate-partners
+- Dub Partners — attribution, partner dashboards, fraud/reward structures and commission analytics:
+  https://dub.co/partners
+- Dub partner terms:
+  https://dub.co/legal/partners
+
+## 2026 Saudi implementation references
+- HRSD marketing/sales localization implementation date 2026-04-19 and 60% rate for covered establishments:
+  https://www.hrsd.gov.sa/media-center/news/%D8%A7%D9%84%D8%AA%D9%88%D8%B7%D9%8A%D9%86-%D9%81%D9%8A-%D9%85%D9%87%D9%86-%D8%A7%D9%84%D8%AA%D8%B3%D9%88%D9%8A%D9%82-%D9%88%D8%A7%D9%84%D9%85%D8%A8%D9%8A%D8%B9%D8%A7%D8%AA
+- ZATCA VAT registration for individuals — mandatory above SAR 375,000; optional above SAR 187,500 and below SAR 375,000:
+  https://zatca.gov.sa/en/eServices/Pages/eServices-002.aspx

@@ -33,6 +33,11 @@ _HARD_GATES = {
     "verified_collection_required_for_commission": True,
     "deal_value_is_not_commissionable_cash": True,
     "legacy_projection_is_not_payable": True,
+    "legal_classification_required_for_activation": True,
+    "terms_and_certification_required_for_activation": True,
+    "tax_profile_required_for_activation": True,
+    "tier_upgrade_requires_verified_economic_quality": True,
+    "referral_count_does_not_auto_upgrade_tier": True,
 }
 
 
@@ -47,6 +52,21 @@ class PartnerRegisterRequest(BaseModel):
     region: str = "all"
     website: str = ""
     locale: str = "ar"
+
+
+class PartnerApproveRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    legal_classification_status: str = Field(..., pattern=r"^clear$")
+    terms_accepted: bool
+    certification_passed: bool
+    tax_profile_recorded: bool
+    policy_version: str = Field(..., min_length=3, max_length=100)
+
+
+class PartnerTierUpgradeRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    verified_economic_quality: bool
+    compliance_clear: bool
 
 
 class ReferralCreateRequest(BaseModel):
@@ -129,20 +149,35 @@ async def get_partner(partner_id: str) -> dict[str, Any]:
 
 
 @router.post("/partners/{partner_id}/approve")
-async def approve_partner(partner_id: str) -> dict[str, Any]:
+async def approve_partner(partner_id: str, body: PartnerApproveRequest) -> dict[str, Any]:
     try:
-        partner = await _registry.approve(partner_id)
+        partner = await _registry.approve(
+            partner_id,
+            legal_classification_status=body.legal_classification_status,
+            terms_accepted=body.terms_accepted,
+            certification_passed=body.certification_passed,
+            tax_profile_recorded=body.tax_profile_recorded,
+            policy_version=body.policy_version,
+        )
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        detail = str(e)
+        status_code = 404 if "not found" in detail else 409
+        raise HTTPException(status_code=status_code, detail=detail)
     return {"status": "approved", "partner": partner.to_dict(), "hard_gates": _HARD_GATES}
 
 
 @router.post("/partners/{partner_id}/upgrade")
-async def upgrade_partner(partner_id: str) -> dict[str, Any]:
+async def upgrade_partner(partner_id: str, body: PartnerTierUpgradeRequest) -> dict[str, Any]:
     try:
-        partner = await _registry.upgrade_tier(partner_id)
+        partner = await _registry.upgrade_tier(
+            partner_id,
+            verified_economic_quality=body.verified_economic_quality,
+            compliance_clear=body.compliance_clear,
+        )
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        detail = str(e)
+        status_code = 404 if "not found" in detail else 409
+        raise HTTPException(status_code=status_code, detail=detail)
     return {"status": "upgraded", "partner": partner.to_dict(), "hard_gates": _HARD_GATES}
 
 
