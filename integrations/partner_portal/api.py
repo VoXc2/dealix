@@ -183,11 +183,19 @@ async def partner_pipeline(partner_id: str) -> dict[str, Any]:
 
 @router.post("/referrals/{referral_id}/convert")
 async def convert_referral(referral_id: str, body: ReferralConvertRequest) -> dict[str, Any]:
+    """Mark a referral Won while keeping economic truth at `won_unpaid`.
+
+    V2 commission eligibility is intentionally not created here because deal value / Won
+    is not verified collection. Commission calculation happens only after collection evidence.
+    """
     result = await _tracker.convert(referral_id, body.deal_value_sar)
-    if result.success:
-        commission = await _commission.calculate(referral_id)
-        await _registry.add_commission(commission.partner_id, commission.amount_sar)
-    return {"conversion": result.to_dict(), "commission": commission.to_dict() if result.success else None, "hard_gates": _HARD_GATES}
+    return {
+        "conversion": result.to_dict(),
+        "commission": None,
+        "commission_status": "not_eligible_until_verified_collection" if result.success else "not_created",
+        "economic_truth": "won_unpaid" if result.success else "unchanged",
+        "hard_gates": _HARD_GATES,
+    }
 
 
 @router.get("/commissions")
