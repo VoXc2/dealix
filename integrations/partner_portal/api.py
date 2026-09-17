@@ -19,7 +19,7 @@ router = APIRouter(prefix="/api/v1/partners", tags=["partner-portal"])
 
 _registry = PartnerRegistry()
 _tracker = ReferralTracker()
-_commission = CommissionEngine()
+_commission = CommissionEngine(_tracker)
 _white_label = WhiteLabelConfig()
 
 _HARD_GATES = {
@@ -60,7 +60,9 @@ class ReferralConvertRequest(BaseModel):
 
 class CommissionPayRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    commission_id: str
+    approval_reference: str = Field(..., min_length=3, max_length=200)
+    verified_collection_reference: str = Field(..., min_length=3, max_length=200)
+    clearing_complete: bool = False
 
 
 class WLConfigRequest(BaseModel):
@@ -203,8 +205,13 @@ async def list_commissions(partner_id: str | None = None) -> dict[str, Any]:
 
 
 @router.post("/commissions/{commission_id}/pay")
-async def pay_commission(commission_id: str) -> dict[str, Any]:
-    result = await _commission.pay(commission_id)
+async def pay_commission(commission_id: str, body: CommissionPayRequest) -> dict[str, Any]:
+    result = await _commission.pay(
+        commission_id,
+        approval_reference=body.approval_reference,
+        verified_collection_reference=body.verified_collection_reference,
+        clearing_complete=body.clearing_complete,
+    )
     return {"payment": result.to_dict(), "hard_gates": _HARD_GATES}
 
 
@@ -215,13 +222,42 @@ async def list_tiers(locale: str = "en") -> dict[str, Any]:
     for name, info in PARTNER_TIERS.items():
         tiers[name] = {
             "commission_rate": info["commission_rate"],
+            "commission_rate_status": "legacy_compatibility_only",
+            "economics_authority": "dealix.commercial.partner_program_v2",
             "min_referrals": info["min_referrals"],
             "features": info.get(f"benefits_ar" if locale == "ar" else "features", info["features"]),
             "commission_payout": info["commission_payout"],
             "support_level": info["support_level"],
             "white_label": info["white_label"],
         }
-    return {"tiers": tiers, "hard_gates": _HARD_GATES}
+    return {
+        "tiers": tiers,
+        "hard_gates": _HARD_GATES,
+        "notice": "Tier commission_rate is legacy compatibility metadata; V2 motion economics govern new deals.",
+    }
+
+
+@router.get("/economics/v2")
+async def partner_economics_v2() -> dict[str, Any]:
+    from dealix.commercial.partner_program_v2 import (
+        ATTRIBUTION_MAX_EXTENSION_DAYS,
+        ATTRIBUTION_PROTECTION_DAYS,
+        DEFAULT_CLEARING_DAYS,
+        DEFAULT_SAAS_COMMISSION_MONTHS,
+        SAAS_RATES,
+        SERVICE_RATES,
+    )
+    return {
+        "authority": "dealix.commercial.partner_program_v2",
+        "services": {k: float(v) for k, v in SERVICE_RATES.items()},
+        "saas": {k: float(v) for k, v in SAAS_RATES.items()},
+        "saas_commission_months": DEFAULT_SAAS_COMMISSION_MONTHS,
+        "protection_days": ATTRIBUTION_PROTECTION_DAYS,
+        "max_extension_days": ATTRIBUTION_MAX_EXTENSION_DAYS,
+        "clearing_days": DEFAULT_CLEARING_DAYS,
+        "customer_pricing_authority": "dealix_only_customer_specific_quote",
+        "payment_truth": "staged_not_paid_until_external_payment_receipt",
+    }
 
 
 @router.post("/white-label/create")

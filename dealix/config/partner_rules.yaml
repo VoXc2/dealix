@@ -21,3 +21,54 @@ principles:
   - start_flexible
   - keep_initial_terms_simple
   - first_goal_one_pilot_or_one_referral
+
+
+# Partner Network V2 — canonical economics for new marketer/channel motions.
+# Legacy models above remain compatibility surfaces, not V2 payout authority.
+partner_network_v2:
+  authority: dealix.commercial.partner_program_v2
+  public_name: "Dealix Partner Network"
+  protection_days: 120
+  max_extension_days: 180
+  clearing_days: 30
+  saas_commission_months: 12
+  service_rates:
+    scout: 0.075
+    growth_partner: 0.10
+    co_sell_partner: 0.125
+    closer_sector_partner: 0.15
+    strategic_channel: 0.20
+  saas_rates:
+    scout: 0.20
+    growth_partner: 0.25
+    co_sell_partner: 0.25
+    closer_sector_partner: 0.30
+    strategic_channel: 0.30
+  nccr_deductions:
+    - vat_sar
+    - refunds_sar
+    - credits_sar
+    - chargebacks_sar
+    - pass_through_ad_spend_sar
+    - third_party_licenses_at_cost_sar
+    - pass_through_vendor_costs_sar
+    - government_fees_sar
+  attribution_split:
+    source: 0.40
+    qualification: 0.20
+    close: 0.40
+  payout_requires:
+    - active_partner
+    - registered_non_duplicate_opportunity
+    - verified_collected_cash
+    - positive_nccr
+    - clearing_period_complete
+    - approval_record
+  hard_holds:
+    - government_or_tender_without_compliance_review
+    - government_official_or_employee
+    - influence_based_compensation
+    - cold_whatsapp
+    - marketing_consent_not_proven
+    - misleading_or_guaranteed_claim
+  strategic_service_rate_requires_margin_approval: true

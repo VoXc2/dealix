@@ -46,8 +46,9 @@ class PaymentResult:
     success: bool
     commission_id: str
     amount_sar: float = 0.0
-    payment_method: str = "bank_transfer"
+    payment_method: str = "external_payment_not_executed"
     reference: str = ""
+    status: str = "hold"
     errors: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -57,19 +58,21 @@ class PaymentResult:
             "amount_sar": self.amount_sar,
             "payment_method": self.payment_method,
             "reference": self.reference,
+            "status": self.status,
             "errors": self.errors,
         }
 
 
 class CommissionEngine:
-    def __init__(self):
+    def __init__(self, tracker=None):
         self._commissions: dict[str, Commission] = {}
+        self._tracker = tracker
         self.log = logger.bind(component="commission_engine")
 
     async def calculate(self, referral_id: str) -> Commission:
         from integrations.partner_portal.referral_tracking import ReferralTracker
 
-        tracker = ReferralTracker()
+        tracker = self._tracker or ReferralTracker()
         referral = tracker.get_referral(referral_id)
         if not referral:
             raise ValueError(f"Referral {referral_id} not found")
@@ -92,7 +95,14 @@ class CommissionEngine:
         )
         return commission
 
-    async def pay(self, commission_id: str) -> PaymentResult:
+    async def pay(
+        self,
+        commission_id: str,
+        *,
+        approval_reference: str = "",
+        verified_collection_reference: str = "",
+        clearing_complete: bool = False,
+    ) -> PaymentResult:
         commission = self._commissions.get(commission_id)
         if not commission:
             return PaymentResult(
@@ -108,19 +118,32 @@ class CommissionEngine:
                 errors=["Commission already paid"],
             )
 
-        commission.status = "paid"
-        commission.paid_at = utcnow()
+        missing = []
+        if not approval_reference.strip():
+            missing.append("approval_reference_required")
+        if not verified_collection_reference.strip():
+            missing.append("verified_collection_reference_required")
+        if not clearing_complete:
+            missing.append("clearing_period_not_complete")
+        if missing:
+            return PaymentResult(
+                success=False,
+                commission_id=commission_id,
+                errors=missing,
+            )
 
+        commission.status = "approved_for_payment"
         result = PaymentResult(
             success=True,
             commission_id=commission_id,
             amount_sar=commission.amount_sar,
-            payment_method="bank_transfer",
-            reference=f"PAY-{commission_id}",
+            payment_method="external_payment_not_executed",
+            reference=f"STAGED-{commission_id}",
+            status="staged_not_paid",
         )
 
         self.log.info(
-            "commission_paid",
+            "commission_payment_staged",
             id=commission_id,
             amount=commission.amount_sar,
             reference=result.reference,
@@ -141,7 +164,12 @@ class CommissionEngine:
         return {
             "total_commissions": len(commissions),
             "total_paid": sum(c.amount_sar for c in commissions if c.status == "paid"),
-            "total_pending": sum(c.amount_sar for c in commissions if c.status == "pending"),
+            "total_pending": sum(
+                c.amount_sar for c in commissions
+                if c.status in {"pending", "approved_for_payment"}
+            ),
             "paid_count": sum(1 for c in commissions if c.status == "paid"),
-            "pending_count": sum(1 for c in commissions if c.status == "pending"),
+            "pending_count": sum(
+                1 for c in commissions if c.status in {"pending", "approved_for_payment"}
+            ),
         }

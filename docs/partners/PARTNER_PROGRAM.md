@@ -1,5 +1,8 @@
 # Partner Program — Dealix
 
+> **Current economics/governance authority:** [`PARTNER_NETWORK_V2.md`](PARTNER_NETWORK_V2.md).
+> This document remains a compatibility/implementation overview; any conflicting legacy percentage or payout text is superseded by V2.
+
 **المرجع الاستراتيجي:** [`../strategy/DEALIX_FULL_OPS_MASTER_PLAN_AR.md`](../strategy/DEALIX_FULL_OPS_MASTER_PLAN_AR.md)  
 **حزم وتسعير مرجعي:** [`PARTNER_PACKAGES.md`](PARTNER_PACKAGES.md) · قواعد YAML [`../../dealix/config/partner_rules.yaml`](../../dealix/config/partner_rules.yaml)
 

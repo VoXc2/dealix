@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.me/schemas/partner_deal_registration_v2.schema.json",
+  "title": "Dealix Partner Deal Registration V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registration_id",
+    "partner_id",
+    "partner_motion",
+    "company_name",
+    "sector",
+    "relationship_evidence",
+    "consent_status",
+    "registered_at",
+    "existing_pipeline_checked",
+    "government_or_tender",
+    "status"
+  ],
+  "properties": {
+    "registration_id": {"type": "string", "minLength": 6},
+    "partner_id": {"type": "string", "minLength": 3},
+    "partner_motion": {
+      "enum": ["scout", "growth_partner", "co_sell_partner", "closer_sector_partner", "strategic_channel"]
+    },
+    "company_name": {"type": "string", "minLength": 2, "maxLength": 255},
+    "company_domain": {"type": "string", "maxLength": 255},
+    "sector": {"type": "string", "minLength": 2, "maxLength": 120},
+    "relationship_evidence": {"type": "string", "minLength": 3, "maxLength": 1000},
+    "consent_status": {
+      "enum": ["proven", "inbound", "opt_in", "not_proven", "not_applicable"]
+    },
+    "problem_hypothesis": {"type": "string", "maxLength": 2000},
+    "buyer_access": {"enum": ["direct", "warm_path", "unknown"]},
+    "source_type": {
+      "enum": ["warm_intro", "content", "event", "community", "agency_client", "consulting", "other"]
+    },
+    "registered_at": {"type": "string", "format": "date-time"},
+    "protection_expires_at": {"type": "string", "format": "date-time"},
+    "extension_approved": {"type": "boolean", "default": false},
+    "existing_pipeline_checked": {"type": "boolean"},
+    "duplicate_status": {
+      "enum": ["clear", "possible_duplicate", "existing_pipeline", "duplicate_confirmed"]
+    },
+    "government_or_tender": {"type": "boolean"},
+    "government_official_or_employee": {"type": "boolean", "default": false},
+    "influence_based_compensation": {"type": "boolean", "default": false},
+    "compliance_status": {
+      "enum": ["clear", "review_required", "hold", "rejected"]
+    },
+    "attribution_roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["source", "qualification", "close"]}
+    },
+    "revenue_type": {"enum": ["services", "saas", "unknown"]},
+    "status": {
+      "enum": [
+        "submitted",
+        "under_review",
+        "attribution_protected",
+        "qualified",
+        "discovery",
+        "customer_specific_quote",
+        "won_unpaid",
+        "collected",
+        "clearing",
+        "commission_approved",
+        "lost",
+        "expired",
+        "rejected"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 3}
+    }
+  }
+}

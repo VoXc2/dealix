@@ -32,3 +32,23 @@ messaging:
   no_misleading_claims: true
   no_roi_guarantee: true
   no_compliance_guarantee: true
+
+
+partner_network_v2_compliance:
+  marketing_consent_required: true
+  consent_evidence_required: true
+  sender_identity_required: true
+  opt_out_required: true
+  cold_whatsapp_prohibited: true
+  government_or_tender_requires_review: true
+  government_official_or_employee_hold: true
+  influence_based_compensation_prohibited: true
+  pricing_authority: dealix_only
+  binding_quote_authority: dealix_only
+  public_claims_require_evidence: true
+  payment_truth:
+    quote_is_payment: false
+    invoice_is_payment: false
+    won_is_payment: false
+    verified_collection_required: true
+    portal_can_execute_bank_payment: false
