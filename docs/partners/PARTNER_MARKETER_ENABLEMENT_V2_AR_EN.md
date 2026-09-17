@@ -67,25 +67,25 @@ A public email address, scraped contact or social profile is not consent and is 
 Do not promise certification, guaranteed savings, guaranteed revenue or regulatory approval.
 ## Objection handling
 
-**"كم السعر؟"**  
+**"كم السعر؟"**
 لا يوجد سعر عام ملزم. نبدأ بـFree Execution Diagnostic ثم Qualified Discovery ثم
 Customer-Specific Quote مبني على النطاق ومعايير القبول.
 
-**"هل تضمنون النتيجة؟"**  
+**"هل تضمنون النتيجة؟"**
 لا. Dealix تربط التنفيذ بالأدلة والقبول والقياس، ولا تستخدم ضمانات إيراد أو ROI مصطنعة.
 
-**"أنا فقط مسوق ولا أفهم AI تقنيًا."**  
+**"أنا فقط مسوق ولا أفهم AI تقنيًا."**
 ابدأ Scout/Growth Partner. المطلوب فهم المشكلة وتأهيل العلاقة؛ Dealix تتولى الحل والتنفيذ.
 
-**"هل أقدر أرسل لأي رقم واتساب؟"**  
+**"هل أقدر أرسل لأي رقم واتساب؟"**
 لا. WhatsApp outbound يحتاج inbound/opt-in/consent evidence؛ cold WhatsApp ممنوع.
 
-**"عندي شخص داخل جهة حكومية."**  
+**"عندي شخص داخل جهة حكومية."**
 لا تسجل وعد نفوذ أو عمولة نفوذ. ضع Government/Tender flag؛ المسار يذهب Compliance Review.
 
 ## Safe CTA
 
-Arabic: **"سجّل الفرصة المؤهلة واحجز Attribution قبل أن تبدأ Dealix الاكتشاف."**  
+Arabic: **"سجّل الفرصة المؤهلة واحجز Attribution قبل أن تبدأ Dealix الاكتشاف."**
 English: **"Register a qualified opportunity and protect attribution before Dealix discovery begins."**
 ## Commission examples (illustrative, before partner tax treatment)
 

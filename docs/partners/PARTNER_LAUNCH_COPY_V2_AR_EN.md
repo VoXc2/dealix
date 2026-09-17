@@ -7,7 +7,7 @@ Not published. Requires brand/legal review before public use.
 ### اربح مع Dealix من الفرص السعودية B2B
 حوّل شبكتك وخبرتك ومحتواك إلى دخل من صفقات حقيقية — بدون أن تحتاج لبناء فريق AI أو تنفيذ المشروع بنفسك.
 
-**خدمات ومشاريع:** 7.5%–15% حسب دورك، وحتى 20% للشريك الاستراتيجي بعد مراجعة الهامش.  
+**خدمات ومشاريع:** 7.5%–15% حسب دورك، وحتى 20% للشريك الاستراتيجي بعد مراجعة الهامش.
 **SaaS مؤهل:** 20%–30% recurring لأول 12 شهر.
 
 أنت تجلب الفرصة المؤهلة. Dealix تتولى التشخيص، الاكتشاف، العرض الخاص بالعميل، التنفيذ والإثبات.
@@ -56,7 +56,7 @@ qualified, Dealix handles discovery and creates a customer-specific scope/quote.
 
 ## Mandatory disclosure examples for promotional content
 
-Arabic: **إعلان / إفصاح شراكة: قد أحصل على عمولة إذا أصبحت الفرصة عميلًا مدفوعًا لدى Dealix.**  
+Arabic: **إعلان / إفصاح شراكة: قد أحصل على عمولة إذا أصبحت الفرصة عميلًا مدفوعًا لدى Dealix.**
 English: **Affiliate/partner disclosure: I may earn a commission if a referred opportunity becomes a paying Dealix customer.**
 
 Never use these drafts as cold unsolicited WhatsApp messages. Public posting and outbound sending

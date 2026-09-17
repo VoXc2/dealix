@@ -1,7 +1,7 @@
 # Dealix Partner Network V2
 
-Status: INTERNAL_READY / DRAFT_ONLY  
-Authority: `dealix.commercial.partner_program_v2` + canonical Company Machine  
+Status: INTERNAL_READY / DRAFT_ONLY
+Authority: `dealix.commercial.partner_program_v2` + canonical Company Machine
 Public pricing authority: NONE — customer-specific quotes only.
 
 ## Promise
