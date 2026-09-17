@@ -1,0 +1,35 @@
+{
+  "schema": "dealix.partner-network.v3.draft",
+  "authority": "canonical_company_machine_only",
+  "states": {
+    "candidate": ["RESEARCH_ONLY", "OPTED_IN", "REJECTED"],
+    "partner": ["APPLIED", "LEGAL_HOLD", "TERMS_PENDING", "CERTIFICATION_PENDING", "ACTIVE", "SUSPENDED", "TERMINATED"],
+    "deal": ["REGISTERED", "DUPLICATE_HOLD", "COMPLIANCE_HOLD", "ATTRIBUTION_ACCEPTED", "QUALIFIED", "DISCOVERY", "QUOTE", "WON_NOT_PAID", "COLLECTED", "CLOSED_LOST"],
+    "commission": ["PROJECTED", "ELIGIBLE", "CLEARED", "APPROVED_FOR_PAYMENT", "STAGED_NOT_PAID", "PAID_VERIFIED", "REVERSED"]
+  },
+  "hard_invariants": [
+    "public_contact_never_equals_consent",
+    "research_candidate_never_equals_partner",
+    "won_never_equals_collected_cash",
+    "staged_not_paid_never_equals_paid",
+    "no_cold_whatsapp",
+    "no_mlm_or_downline_commission",
+    "government_opportunity_requires_compliance_review",
+    "non_saudi_independent_activity_requires_authorization_proof",
+    "partner_cannot_bind_dealix_pricing_or_contract",
+    "payout_requires_external_receipt"
+  ],
+  "partner_required_fields": [
+    "partner_id", "legal_type", "nationality_or_entity_jurisdiction", "lawful_activity_status",
+    "tax_profile_status", "sector_focus", "motion", "terms_version", "terms_accepted_at",
+    "certification_version", "certification_passed_at", "status"
+  ],
+  "deal_registration_required_fields": [
+    "registration_id", "partner_id", "company_identity", "source_type", "relationship_evidence_ref",
+    "problem_statement", "sector", "buyer_path", "government_flag", "registered_at", "policy_version"
+  ],
+  "commission_required_fields": [
+    "commission_id", "deal_id", "collection_evidence_ref", "collected_cash_sar", "nccr_sar",
+    "approved_rate", "attribution_share", "commission_sar", "state", "clearing_date", "payout_receipt_ref"
+  ]
+}
