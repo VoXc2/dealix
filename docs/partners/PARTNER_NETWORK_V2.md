@@ -71,6 +71,44 @@ V2 economics are motion-based. Legacy Bronze/Silver/Gold/Platinum tiers may rema
 portal compatibility and enablement/status surfaces, but do not override V2 economics.
 Performance recognition should use verified collected revenue, conversion quality,
 retention/customer quality and compliance record — not raw lead count alone.
+## Qualification and promotion
+
+Partner approval requires identity/business verification, audience or relationship fit, sector
+focus, compliance acknowledgement, approved-claims training, and payment/tax profile readiness.
+Promotion is `Starter -> Pro -> Elite -> Strategic` based on verified collected revenue, conversion
+quality, retention/customer quality and compliance record — never raw clicks or lead count alone.
+
+## Eligible expansion and renewal
+
+- Expansion: 5–12.5% reference band on incremental NCCR only when partner causation is evidenced.
+- Renewal: 3–5% reference band only with material partner contribution.
+- No automatic lifetime entitlement.
+- Free Diagnostic preserves attribution but carries 0% commission.
+
+## Anti-fraud and attribution abuse
+
+Hold or reject self-referrals without signed exception, fake/duplicate companies, cookie stuffing or
+attribution manipulation, unconsented purchased lists, fabricated buyer intent, falsified payment
+evidence, customer/partner collusion, and public-sector conflict or influence risk.
+
+## Operating metrics
+
+North-star partner metric: **Verified Partner-Sourced Economic Movement**. Supporting metrics include
+qualified registration rate, discovery/quote conversion, verified collected revenue, NCCR, projected
+versus approved commission, refund/clawback rate, retention/expansion, partner concentration risk,
+and compliance incident rate.
+
+## 30-day internal launch sequence
+
+1. Converge contract/config/attribution/NCCR authority and legal-review queue.
+2. Finalize enablement, onboarding, deal registration, calculator and dashboard schema.
+3. Run closed-beta recruitment across opt-in creators, B2B marketers, agencies, consultants,
+   MSP/ERP/CRM networks and sector specialists; no spam.
+4. Review economic quality, margin impact, attribution disputes and compliance before widening access.
+
+The existing Company Machine / Opportunity Graph / Approval / Proof / Economic authorities remain
+canonical. No second CRM, payment ledger or pricing authority is created.
+
 ## External benchmark notes (research, not authority)
 
 - HubSpot publicly advertises 30% monthly recurring affiliate commission for up to one year

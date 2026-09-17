@@ -1,4 +1,5 @@
-# Affiliate program rules (reference). Legal review required for public terms.
+# Affiliate program rules (legacy compatibility + V2 compliance reference). Legal review required for public terms.
+legacy_reference_only: true
 tiers:
   - applicant
   - approved_affiliate
@@ -22,7 +23,7 @@ no_commission_when:
   - refund_within_clawback_window
 
 payout:
-  only_after_event: invoice_paid
+  only_after_event: verified_cash_collected
   requires_approval: true
 
 messaging:
@@ -32,6 +33,10 @@ messaging:
   no_misleading_claims: true
   no_roi_guarantee: true
   no_compliance_guarantee: true
+  no_scraping: true
+  no_mass_linkedin_automation: true
+  no_unapproved_pricing: true
+  no_binding_quote_authority: true
 
 
 partner_network_v2_compliance:

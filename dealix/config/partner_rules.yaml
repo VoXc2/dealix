@@ -72,3 +72,42 @@ partner_network_v2:
     - marketing_consent_not_proven
     - misleading_or_guaranteed_claim
   strategic_service_rate_requires_margin_approval: true
+  qualification:
+    partner_application_required: true
+    minimum_checks:
+      - identity_or_business_verification
+      - audience_or_relationship_fit
+      - sector_focus
+      - compliance_acknowledgement
+      - approved_claims_training
+      - payment_and_tax_profile
+  promotion:
+    levels: [starter, pro, elite, strategic]
+    based_on:
+      - verified_collected_revenue
+      - conversion_quality
+      - retention_quality
+      - customer_quality
+      - compliance_record
+    not_based_on_only: [raw_lead_count, clicks, impressions]
+  expansion_and_renewal:
+    expansion_rate_percent_range: [5, 12.5]
+    expansion_requires_incremental_partner_causation: true
+    renewal_rate_percent_range: [3, 5]
+    renewal_requires_material_partner_contribution: true
+    automatic_lifetime_entitlement: false
+  anti_fraud:
+    - self_referral_without_signed_exception
+    - fake_or_duplicate_company
+    - attribution_manipulation_or_cookie_stuffing
+    - unconsented_purchased_list
+    - fabricated_buyer_intent
+    - falsified_payment_evidence
+    - customer_partner_collusion
+    - public_sector_conflict_or_influence_risk
+  authority_rules:
+    one_company_machine: true
+    no_parallel_partner_crm: true
+    customer_specific_pricing_only: true
+    public_fixed_price_authority: false
+    portal_payment_execution_authority: false

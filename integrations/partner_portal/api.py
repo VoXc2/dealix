@@ -12,8 +12,12 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from integrations.partner_portal.commission_engine import CommissionEngine
 from integrations.partner_portal.partner_registry import PartnerRegistration, PartnerRegistry
-from integrations.partner_portal.referral_tracking import ReferralData, ReferralStage, ReferralTracker
-from integrations.partner_portal.white_label_config import Theme, WLConfig, WhiteLabelConfig
+from integrations.partner_portal.referral_tracking import (
+    ReferralData,
+    ReferralStage,
+    ReferralTracker,
+)
+from integrations.partner_portal.white_label_config import Theme, WhiteLabelConfig, WLConfig
 
 router = APIRouter(prefix="/api/v1/partners", tags=["partner-portal"])
 
@@ -26,6 +30,9 @@ _HARD_GATES = {
     "no_auto_approve": True,
     "no_auto_pay": True,
     "approval_required_for_payment": True,
+    "verified_collection_required_for_commission": True,
+    "deal_value_is_not_commissionable_cash": True,
+    "legacy_projection_is_not_payable": True,
 }
 
 
@@ -233,7 +240,7 @@ async def list_tiers(locale: str = "en") -> dict[str, Any]:
             "commission_rate_status": "legacy_compatibility_only",
             "economics_authority": "dealix.commercial.partner_program_v2",
             "min_referrals": info["min_referrals"],
-            "features": info.get(f"benefits_ar" if locale == "ar" else "features", info["features"]),
+            "features": info.get("benefits_ar" if locale == "ar" else "features", info["features"]),
             "commission_payout": info["commission_payout"],
             "support_level": info["support_level"],
             "white_label": info["white_label"],

@@ -1,23 +1,25 @@
-# Strategic Partnership Terms (Dealix)
+# Strategic Partnership Terms (Dealix) — SUPERSEDED FOR COMMERCIAL AUTHORITY
 
-## المبادئ
-1. **شفافية** — كل عقد موقّع، كل إيراد موثّق
-2. **عدم حصانة** — لا شراكة حصرية مطلقة
-3. **حوكمة** — لا auto-send، مراجعة بشرية دائماً
-4. **احترام** — لا شهادة ملفّقة، لا نسبة مضمونة
+> **Status: SUPERSEDED / historical compatibility only.** Legacy V1 percentages,
+> setup/monthly formulas, notice periods, exclusivity language, and payout wording
+> from this data-room surface are not current Dealix authority and must not be
+> quoted or copied into a partner agreement.
 
-## النسب (V1)
-- Agency partner: 10% على setup للسنة الأولى، 5% على monthly
-- Consulting partner: 12% على setup، 6% على monthly
-- Technology partner: case-by-case
-- Training partner: revenue share 15% على managed retainer
+## السلطة الحالية
+- Program authority: `docs/partners/PARTNER_NETWORK_V2.md`
+- Current package mechanics: `docs/partners/PARTNER_PACKAGES.md`
+- Draft agreement language: `docs/partners/PARTNER_TERMS_V2_DRAFT.md`
+- Runtime/code authority: `dealix.commercial.partner_program_v2`
+- Commercial pricing remains customer-specific and Dealix-controlled.
 
-## الإنهاء
-- 30 يوم إشعار من أي طرف
-- لا رسوم إنهاء
-- لا حصرية بعد 12 شهر
+## مبادئ مستمرة
+1. كل علاقة وشروط واتفاق يجب أن تكون موثقة وقابلة للتدقيق.
+2. Public contact != Consent؛ ولا cold WhatsApp.
+3. Deal Won != Payment، و`STAGED_NOT_PAID` != Payment.
+4. عمولة الشريك لا تصبح مستحقة إلا وفق evidence وattribution وcollection gates في V2.
+5. B2G/tender/government work يحتاج compliance review ولا يجوز تعويض influence.
+6. أي عقد، payout، نشر، إرسال، أو التزام خارجي يبقى action-bound approval.
 
-## الحوكمة
-- Quarterly business review
-- Annual review
-- أي تغيير في النطاق عبر Change Request
+## الاستخدام
+هذا الملف للحفظ التاريخي فقط. عند أي تعارض، V2 + اتفاق موقّع + الموافقة
+المحددة هي المرجع. لا توجد في هذا الملف صلاحية عرض أو عقد أو دفع.

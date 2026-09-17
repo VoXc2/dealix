@@ -131,6 +131,16 @@ class CommissionEngine:
                 status="staged_not_paid",
                 errors=["commission_already_staged"],
             )
+        if commission.status == "projected_unpaid":
+            return PaymentResult(
+                success=False,
+                commission_id=commission_id,
+                status="hold",
+                errors=[
+                    "legacy_projection_not_payable",
+                    "v2_verified_collection_decision_required",
+                ],
+            )
 
         missing = []
         if not approval_reference.strip():
@@ -175,11 +185,21 @@ class CommissionEngine:
 
     def get_stats(self) -> dict[str, Any]:
         commissions = self._commissions.values()
-        pending_statuses = {"projected_unpaid", "pending", "approved_for_payment"}
+        payable_pending_statuses = {"approved_for_payment"}
         return {
             "total_commissions": len(commissions),
+            "total_projected": sum(
+                c.amount_sar for c in commissions if c.status == "projected_unpaid"
+            ),
+            "projected_count": sum(
+                1 for c in commissions if c.status == "projected_unpaid"
+            ),
             "total_paid": sum(c.amount_sar for c in commissions if c.status == "paid"),
-            "total_pending": sum(c.amount_sar for c in commissions if c.status in pending_statuses),
+            "total_pending": sum(
+                c.amount_sar for c in commissions if c.status in payable_pending_statuses
+            ),
             "paid_count": sum(1 for c in commissions if c.status == "paid"),
-            "pending_count": sum(1 for c in commissions if c.status in pending_statuses),
+            "pending_count": sum(
+                1 for c in commissions if c.status in payable_pending_statuses
+            ),
         }

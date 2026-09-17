@@ -48,7 +48,7 @@ async def test_commission_engine_uses_injected_canonical_tracker_as_projection_o
 
 
 @pytest.mark.asyncio
-async def test_commission_payment_is_fail_closed_without_evidence():
+async def test_legacy_projection_is_never_payable_even_with_evidence():
     tracker = ReferralTracker()
     referral = await tracker.create_referral(
         "partner-1",
@@ -58,48 +58,27 @@ async def test_commission_payment_is_fail_closed_without_evidence():
     engine = CommissionEngine(tracker)
     commission = await engine.calculate(referral.id)
 
-    result = await engine.pay(commission.id)
-    assert result.success is False
-    assert "approval_reference_required" in result.errors
-    assert "verified_collection_reference_required" in result.errors
-    assert "clearing_period_not_complete" in result.errors
+    missing = await engine.pay(commission.id)
+    assert missing.success is False
+    assert "legacy_projection_not_payable" in missing.errors
+
+    with_evidence = await engine.pay(
+        commission.id,
+        approval_reference="APR-verified-001",
+        verified_collection_reference="COLL-bank-001",
+        clearing_complete=True,
+    )
+    assert with_evidence.success is False
+    assert with_evidence.status == "hold"
+    assert "v2_verified_collection_decision_required" in with_evidence.errors
     assert engine.get_commission(commission.id).status == "projected_unpaid"
-
-
-@pytest.mark.asyncio
-async def test_commission_payment_can_stage_only_with_required_evidence():
-    tracker = ReferralTracker()
-    referral = await tracker.create_referral(
-        "partner-1",
-        ReferralData(company_name="Acme", contact_name="Buyer", contact_email="buyer@acme.sa"),
-    )
-    await tracker.convert(referral.id, 50000)
-    engine = CommissionEngine(tracker)
-    commission = await engine.calculate(referral.id)
-
-    result = await engine.pay(
-        commission.id,
-        approval_reference="APR-verified-001",
-        verified_collection_reference="COLL-bank-001",
-        clearing_complete=True,
-    )
-    assert result.success is True
-    assert result.amount_sar == 5000
-    assert result.status == "staged_not_paid"
-    assert result.payment_method == "external_payment_not_executed"
-    assert engine.get_commission(commission.id).status == "approved_for_payment"
     assert engine.get_commission(commission.id).paid_at is None
 
-    replay = await engine.pay(
-        commission.id,
-        approval_reference="APR-verified-001",
-        verified_collection_reference="COLL-bank-001",
-        clearing_complete=True,
-    )
-    assert replay.success is False
-    assert replay.status == "staged_not_paid"
-    assert replay.errors == ["commission_already_staged"]
-    assert engine.get_commission(commission.id).paid_at is None
+    stats = engine.get_stats()
+    assert stats["total_projected"] == 5000
+    assert stats["projected_count"] == 1
+    assert stats["total_pending"] == 0
+    assert stats["pending_count"] == 0
 
 
 @pytest.mark.asyncio

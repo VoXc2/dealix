@@ -4,7 +4,7 @@ Pure policy helpers: no payment, messaging, publishing, or production mutation.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Mapping
 
 MONEY = Decimal("0.01")
@@ -64,7 +64,7 @@ class NCCRInputs:
     government_fees_sar: Decimal = Decimal("0")
 
     @classmethod
-    def from_mapping(cls, values: Mapping[str, object]) -> "NCCRInputs":
+    def from_mapping(cls, values: Mapping[str, object]) -> NCCRInputs:
         kwargs = {"collected_cash_sar": _d(values.get("collected_cash_sar", 0))}
         for field_name in NCCR_DEDUCTION_FIELDS:
             kwargs[field_name] = _d(values.get(field_name, 0))
