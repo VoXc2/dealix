@@ -124,6 +124,11 @@ class ReferralTracker:
         return referral
 
     async def convert(self, referral_id: str, deal_value: float) -> ConversionResult:
+        """Mark a referral Won without fabricating earned commission.
+
+        Won/contract value is pipeline truth only. Partner Network V2 commission eligibility
+        begins from verified collected cash (NCCR), so conversion must remain `won_unpaid`.
+        """
         referral = self._referrals.get(referral_id)
         if not referral:
             return ConversionResult(success=False, referral_id=referral_id, notes="Referral not found")
@@ -131,27 +136,25 @@ class ReferralTracker:
         if referral.stage == ReferralStage.WON:
             return ConversionResult(success=False, referral_id=referral_id, notes="Already converted")
 
-        commission_amount = deal_value * referral.commission_rate
-
         referral.stage = ReferralStage.WON
         referral.deal_value_sar = deal_value
-        referral.commission_amount_sar = commission_amount
+        referral.commission_amount_sar = 0.0
         referral.converted_at = utcnow()
 
         result = ConversionResult(
             success=True,
             referral_id=referral_id,
             deal_value_sar=deal_value,
-            commission_amount_sar=commission_amount,
-            commission_rate=referral.commission_rate,
-            notes="Referral converted successfully",
+            commission_amount_sar=0.0,
+            commission_rate=0.0,
+            notes="won_unpaid: commission awaits verified collection and V2 economics",
         )
 
         self.log.info(
-            "referral_converted",
+            "referral_converted_won_unpaid",
             id=referral_id,
             deal_value=deal_value,
-            commission=commission_amount,
+            commission=0.0,
         )
         return result
 
