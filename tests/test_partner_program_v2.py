@@ -6,12 +6,16 @@ from dealix.commercial.partner_program_v2 import (
     ATTRIBUTION_MAX_EXTENSION_DAYS,
     ATTRIBUTION_PROTECTION_DAYS,
     DEFAULT_SPLIT,
+    PARTNER_POLICY_VERSION,
     allocate_commission_pool,
     attribution_window_days,
+    build_partner_policy_receipt,
     calculate_nccr,
     calculate_partner_commission,
+    classify_partner_eligibility,
     commission_rate_for,
     requires_compliance_hold,
+    requires_no_mlm_hold,
     validate_attribution_split,
 )
 
@@ -197,3 +201,129 @@ def test_clear_non_government_opt_in_partner_motion_is_not_compliance_hold():
     hold, reasons = requires_compliance_hold(consent_proven=True)
     assert hold is False
     assert reasons == ()
+
+
+def test_partner_activation_requires_tax_terms_and_certification():
+    decision = classify_partner_eligibility(
+        legal_type="individual",
+        is_saudi_national_or_entity=True,
+    )
+    assert decision.eligible_for_activation is False
+    assert decision.status == "tax_profile_pending"
+    decision = classify_partner_eligibility(
+        legal_type="individual",
+        is_saudi_national_or_entity=True,
+        tax_profile_recorded=True,
+        terms_accepted=True,
+        certification_passed=True,
+    )
+    assert decision.eligible_for_activation is True
+    assert decision.status == "active"
+    assert decision.policy_version == PARTNER_POLICY_VERSION
+
+
+def test_non_saudi_independent_activity_requires_authorization():
+    held = classify_partner_eligibility(
+        legal_type="individual",
+        is_saudi_national_or_entity=False,
+        tax_profile_recorded=True,
+        terms_accepted=True,
+        certification_passed=True,
+    )
+    assert held.status == "legal_hold"
+    assert "non_saudi_independent_activity_authorization_required" in held.reasons
+    clear = classify_partner_eligibility(
+        legal_type="individual",
+        is_saudi_national_or_entity=False,
+        independent_activity_authorized=True,
+        tax_profile_recorded=True,
+        terms_accepted=True,
+        certification_passed=True,
+    )
+    assert clear.eligible_for_activation is True
+
+
+def test_employee_like_control_and_regulated_relationships_fail_closed():
+    employee = classify_partner_eligibility(
+        legal_type="individual", is_saudi_national_or_entity=True, employee_like_control=True
+    )
+    assert employee.status == "legal_hold"
+    assert "possible_employment_relationship" in employee.reasons
+    agency = classify_partner_eligibility(
+        legal_type="company", is_saudi_national_or_entity=True, commercial_agency_claimed=True
+    )
+    assert "commercial_agency_legal_review_required" in agency.reasons
+    brokerage = classify_partner_eligibility(
+        legal_type="company", is_saudi_national_or_entity=True, regulated_brokerage=True
+    )
+    assert "regulated_brokerage_license_review_required" in brokerage.reasons
+
+
+def test_no_mlm_recruitment_downline_and_unrelated_split_are_holds():
+    hold, reasons = requires_no_mlm_hold(
+        recruitment_only_commission=True,
+        downline_override_commission=True,
+        multi_partner_split=True,
+        same_opportunity_contribution=False,
+    )
+    assert hold is True
+    assert "recruitment_only_commission_prohibited" in reasons
+    assert "downline_override_commission_prohibited" in reasons
+    assert "multi_partner_split_requires_same_opportunity_contribution" in reasons
+
+
+def test_commission_holds_on_legal_classification_or_mlm_violation():
+    legal = calculate_partner_commission(
+        motion="scout",
+        revenue_type="services",
+        economics={"collected_cash_sar": 10000},
+        verified_collection=True,
+        legal_classification_clear=False,
+    )
+    assert legal.eligible is False
+    assert "partner_legal_classification_hold" in legal.reasons
+    mlm = calculate_partner_commission(
+        motion="scout",
+        revenue_type="services",
+        economics={"collected_cash_sar": 10000},
+        verified_collection=True,
+        mlm_or_downline_violation=True,
+    )
+    assert mlm.eligible is False
+    assert "mlm_or_downline_commission_prohibited" in mlm.reasons
+
+
+def test_policy_receipt_is_deterministic_version_pinned_and_deduplicates_evidence():
+    a = build_partner_policy_receipt(
+        receipt_type="deal_registration",
+        entity_id="reg_123",
+        state="ATTRIBUTION_ACCEPTED",
+        evidence_refs=["consent_1", "source_2", "consent_1"],
+    )
+    b = build_partner_policy_receipt(
+        receipt_type="deal_registration",
+        entity_id="reg_123",
+        state="ATTRIBUTION_ACCEPTED",
+        evidence_refs=["source_2", "consent_1"],
+    )
+    assert a == b
+    assert a["policy_version"] == PARTNER_POLICY_VERSION
+    assert len(a["content_sha256"]) == 64
+    assert a["evidence_refs"] == ["consent_1", "source_2"]
+
+
+def test_v3_compliance_hold_covers_claim_legal_employment_and_mlm_risks():
+    hold, reasons = requires_compliance_hold(
+        misleading_or_guaranteed_claim=True,
+        non_saudi_independent_activity=True,
+        independent_activity_authorized=False,
+        possible_employment_relationship=True,
+        mlm_or_downline_commission=True,
+        commercial_agency_or_regulated_brokerage=True,
+    )
+    assert hold is True
+    assert "misleading_or_guaranteed_claim" in reasons
+    assert "non_saudi_independent_activity_authorization_required" in reasons
+    assert "possible_employment_relationship" in reasons
+    assert "mlm_or_downline_commission_prohibited" in reasons
+    assert "regulated_relationship_legal_review_required" in reasons

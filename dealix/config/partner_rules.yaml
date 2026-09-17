@@ -71,6 +71,10 @@ partner_network_v2:
     - cold_whatsapp
     - marketing_consent_not_proven
     - misleading_or_guaranteed_claim
+    - non_saudi_independent_activity_without_authorization
+    - possible_employment_relationship
+    - mlm_or_downline_commission
+    - commercial_agency_or_regulated_brokerage_without_review
   strategic_service_rate_requires_margin_approval: true
   qualification:
     partner_application_required: true
@@ -111,3 +115,26 @@ partner_network_v2:
     customer_specific_pricing_only: true
     public_fixed_price_authority: false
     portal_payment_execution_authority: false
+    recruitment_only_commission: false
+    downline_override_commission: false
+    policy_version_pinning_required: true
+    material_state_change_receipts_required: true
+  v3_hardening:
+    policy_version: partner-network-v3-2026-09-17
+    authority: dealix.commercial.partner_program_v2
+    activation_requires:
+      - legal_classification_clear
+      - tax_profile_recorded
+      - terms_accepted
+      - certification_passed
+    legal_holds:
+      - non_saudi_independent_activity_without_authorization
+      - possible_employment_relationship
+      - commercial_agency_or_regulated_brokerage_without_review
+    no_mlm:
+      recruitment_only_commission: false
+      downline_override_commission: false
+      multi_partner_split_requires_same_opportunity_contribution: true
+    receipts:
+      policy_version_required: true
+      deterministic_content_hash_required: true
