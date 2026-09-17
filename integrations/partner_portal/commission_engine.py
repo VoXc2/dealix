@@ -1,6 +1,9 @@
 """
 Commission Engine — calculates and processes partner commissions.
 محرك العمولات — يحسب ويعالج عمولات الشركاء.
+
+Legacy `calculate()` is projection-only compatibility. Partner Network V2 economics and
+verified collection determine real commission eligibility.
 """
 
 from __future__ import annotations
@@ -23,7 +26,7 @@ class Commission:
     deal_value_sar: float
     rate: float
     amount_sar: float
-    status: str = "pending"
+    status: str = "projected_unpaid"
     paid_at: datetime | None = None
     created_at: datetime = field(default_factory=utcnow)
 
@@ -70,6 +73,7 @@ class CommissionEngine:
         self.log = logger.bind(component="commission_engine")
 
     async def calculate(self, referral_id: str) -> Commission:
+        """Create a legacy commission projection, never earned/payment truth."""
         from integrations.partner_portal.referral_tracking import ReferralTracker
 
         tracker = self._tracker or ReferralTracker()
@@ -84,11 +88,11 @@ class CommissionEngine:
             deal_value_sar=referral.deal_value_sar,
             rate=referral.commission_rate,
             amount_sar=referral.deal_value_sar * referral.commission_rate,
-            status="pending",
+            status="projected_unpaid",
         )
         self._commissions[commission.id] = commission
         self.log.info(
-            "commission_calculated",
+            "commission_projected_legacy",
             id=commission.id,
             amount=commission.amount_sar,
             rate=commission.rate,
@@ -103,6 +107,7 @@ class CommissionEngine:
         verified_collection_reference: str = "",
         clearing_complete: bool = False,
     ) -> PaymentResult:
+        """Stage an externally payable commission; never execute money movement."""
         commission = self._commissions.get(commission_id)
         if not commission:
             return PaymentResult(
@@ -116,6 +121,15 @@ class CommissionEngine:
                 success=False,
                 commission_id=commission_id,
                 errors=["Commission already paid"],
+            )
+        if commission.status == "approved_for_payment":
+            return PaymentResult(
+                success=False,
+                commission_id=commission_id,
+                amount_sar=commission.amount_sar,
+                reference=f"STAGED-{commission_id}",
+                status="staged_not_paid",
+                errors=["commission_already_staged"],
             )
 
         missing = []
@@ -161,15 +175,11 @@ class CommissionEngine:
 
     def get_stats(self) -> dict[str, Any]:
         commissions = self._commissions.values()
+        pending_statuses = {"projected_unpaid", "pending", "approved_for_payment"}
         return {
             "total_commissions": len(commissions),
             "total_paid": sum(c.amount_sar for c in commissions if c.status == "paid"),
-            "total_pending": sum(
-                c.amount_sar for c in commissions
-                if c.status in {"pending", "approved_for_payment"}
-            ),
+            "total_pending": sum(c.amount_sar for c in commissions if c.status in pending_statuses),
             "paid_count": sum(1 for c in commissions if c.status == "paid"),
-            "pending_count": sum(
-                1 for c in commissions if c.status in {"pending", "approved_for_payment"}
-            ),
+            "pending_count": sum(1 for c in commissions if c.status in pending_statuses),
         }
