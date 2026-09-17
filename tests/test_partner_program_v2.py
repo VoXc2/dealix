@@ -31,10 +31,28 @@ def test_nccr_never_goes_negative():
     assert calculate_nccr({"collected_cash_sar": 100, "refunds_sar": 200}) == Decimal("0.00")
 
 
+@pytest.mark.parametrize(
+    "economics",
+    [
+        {"collected_cash_sar": -1},
+        {"collected_cash_sar": 1000, "refunds_sar": -1},
+        {"collected_cash_sar": 1000, "vat_sar": -1},
+    ],
+)
+def test_nccr_rejects_negative_financial_inputs(economics):
+    with pytest.raises(ValueError):
+        calculate_nccr(economics)
+
+
 def test_service_rates_are_motion_based():
     assert commission_rate_for("scout", "services") == Decimal("0.075")
     assert commission_rate_for("growth_partner", "services") == Decimal("0.10")
     assert commission_rate_for("closer_sector_partner", "services") == Decimal("0.15")
+
+
+def test_unknown_revenue_type_fails_closed():
+    with pytest.raises(ValueError):
+        commission_rate_for("scout", "license")
 
 
 def test_saas_rates_are_recurring_and_capped_at_twelve_months():
@@ -49,6 +67,18 @@ def test_saas_rates_are_recurring_and_capped_at_twelve_months():
     assert decision.eligible is True
     assert decision.commission_sar == Decimal("1250.00")
     assert decision.recurring_month_limit == 12
+
+
+def test_saas_requires_explicit_recurring_month_index():
+    decision = calculate_partner_commission(
+        motion="growth_partner",
+        revenue_type="saas",
+        economics={"collected_cash_sar": 5000},
+        verified_collection=True,
+    )
+    assert decision.eligible is False
+    assert decision.commission_sar == Decimal("0")
+    assert "recurring_month_index_required" in decision.reasons
 
 
 def test_month_thirteen_is_not_commissionable():
@@ -121,9 +151,25 @@ def test_default_multi_partner_split_is_40_20_40():
     }
 
 
-def test_invalid_split_rejected():
+def test_custom_split_rounding_does_not_require_close_role():
+    amounts = allocate_commission_pool(
+        Decimal("0.01"),
+        {"source": Decimal("0.50"), "qualification": Decimal("0.50")},
+    )
+    assert set(amounts) == {"source", "qualification"}
+    assert sum(amounts.values(), Decimal("0")) == Decimal("0.01")
+
+
+def test_invalid_or_empty_split_rejected():
     with pytest.raises(ValueError):
         validate_attribution_split({"source": 0.5, "qualification": 0.5, "close": 0.5})
+    with pytest.raises(ValueError):
+        validate_attribution_split({})
+
+
+def test_negative_commission_pool_rejected():
+    with pytest.raises(ValueError):
+        allocate_commission_pool(-1)
 
 
 def test_attribution_window_defaults_to_120_and_caps_extension_at_180():
